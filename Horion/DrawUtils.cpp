@@ -413,7 +413,7 @@ void DrawUtils::drawEntityBox(C_Entity* ent, float lineWidth) {
 }
 
 void DrawUtils::draw2D(C_Entity* ent, float lineWidth) {
-	vec3_t base = vec3_t(ent->eyePos0.x, ent->eyePos0.y + 0.15f, ent->eyePos0.z);
+	vec3_t base = ent->eyePos0;
 	float ofs = (g_Data.getLocalPlayer()->yaw + 90.f) * (PI / 180);
 
 	vec3_t corners[4];
