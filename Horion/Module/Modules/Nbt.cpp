@@ -16,7 +16,7 @@ void Nbt::onTick(C_GameMode* gm) {
 	if (!GameData::canUseMoveKeys()) {
 		return;
 	}
-	PointingStruct* pointingStruct = g_Data.getClientInstance()->getPointerStruct();
+	PointingStruct* pointingStruct = g_Data.getLocalPlayer()->pointingStruct;
 	
 	if (GameData::isRightClickDown()) {  // && Utils::getClipboardText() != this->lastCopy) {
 		if (pointingStruct->getEntity() != nullptr) {

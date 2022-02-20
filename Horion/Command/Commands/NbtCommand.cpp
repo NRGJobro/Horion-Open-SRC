@@ -18,7 +18,7 @@ bool NbtCommand::execute(std::vector<std::string>* args) {
 		assertTrue(args->size() > 2);
 	}
 
-	PointingStruct* pointingStruct = g_Data.getClientInstance()->getPointerStruct();
+	PointingStruct* pointingStruct = g_Data.getLocalPlayer()->pointingStruct;
 	C_BlockActor* blockActor = g_Data.getLocalPlayer()->region->getBlockEntity(pointingStruct->block);
 	C_PlayerInventoryProxy* supplies = g_Data.getLocalPlayer()->getSupplies();
 	C_Inventory* inv = supplies->inventory;
