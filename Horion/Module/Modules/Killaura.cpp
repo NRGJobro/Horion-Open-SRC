@@ -83,7 +83,7 @@ void Killaura::findWeapon() {
 }
 
 void Killaura::onTick(C_GameMode* gm) {
-
+	targetListEmpty = targetList.empty();
 	//Loop through all our players and retrieve their information
 	targetList.clear();
 
@@ -114,8 +114,7 @@ void Killaura::onTick(C_GameMode* gm) {
 			}
 		}
 		if (rotations) {
-			vec2_t angle = g_Data.getLocalPlayer()->getPos()->CalcAngle(*targetList[0]->getPos());
-			gm->player->setRot(angle);
+			angle = g_Data.getLocalPlayer()->getPos()->CalcAngle(*targetList[0]->getPos());
 		}
 		Odelay = 0;
 	}

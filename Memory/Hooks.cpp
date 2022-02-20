@@ -61,7 +61,7 @@ void Hooks::Init() {
 
 				g_Hooks.Actor_ascendLadderHook = std::make_unique<FuncHook>(localPlayerVtable[339], Hooks::Actor_ascendLadder);
 				
-				//g_Hooks.Actor_rotationHook = std::make_unique<FuncHook>(localPlayerVtable[27], Hooks::Actor_rotation);
+				g_Hooks.Actor__setRotHook = std::make_unique<FuncHook>(localPlayerVtable[27], Hooks::Actor__setRot);
 
 				g_Hooks.Actor_swingHook = std::make_unique<FuncHook>(localPlayerVtable[219], Hooks::Actor_swing);
 
@@ -1726,6 +1726,22 @@ bool Hooks::Mob__isImmobile(C_Entity* ent) {
 
 	return func(ent);
 }
+
+void Hooks::Actor__setRot(C_Entity* _this, vec2_t& angle) {
+	auto func = g_Hooks.Actor__setRotHook->GetFastcall<void, C_Entity*, vec2_t&>();
+	auto killauraMod = moduleMgr->getModule<Killaura>();
+	if (killauraMod->isEnabled() && !killauraMod->targetListEmpty && killauraMod->rotations && _this == g_Data.getLocalPlayer()) {
+		func(_this, angle = killauraMod->angle);
+	}
+
+	func(_this, angle);
+}
+
+void Hooks::test(void* _this) {
+	auto func = g_Hooks.testHook->GetFastcall<void, void*>();
+	func(_this);
+}
+
 void Hooks::InventoryTransactionManager__addAction(C_InventoryTransactionManager* _this, C_InventoryAction& action) {
 	auto func = g_Hooks.InventoryTransactionManager__addActionHook->GetFastcall<void, C_InventoryTransactionManager*, C_InventoryAction&>();
 
