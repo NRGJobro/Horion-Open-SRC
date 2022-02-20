@@ -14,7 +14,7 @@ public:
 	void dropSlot(int slot);
 
 	// DROPS WHOLE INVENTORY doesnt work tho
-	void dropAll(int slot);
+	void dropAll();
 
 	virtual __int64 init();
 	virtual bool serverInitItemStackIds(signed int a2, int a3, __int64 a4);
@@ -37,14 +37,14 @@ public:
 	virtual __int64 getSlots();
 	virtual __int64 getItemCount(const C_ItemStack&);
 	virtual __int64 findFirstSlotForItem(const C_ItemStack&);
-	virtual __int64 canPushInItem(); // BlockSource &,int,int,ItemInstance const&
+	virtual __int64 canPushInItem();   // BlockSource &,int,int,ItemInstance const&
 	virtual __int64 canPullOutItem();  // BlockSource &,int,int,ItemInstance const&
-	virtual __int64 setContainerChanged(int); 
+	virtual __int64 setContainerChanged(int);
 	virtual __int64 setContainerMoved();
-	virtual __int64 setCustomName(const TextHolder&); 
+	virtual __int64 setCustomName(const TextHolder&);
 	virtual __int64 hasCustomName();
-	virtual __int64 readAdditionalSaveData(); //  CompoundTag const&
-	virtual __int64 addAdditionalSaveData();   //  CompoundTag &
+	virtual __int64 readAdditionalSaveData();    //  CompoundTag const&
+	virtual __int64 addAdditionalSaveData();     //  CompoundTag &
 	virtual __int64 createTransactionContext();  // std::function<void(C_Inventory&, int, const C_ItemStack&, const C_ItemStack&)>, std::function<void(void)>
 	virtual __int64 initializeContainerContents(C_BlockSource&);
 	virtual char isEmpty();
@@ -53,7 +53,7 @@ public:
 	//virtual void unknown();
 	virtual __int64 clearSlot(int);
 	virtual __int64 clearInventory(int);
-	virtual __int64 load(); // ListTag const&,SemVersion const&,Level &
+	virtual __int64 load();  // ListTag const&,SemVersion const&,Level &
 	//virtual void unknown2();
 	virtual __int64 getEmptySlotsCount();
 	virtual int getFirstEmptySlot();
@@ -75,6 +75,7 @@ public:
 };
 
 //Im not sure exactly where these unknown's go but the funcs we use work.
+
 class C_ContainerScreenController {
 private:
 	virtual __int64 destructor();
@@ -111,12 +112,10 @@ private:
 	virtual __int64 onDictationEvent(std::string const&);
 
 public:
+	virtual __int64 getCallbackInterval(void);
 	virtual void setAssociatedBlockPos(vec3_ti const&);
 	virtual void setAssociatedEntityUniqueID(__int64);
 	virtual void setSuspendInput(bool);
-
-private:
-	virtual __int64 getCallbackInterval(void);
 	virtual __int64 onRender(void);
 	virtual __int64 addStaticScreenVars(__int64&);
 	virtual __int64 getAdditionalScreenInfo(void);
@@ -138,6 +137,11 @@ private:
 	virtual __int64 _getButtonXDescription(void);
 	virtual __int64 _getButtonYDescription(void);
 	virtual __int64 _getButtonKeyboardDescription(void);
+
+private:
+	virtual void pleasePad1();
+	virtual void pleasePad2();
+	virtual void pleasePad3();
 
 public:
 	virtual __int64 _handlePlaceAll(std::string const&, int);

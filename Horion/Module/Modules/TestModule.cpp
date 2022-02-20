@@ -170,7 +170,8 @@ bool tryPlace(const vec3_ti& blockPos) {
 			vec3_ti calc = blockPos.sub(current);
 			if (!((g_Data.getLocalPlayer()->region->getBlock(calc)->blockLegacy))->material->isReplaceable) {
 				// Found a solid block to click
-				g_Data.getCGameMode()->buildBlock(&calc, i);
+				bool idk = true;
+				g_Data.getCGameMode()->buildBlock(&calc, i, idk);
 
 				return true;
 				break;

@@ -121,7 +121,7 @@ public:
 	virtual int getKeybind();
 	virtual void setKeybind(int key);
 	virtual bool allowAutoStart();
-
+	virtual void onWorldTick(C_GameMode*);
 	virtual void onTick(C_GameMode*);
 	virtual void onKeyUpdate(int key, bool isDown);
 	virtual void onEnable();

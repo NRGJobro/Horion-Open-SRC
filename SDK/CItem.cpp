@@ -1,8 +1,8 @@
 #include "CItem.h"
 
+#include "../Memory/GameData.h"
 #include "../Utils/Utils.h"
 #include "Tag.h"
-#include "../Memory/GameData.h"
 
 C_BaseActorRenderContext::C_BaseActorRenderContext(C_ScreenContext *ScreenCtx, C_ClientInstance *client, MinecraftGame *game) {
 	memset(this, 0, sizeof(C_BaseActorRenderContext));
@@ -10,14 +10,14 @@ C_BaseActorRenderContext::C_BaseActorRenderContext(C_ScreenContext *ScreenCtx, C
 	static BaseActorRenderContext_t BaseActorRenderContext_constructor = reinterpret_cast<BaseActorRenderContext_t>(FindSignature("48 89 5C 24 ?? 48 89 74 24 ?? 48 89 4C 24 08 57 48 83 EC ?? ?? ?? ?? 48 8B F9 48 8D 05 ?? ?? ?? ?? 48 89 ?? 33 F6 48 89 71 08"));
 	BaseActorRenderContext_constructor(this, ScreenCtx, client, game);
 }
-void C_ItemRenderer::renderGuiItemNew(C_BaseActorRenderContext *BaseActorRenderCtx, C_ItemStack *item, MinecraftGame *game, float x, float y, float opacity, float scale, bool isEnchanted) {
-	using renderGuiItemNew_t = void(__fastcall *)(C_ItemRenderer *, C_BaseActorRenderContext *, C_ItemStack *, MinecraftGame *, float, float, float, float, float, bool);
-	static renderGuiItemNew_t renderGuiItemNew = reinterpret_cast<renderGuiItemNew_t>(FindSignature("48 8B C4 48 89 58 20 55 56 57 41 54 41 55 41 56 41 57 48 81 EC 00 01 00 00 0F 29 70 B8 ?? ?? ?? ?? 48 8B 05 ?? ?? ?? ?? 48 33 C4 48 89 84 24 ?? ?? ?? ??"));
+void C_ItemRenderer::renderGuiItemNew(C_BaseActorRenderContext *BaseActorRenderCtx, C_ItemStack *item, int mode, float x, float y, float opacity, float scale, bool isEnchanted) {
+	using renderGuiItemNew_t = void(__fastcall *)(C_ItemRenderer *, C_BaseActorRenderContext *, C_ItemStack *, int, float, float, bool, float, float, float);
+	static renderGuiItemNew_t renderGuiItemNew = reinterpret_cast<renderGuiItemNew_t>(FindSignature("48 8B C4 53 55 56 57 41 54 41 55 41 56 41 57 48 81 EC ? ? ? ? 0F 29 70 ? 0F 29 78 ? 48 8B 05 ? ? ? ? 48 33 C4 48 89 84 24 ? ? ? ? 44 89 8C 24"));
 	item->setShowPickUp(false);
-	renderGuiItemNew(this, BaseActorRenderCtx, item, game, x, y, 1, opacity, scale, isEnchanted);
+	renderGuiItemNew(this, BaseActorRenderCtx, item, mode, x, y, isEnchanted, 1, opacity, scale);
 }
 
-void C_ItemRenderer::renderGuiItemInChunk(C_BaseActorRenderContext* BaseActorRenderCtx, C_ItemStack* item, float x, float y, float opacity, float scale, bool isEnchanted, int mode) {
+void C_ItemRenderer::renderGuiItemInChunk(C_BaseActorRenderContext *BaseActorRenderCtx, C_ItemStack *item, float x, float y, float opacity, float scale, bool isEnchanted, int mode) {
 	using renderGuiItemInChunk_t = void(__fastcall *)(C_ItemRenderer *, C_BaseActorRenderContext *, __int64, C_ItemStack *, float, float, float, float, float, int);
 	static renderGuiItemInChunk_t renderGuiItem = reinterpret_cast<renderGuiItemInChunk_t>(FindSignature("48 8B C4 48 89 58 ? 55 56 57 41 54 41 55 41 56 41 57 48 8D A8 ? ? ? ? 48 81 EC ? ? ? ? 0F 29 70 B8 0F 29 78 A8 44 0F 29 40 ? 44 0F 29 48 ? 44 0F 29 90 ? ? ? ? 44 0F 29 98 ? ? ? ? 44 0F 29 A0 ? ? ? ? 44 0F 29 A8 ? ? ? ? 48 8B 05 ? ? ? ?"));
 	//item->setShowPickUp(false);
@@ -45,14 +45,15 @@ void C_ItemStack::fromTag(const Tag &tag) {
 	static ItemStackBase__loadItemF fromTag = reinterpret_cast<ItemStackBase__loadItemF>(FindSignature("48 89 5C 24 ? 48 89 74 24 ? 55 57 41 56 48 8D 6C 24 ? 48 81 EC ? ? ? ? 48 8B 05 ? ? ? ? 48 33 C4 48 89 45 37 48 8B DA 48 8B F9 48 89 4D 97 0F 57 C0 0F 11 45 A7 0F 11 45 B7 0F 11 45 C7 0F 11 45 D7 0F 11 45 E7 0F 11 45 F7 0F 11 45 07"));
 	fromTag(this, tag);
 }
+
 void C_ItemStack::save(CompoundTag **tag) {
 	using ItemStackBase__saveF = void(__fastcall *)(C_ItemStack *, CompoundTag **);
-	ItemStackBase__saveF save = reinterpret_cast<ItemStackBase__saveF>(FindSignature("48 89 5C 24 ?? 55 56 57 41 56 41 57 48 8D 6C 24 C9 48 81 EC ?? ?? ?? ?? 48 8B FA 48 8B F1 48 89 55 0F 45 33 ?? 44 89 7D 97 33 C0"));
+	ItemStackBase__saveF save = reinterpret_cast<ItemStackBase__saveF>(FindSignature("48 89 5C 24 ?? 55 56 57 41 56 41 57 48 8D 6C 24 C9 48 81 EC ?? ?? ?? ?? 48 8B FA 48 8B F1 48 89 55 0F 45 33 ?? 44 89 7D"));
 	return save(this, tag);
 }
 void C_ItemStack::setUserData(std::unique_ptr<Tag> tag) {
 	using setUserData_t = void(__fastcall *)(C_ItemStack *, std::unique_ptr<Tag>);
-	setUserData_t setUserData = reinterpret_cast<setUserData_t>(FindSignature("48 89 5C 24 18 55 56 57 48 81 EC ? ? ? ? 48 8B 05 8A ? ? ? 48 33 C4 48 89 84 24 ? ? ? ? 48 8B FA"));
+	setUserData_t setUserData = reinterpret_cast<setUserData_t>(FindSignature("48 89 5C 24 ? 55 56 57 48 81 EC ? ? ? ? 48 8B 05 ? ? ? ? 48 33 C4 48 89 84 24 ? ? ? ? 48 8B FA 48 8B F1 48 89 94 24"));
 	setUserData(this, std::move(tag));
 }
 void C_ItemStack::reinit(C_BlockLegacy &legacy, int count) {
@@ -81,12 +82,12 @@ C_Item ***ItemRegistry::getItemFromId(void *ptr, int itemId) {
 
 C_Item ***ItemRegistry::lookUpByName(void *a1, void *a2, TextHolder &text) {
 	using ItemRegistry__lookupByName_t = C_Item ***(__fastcall *)(void *, void *, TextHolder &);
-	static ItemRegistry__lookupByName_t ItemRegistry__lookupByNameF = reinterpret_cast<ItemRegistry__lookupByName_t>(FindSignature("48 89 5C 24 ? 55 56 57 41 54 41 55 41 56 41 57 48 8D AC 24 ? ? ? ? 48 81 EC ? ? ? ? 48 8B 05 ? ? ? ? 48 33 C4 48 89 85 ? ? ? ? 4C 8B EA 48 89 54 24 ? 48 89 4C 24 ? 48 89 4D"));
+	static ItemRegistry__lookupByName_t ItemRegistry__lookupByNameF = reinterpret_cast<ItemRegistry__lookupByName_t>(FindSignature("48 89 5C 24 ?? 55 56 57 41 54 41 55 41 56 41 57 48 8D 6C 24 ?? 48 81 EC ?? ?? ?? ?? 48 8B 05 ?? ?? ?? ?? 48 33 C4 48 89 45 ? 4C 8B EA 48 8B F9 48 89 4D A7 49 83 78"));
 	return ItemRegistry__lookupByNameF(a1, a2, text);
 }
 
 ItemDescriptor::ItemDescriptor(int id, int16_t itemData) {
-	using ItemDescriptor__ItemDescriptor_t = ItemDescriptor*(__fastcall *)(ItemDescriptor*,int,int16_t);
+	using ItemDescriptor__ItemDescriptor_t = ItemDescriptor *(__fastcall *)(ItemDescriptor *, int, int16_t);
 	static ItemDescriptor__ItemDescriptor_t func = reinterpret_cast<ItemDescriptor__ItemDescriptor_t>(FindSignature("48 89 5C 24 ? 55 56 57 48 83 EC ? 33 ED 48 8B D9 48 89 29 41 8B F8 48 89 69 ? 8B F2 48 89 69 ? 66 89 69 ? C6 41"));
 	func(this, id, itemData);
 }

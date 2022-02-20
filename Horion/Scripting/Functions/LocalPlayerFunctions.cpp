@@ -166,8 +166,8 @@ JsValueRef CALLBACK LocalPlayerFunctions::placeBlock(JsValueRef callee, bool isC
 	}
 
 	vec3_ti pos = vecOpt.value();
-
-	g_Data.getCGameMode()->buildBlock(&pos, 1);
+	bool idk = true;
+	g_Data.getCGameMode()->buildBlock(&pos, 1, idk);
 	return chakra.trueValue();
 }
 
@@ -204,7 +204,7 @@ JsValueRef CALLBACK LocalPlayerFunctions::placeBlockRelativeToPlr(JsValueRef cal
 	}
 
 	vec3_ti pos = vecOpt.value().add(*plr->getPos());
-
-	g_Data.getCGameMode()->buildBlock(&pos, 1);
+	bool idk = true;
+	g_Data.getCGameMode()->buildBlock(&pos, 1, idk);
 	return chakra.trueValue();
 }

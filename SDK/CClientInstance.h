@@ -8,9 +8,15 @@
 
 class Minecraft {
 private:
-	char pad_0x0000[0xD0];  //0x0000
+	char pad_0x0000[0xD8];  //0x0000
 public:
-	float* timer;  //0x00B0
+	float* timer;       //0x00D8
+	float* otherTimer;  //0x00E0
+
+	void setTimerSpeed(float tps) {
+		*this->timer = tps;
+		*this->otherTimer = tps;
+	};
 };
 
 class Tessellator;
@@ -20,19 +26,19 @@ class BlockTessellator;
 class ResourceLocation {
 private:
 	char pad[0x28];
-	__int64 hashCode; // 0x28
+	__int64 hashCode;  // 0x28
 	char pad2[8];
 };
 
 class HashedString {
 private:
 	unsigned __int64 hash;
-	TextHolder text; // 0x0008
+	TextHolder text;  // 0x0008
 
 public:
 	HashedString(const std::string& text) {
 		this->text.setText(text);
-		
+
 		this->computeHash();
 	}
 
@@ -55,57 +61,59 @@ public:
 };
 
 namespace mce {
-	class TextureGroup;
-	class MaterialPtr;
-	class Mesh {
-	public:
-		void renderMesh(__int64 screenContext, mce::MaterialPtr* material, size_t numTextures, __int64** textureArray);
+class TextureGroup;
+class MaterialPtr;
+class Mesh {
+public:
+	void renderMesh(__int64 screenContext, mce::MaterialPtr* material, size_t numTextures, __int64** textureArray);
 
-		template <size_t numTextures>
-		void renderMesh(__int64 screenContext, mce::MaterialPtr* material, std::array<__int64*, numTextures> textures) {
-			this->renderMesh(screenContext, material, numTextures, &textures[0]);
-		}
-	};
-	class TexturePtr {
-	private:
-		__int64* clientTexture;
-		char pad[0x8];
-		ResourceLocation resourceLocation; // 0x10
-
-	public:
-		__int64* getClientTexture() {
-			return this->clientTexture;
-		}
-	};
-	class MaterialPtr {
-	private:
-		std::shared_ptr<void> materialPtr;
-
-	public:
-		MaterialPtr(const std::string& materialName);
-	};
+	template <size_t numTextures>
+	void renderMesh(__int64 screenContext, mce::MaterialPtr* material, std::array<__int64*, numTextures> textures) {
+		this->renderMesh(screenContext, material, numTextures, &textures[0]);
 	}
+};
+class TexturePtr {
+private:
+	__int64* clientTexture;
+	char pad[0x8];
+	ResourceLocation resourceLocation;  // 0x10
 
+public:
+	__int64* getClientTexture() {
+		return this->clientTexture;
+	}
+};
+class MaterialPtr {
+private:
+	std::shared_ptr<void> materialPtr;
+
+public:
+	MaterialPtr(const std::string& materialName);
+};
+}  // namespace mce
 
 class LevelRenderer {
 private:
 	char pad_0x0000[0x58];  //0x0000
 public:
-	mce::TextureGroup* textureGroup; // 0x0058
+	mce::TextureGroup* textureGroup;  // 0x0058
 private:
 	char pad_0x0060[0xE0];  //0x0060
 public:
-	mce::TexturePtr atlasTexture; // 0x140
+	mce::TexturePtr atlasTexture;  // 0x140
 private:
 	char pad_0x0188[0x150];  //0x0188
 public:
-	BlockTessellator* blockTessellator; // 0x02D8
+	BlockTessellator* blockTessellator;  // 0x02D8
 private:
 	char pad_0x02F0[0x568];  //0x02E0
+	vec3_t origin;           //0x0890
 public:
-	vec3_t origin;  //0x0890
+	vec3_t& getOrigin() {
+		return *(vec3_t*)((char*)this + (0x798));
+	}
 
-	__int64 getLevelRendererPlayer(){
+	__int64 getLevelRendererPlayer() {
 		return reinterpret_cast<__int64>(this) + 0x310;
 	}
 };
@@ -132,23 +140,39 @@ private:
 	void* ptrToSelfSharedPtr;           // 0x0018
 	__int64 pad2;                       // 0x0020
 public:
-	C_FontRepository_FontList* fontList;   //0x0028
-	//C_FontRepository_FontList* fontList1;  //0x0040
+	C_FontRepository_FontList* fontList;  //0x0028
+										  //C_FontRepository_FontList* fontList1;  //0x0040
 };
 
 class MinecraftGame {
-private:
-	char filler[256];  //0x0000
+	char pad_0000[0x110];  //0x0000
 public:
-	C_FontRepository* fontRepository;  //0xF8
+	C_FontRepository* fontRepository;  //0x00110
 private:
-	char pad_0x128[0x1F0];  //0x100
+	char pad_0100[0x8];  //0x00118
 public:
-	bool canUseKeys;  //0x2F0
+	C_Font* mcFont;  //0x00120
+private:
+	char pad_0128[0x18];  //0x00128
+public:
+	C_FontRepository* fontRepository1;  //0x0140
+private:
+	char pad_0148[0x1D0];  //0x0148
+public:
+	bool canUseKeys;  //0x0318
+private:
+	char pad_0301[799];  //0x0319
+public:
+	TextHolder xuid;  //0x0638
+
 	// 0x2F0
 
 	C_Font* getTheGoodFontThankYou() {
 		return fontRepository->fontList->fontEntries[7].font;
+	};
+
+	C_Font* getTheRandomFontPlease() {
+		return fontRepository->fontList->fontEntries[4].font;
 	};
 
 	C_Font* getOldFont() {
@@ -157,6 +181,10 @@ public:
 
 	C_Font* getTheBetterFontYes() {
 		return fontRepository->fontList->fontEntries[3].font;
+	}
+
+	C_Font* getMCFont() {
+		return mcFont;
 	}
 
 	const bool canUseKeybinds() {
@@ -221,46 +249,48 @@ class C_CameraManager;
 
 class C_ClientInstance {
 private:
-	char firstPad[0x90];  //0x0008
+	char pad_0x8[0xA0];  //0x8
 public:
-	MinecraftGame* minecraftGame;  //0x0098
+	class MinecraftGame* minecraftGame;  //0xA8
 private:
-	MinecraftGame* N0000080C;  //0x00A0
+	class MinecraftGame* N00000A0C;  //0xB0
+	class MinecraftGame* N00000A0D;  //0xB8
 public:
-	MinecraftGame* N0000080D;  //0x00A8
-public:
-	Minecraft* minecraft;  //0x00B0
+	class Minecraft* minecraft;  //0xC0
 private:
-	char pad_0x0068[0x8];  //0x00B8
+	char pad_0xC8[0x8];  //0xC8
 public:
-	LevelRenderer* levelRenderer;  //0x00C0
+	class LevelRenderer* levelRenderer;  //0xD0
 private:
-	char pad_0x0078[0x8];  //0x00C8
+	char pad_0xD8[0x8];  //0xD8
 public:
-	C_LoopbackPacketSender* loopbackPacketSender;  //0x00D0
+	C_LoopbackPacketSender* loopbackPacketSender;  //0xE0
 private:
-	char pad_0x0088[0x18];  //0x00D8
+	char pad_0xE8[0x18];  //0xE8
 public:
-	PtrToGameSettings1* ptr;  //0x00F0
+	PtrToGameSettings1* ptr;  //0x100
 private:
-	char pad_0x00B0[0x8];  //0x00F8
+	char pad_0x108[0x8];  //0x108
 public:
-	HitDetectSystem* hitDetectSystem;  //0x0100
-private:
-	char pad_0x00B8[0x30];  //0x0108
-public:
-	C_LocalPlayer* localPlayer;  //0x0138
-private:
-	char pad[0x388]; // 0x0140
-public:
+	class HitDetectSystem* hitDetectSystem;  //0x110
 	struct {
 		char pad[0x238];
 		struct {
 			__int64 materialPtr;
 			size_t refCount;
 		} entityLineMaterial;
-	} *itemInHandRenderer; // 0x04C8
-
+	} * itemInHandRenderer;  //0x04D8
+private:
+	char pad_04C8[0x1B0];  //0x04D0
+public:
+	float fovX;  //0x0680
+private:
+	char pad_068C[0x10];  //0x0684
+public:
+	float fovY;  //0x0694
+private:
+	char pad_0670[0x1B8];  //0x0678z
+public:
 private:
 	virtual __int64 destructorClientInstance();
 	// Duplicate destructor
@@ -468,6 +498,13 @@ public:
 private:
 	virtual __int64 useController(void) const;
 	virtual __int64 useTouchscreen(void) const;
+	virtual void subFunction1(void) const;
+	virtual void subFunction2(void) const;
+	virtual void subFunction3(void) const;
+	virtual void subFunction4(void) const;
+	virtual void subFunction5(void) const;
+	virtual void subFunction6(void) const;
+	virtual void subFunction7(void) const;
 
 public:
 	virtual bool getMouseGrabbed(void) const;
@@ -517,8 +554,10 @@ public:
 	virtual __int64 getHolosceneRenderer(void) const;
 	virtual __int64 getLevelRenderer(void) const;
 	virtual __int64 getLevelRendererCameraProxy(void) const;
+
 public:
 	virtual C_CameraManager* getCameraManager(void) const;
+
 private:
 	virtual __int64 sub_1400CCC08(void) const;
 
@@ -573,8 +612,8 @@ private:
 	virtual __int64 renderEditorGui(__int64&, bool);
 
 public:
-	virtual C_GuiData* getGuiData(void);
-	virtual C_GuiData* getGuiData(void) const;
+	virtual C_GuiData* getGuiDataDOESNTWORK(void);
+	virtual C_GuiData* getGuiDataDOESNTWORK(void) const;
 
 private:
 	virtual __int64 getGuidedFlowManager(void);
@@ -654,6 +693,7 @@ private:
 	virtual __int64 getPacketSender(void);
 	virtual __int64 getClientNetworkSystem(void);
 	virtual __int64 getClientNetworkSystem(void) const;
+	virtual void fake_function_to_make_grabmouse_work(void) const;
 
 public:
 	virtual void setMoveTurnInput(__int64);
@@ -804,10 +844,6 @@ private:
 	virtual __int64 updateScreens(void);
 
 public:
-	C_LocalPlayer* getLocalPlayerDONTUSEPLS() {
-		return localPlayer;
-	};
-
 	PointingStruct* getPointerStruct() {
 		return this->getLevel();
 	}
@@ -815,19 +851,20 @@ public:
 	glmatrixf* getRefDef() {
 		uintptr_t _this = reinterpret_cast<uintptr_t>(this);
 		//logF("refderf %llX", _this + 0x258);
-		return reinterpret_cast<glmatrixf*>(_this + 0x2E0);
+		return reinterpret_cast<glmatrixf*>(_this + 0x2F0);
 	};
 
 	vec2_t* getMousePos() {
 		uintptr_t _this = reinterpret_cast<uintptr_t>(this);
-		return reinterpret_cast<vec2_t*>(_this + 0x448);
+		return reinterpret_cast<vec2_t*>(_this + 0x458);
 	}
 
 	vec2_t getFov() {
 		uintptr_t _this = reinterpret_cast<uintptr_t>(this);
+		//vec2_t fov(fovX, fovY);
 		vec2_t fov;
-		fov.x = *reinterpret_cast<float*>(_this + 0x660);
-		fov.y = *reinterpret_cast<float*>(_this + 0x674);
+		fov.x = *reinterpret_cast<float*>(_this + 0x678);
+		fov.y = *reinterpret_cast<float*>(_this + 0x68C);
 		return fov;
 	}
 
@@ -841,6 +878,21 @@ public:
 
 	C_Font* _getUnicodeFont() {
 		return this->getUnicodeFont();
+	}
+
+	C_GuiData* getGuiData() {
+		return (C_GuiData*)*reinterpret_cast<__int64*>(reinterpret_cast<C_GuiData*>(reinterpret_cast<__int64>(this) + 0x4E8));
+	};
+
+	C_LocalPlayer* getLocalPlayer() {
+		if (this != nullptr) {
+			__int64 ptr = *reinterpret_cast<__int64*>(reinterpret_cast<__int64>(this) + 0xD0);
+			if (ptr > 0x1000000000 && ptr < 0xF00000000000) {
+				C_LocalPlayer* res = *reinterpret_cast<C_LocalPlayer**>(ptr + 0x278);
+				if (reinterpret_cast<__int64>(res) < 0xF00000000000) return res;
+			}
+		}
+		return nullptr;
 	}
 
 	inline C_GameSettingsInput* getGameSettingsInput() { return this->ptr->ptr->ptr->settingsInput; };

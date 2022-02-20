@@ -215,7 +215,7 @@ public:
 	inline C_GuiData* getGuiData() { return clientInstance->getGuiData(); };
 	inline C_LocalPlayer* getLocalPlayer() {
 		
-		localPlayer = clientInstance->localPlayer;
+		localPlayer = clientInstance->getLocalPlayer();
 
 		if (localPlayer == nullptr)
 			gameMode = nullptr;

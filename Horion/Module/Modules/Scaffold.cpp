@@ -50,7 +50,8 @@ bool Scaffold::tryScaffold(vec3_t blockBelow) {
 		}
 		if (foundCandidate) {
 			if (spoof) findBlock();
-			g_Data.getCGameMode()->buildBlock(&blok, i);
+			bool idk = true;
+			g_Data.getCGameMode()->buildBlock(&blok, i, idk);
 
 			return true;
 		}

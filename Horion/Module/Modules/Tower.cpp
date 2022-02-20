@@ -58,7 +58,8 @@ bool Tower::tryTower(vec3_t blockBelow) {
 			moveVec.y = motion;
 			moveVec.z = g_Data.getLocalPlayer()->velocity.z;
 			g_Data.getLocalPlayer()->lerpMotion(moveVec);
-			g_Data.getCGameMode()->buildBlock(&blok, i);
+			bool idk = true;
+			g_Data.getCGameMode()->buildBlock(&blok, i, idk);
 
 			return true;
 		}

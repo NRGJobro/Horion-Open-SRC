@@ -236,7 +236,7 @@ void Hooks::Init() {
 			float degrees = fmodf(p->getPosOld()->lerp(p->getPos(), lerpT).x, 5) - 2.5f;
 			degrees *= 180 / 2.5f;
 
-			auto pos = g_Data.getClientInstance()->levelRenderer->origin;
+			auto pos = g_Data.getClientInstance()->levelRenderer->getOrigin();
 			
 			glm::mat4 View = matrix;
 			

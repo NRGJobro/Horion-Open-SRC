@@ -29,7 +29,8 @@ void ChestAura::onTick(C_GameMode* gm) {
 					if (id == 130 && enderchests) open = true;  // EnderCheats
 					if (open)
 						if (!(std::find(chestlist.begin(), chestlist.end(), pos) != chestlist.end())) {
-							gm->buildBlock(&pos, 0);
+							bool idk = true;
+							gm->buildBlock(&pos, 0, idk);
 							chestlist.push_back(pos);
 							return;
 						}

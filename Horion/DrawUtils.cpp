@@ -79,7 +79,7 @@ void DrawUtils::setCtx(C_MinecraftUIRenderContext* ctx, C_GuiData* gui) {
 	screenSize.x = gui->widthGame;
 	screenSize.y = gui->heightGame;
 	if (g_Data.getClientInstance()->levelRenderer != nullptr)
-		origin = g_Data.getClientInstance()->levelRenderer->origin;
+		origin = g_Data.getClientInstance()->levelRenderer->getOrigin();
 
 	if (uiMaterial == nullptr) {
 		// 2 Sigs, wanted one comes first
@@ -458,8 +458,7 @@ void DrawUtils::drawItem(C_ItemStack* item, const vec2_t& itemPos, float opacity
 	auto* screenCtx = reinterpret_cast<C_ScreenContext*>(scnCtx);
 	C_BaseActorRenderContext baseActorRenderCtx(screenCtx, g_Data.getClientInstance(), g_Data.getClientInstance()->minecraftGame);
 	C_ItemRenderer* renderer = baseActorRenderCtx.renderer;
-	renderer->renderGuiItemNew(&baseActorRenderCtx, item, g_Data.getClientInstance()->minecraftGame, itemPos.x, itemPos.y, opacity, scale, isEnchanted);
-
+	renderer->renderGuiItemNew(&baseActorRenderCtx, item, 0, itemPos.x, itemPos.y, opacity, scale, isEnchanted);
 }
 
 vec2_t DrawUtils::worldToScreen(const vec3_t& world) {
@@ -548,7 +547,7 @@ inline void DrawUtils::tess__begin(Tessellator* tess, int vertexFormat, int numV
 void DrawUtils::setGameRenderContext(__int64 ctx) {
 	game3dContext = ctx;
 	if (g_Data.getClientInstance()->levelRenderer != nullptr)
-		origin = g_Data.getClientInstance()->levelRenderer->origin;
+		origin = g_Data.getClientInstance()->levelRenderer->getOrigin();
 
 	if(ctx){
 		LARGE_INTEGER EndingTime, ElapsedMicroseconds;

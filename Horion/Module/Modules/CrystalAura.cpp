@@ -67,7 +67,8 @@ void CrystalAura::CPlace(C_GameMode* gm, vec3_t* pos) {
 #pragma warning(pop)
 		C_Block* block = gm->player->region->getBlock(blockPos);
 		C_Block* upperBlock = gm->player->region->getBlock(upperBlockPos);
-		gm->buildBlock(&blockPos, g_Data.getClientInstance()->getPointerStruct()->blockSide);
+		bool idk = true;
+		gm->buildBlock(&blockPos, g_Data.getClientInstance()->getPointerStruct()->blockSide, idk);
 		return;
 	}
 	vec3_ti bestPos;
@@ -94,8 +95,10 @@ void CrystalAura::CPlace(C_GameMode* gm, vec3_t* pos) {
 			}
 		}
 	}
-	if (ValidPos)
-		gm->buildBlock(&bestPos, 0);
+	if (ValidPos) {
+		bool idk = true;
+		gm->buildBlock(&bestPos, 0, idk);
+	}
 }
 
 void CrystalAura::DestroyC(C_Entity* ent, int range) {

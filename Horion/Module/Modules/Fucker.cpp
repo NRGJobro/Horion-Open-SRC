@@ -40,7 +40,8 @@ void Fucker::onTick(C_GameMode* gm) {
 				}
 				
 				if (eat) {
-					gm->buildBlock(&blockPos, 0);
+					bool idk = true;
+					gm->buildBlock(&blockPos, 0, idk);
 					g_Data.getLocalPlayer()->swingArm();
 					return;
 				}

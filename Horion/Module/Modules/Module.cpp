@@ -221,6 +221,9 @@ void IModule::onPostRender(C_MinecraftUIRenderContext* renderCtx) {
 void IModule::onSendPacket(C_Packet*) {
 }
 
+void IModule::onWorldTick(C_GameMode*) {
+}
+
 void IModule::onLoadConfig(void* confVoid) {
 	json* conf = reinterpret_cast<json*>(confVoid);
 	if (conf->contains(this->getRawModuleName())) {

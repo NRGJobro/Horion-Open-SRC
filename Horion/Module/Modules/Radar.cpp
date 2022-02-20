@@ -94,7 +94,7 @@ void Radar::onPreRender(C_MinecraftUIRenderContext* renderCtx) {
 
 	DrawUtils::fillRectangle(vec4_t(0, topPad - cent, (float)size, topPad + cent), MC_Color(0, 0, 0), bgOpacity);
 
-	auto pPos = g_Data.getClientInstance()->levelRenderer->origin;
+	auto pPos = g_Data.getClientInstance()->levelRenderer->getOrigin();
 	playerPos = pPos;
 
 	angle = (180.0f - player->yaw) + 180.0f;
