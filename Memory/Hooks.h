@@ -63,10 +63,17 @@ struct CoolSkinData {
 class Hooks {
 private:
 	bool shouldRender = true;
-	char currentScreenName[100];
 
 public:
+	char currentScreenName[100];
 	std::vector<std::shared_ptr<FuncHook>> lambdaHooks;
+	struct EntityListPointerHolder {
+		C_Entity* ent;
+		int addedTick;
+	};
+	std::vector<EntityListPointerHolder> entityList;
+	__int64 RMBManager = 0;
+	bool shouldLocalPlayerBeImmobile = false;
 
 	static void Init();
 	static void Restore();
@@ -74,6 +81,7 @@ public:
 
 private:
 	static void* Player_tickWorld(C_Player* _this, __int64);
+	static bool playerCallBack(C_Player* lp, __int64 cock, __int64 penis);
 	static void ClientInstanceScreenModel_sendChatMessage(void* _this, TextHolder* text);
 	static __int64 UIScene_setupAndRender(C_UIScene* uiscene, __int64 screencontext);
 	static __int64 UIScene_render(C_UIScene* uiscene, __int64 screencontext);
@@ -88,6 +96,7 @@ private:
 	static void LoopbackPacketSender_sendToServer(C_LoopbackPacketSender* a, C_Packet* packet);
 	static float LevelRendererPlayer_getFov(__int64 _this, float a2, bool a3);
 	static void MultiLevelPlayer_tick(C_EntityList* entityList);
+	static void Actor_baseTick(C_Entity* _this);
 	static void GameMode_startDestroyBlock(C_GameMode* _this, vec3_ti* a2, uint8_t face, void* a4, void* a5);
 	static void HIDController_keyMouse(C_HIDController* _this, void* a2, void* a3);
 	static int BlockLegacy_getRenderLayer(C_BlockLegacy* a1);
@@ -126,7 +135,9 @@ private:
 	std::unique_ptr<FuncHook> ClientInstanceScreenModel_sendChatMessageHook;
 	std::unique_ptr<FuncHook> UIScene_setupAndRenderHook;
 	std::unique_ptr<FuncHook> UIScene_renderHook;
+	std::unique_ptr<FuncHook> playerCallBack_Hook;
 	std::unique_ptr<FuncHook> RenderTextHook;
+	std::unique_ptr<FuncHook> Actor_baseTickHook;
 	std::unique_ptr<FuncHook> Dimension_getFogColorHook;
 	std::unique_ptr<FuncHook> Dimension_getTimeOfDayHook;
 	std::unique_ptr<FuncHook> Dimension_getSunIntensityHook;

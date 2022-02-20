@@ -443,6 +443,8 @@ public:
 
 	static void ApplySystemTime(std::stringstream* ss);
 
+	static uintptr_t getBase();
+
 	static std::string sanitize(std::string text);
 
 	static std::wstring stringToWstring(std::string txt);

@@ -119,7 +119,7 @@ public:
 	void onSaveConfig(void* conf);
 	void onTick(C_GameMode* gameMode);
 	void onAttack(C_Entity* attackedEnt);
-
+	void onWorldTick(C_GameMode* gameMode);
 	void onKeyUpdate(int key, bool isDown);
 	void onPreRender(C_MinecraftUIRenderContext* renderCtx);
 	void onPostRender(C_MinecraftUIRenderContext* renderCtx);

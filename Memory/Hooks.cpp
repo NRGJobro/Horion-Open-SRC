@@ -57,19 +57,27 @@ void Hooks::Init() {
 			if (localPlayerVtable == 0x0 || sigOffset == 0x0)
 				logF("C_LocalPlayer signature not working!!!");
 			else {
-				g_Hooks.Actor_startSwimmingHook = std::make_unique<FuncHook>(localPlayerVtable[196], Hooks::Actor_startSwimming);
+				g_Hooks.Actor_startSwimmingHook = std::make_unique<FuncHook>(localPlayerVtable[201], Hooks::Actor_startSwimming);
 
-				g_Hooks.Actor_ascendLadderHook = std::make_unique<FuncHook>(localPlayerVtable[351], Hooks::Actor_ascendLadder);
+				g_Hooks.Actor_ascendLadderHook = std::make_unique<FuncHook>(localPlayerVtable[339], Hooks::Actor_ascendLadder);
+				
+				//g_Hooks.Actor_rotationHook = std::make_unique<FuncHook>(localPlayerVtable[27], Hooks::Actor_rotation);
 
-				g_Hooks.Actor_lerpMotionHook = std::make_unique<FuncHook>(localPlayerVtable[40], Hooks::Actor_lerpMotion);
+				g_Hooks.Actor_swingHook = std::make_unique<FuncHook>(localPlayerVtable[219], Hooks::Actor_swing);
 
-				g_Hooks.Mob__isImmobileHook = std::make_unique<FuncHook>(localPlayerVtable[88], Hooks::Mob__isImmobile);
+				g_Hooks.JumpPowerHook = std::make_unique<FuncHook>(localPlayerVtable[345], Hooks::JumpPower); //jump from ground with movement proxy
 
-				g_Hooks.Actor_isInWaterHook = std::make_unique<FuncHook>(localPlayerVtable[67], Hooks::Actor_isInWater);
+				//g_Hooks.setPosHook = std::make_unique<FuncHook>(localPlayerVtable[19], Hooks::setPos);
 
-				g_Hooks.Actor_swingHook = std::make_unique<FuncHook>(localPlayerVtable[214], Hooks::Actor_swing);
+				g_Hooks.Actor_baseTickHook = std::make_unique<FuncHook>(localPlayerVtable[49], Hooks::Actor_baseTick);
 
-				g_Hooks.JumpPowerHook = std::make_unique<FuncHook>(localPlayerVtable[357], Hooks::JumpPower);
+				g_Hooks.Mob__isImmobileHook = std::make_unique<FuncHook>(localPlayerVtable[91], Hooks::Mob__isImmobile);
+
+				g_Hooks.Actor_isInWaterHook = std::make_unique<FuncHook>(localPlayerVtable[71], Hooks::Actor_isInWater);
+
+				g_Hooks.Player_tickWorldHook = std::make_unique<FuncHook>(localPlayerVtable[364], Hooks::Player_tickWorld);
+
+				//g_Hooks.Actor__isInvisibleHook = std::make_unique<FuncHook>(localPlayerVtable[59], Hooks::Actor__isInvisible);
 			}
 		}
 
@@ -164,7 +172,10 @@ void Hooks::Init() {
 
 		void* tick_entityList = reinterpret_cast<void*>(FindSignature("48 89 ?? ?? ?? 57 48 83 EC ?? 48 8B ?? E8 ?? ?? ?? ?? ?? ?? ?? ?? ?? ?? 48 8B D8 ?? ?? ?? ?? ?? ?? 48 99"));
 		g_Hooks.MultiLevelPlayer_tickHook = std::make_unique<FuncHook>(tick_entityList, Hooks::MultiLevelPlayer_tick);
-		
+
+		void* playerCallBackHook = reinterpret_cast<void*>(FindSignature("F3 0F ?? ?? ?? ?? 00 00 ?? 0F ?? 00 F3 0F ?? ?? F3 0F ?? ?? 04"));
+		g_Hooks.playerCallBack_Hook = std::make_unique<FuncHook>(playerCallBackHook, Hooks::playerCallBack);
+
 		void* keyMouseFunc = reinterpret_cast<void*>(FindSignature("48 89 5C 24 ? 55 56 57 41 54 41 55 41 56 41 57 48 8B EC 48 81 EC ? ? ? ? 0F 29 74 24 ? 0F 29 7C 24 ? 48 8B 05 ? ? ? ? 48 33 C4 48 89 45 ? 49 8B F0"));
 		g_Hooks.HIDController_keyMouseHook = std::make_unique<FuncHook>(keyMouseFunc, Hooks::HIDController_keyMouse);
 
@@ -264,15 +275,40 @@ void Hooks::Enable() {
 	MH_EnableHook(MH_ALL_HOOKS);
 }
 
+bool Hooks::playerCallBack(C_Player* lp, __int64 cock, __int64 penis) {
+	static auto oTick = g_Hooks.playerCallBack_Hook->GetFastcall<bool, C_Player*, __int64, __int64>();
+	//if (lp == g_Data.getLocalPlayer())
+		//moduleMgr->onPlayerTick(lp);
+		if (g_Data.getLocalPlayer() != nullptr && lp == g_Data.getLocalPlayer()) {
+			if (!g_Data.getLocalPlayer() || !g_Data.getLocalPlayer()->pointingStruct || !*(&g_Data.getLocalPlayer()->region + 1))
+				g_Hooks.entityList.clear();
+
+			std::vector<EntityListPointerHolder> validEntities;
+			for (const auto& ent : g_Hooks.entityList) {
+				auto entity = ent.ent;
+				MEMORY_BASIC_INFORMATION info;
+				VirtualQuery(ent.ent, &info, sizeof(MEMORY_BASIC_INFORMATION));
+				if (info.State & MEM_FREE) continue;
+				if (info.State & MEM_RESERVE) continue;
+
+				if (ent.ent != nullptr && entity->isAlive() && *(__int64*)ent.ent > 0x6FF000000000 && *(__int64*)ent.ent < 0x800000000000 && *((int64_t*)ent.ent + 1) < 0x6FF000000000 && *(__int64*)ent.ent <= Utils::getBase() + 0x10000000)
+					validEntities.push_back(ent);
+			}
+			g_Hooks.entityList.clear();
+			g_Hooks.entityList = validEntities;
+		}
+	return oTick(lp, cock, penis);
+}
+
 void* Hooks::Player_tickWorld(C_Player* _this, __int64 unk) {
 	static auto oTick = g_Hooks.Player_tickWorldHook->GetFastcall<void*, C_Player*, __int64>();
 	auto o = oTick(_this, unk);
 
 	if (_this == g_Data.getLocalPlayer()) {
 		// TODO: refactor all modules to not use GameMode
-		C_GameMode* gm = *reinterpret_cast<C_GameMode**>(reinterpret_cast<__int64>(_this) + 4840);
+		C_GameMode* gm = *reinterpret_cast<C_GameMode**>(reinterpret_cast<__int64>(_this) + 0x1238);
 		GameData::updateGameData(gm);
-		moduleMgr->onTick(gm);
+		moduleMgr->onWorldTick(gm);
 	}
 	return o;
 }
@@ -299,6 +335,36 @@ void Hooks::ClientInstanceScreenModel_sendChatMessage(void* _this, TextHolder* t
 		}
 	}
 	oSendMessage(_this, text);
+}
+
+void Hooks::Actor_baseTick(C_Entity* ent) {
+	static auto oFunc = g_Hooks.Actor_baseTickHook->GetFastcall<void, C_Entity*>();
+	C_LocalPlayer* player = g_Data.getLocalPlayer();
+	if (!player || !player->getPointingStruct()) return oFunc(ent);
+
+	static int tickCountThen = 0;
+	int tickCountNow = *(int*)((__int64)player->getPointingStruct() + 0x690);
+
+	if (tickCountNow != tickCountThen) {
+		g_Hooks.entityList.clear();
+		tickCountThen = tickCountNow;
+	}
+	if (ent->isClientSide()) {
+		EntityListPointerHolder e;
+		e.addedTick = tickCountNow;
+		e.ent = ent;
+
+		bool found = false;
+		for (const auto& entity : g_Hooks.entityList)
+			if (entity.ent == ent && entity.addedTick == tickCountNow) {
+				found = true;
+				break;
+			}
+
+		if (!found)
+			g_Hooks.entityList.push_back(e);
+	}
+	return oFunc(ent);
 }
 
 __int64 Hooks::UIScene_setupAndRender(C_UIScene* uiscene, __int64 screencontext) {
@@ -335,48 +401,24 @@ __int64 Hooks::RenderText(__int64 a1, C_MinecraftUIRenderContext* renderCtx) {
 
 	DrawUtils::setCtx(renderCtx, dat);
 
-	/*
-	{
-		static bool wasConnectedBefore = false;
-		static LARGE_INTEGER start;
-		static LARGE_INTEGER frequency;
-		if (frequency.QuadPart == 0) {
-			QueryPerformanceFrequency(&frequency);
-			QueryPerformanceCounter(&start);
+	if (g_Data.getLocalPlayer() != nullptr) {
+		if (!g_Data.getLocalPlayer() || !g_Data.getLocalPlayer()->pointingStruct || !*(&g_Data.getLocalPlayer()->region + 1))
+			g_Hooks.entityList.clear();
+
+		std::vector<EntityListPointerHolder> validEntities;
+		for (const auto& ent : g_Hooks.entityList) {
+			auto entity = ent.ent;
+			MEMORY_BASIC_INFORMATION info;
+			VirtualQuery(ent.ent, &info, sizeof(MEMORY_BASIC_INFORMATION));
+			if (info.State & MEM_FREE) continue;
+			if (info.State & MEM_RESERVE) continue;
+
+			if (ent.ent != nullptr && entity->isAlive() && *(__int64*)ent.ent > 0x6FF000000000 && *(__int64*)ent.ent < 0x800000000000 && *((int64_t*)ent.ent + 1) < 0x6FF000000000 && *(__int64*)ent.ent <= Utils::getBase() + 0x10000000)
+				validEntities.push_back(ent);
 		}
-		static bool hasSentWarning = false;
-		if (!g_Data.isInjectorConnectionActive() && !hasSentWarning) {
-			__int64 retval = oText(a1, renderCtx);
-
-			LARGE_INTEGER end, elapsed;
-			QueryPerformanceCounter(&end);
-			elapsed.QuadPart = end.QuadPart - start.QuadPart;
-			float elapsedFlot = (float)elapsed.QuadPart / frequency.QuadPart;
-			if (elapsedFlot > 1.5f && !hasSentWarning) {
-				hasSentWarning = true;
-				auto box = g_Data.addInfoBox("Warning", "Your injector doesn't seem to connect to Horion correctly.\nYou can ignore this, but some features may not work as expected.");
-				box->closeTimer = 5;
-				vec2_t windowSize = dat->windowSize;
-
-				DrawUtils::fillRectangle(vec4_t(0, 0, windowSize.x, windowSize.y), MC_Color(0.2f, 0.2f, 0.2f), 0.8f);
-
-				std::string text = "Download the new injector at http://horionbeta.club/";
-				if (!wasConnectedBefore)
-					DrawUtils::drawText(vec2_t(windowSize.x / 2 - DrawUtils::getTextWidth(&text, 1.5f) / 2, windowSize.y * 0.4f), &text, MC_Color(), 1.5f);
-				text = "Remember to keep the injector open while playing";
-				DrawUtils::drawText(vec2_t(windowSize.x / 2 - DrawUtils::getTextWidth(&text, wasConnectedBefore ? 1.5f : 0.7f) / 2, windowSize.y * (wasConnectedBefore ? 0.5f : 0.7f)), &text, MC_Color(), wasConnectedBefore ? 1.5f : 0.7f);
-				text = "Uninject by holding down CTRL + L";
-				DrawUtils::drawText(vec2_t(windowSize.x / 2 - DrawUtils::getTextWidth(&text, 0.7f) / 2, windowSize.y * 0.8f), &text, MC_Color(), 0.7f);
-
-				DrawUtils::flush();
-			}
-
-			if (!hasSentWarning)  // Wait for injector, it might connect in time
-				return retval;
-		} else
-			wasConnectedBefore = true;
+		g_Hooks.entityList.clear();
+		g_Hooks.entityList = validEntities;
 	}
-	*/
 
 	if (GameData::shouldHide() || !g_Hooks.shouldRender || !moduleMgr->isInitialized())
 		return oText(a1, renderCtx);
@@ -1109,6 +1151,8 @@ float Hooks::LevelRendererPlayer_getFov(__int64 _this, float a2, bool a3) {
 
 void Hooks::MultiLevelPlayer_tick(C_EntityList* _this) {
 	static auto oTick = g_Hooks.MultiLevelPlayer_tickHook->GetFastcall<void, C_EntityList*>();
+	C_GameMode* gm = g_Data.getCGameMode();
+	if (gm != nullptr) moduleMgr->onTick(gm);
 	oTick(_this);
 	GameData::EntityList_tick(_this);
 }
