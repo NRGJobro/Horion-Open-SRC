@@ -415,7 +415,7 @@ __int64 Hooks::RenderText(__int64 a1, C_MinecraftUIRenderContext* renderCtx) {
 		g_Hooks.entityList = validEntities;
 	}
 
-	if (GameData::shouldHide() || !g_Hooks.shouldRender || !moduleMgr->isInitialized())
+if (GameData::shouldHide() || !moduleMgr->isInitialized())
 		return oText(a1, renderCtx);
 
 	static auto hudModule = moduleMgr->getModule<HudModule>();
