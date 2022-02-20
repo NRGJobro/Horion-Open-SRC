@@ -20,7 +20,7 @@ void listEnts(C_Entity* ent, bool isValid) {
 }
 
 void showAimedBlockInfo() {
-	PointingStruct* pointingStruct = g_Data.getClientInstance()->getPointerStruct();
+	PointingStruct* pointingStruct = g_Data.getLocalPlayer()->pointingStruct;
 	C_Block* block = g_Data.getLocalPlayer()->region->getBlock(pointingStruct->block);
 	auto id = block->toLegacy()->blockId;
 	char* name = block->toLegacy()->name.getText();

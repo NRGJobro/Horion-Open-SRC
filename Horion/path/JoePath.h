@@ -18,10 +18,10 @@ public:
 		return segments;
 	}
 	size_t getNumSegments(){
-		return this->segments.size();
+		return segments.size();
 	}
 	auto getSegment(size_t seg){
-		return this->segments[seg];
+		return segments[seg];
 	}
 
 	bool isInitialized1() const;

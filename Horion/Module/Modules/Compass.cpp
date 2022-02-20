@@ -52,7 +52,7 @@ void Compass::onPreRender(C_MinecraftUIRenderContext* renderCtx) {
 		const float xOff = sCenter + off + degSubOffset;
 		constexpr float fadeOutPos = 0.25f;
 		constexpr float centerCutoff = 5, centerFadeout = 10;
-		float majorOpacity = this->opacity;  // big compass text
+		float majorOpacity = opacity;  // big compass text
 		float minorOpacity = majorOpacity;   // minor features, degree numbers
 
 		// Fading logic

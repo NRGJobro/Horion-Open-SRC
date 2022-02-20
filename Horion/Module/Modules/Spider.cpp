@@ -2,7 +2,7 @@
 
 Spider::Spider() : IModule(0, Category::MOVEMENT, "Climb walls") {
 	registerFloatSetting("Speed", &speed, 0.6f, 0.1f, 1.f);
-	registerBoolSetting("Avoid Overshooting", &this->dontOvershoot, true);
+	registerBoolSetting("Avoid Overshooting", &dontOvershoot, true);
 }
 
 Spider::~Spider() {
@@ -83,7 +83,7 @@ void Spider::onMove(C_MoveInputHandler* input) {
 	
 	bool lowerObstructed = isObstructed(0, &lowerObsVec);
 	float targetSpeed = speed;
-	if (this->dontOvershoot && (lowerObstructed || upperObstructed)) {
+	if (dontOvershoot && (lowerObstructed || upperObstructed)) {
 		
 		// simulate because im too lazy to do the math
 		const auto distanceError = [](float yVel, float distance) {
@@ -128,14 +128,14 @@ void Spider::onMove(C_MoveInputHandler* input) {
 
 		auto [curDist, curYVel, curT] = distanceError(player->velocity.y, targetDist);
 		
-		//this->clientMessageF("current trajectory error=%.3f t=%i vel=%.3f total=%.2f", curDist, curT, curYVel, targetDist);
+		//clientMessageF("current trajectory error=%.3f t=%i vel=%.3f total=%.2f", curDist, curT, curYVel, targetDist);
 		if (curDist <= 0.01f) 
 			return;  // We will already get on top of the block
 
 		if (player->velocity.y < speed) {
 			// do another simulation to determine whether we would overshoot on the next iteration
 			auto secondTrajectory = distanceError(speed, targetDist);
-			//this->clientMessageF("secondTrajectory: error=%.3f t=%i vel=%.2f", std::get<0>(secondTrajectory), std::get<2>(secondTrajectory), std::get<1>(secondTrajectory));
+			//clientMessageF("secondTrajectory: error=%.3f t=%i vel=%.2f", std::get<0>(secondTrajectory), std::get<2>(secondTrajectory), std::get<1>(secondTrajectory));
 			if (std::get<0>(secondTrajectory) <= 0) {// we are overshooting if we give the player our target speed
 				
 				// use secant method to approximate perfect start speed
@@ -156,7 +156,7 @@ void Spider::onMove(C_MoveInputHandler* input) {
 					error2 = error;
 					error = std::get<0>(distanceError(newSpeed, targetDist));
 				}
-				//this->clientMessageF("Secant method finished with error=%.3f speed=%.3f at t=%i", error, startSpeed, i);
+				//clientMessageF("Secant method finished with error=%.3f speed=%.3f at t=%i", error, startSpeed, i);
 				targetSpeed = startSpeed;
 			}
 		}

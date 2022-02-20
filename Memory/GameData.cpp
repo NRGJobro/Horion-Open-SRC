@@ -165,7 +165,7 @@ void GameData::setRakNetInstance(C_RakNetInstance* raknet) {
 
 void GameData::forEachEntity(std::function<void(C_Entity*, bool)> callback) {
 	/*//Player EntityList
-	C_EntityList* entityList = (C_EntityList*)g_Data.getClientInstance()->getPointerStruct();
+	C_EntityList* entityList = (C_EntityList*)g_Data.getLocalPlayer()->pointingStruct;
 	uintptr_t start = ((uintptr_t)entityList + 0x70);
 	uintptr_t stop = ((uintptr_t)entityList + 0x78);
 	start = *(uintptr_t*)start;
@@ -192,7 +192,7 @@ void GameData::forEachEntity(std::function<void(C_Entity*, bool)> callback) {
 		}
 	}*/
 
-	if (this->localPlayer && this->localPlayer->pointingStruct) {
+	if (localPlayer && localPlayer->pointingStruct) {
 		for (const auto& ent : g_Hooks.entityList)
 			if (ent.ent != nullptr) callback(ent.ent, false);
 	}
@@ -237,12 +237,12 @@ void GameData::sendPacketToInjector(HorionDataPacket horionDataPack) {
 	horionToInjectorQueue.push(horionDataPack);
 }
 void GameData::callInjectorResponseCallback(int id, std::shared_ptr<HorionDataPacket> packet) {
-	if (this->injectorToHorionResponseCallbacks.find(id) == this->injectorToHorionResponseCallbacks.end()) {
+	if (injectorToHorionResponseCallbacks.find(id) == injectorToHorionResponseCallbacks.end()) {
 		logF("No response callback for request with id=%i!", id);
 		return;
 	}
-	this->injectorToHorionResponseCallbacks[id](packet);
-	this->injectorToHorionResponseCallbacks.erase(id);
+	injectorToHorionResponseCallbacks[id](packet);
+	injectorToHorionResponseCallbacks.erase(id);
 }
 void GameData::log(const char* fmt, ...) {
 	auto lock = std::lock_guard<std::mutex>(g_Data.textPrintLock);

@@ -2,7 +2,7 @@
 #include "../../Menu/ClickGui.h"
 
 ClickGuiMod::ClickGuiMod() : IModule(VK_INSERT, Category::VISUAL, "The clickgui - toggle everything by just clicking on it!") {
-	registerBoolSetting("Show Tooltips", &this->showTooltips, this->showTooltips);
+	registerBoolSetting("Show Tooltips", &showTooltips, showTooltips);
 }
 
 ClickGuiMod::~ClickGuiMod() {

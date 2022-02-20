@@ -23,13 +23,13 @@ bool SlimMem::HasProcessHandle() const { return IsProcessHandleValid(m_hProc); }
 #pragma region Constructors/Destructors
 	SlimMem::SlimMem(const SlimMem & copy)
 	{
-		this->m_dwPID = 0;
+		m_dwPID = 0;
 		DuplicateHandle(GetCurrentProcess(), copy.m_hProc, GetCurrentProcess(), &m_hProc, NULL, FALSE, DUPLICATE_SAME_ACCESS);
 	}
 
 	SlimMem::~SlimMem()
 	{
-		this->Close();
+		Close();
 	}
 #pragma endregion
 
@@ -46,25 +46,25 @@ bool SlimMem::HasProcessHandle() const { return IsProcessHandleValid(m_hProc); }
 
 	bool SlimMem::Open(const wchar_t * lpwstrProcessName, ProcessAccess flags)
 	{
-		return this->Open(lpwstrProcessName, (DWORD)flags);
+		return Open(lpwstrProcessName, (DWORD)flags);
 	}
 
 	bool SlimMem::Open(const wchar_t * lpwstrProcessName, DWORD flags)
 	{
 		DWORD pid;
 		if (GetPID(lpwstrProcessName, &pid))
-			return this->Open(pid, flags);
+			return Open(pid, flags);
 		return false;
 	}
 
 	bool SlimMem::Open(DWORD dwPID, ProcessAccess flags)
 	{
-		return this->Open(dwPID, (DWORD)flags);
+		return Open(dwPID, (DWORD)flags);
 	}
 
 	bool SlimMem::Open(DWORD dwPID, DWORD dwFlags)
 	{
-		if (this->HasProcessHandle()) {
+		if (HasProcessHandle()) {
 
 			return false;
 		}
@@ -72,11 +72,11 @@ bool SlimMem::HasProcessHandle() const { return IsProcessHandleValid(m_hProc); }
 
 		m_hProc = OpenProcess(dwFlags | PROCESS_DUP_HANDLE, false, dwPID);
 		m_dwPID = dwPID;
-		if (this->HasProcessHandle())
-			this->ParseModules();
+		if (HasProcessHandle())
+			ParseModules();
 
 
-		return this->HasProcessHandle();
+		return HasProcessHandle();
 	}
 #pragma endregion
 
@@ -116,7 +116,7 @@ bool SlimMem::HasProcessHandle() const { return IsProcessHandleValid(m_hProc); }
 	*/
 	bool SlimMem::ParseModules()
 	{
-		if (!this->HasProcessHandle())
+		if (!HasProcessHandle())
 			return false;
 
 		m_mModules.clear();
@@ -171,7 +171,7 @@ bool SlimMem::HasProcessHandle() const { return IsProcessHandleValid(m_hProc); }
 
 		SIZE_T bytesRead;
 
-		if (!ReadProcessMemory(this->m_hProc, (LPCVOID)module->ptrBase, dump, module->dwSize, &bytesRead) || bytesRead != module->dwSize)
+		if (!ReadProcessMemory(m_hProc, (LPCVOID)module->ptrBase, dump, module->dwSize, &bytesRead) || bytesRead != module->dwSize)
 			return SigScanResult(false);
 
 		bool found = false;

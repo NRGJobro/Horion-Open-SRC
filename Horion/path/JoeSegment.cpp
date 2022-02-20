@@ -6,7 +6,7 @@ JoeSegment::JoeSegment(JoeSegmentType type, vec3_ti& start, vec3_ti& stop, float
 
 }
 void JoeSegment::draw() {
-	//for(auto p : this->validPositions){
+	//for(auto p : validPositions){
 	//	DrawUtils::drawLine3d(p.toFloatVector(), p.add(1, 1, 1).toFloatVector());
 	//}
 
@@ -52,7 +52,7 @@ void JoeSegment::setAllowSprint(bool allowSprint) {
 	JoeSegment::allowSprint = allowSprint;
 }
 bool JoeSegment::isInValidPosition(const vec3_ti& pos) const {
-	for(const auto& validPos : this->validPositions){
+	for(const auto& validPos : validPositions){
 		if(pos == validPos)
 			return true;
 	}
@@ -67,7 +67,7 @@ void JoeSegment::init() {
 	auto player = g_Data.getLocalPlayer();
 	auto reg = player->region;
 
-	switch(this->segmentType){
+	switch(segmentType){
 		case JoeSegmentType::WALK: {
 			if(start.y == end.y){
 				int isDiagonal = 0;
@@ -146,5 +146,5 @@ void JoeSegment::init() {
 
 		} break;
 	}
-	this->setValidPositions(positions);
+	setValidPositions(positions);
 }

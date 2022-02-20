@@ -1,8 +1,8 @@
 #include "Teleport.h"
 
 Teleport::Teleport() : IModule(0, Category::MISC, "Click a block to teleport to it") {
-	registerBoolSetting("Only Hand", &this->onlyHand, this->onlyHand);
-	registerBoolSetting("Push", &this->bypass, this->bypass);
+	registerBoolSetting("Only Hand", &onlyHand, onlyHand);
+	registerBoolSetting("Push", &bypass, bypass);
 }
 
 Teleport::~Teleport() {
@@ -22,7 +22,7 @@ void Teleport::onTick(C_GameMode* gm) {
 	if (GameData::isRightClickDown() && !hasClicked) {
 		hasClicked = true;
 
-		vec3_ti block = g_Data.getClientInstance()->getPointerStruct()->block;
+		vec3_ti block = g_Data.getLocalPlayer()->pointingStruct->block;
 		if (block == vec3_ti(0, 0, 0)) return;
 		vec3_t pos = block.toFloatVector();
 		pos.x += 0.5f;

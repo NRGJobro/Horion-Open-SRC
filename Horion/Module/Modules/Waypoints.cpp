@@ -94,7 +94,7 @@ void Waypoints::onPreRender(C_MinecraftUIRenderContext* renderCtx) {
 			textPos.y -= textHeight;
 			textPos.x -= textWidth / 2.f;
 
-			if (this->showCoordinates) {
+			if (showCoordinates) {
 				std::ostringstream out;
 				out.precision(1);
 				out << "(" << std::fixed << pos.x << ", " << pos.y << ", " << pos.z << ")";
@@ -107,7 +107,7 @@ void Waypoints::onPreRender(C_MinecraftUIRenderContext* renderCtx) {
 			rectPos.z = textPos.x + textWidth + 1.f * size;
 			rectPos.w = textPos.y + textHeight + 2.f * size;
 
-			if (this->showCoordinates) 
+			if (showCoordinates) 
 				rectPos.w += textHeight * 0.75f + 1.f * size;
 
 			MC_Color color(0, 0, 0);
@@ -119,7 +119,7 @@ void Waypoints::onPreRender(C_MinecraftUIRenderContext* renderCtx) {
 
 			DrawUtils::fillRectangle(rectPos, color, alpha * 0.5f);
 			DrawUtils::drawText(textPos, &txt, MC_Color(255, 255, 255), size, alpha);
-			if (this->showCoordinates) {
+			if (showCoordinates) {
 				textPos.y += textHeight + 1.f * size;
 				
 				DrawUtils::drawText(textPos, &coordText, MC_Color(255, 255, 255), size * 0.75f, alpha);

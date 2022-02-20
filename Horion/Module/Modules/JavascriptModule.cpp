@@ -4,19 +4,19 @@ JavascriptModule::JavascriptModule() : IModule(0, Category::CUSTOM, "") {
 }
 
 JavascriptModule::~JavascriptModule() {
-	logF("deleted java module %s", this->getModuleName());
+	logF("deleted java module %s", getModuleName());
 }
 
 void JavascriptModule::setBackingScript(std::shared_ptr<JsScriptModule> mod) {
-	this->backingScriptModule = mod;
+	backingScriptModule = mod;
 }
 
 std::weak_ptr<JsScriptModule> JavascriptModule::getBackingScriptModule() {
-	return this->backingScriptModule;
+	return backingScriptModule;
 }
 
 const char* JavascriptModule::getModuleName() {
-	auto p = this->backingScriptModule.lock();
+	auto p = backingScriptModule.lock();
 	if (p)
 		return p->getModuleNameCh();
 	else
@@ -24,7 +24,7 @@ const char* JavascriptModule::getModuleName() {
 }
 
 void JavascriptModule::onTick(C_GameMode* gm) {
-	auto p = this->backingScriptModule.lock();
+	auto p = backingScriptModule.lock();
 	if (!p)
 		return;
 
@@ -36,7 +36,7 @@ void JavascriptModule::onTick(C_GameMode* gm) {
 	p->getScriptInstance()->callCallbackImmediate(callback);
 }
 void JavascriptModule::onEnable() {
-	auto p = this->backingScriptModule.lock();
+	auto p = backingScriptModule.lock();
 	if (!p)
 		return;
 
@@ -48,7 +48,7 @@ void JavascriptModule::onEnable() {
 	p->getScriptInstance()->callCallback(callback);
 }
 void JavascriptModule::onDisable() {
-	auto p = this->backingScriptModule.lock();
+	auto p = backingScriptModule.lock();
 	if (!p)
 		return;
 
@@ -60,7 +60,7 @@ void JavascriptModule::onDisable() {
 	p->getScriptInstance()->callCallback(callback);
 }
 void JavascriptModule::onLevelRender() {
-	auto p = this->backingScriptModule.lock();
+	auto p = backingScriptModule.lock();
 	if (!p)
 		return;
 
@@ -72,7 +72,7 @@ void JavascriptModule::onLevelRender() {
 	p->getScriptInstance()->callCallbackImmediate(callback);
 }
 void JavascriptModule::onPreRender(C_MinecraftUIRenderContext* renderCtx) {
-	auto p = this->backingScriptModule.lock();
+	auto p = backingScriptModule.lock();
 	if (!p)
 		return;
 

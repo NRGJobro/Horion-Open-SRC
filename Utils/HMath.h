@@ -81,8 +81,8 @@ struct vec2_t {
 	float dot(const vec2_t &o) const { return x * o.x + y * o.y; }
 
 	vec2_t normAngles() {
-		float x = this->x;
-		float y = this->y;
+		float x = x;
+		float y = y;
 		while (x > 90.f)
 			x -= 180.0f;
 		while (x < -90.f)
@@ -538,8 +538,8 @@ struct AABB {
 	}
 	AABB(vec3_t lower, float width, float height, float eyeHeight) {
 		lower = lower.sub(vec3_t(width, eyeHeight * 2, width).div(2));
-		this->lower = lower;
-		this->upper = {lower.x + width, lower.y + height, lower.z + width};
+		lower = lower;
+		upper = {lower.x + width, lower.y + height, lower.z + width};
 	}
 
 	inline bool operator==(const AABB &rhs) const {

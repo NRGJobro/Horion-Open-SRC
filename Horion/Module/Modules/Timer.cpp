@@ -1,7 +1,7 @@
 #include "Timer.h"
 
 Timer::Timer() : IModule(0, Category::MISC, "Increase the ticks per second") {
-	this->registerIntSetting("ticks per second", &this->timer, this->timer, 0, 500);
+	registerIntSetting("ticks per second", &timer, timer, 0, 500);
 }
 
 Timer::~Timer() {
@@ -12,7 +12,7 @@ const char* Timer::getModuleName() {
 }
 
 void Timer::onTick(C_GameMode* gm) {
-	*g_Data.getClientInstance()->minecraft->timer = static_cast<float>(this->timer);
+	*g_Data.getClientInstance()->minecraft->timer = static_cast<float>(timer);
 }
 
 void Timer::onDisable() {

@@ -7,25 +7,25 @@ JoeMovementController::JoeMovementController(std::shared_ptr<JoePath> path) : cu
 
 void JoeMovementController::step(C_LocalPlayer *player, C_MoveInputHandler *movementHandler) {
 	movementHandler->clearMovementState();
-	if(this->stateInfo.currentPathSegment < 0 || this->stateInfo.currentPathSegment >= this->currentPath->getNumSegments()){
-		this->overrideViewAngles = false;
+	if(stateInfo.currentPathSegment < 0 || stateInfo.currentPathSegment >= currentPath->getNumSegments()){
+		overrideViewAngles = false;
 		return;
 	}
 
-	if(!this->currentPath->isInitialized1()){
-		this->currentPath->initPathSegments();
+	if(!currentPath->isInitialized1()){
+		currentPath->initPathSegments();
 	}
 
 	auto pPos = player->eyePos0;
 	pPos.y -= 1.62f;
 	vec3_ti playerNode((int)floorf(pPos.x), (int)roundf(pPos.y), (int)floorf(pPos.z));
 
-	auto curSeg = this->currentPath->getSegment(this->stateInfo.currentPathSegment);
+	auto curSeg = currentPath->getSegment(stateInfo.currentPathSegment);
 
 	if(!curSeg.isInValidPosition(playerNode)){
-		logF("invalid position %i %i %i, %i %i %i", curSeg.getSegmentType(), this->stateInfo.currentPathSegment, this->stateInfo.currentPathSegment > 0 ? this->currentPath->getSegment(this->stateInfo.currentPathSegment - 1).getSegmentType() : 0, playerNode.x, playerNode.y, playerNode.z);
-		this->stateInfo.currentPathSegment = (int)this->currentPath->getNumSegments();
-		this->stateInfo.recoverToStartPos = false;
+		logF("invalid position %i %i %i, %i %i %i", curSeg.getSegmentType(), stateInfo.currentPathSegment, stateInfo.currentPathSegment > 0 ? currentPath->getSegment(stateInfo.currentPathSegment - 1).getSegmentType() : 0, playerNode.x, playerNode.y, playerNode.z);
+		stateInfo.currentPathSegment = (int)currentPath->getNumSegments();
+		stateInfo.recoverToStartPos = false;
 		return;
 	}
 
@@ -36,9 +36,9 @@ void JoeMovementController::step(C_LocalPlayer *player, C_MoveInputHandler *move
 
 	auto nextSegEnd = vec3_t();
 
-	bool hasNextSeg = this->stateInfo.currentPathSegment < this->currentPath->getNumSegments() - 1;
+	bool hasNextSeg = stateInfo.currentPathSegment < currentPath->getNumSegments() - 1;
 	if(hasNextSeg)
-		nextSegEnd = this->currentPath->getSegment(this->stateInfo.currentPathSegment + 1).getEnd().toVec3t().add(0.5f, 0, 0.5f);
+		nextSegEnd = currentPath->getSegment(stateInfo.currentPathSegment + 1).getEnd().toVec3t().add(0.5f, 0, 0.5f);
 
 	auto walkTarget = end;
 	bool enableNextSegmentSmoothing = true;
@@ -50,7 +50,7 @@ void JoeMovementController::step(C_LocalPlayer *player, C_MoveInputHandler *move
 	case JUMP: {
 		if(player->onGround){
 			if(fabsf(pPos.y - end.y) < 0.1f && pPos.dist(end) < 0.5f) {  // Check for end condition
-				this->stateInfo.nextSegment();
+				stateInfo.nextSegment();
 				break;
 			}
 			auto tangent = end.sub(start);
@@ -87,7 +87,7 @@ void JoeMovementController::step(C_LocalPlayer *player, C_MoveInputHandler *move
 		if(player->onGround || inWater){
 			dComp = 1;
 			if(fabsf(pPos.y - end.y) < (inWater ? 0.2f : 0.1f) && pPos.sub(end).magnitudexz() < 0.5f && player->velocity.y > -0.1f){// Check for end condition
-				this->stateInfo.nextSegment();
+				stateInfo.nextSegment();
 				break;
 			}else if(inWater){
 				if(pPos.y < end.y || player->velocity.y < 0.12f)
@@ -111,7 +111,7 @@ void JoeMovementController::step(C_LocalPlayer *player, C_MoveInputHandler *move
 			player->setSprinting(false);
 		if(player->onGround){
 			if(fabsf(pPos.y - end.y) < 0.1f && pPos.dist(end) < 0.5f){// Check for end condition
-				this->stateInfo.nextSegment();
+				stateInfo.nextSegment();
 				break;
 			}
 			if(player->getTicksUsingItem() > 0 && fabsf(pPos.y - start.y) < 0.1f && pPos.dist(end) > 0.85f){
@@ -160,7 +160,7 @@ void JoeMovementController::step(C_LocalPlayer *player, C_MoveInputHandler *move
 
 			if(isVertical){
 				if(pPos.sub(end).magnitudexz() < 0.3f && fabsf(pPos.y - end.y) < 0.35f){
-					this->stateInfo.nextSegment();
+					stateInfo.nextSegment();
 					break;
 				}
 
@@ -179,7 +179,7 @@ void JoeMovementController::step(C_LocalPlayer *player, C_MoveInputHandler *move
 				auto crossTangent = tangent.cross({0, 1, 0});
 				float sideError = fabsf(pPos.sub(end).dot(crossTangent));
 				if(sideError < 0.2f /*make sure we're not drifting to the side to much*/ && fabsf(pPos.sub(end).dot(tangent)) < 0.4f){
-					this->stateInfo.nextSegment();
+					stateInfo.nextSegment();
 					break;
 				}
 				if(end.y > start.y && sideError > 0.15f && pPos.y - end.y < -0.1f)
@@ -250,7 +250,7 @@ void JoeMovementController::step(C_LocalPlayer *player, C_MoveInputHandler *move
 
 		if(pPos.dist(end) < 0.2f){
 			if(hasNextSeg || player->velocity.magnitudexz() < 0.02f /*slow down for last segment*/){
-				this->stateInfo.nextSegment();
+				stateInfo.nextSegment();
 				break;
 			}
 		}

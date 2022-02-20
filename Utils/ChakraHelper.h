@@ -63,56 +63,56 @@ public:
 
 	std::wstring exceptionToString(JsValueRef ref) {
 		JsValueRef stack;
-		this->getProperty(ref, L"stack", &stack);
-		if (this->isNullOrUndefined(stack))
-			return this->valueToString(ref);
+		getProperty(ref, L"stack", &stack);
+		if (isNullOrUndefined(stack))
+			return valueToString(ref);
 		else
-			return this->valueToString(stack);
+			return valueToString(stack);
 	}
 
 	void throwException(std::wstring error) {
 		JsValueRef errorValue;
 		JsValueRef errorObject;
-		this->JsPointerToString_(error.c_str(), error.length(), &errorValue);
-		this->JsCreateError_(errorValue, &errorObject);
-		this->JsSetException_(errorObject);
+		JsPointerToString_(error.c_str(), error.length(), &errorValue);
+		JsCreateError_(errorValue, &errorObject);
+		JsSetException_(errorObject);
 	}
 
 	void throwTypeException(std::wstring error) {
 		JsValueRef errorValue;
 		JsValueRef errorObject;
-		this->JsPointerToString_(error.c_str(), error.length(), &errorValue);
-		this->JsCreateTypeError_(errorValue, &errorObject);
-		this->JsSetException_(errorObject);
+		JsPointerToString_(error.c_str(), error.length(), &errorValue);
+		JsCreateTypeError_(errorValue, &errorObject);
+		JsSetException_(errorObject);
 	}
 
 	JsValueRef toBoolean(bool boolVal) {
 		JsValueRef ref = JS_INVALID_REFERENCE;
-		this->JsBoolToBoolean_(boolVal, &ref);
+		JsBoolToBoolean_(boolVal, &ref);
 		return ref;
 	}
 
 	JsValueRef toNumber(double doubleVal) {
 		JsValueRef ref = JS_INVALID_REFERENCE;
-		this->JsDoubleToNumber_(doubleVal, &ref);
+		JsDoubleToNumber_(doubleVal, &ref);
 		return ref;
 	}
 
 	JsValueRef trueValue() {
 		JsValueRef ref = JS_INVALID_REFERENCE;
-		this->JsGetTrueValue_(&ref);
+		JsGetTrueValue_(&ref);
 		return ref;
 	}
 
 	JsValueRef falseValue() {
 		JsValueRef ref = JS_INVALID_REFERENCE;
-		this->JsGetFalseValue_(&ref);
+		JsGetFalseValue_(&ref);
 		return ref;
 	}
 
 	JsValueRef nullValue() {
 		JsValueRef ref = JS_INVALID_REFERENCE;
-		this->JsGetNullValue_(&ref);
+		JsGetNullValue_(&ref);
 		return ref;
 	}
 
@@ -121,7 +121,7 @@ public:
 			return std::optional <JsValueRef>();
 
 		JsValueType type = JsUndefined;
-		this->JsGetValueType_(arg, &type);
+		JsGetValueType_(arg, &type);
 
 		if (type != JsFunction)
 			return std::optional<JsValueRef>();
@@ -135,7 +135,7 @@ public:
 
 		const wchar_t* ref = 0;
 		size_t length = 0;
-		auto err = this->JsStringToPointer_(args, &ref, &length); 
+		auto err = JsStringToPointer_(args, &ref, &length); 
 		if (err != JsNoError)
 			return std::optional<std::wstring>();
 		return std::optional<std::wstring>(std::wstring(ref, length));
@@ -146,7 +146,7 @@ public:
 			return std::optional<bool>();
 
 		bool ref = false;
-		auto err = this->JsBooleanToBool_(args[0], &ref);
+		auto err = JsBooleanToBool_(args[0], &ref);
 		if (err != JsNoError)
 			return std::optional<bool>();
 		return ref;
@@ -154,33 +154,33 @@ public:
 
 	JsValueRef defineFunction(JsValueRef object, const wchar_t* callbackName, JsNativeFunction function, void* callbackState = nullptr) {
 		JsPropertyIdRef propertyId;
-		this->JsGetPropertyIdFromName_(callbackName, &propertyId);
+		JsGetPropertyIdFromName_(callbackName, &propertyId);
 
 		JsValueRef functionRef;
-		this->JsCreateFunction_(function, callbackState, &functionRef);
+		JsCreateFunction_(function, callbackState, &functionRef);
 
-		this->JsSetProperty_(object, propertyId, functionRef, true);
+		JsSetProperty_(object, propertyId, functionRef, true);
 
 		return functionRef;
 	}
 
 	void addPropertyToObj(JsValueRef obj, const wchar_t* name, JsValueRef prop) {
 		JsPropertyIdRef propertyId;
-		this->JsGetPropertyIdFromName_(name, &propertyId);
-		this->JsSetProperty_(obj, propertyId, prop, true);
+		JsGetPropertyIdFromName_(name, &propertyId);
+		JsSetProperty_(obj, propertyId, prop, true);
 	}
 
 	bool defineValueProp(JsValueRef object, const wchar_t* name, JsValueRef value, bool changeable) {
 		JsPropertyIdRef namePropertyId;
-		this->JsGetPropertyIdFromName_(name, &namePropertyId);
+		JsGetPropertyIdFromName_(name, &namePropertyId);
 
 		JsValueRef propertyDesc;
-		this->JsCreateObject_(&propertyDesc);
+		JsCreateObject_(&propertyDesc);
 
 		JsValueRef jsTrue;
-		this->JsGetTrueValue_(&jsTrue);
+		JsGetTrueValue_(&jsTrue);
 		JsValueRef jsFalse;
-		this->JsGetFalseValue_(&jsFalse);
+		JsGetFalseValue_(&jsFalse);
 
 		addPropertyToObj(propertyDesc, L"value", value);
 		addPropertyToObj(propertyDesc, L"writable", jsFalse);
@@ -188,27 +188,27 @@ public:
 		addPropertyToObj(propertyDesc, L"configurable", jsFalse);
 
 		bool result;
-		this->JsDefineProperty_(object, namePropertyId, propertyDesc, &result);
+		JsDefineProperty_(object, namePropertyId, propertyDesc, &result);
 		return result;
 	}
 
 	bool defineProp(JsValueRef object, const wchar_t* name, JsNativeFunction getter, JsNativeFunction setter) {
 		JsPropertyIdRef namePropertyId;
-		this->JsGetPropertyIdFromName_(name, &namePropertyId);
+		JsGetPropertyIdFromName_(name, &namePropertyId);
 
 		JsValueRef propertyDesc;
-		this->JsCreateObject_(&propertyDesc);
+		JsCreateObject_(&propertyDesc);
 
 		JsValueRef get = NULL, set = NULL;
 		if (getter != nullptr)
-			this->JsCreateFunction_(getter, 0, &get);
+			JsCreateFunction_(getter, 0, &get);
 		if (setter != nullptr)
-			this->JsCreateFunction_(setter, 0, &set);
+			JsCreateFunction_(setter, 0, &set);
 
 		JsValueRef jsTrue;
-		this->JsGetTrueValue_(&jsTrue);
+		JsGetTrueValue_(&jsTrue);
 		JsValueRef jsFalse;
-		this->JsGetFalseValue_(&jsFalse);
+		JsGetFalseValue_(&jsFalse);
 
 		if (getter != nullptr)
 			addPropertyToObj(propertyDesc, L"get", get);
@@ -218,19 +218,19 @@ public:
 		addPropertyToObj(propertyDesc, L"configurable", jsFalse);
 
 		bool result;
-		this->JsDefineProperty_(object, namePropertyId, propertyDesc, &result);
+		JsDefineProperty_(object, namePropertyId, propertyDesc, &result);
 		return result;
 	}
 
 	void getProperty(JsValueRef obj, const wchar_t* str, JsValueRef* prop) {
 		JsPropertyIdRef namePropertyId;
-		this->JsGetPropertyIdFromName_(str, &namePropertyId);
-		this->JsGetProperty_(obj, namePropertyId, prop);
+		JsGetPropertyIdFromName_(str, &namePropertyId);
+		JsGetProperty_(obj, namePropertyId, prop);
 	}
 
 	bool isNullOrUndefined(JsValueRef ref) {
 		JsValueType type = JsUndefined;
-		this->JsGetValueType_(ref, &type);
+		JsGetValueType_(ref, &type);
 		return type == JsUndefined || type == JsNull;
 	}
 
@@ -254,14 +254,14 @@ public:
 
 	JsValueRef arrayGet(JsValueRef arr, int index) {
 		JsValueRef indexNum, result;
-		this->JsIntToNumber_(index, &indexNum);
-		this->JsGetIndexedProperty_(arr, indexNum, &result);
+		JsIntToNumber_(index, &indexNum);
+		JsGetIndexedProperty_(arr, indexNum, &result);
 		return result;
 	}
 
 	void arraySet(JsValueRef arr, int index, JsValueRef value) {
 		JsValueRef indexNum;
-		this->JsIntToNumber_(index, &indexNum);
+		JsIntToNumber_(index, &indexNum);
 		JsSetIndexedProperty_(arr, indexNum, value);
 	}
 };

@@ -3,7 +3,7 @@
 #include "../../../Utils/Target.h"
 
 TriggerBot::TriggerBot() : IModule(0, Category::COMBAT, "Attacks entities you're looking at") {
-	this->registerIntSetting("delay", &this->delay, this->delay, 0, 20);
+	registerIntSetting("delay", &delay, delay, 0, 20);
 }
 
 TriggerBot::~TriggerBot() {
@@ -14,7 +14,7 @@ const char* TriggerBot::getModuleName() {
 }
 void TriggerBot::onTick(C_GameMode* gm) {
 	C_LocalPlayer* localPlayer = g_Data.getLocalPlayer();
-	C_Entity* target = g_Data.getClientInstance()->getPointerStruct()->getEntity();
+	C_Entity* target = g_Data.getLocalPlayer()->pointingStruct->getEntity();
 	
 	Odelay++;
 	if (target != 0 && Odelay >= delay) {

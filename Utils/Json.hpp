@@ -10044,20 +10044,20 @@ namespace nlohmann
 			/// access to successor
 			reference operator[](difference_type n) const
 			{
-				return *(this->operator+(n));
+				return *(operator+(n));
 			}
 
 			/// return the key of an object iterator
 			auto key() const -> decltype(std::declval<Base>().key())
 			{
-				auto it = --this->base();
+				auto it = --base();
 				return it.key();
 			}
 
 			/// return the value of an iterator
 			reference value() const
 			{
-				auto it = --this->base();
+				auto it = --base();
 				return it.operator * ();
 			}
 		};
