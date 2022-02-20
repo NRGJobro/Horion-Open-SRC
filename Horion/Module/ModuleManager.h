@@ -126,10 +126,10 @@ public:
 	void onMove(C_MoveInputHandler* handler);
 	void onSendPacket(C_Packet*);
 
-	std::shared_lock<std::shared_mutex> lockModuleList() { return std::shared_lock(this->moduleListMutex); }
-	std::unique_lock<std::shared_mutex> lockModuleListExclusive() { return std::unique_lock(this->moduleListMutex); }
+	std::shared_lock<std::shared_mutex> lockModuleList() { return std::shared_lock(moduleListMutex); }
+	std::unique_lock<std::shared_mutex> lockModuleListExclusive() { return std::unique_lock(moduleListMutex); }
 	
-	std::shared_mutex* getModuleListLock() { return &this->moduleListMutex; }
+	std::shared_mutex* getModuleListLock() { return &moduleListMutex; }
 
 	bool isInitialized() { return initialized; };
 	std::vector<std::shared_ptr<IModule>>* getModuleList();
@@ -146,7 +146,7 @@ public:
 	TRet* getModule() {
 		if (!isInitialized())
 			return nullptr;
-		auto lock = this->lockModuleList();
+		auto lock = lockModuleList();
 		for (auto pMod : moduleList) {
 			if (auto pRet = dynamic_cast<typename std::remove_pointer<TRet>::type*>(pMod.get())){
 				
@@ -163,8 +163,8 @@ public:
 		std::string nameCopy = name;
 		std::transform(nameCopy.begin(), nameCopy.end(), nameCopy.begin(), ::tolower);
 		
-		auto lock = this->lockModuleList();
-		for (std::vector<std::shared_ptr<IModule>>::iterator it = this->moduleList.begin(); it != this->moduleList.end(); ++it) {
+		auto lock = lockModuleList();
+		for (std::vector<std::shared_ptr<IModule>>::iterator it = moduleList.begin(); it != moduleList.end(); ++it) {
 			std::shared_ptr<IModule> mod = *it;
 			std::string modNameCopy = mod->getRawModuleName();
 			std::transform(modNameCopy.begin(), modNameCopy.end(), modNameCopy.begin(), ::tolower);

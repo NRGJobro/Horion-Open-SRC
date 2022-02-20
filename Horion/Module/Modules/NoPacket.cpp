@@ -14,5 +14,5 @@ bool NoPacket::allowAutoStart() {
 }
 void NoPacket::onEnable() {
 	if(!g_Data.isInGame())
-		this->setEnabled(false);
+		setEnabled(false);
 }

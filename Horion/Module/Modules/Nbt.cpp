@@ -18,7 +18,7 @@ void Nbt::onTick(C_GameMode* gm) {
 	}
 	PointingStruct* pointingStruct = g_Data.getLocalPlayer()->pointingStruct;
 	
-	if (GameData::isRightClickDown()) {  // && Utils::getClipboardText() != this->lastCopy) {
+	if (GameData::isRightClickDown()) {  // && Utils::getClipboardText() != lastCopy) {
 		if (pointingStruct->getEntity() != nullptr) {
 
 			if (!(g_Data.getRakNetInstance()->serverIp.getTextLength() < 1))
@@ -28,10 +28,10 @@ void Nbt::onTick(C_GameMode* gm) {
 			std::stringstream build;
 			tag->write(build);
 			auto str = build.str();
-			if (this->lastCopy == str)
+			if (lastCopy == str)
 				return;
-			this->lastCopy = str;
-			Utils::setClipboardText(this->lastCopy);
+			lastCopy = str;
+			Utils::setClipboardText(lastCopy);
 			g_Data.getGuiData()->displayClientMessageF("%s%s", GREEN, "CompoundTag copied:");
 			g_Data.getClientInstance()->getGuiData()->displayClientMessage(&str);
 		}

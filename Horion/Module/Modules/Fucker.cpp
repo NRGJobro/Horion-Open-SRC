@@ -1,13 +1,13 @@
 #include "Fucker.h"
 
 Fucker::Fucker() : IModule(VK_NUMPAD9, Category::MISC, "Destroys certain blocks around you") {
-	registerIntSetting("Range", &this->range, this->range, 1, 10);
-	registerBoolSetting("Beds", &this->beds, this->beds);
-	registerBoolSetting("Eggs", &this->eggs, this->eggs);
-	registerBoolSetting("Cakes", &this->cakes, this->cakes);
-	registerBoolSetting("Treasures", &this->treasures, this->treasures);
-	registerBoolSetting("Chests", &this->chests, this->chests);
-	registerBoolSetting("Barrels", &this->barrels, this->barrels);
+	registerIntSetting("Range", &range, range, 1, 10);
+	registerBoolSetting("Beds", &beds, beds);
+	registerBoolSetting("Eggs", &eggs, eggs);
+	registerBoolSetting("Cakes", &cakes, cakes);
+	registerBoolSetting("Treasures", &treasures, treasures);
+	registerBoolSetting("Chests", &chests, chests);
+	registerBoolSetting("Barrels", &barrels, barrels);
 }
 
 Fucker::~Fucker() {
@@ -27,11 +27,11 @@ void Fucker::onTick(C_GameMode* gm) {
 				bool eat = false;
 				auto id = gm->player->region->getBlock(blockPos)->toLegacy()->blockId;
 
-				if (id == 26 && this->beds) destroy = true;      // Beds
-				if (id == 122 && this->eggs) destroy = true;     // Dragon Eggs
-				if (id == 92 && this->cakes) eat = true;         // Cakes
-				if (id == 54 && this->chests) destroy = true;    // Chests
-				if (id == 458 && this->barrels) destroy = true;  // Barrels
+				if (id == 26 && beds) destroy = true;      // Beds
+				if (id == 122 && eggs) destroy = true;     // Dragon Eggs
+				if (id == 92 && cakes) eat = true;         // Cakes
+				if (id == 54 && chests) destroy = true;    // Chests
+				if (id == 458 && barrels) destroy = true;  // Barrels
 
 				if (destroy) {
 					gm->destroyBlock(&blockPos, 0);
@@ -49,7 +49,7 @@ void Fucker::onTick(C_GameMode* gm) {
 		}
 	}
 
-	if (this->treasures) {
+	if (treasures) {
 		g_Data.forEachEntity([](C_Entity* ent, bool b) {
 			std::string name = ent->getNameTag()->getText();
 			int id = ent->getEntityTypeId();

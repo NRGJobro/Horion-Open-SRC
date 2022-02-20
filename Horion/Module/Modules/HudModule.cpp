@@ -3,18 +3,18 @@
 #include "../../Scripting/ScriptManager.h"
 
 HudModule::HudModule() : IModule(0, Category::VISUAL, "Displays ArrayList/TabGUI") {
-	registerBoolSetting("TabGui", &this->tabgui, this->tabgui);
-	registerBoolSetting("ArrayList", &this->arraylist, this->arraylist);
-	registerBoolSetting("ClickToggle", &this->clickToggle, this->clickToggle);
-	registerBoolSetting("Watermark", &this->watermark, this->watermark);
-	registerBoolSetting("Coordinates", &this->coordinates, this->coordinates);
-	registerBoolSetting("Show Keybinds", &this->keybinds, this->keybinds);
-	registerBoolSetting("Show ArmorHUD", &this->displayArmor, this->displayArmor);
-	registerBoolSetting("Keystrokes", &this->keystrokes, this->keystrokes);
-	registerBoolSetting("Show FPS", &this->fps, this->fps);
-	registerBoolSetting("Show CPS", &this->cps, this->cps);
-	registerBoolSetting("Always show", &this->alwaysShow, this->alwaysShow);
-	registerFloatSetting("Scale", &this->scale, this->scale, 0.5f, 1.5f);
+	registerBoolSetting("TabGui", &tabgui, tabgui);
+	registerBoolSetting("ArrayList", &arraylist, arraylist);
+	registerBoolSetting("ClickToggle", &clickToggle, clickToggle);
+	registerBoolSetting("Watermark", &watermark, watermark);
+	registerBoolSetting("Coordinates", &coordinates, coordinates);
+	registerBoolSetting("Show Keybinds", &keybinds, keybinds);
+	registerBoolSetting("Show ArmorHUD", &displayArmor, displayArmor);
+	registerBoolSetting("Keystrokes", &keystrokes, keystrokes);
+	registerBoolSetting("Show FPS", &fps, fps);
+	registerBoolSetting("Show CPS", &cps, cps);
+	registerBoolSetting("Always show", &alwaysShow, alwaysShow);
+	registerFloatSetting("Scale", &scale, scale, 0.5f, 1.5f);
 }
 
 HudModule::~HudModule() {
@@ -101,14 +101,14 @@ void HudModule::drawRightMouseKeystroke(vec2_t pos) {
 void HudModule::onPostRender(C_MinecraftUIRenderContext* renderCtx) {
 
 	vec2_t windowSize = g_Data.getClientInstance()->getGuiData()->windowSize;
-	float f = 10.f * this->scale;
+	float f = 10.f * scale;
 	std::string tempStr("Movement");
 	float len = DrawUtils::getTextWidth(&tempStr, scale) + 7.f;
 	float startY = tabgui ? 6 * f : 0.f;
 	if(tabgui && scriptMgr.getNumEnabledScripts() > 0)
 		startY += f;
 	{  // FPS
-		if (!(g_Data.getLocalPlayer() == nullptr || !this->fps)) {
+		if (!(g_Data.getLocalPlayer() == nullptr || !fps)) {
 			std::string fpsText = "FPS: " + std::to_string(g_Data.getFPS());
 			vec4_t rectPos = vec4_t(2.5f, startY + 5.f * scale, len, startY + 15.f * scale);
 			vec2_t textPos = vec2_t(rectPos.x + 1.5f, rectPos.y + 1.f);
@@ -119,7 +119,7 @@ void HudModule::onPostRender(C_MinecraftUIRenderContext* renderCtx) {
 		}
 	}
 	{  // CPS
-		if (!(g_Data.getLocalPlayer() == nullptr || !this->cps)) {
+		if (!(g_Data.getLocalPlayer() == nullptr || !cps)) {
 			std::string cpsText = "CPS: " + std::to_string(g_Data.getLeftCPS()) + " - " + std::to_string(g_Data.getRightCPS());
 			vec4_t rectPos = vec4_t(2.5f, startY + 5.f * scale, len, startY + 15.f * scale);
 			vec2_t textPos = vec2_t(rectPos.x + 1.5f, rectPos.y + 1.f);
@@ -130,7 +130,7 @@ void HudModule::onPostRender(C_MinecraftUIRenderContext* renderCtx) {
 		}
 	}
 	{  // Coordinates
-		if (!(g_Data.getLocalPlayer() == nullptr || !this->coordinates)) {
+		if (!(g_Data.getLocalPlayer() == nullptr || !coordinates)) {
 			vec3_t* pos = g_Data.getLocalPlayer()->getPos();
 
 			std::string coordsX = "X: " + std::to_string((int)floorf(pos->x));
@@ -148,7 +148,7 @@ void HudModule::onPostRender(C_MinecraftUIRenderContext* renderCtx) {
 	}
 	{  // ArmorHUD
 		
-		if (!(g_Data.getLocalPlayer() == nullptr || !this->displayArmor || !GameData::canUseMoveKeys())) {
+		if (!(g_Data.getLocalPlayer() == nullptr || !displayArmor || !GameData::canUseMoveKeys())) {
 			static float constexpr scale = 1.f;
 			static float constexpr opacity = 0.25f;
 			static float constexpr spacing = scale + 15.f;
@@ -170,7 +170,7 @@ void HudModule::onPostRender(C_MinecraftUIRenderContext* renderCtx) {
 		}
 	}
 	{  // Keystrokes
-		if (!(g_Data.getLocalPlayer() == nullptr || !this->keystrokes || !GameData::canUseMoveKeys())) {
+		if (!(g_Data.getLocalPlayer() == nullptr || !keystrokes || !GameData::canUseMoveKeys())) {
 			C_GameSettingsInput* input = g_Data.getClientInstance()->getGameSettingsInput();
 			HudModule::drawKeystroke(*input->forwardKey, vec2_t(32.f, windowSize.y - 84));
 			HudModule::drawKeystroke(*input->leftKey, vec2_t(10.f, windowSize.y - 62));

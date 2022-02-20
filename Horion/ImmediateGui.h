@@ -32,7 +32,7 @@ public:
 	vec4_t getSelectableSurface();
 	void draw(vec2_t mousePos, const char* label);
 	bool canClick() { return canClickB; };
-	void updatePos(vec2_t pos) { this->pos = pos; }
+	void updatePos(vec2_t pos) { pos = pos; }
 	
 };
 

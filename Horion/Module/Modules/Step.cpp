@@ -1,7 +1,7 @@
 #include "Step.h"
 
 Step::Step() : IModule(0, Category::MOVEMENT, "Increases your step height") {
-	registerFloatSetting("height", &this->height, this->height, 1.f, 10.f);
+	registerFloatSetting("height", &height, height, 1.f, 10.f);
 }
 
 Step::~Step() {

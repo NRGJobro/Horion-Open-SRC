@@ -14,22 +14,22 @@ public:
 	~AntiBot();
 
 	inline bool isHitboxCheckEnabled() {
-		return hitboxCheck && this->isEnabled();
+		return hitboxCheck && isEnabled();
 	}
 	inline bool isNameCheckEnabled() {
-		return false && this->isEnabled();
+		return false && isEnabled();
 	}
 	inline bool isInvisibleCheckEnabled() {
-		return invisibleCheck && this->isEnabled();
+		return invisibleCheck && isEnabled();
 	}
 	inline bool isEntityIdCheckEnabled() {
-		return entityIdCheck && this->isEnabled();
+		return entityIdCheck && isEnabled();
 	}
 	inline bool isOtherCheckEnabled() {
-		return otherCheck && this->isEnabled();
+		return otherCheck && isEnabled();
 	}
 	inline bool isExtraCheckEnabled() {
-		return this->extraCheck && this->isEnabled();
+		return extraCheck && isEnabled();
 	}
 
 	// Inherited via IModule

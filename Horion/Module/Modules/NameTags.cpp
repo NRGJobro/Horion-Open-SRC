@@ -4,9 +4,9 @@
 #include "../ModuleManager.h"
 
 NameTags::NameTags() : IModule(0, Category::VISUAL, "Shows betterar aways") {
-	this->registerBoolSetting("Underline", &this->underline, this->underline);
-	this->registerBoolSetting("Armor", &this->displayArmor, this->displayArmor);
-	this->registerFloatSetting("Opacity", &this->opacity, this->opacity, 0.f, 1.f);
+	registerBoolSetting("Underline", &underline, underline);
+	registerBoolSetting("Armor", &displayArmor, displayArmor);
+	registerFloatSetting("Opacity", &opacity, opacity, 0.f, 1.f);
 }
 
 NameTags::~NameTags() {

@@ -10,7 +10,7 @@ public:
 		m_item = item;
 	}
 	bool isEqual(ArmorStruct& src) {
-		if (this->m_item->getArmorValueWithEnchants() == src.m_item->getArmorValueWithEnchants())
+		if (m_item->getArmorValueWithEnchants() == src.m_item->getArmorValueWithEnchants())
 			return true;
 		else
 			return false;

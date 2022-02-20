@@ -1,7 +1,7 @@
 #include "CommandMgr.h"
 
 CommandMgr::CommandMgr(GameData* gm) {
-	this->gameData = gm;
+	gameData = gm;
 }
 
 CommandMgr::~CommandMgr() {
@@ -77,7 +77,7 @@ void CommandMgr::execute(char* message) {
 		std::string cmd = args[0];
 		std::transform(cmd.begin(), cmd.end(), cmd.begin(), ::tolower);
 
-		for (auto it = this->commandList.begin(); it != this->commandList.end(); ++it) {
+		for (auto it = commandList.begin(); it != commandList.end(); ++it) {
 			IMCCommand* c = *it;
 			auto* aliases = c->getAliasList();
 			for (auto it = aliases->begin(); it != aliases->end(); ++it) {

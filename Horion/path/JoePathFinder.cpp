@@ -397,7 +397,7 @@ std::pair<float, float> getSlope(std::vector<float>& x, std::vector<float>& y){
 }
 
 JoePath JoePathFinder::findPath() {
-	if(this->goal->isInGoal(startPos))
+	if(goal->isInGoal(startPos))
 		return JoePath();
 	std::unordered_map<unsigned __int64, Node> allNodes;
 
@@ -411,14 +411,14 @@ JoePath JoePathFinder::findPath() {
 	std::priority_queue<NodeRef, std::vector<NodeRef>, decltype(cmp)> openSet(cmp);
 
 	auto startHash = posToHash(startPos);
-	allNodes.emplace(startHash, Node(startPos, this->goal->getHeuristicEstimation(startPos), 0.f));
+	allNodes.emplace(startHash, Node(startPos, goal->getHeuristicEstimation(startPos), 0.f));
 	openSet.emplace(startHash);
 
 	int numNodes = 0;
 	int numEdges = 0;
 
-	if(this->pathSearchTimeout < 0 || this->pathSearchTimeout > 50)
-		this->pathSearchTimeout = 10;
+	if(pathSearchTimeout < 0 || pathSearchTimeout > 50)
+		pathSearchTimeout = 10;
 
 	auto pathSearchStart = std::chrono::high_resolution_clock::now();
 
@@ -431,10 +431,10 @@ JoePath JoePathFinder::findPath() {
 
 		numNodes++;
 
-		if(this->terminateSearch)
+		if(terminateSearch)
 			break;
 
-		if(this->goal->isInGoal(cur.pos) || numNodes % 1200 == 0){
+		if(goal->isInGoal(cur.pos) || numNodes % 1200 == 0){
 			std::vector<JoeSegment> segments;
 			auto node = cur;
 
@@ -447,25 +447,25 @@ JoePath JoePathFinder::findPath() {
 			}
 			std::reverse(segments.begin(), segments.end());
 
-			if(this->goal->isInGoal(cur.pos)){
+			if(goal->isInGoal(cur.pos)){
 				auto now = std::chrono::high_resolution_clock::now();
 				std::chrono::duration<float> diff = now - pathSearchStart;
 				logF("Found path! Traversal: %.2f Segments: %i Time: %.2fs Total Nodes: %i NodesVisited: %i Edges: %i", cur.gScore, segments.size(), diff.count(), allNodes.size(), numNodes, numEdges);
 				return JoePath(segments, false);
 			}
 
-			this->currentPath = JoePath(segments, false);
+			currentPath = JoePath(segments, false);
 
 			// check for timeout
 			auto now = std::chrono::high_resolution_clock::now();
 			std::chrono::duration<float> diff = now - pathSearchStart;
-			if(diff.count() > this->pathSearchTimeout)
+			if(diff.count() > pathSearchTimeout)
 				break;
 		}
 		cur.isClosed = true;
 		cur.isInOpenSet = false;
 
-		auto edges = findEdges(allNodes, cur, this->region, curRef); // cur gets invalidated here
+		auto edges = findEdges(allNodes, cur, region, curRef); // cur gets invalidated here
 		cur = allNodes.at(curRef.hash);
 		numEdges += (int)edges.size();
 		for(const auto& edge : edges){
@@ -476,7 +476,7 @@ JoePath JoePathFinder::findPath() {
 			float tentativeScore = cur.gScore + edge.cost;
 			if(tentativeScore >= edgeEndNode.gScore)
 				continue;
-			float heuristic = tentativeScore + this->goal->getHeuristicEstimation(edgeEndNode.pos);
+			float heuristic = tentativeScore + goal->getHeuristicEstimation(edgeEndNode.pos);
 
 			edgeEndNode.cameFrom.edgeType = edge.type;
 			edgeEndNode.cameFrom.nodeBefore = curRef;
@@ -495,7 +495,7 @@ JoePath JoePathFinder::findPath() {
 	auto now = std::chrono::high_resolution_clock::now();
 	std::chrono::duration<float> diff = now - pathSearchStart;
 
-	if(this->terminateSearch)
+	if(terminateSearch)
 		return JoePath();
 
 	const float coefficients[] = { 1.1f, 1.5f, 2.f, 2.5f, 3.f, 3.5f, 4.f, 3.5f, 5.f, 10.f, 20.f, 30.f };

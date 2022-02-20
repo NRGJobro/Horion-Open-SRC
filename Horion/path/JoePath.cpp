@@ -24,10 +24,10 @@ bool JoePath::isIncomplete1() const {
 	return isIncomplete;
 }
 void JoePath::cutoff(float percentageKeep) {
-	if(this->getNumSegments() == 0)
+	if(getNumSegments() == 0)
 		return;
-	int numKeep = (int)ceilf(this->getNumSegments() * percentageKeep);
-	this->segments.erase(this->segments.begin() + numKeep, this->segments.end());
+	int numKeep = (int)ceilf(getNumSegments() * percentageKeep);
+	segments.erase(segments.begin() + numKeep, segments.end());
 }
 void JoePath::initPathSegments() {
 	// Init segments
@@ -58,7 +58,7 @@ void JoePath::initPathSegments() {
 		}
 	}
 
-	this->isInitialized = true;
+	isInitialized = true;
 }
 bool JoePath::isInitialized1() const {
 	return isInitialized;

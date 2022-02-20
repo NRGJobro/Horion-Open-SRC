@@ -3,8 +3,8 @@
 #include "../../../Utils/Logger.h"
 
 Scaffold::Scaffold() : IModule(VK_NUMPAD1, Category::WORLD, "Automatically build blocks beneath you") {
-	registerBoolSetting("Spoof", &this->spoof, this->spoof);
-	registerBoolSetting("Staircase Mode", &this->staircaseMode, this->staircaseMode);
+	registerBoolSetting("Spoof", &spoof, spoof);
+	registerBoolSetting("Staircase Mode", &staircaseMode, staircaseMode);
 }
 
 Scaffold::~Scaffold() {
@@ -97,7 +97,7 @@ void Scaffold::onTick(C_GameMode* gm) {
 
 
 
-	if (this->staircaseMode) {
+	if (staircaseMode) {
 		vec3_t blockBelow = g_Data.getLocalPlayer()->eyePos0;  // Block 1 block below the player
 		blockBelow.y -= g_Data.getLocalPlayer()->height;
 		blockBelow.y -= 1.5f;
