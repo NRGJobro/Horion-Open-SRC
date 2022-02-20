@@ -112,10 +112,10 @@ public:
 			alignedTextLength = size;
 			if (size + 1 >= 0x1000) {
 				*reinterpret_cast<char**>(pText) = pText;
-				
+
 				pText += 8;
 				memset(pText, 0, alignedTextLength - 8);
-			}else
+			} else
 				memset(pText, 0, alignedTextLength);
 		}
 	}

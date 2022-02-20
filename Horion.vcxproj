@@ -613,6 +613,7 @@
     <ClInclude Include="SDK\CGameMode.h" />
     <ClInclude Include="SDK\CGameSettingsInput.h" />
     <ClInclude Include="SDK\CHIDController.h" />
+    <ClInclude Include="SDK\CImageBuffer.h" />
     <ClInclude Include="SDK\CInventory.h" />
     <ClInclude Include="SDK\CInventoryTransaction.h" />
     <ClInclude Include="SDK\CItem.h" />

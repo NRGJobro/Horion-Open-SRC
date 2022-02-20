@@ -1,12 +1,11 @@
 #pragma once
 
+#include <functional>
 #include <map>
+#include <mutex>
 #include <queue>
 #include <unordered_set>
-#include <functional>
-#include <mutex>
 
-#include "../Horion/Config/AccountInformation.h"
 #include "../SDK/CChestBlockActor.h"
 #include "../SDK/CClientInstance.h"
 #include "../SDK/CGameMode.h"
@@ -24,7 +23,7 @@ enum DATAPACKET_CMD : int {
 	CMD_OPENBROWSER,
 	CMD_FILECHOOSER,
 	CMD_RESPONSE,
-	CMD_FOLDERCHOOSER, // sets permissions for a whole folder and sends the path over
+	CMD_FOLDERCHOOSER,  // sets permissions for a whole folder and sends the path over
 	CMD_LOG
 };
 
@@ -73,7 +72,6 @@ private:
 	C_LocalPlayer* localPlayer = nullptr;
 	C_GameMode* gameMode = nullptr;
 	C_EntityList* entityList = nullptr;
-	C_HIDController* hidController = nullptr;
 	C_RakNetInstance* raknetInstance = nullptr;
 	void* hDllInst = 0;
 	std::unordered_set<AABB, AABBHasher> chestList;
@@ -87,8 +85,8 @@ private:
 	bool customGeoActive = false;
 	std::shared_ptr<std::tuple<std::shared_ptr<unsigned char[]>, size_t>> customTexture;
 	bool customTextureActive = false;
-	std::queue<std::shared_ptr<InfoBoxData>> infoBoxQueue;
 
+private:
 	bool injectorConnectionActive = false;
 	const SlimUtils::SlimModule* gameModule = 0;
 	SlimUtils::SlimMem* slimMem;
@@ -96,11 +94,12 @@ private:
 	bool shouldHideB = false;
 	bool isAllowingWIPFeatures = false;
 	__int64 lastUpdate;
-	AccountInformation accountInformation = AccountInformation::asGuest();
 	static void retrieveClientInstance();
 	TextHolder* fakeName;
 
 public:
+	C_HIDController* hidController = nullptr;
+	std::queue<std::shared_ptr<InfoBoxData>> infoBoxQueue;
 	NetworkedData networkedData;
 
 	static bool canUseMoveKeys();
@@ -168,17 +167,6 @@ public:
 	inline auto getCustomTextureOverride() {
 		return std::make_tuple(this->customTextureActive, this->customTexture);
 	}
-	inline AccountInformation getAccountInformation() { return this->accountInformation; };
-	inline void setAccountInformation(AccountInformation newAcc) {
-		if (newAcc.verify())
-			this->accountInformation = newAcc;
-		else {
-			#ifdef _BETA
-			this->terminate();
-			*reinterpret_cast<int*>(0) = 1;
-			#endif
-		}
-	}
 	void sendPacketToInjector(HorionDataPacket horionDataPack);
 	inline int addInjectorResponseCallback(std::function<void(std::shared_ptr<HorionDataPacket>)> callback) {
 		lastRequestId++;
@@ -214,8 +202,17 @@ public:
 	inline C_ClientInstance* getClientInstance() { return clientInstance; };
 	inline C_GuiData* getGuiData() { return clientInstance->getGuiData(); };
 	inline C_LocalPlayer* getLocalPlayer() {
+		/*#ifdef _BETA
+		unsigned int converted = networkedData.localPlayerOffset ^ networkedData.xorKey;
+		if (networkedData.localPlayerOffset < 0x110 || converted < 0x125 || converted > 0x191 || networkedData.dataSet == false)
+			localPlayer = nullptr;
+		else
+			localPlayer = *reinterpret_cast<C_LocalPlayer**>(reinterpret_cast<__int64>(clientInstance) + converted);
 		
+		#else*/
 		localPlayer = clientInstance->getLocalPlayer();
+
+		//#endif
 
 		if (localPlayer == nullptr)
 			gameMode = nullptr;

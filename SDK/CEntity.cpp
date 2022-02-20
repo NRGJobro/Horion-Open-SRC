@@ -1,17 +1,18 @@
 #include "CEntity.h"
-#include "../Utils/Utils.h"
+
 #include "../Memory/GameData.h"
+#include "../Utils/Utils.h"
 C_InventoryTransactionManager *C_Entity::getTransactionManager() {
-	static unsigned int offset = 0;
-	if (offset == 0) {
-		// EnchantCommand::execute
-		//offset = *reinterpret_cast<int *>(FindSignature("48 8D 8B ?? ?? ?? ?? E8 ?? ?? ?? ?? 90 48 8D 8D ?? ?? ?? ?? E8 ?? ?? ?? ?? 48 8D 8D ?? ?? ?? ?? E8 ?? ?? ?? ?? 48 8B ?? ?? ?? 8B") + 3);
-		offset = *reinterpret_cast<int *>(FindSignature("48 8D 8F ? ? ? ? E8 ? ? ? ? 90 48 8D 4D ? E8 ? ? ? ? 48 8B 8D ? ? ? ? 8B 81 ? ? ? ?") + 3);
-	}
+	//return &this->transac;
+	static unsigned int offset = 0x1210;
+	//if (offset == 0) {
+	// EnchantCommand::execute
+	//offset = *reinterpret_cast<int *>(FindSignature("48 89 5C 24 18 55 56 57 41 56 41 57 48 83 EC 30 45 0F B6 F8 4C ") + 3);
+	//}
 	return reinterpret_cast<C_InventoryTransactionManager *>(reinterpret_cast<__int64>(this) + offset);
 }
 C_PlayerInventoryProxy *C_Player::getSupplies() {
-	static unsigned int offset = 0xC88;
+	static unsigned int offset = 0xB70;
 	/*if (offset == 0) {
 		offset = *reinterpret_cast<int *>(FindSignature("48 8B 51 ?? 4C 8B 82 ?? ?? ?? ?? 48 8B B2 ?? ?? ?? ?? 41 80 B8") + 7);  // GameMode::startDestroyBlock -> GameMode::_canDestroy -> getSupplies
 	}*/
@@ -25,7 +26,7 @@ void C_LocalPlayer::unlockAchievments() {  // MinecraftEventing::fireEventAwardA
 }
 void C_LocalPlayer::applyTurnDelta(vec2_t *viewAngleDelta) {
 	using applyTurnDelta = void(__thiscall *)(void *, vec2_t *);
-	static applyTurnDelta TurnDelta = reinterpret_cast<applyTurnDelta>(FindSignature("48 89 5C 24 ?? 57 48 83 EC ?? 48 8B D9 0F 29 74 24 ?? 48 8B 89 ?? ?? ?? ?? 48 8B ?? 0F 29 7C 24 ?? 44 0F"));
+	static applyTurnDelta TurnDelta = reinterpret_cast<applyTurnDelta>(FindSignature("48 8B C4 48 89 58 18 48 89 68 20 56 57 41 56 48 81 EC ?? ?? ?? ?? 0F 29 70 D8 0F 29 78 C8 44 0F 29 40 ?? 48 8B 05 ?? ?? ?? ??"));
 	TurnDelta(this, viewAngleDelta);
 }
 void C_LocalPlayer::setGameModeType(int gma) {
@@ -37,6 +38,10 @@ void C_LocalPlayer::setGameModeType(int gma) {
 
 bool PointingStruct::hasEntity() {
 	return rayHitType == 1;
+}
+
+float C_Entity::getBlocksPerSecond() {
+	return getTicksPerSecond() * *g_Data.getClientInstance()->minecraft->timer;
 }
 
 C_Entity *PointingStruct::getEntity() {

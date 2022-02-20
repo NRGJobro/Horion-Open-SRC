@@ -1,16 +1,18 @@
 #include "GameData.h"
 
 #include <Windows.h>
+
 #include <set>
+
 #include "../Utils/Logger.h"
 #include "../Utils/Utils.h"
+#include "Hooks.h"
 
 GameData g_Data;
 
 size_t AABBHasher::operator()(const AABB& i) const {
-	 return Utils::posToHash(i.lower);
+	return Utils::posToHash(i.lower);
 }
-
 void GameData::retrieveClientInstance() {
 	static uintptr_t clientInstanceOffset = 0x0;
 	uintptr_t sigOffset = 0x0;
@@ -42,7 +44,7 @@ bool GameData::canUseMoveKeys() {
 bool GameData::isKeyDown(int key) {
 	static uintptr_t keyMapOffset = 0x0;
 	if (keyMapOffset == 0x0) {
-		uintptr_t sigOffset = FindSignature("48 8D 0D ?? ?? ?? ?? 89 1C B9");
+		uintptr_t sigOffset = FindSignature("48 8D 0D ? ? ? ? 89 1C B9");
 		if (sigOffset != 0x0) {
 			int offset = *reinterpret_cast<int*>((sigOffset + 3));                                         // Get Offset from code
 			keyMapOffset = sigOffset - g_Data.gameModule->ptrBase + offset + /*length of instruction*/ 7;  // Offset is relative
@@ -85,6 +87,7 @@ bool GameData::shouldTerminate() {
 }
 
 void GameData::terminate() {
+	g_Data.getClientInstance()->minecraft->setTimerSpeed(20.f);
 	g_Data.shouldTerminateB = true;
 }
 
@@ -161,25 +164,19 @@ void GameData::setRakNetInstance(C_RakNetInstance* raknet) {
 }
 
 void GameData::forEachEntity(std::function<void(C_Entity*, bool)> callback) {
-	//Player EntityList
+	/*//Player EntityList
 	C_EntityList* entityList = (C_EntityList*)g_Data.getClientInstance()->getPointerStruct();
 	uintptr_t start = ((uintptr_t)entityList + 0x70);
 	uintptr_t stop = ((uintptr_t)entityList + 0x78);
 	start = *(uintptr_t*)start;
 	stop = *(uintptr_t*)stop;
-
-	std::set<C_Entity*> knownEnts;
-	
+	//logF("size: %i", (stop - start) / sizeof(uintptr_t*));
 	while (start < stop) {
 		C_Entity* ent = *(C_Entity**)start;
-		if (ent != nullptr && knownEnts.count(ent) == 0) {
+		if (ent != nullptr)
 			callback(ent, false);
-			knownEnts.insert(ent);
-		}
-			
 		start += 8;
 	}
-
 	// New EntityList
 	{
 		// MultiplayerLevel::directTickEntities
@@ -187,13 +184,17 @@ void GameData::forEachEntity(std::function<void(C_Entity*, bool)> callback) {
 		__int64* entityIdMap = *(__int64**)(*(__int64*)(region + 0x20) + 0x138i64);
 		for (__int64* i = (__int64*)*entityIdMap; i != entityIdMap; i = (__int64*)*i) {
 			__int64 actor = i[3];
-			C_Entity* ent = reinterpret_cast<C_Entity*>(actor);
 			// !isRemoved() && !isGlobal()
-			if (actor && !*(char*)(actor + 993) && !*(char*)(actor + 994) && knownEnts.count(ent) == 0) {
+			if (actor && !*(char*)(actor + 993) && !*(char*)(actor + 994)) {
+				C_Entity* ent = reinterpret_cast<C_Entity*>(actor);
 				callback(ent, false);
-				knownEnts.insert(ent);
 			}
 		}
+	}*/
+
+	if (this->localPlayer && this->localPlayer->pointingStruct) {
+		for (const auto& ent : g_Hooks.entityList)
+			if (ent.ent != nullptr) callback(ent.ent, false);
 	}
 }
 

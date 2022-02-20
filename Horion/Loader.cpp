@@ -1,4 +1,5 @@
 #include "Loader.h"
+#include "Config/AccountInformation.h"
 
 SlimUtils::SlimMem mem;
 const SlimUtils::SlimModule* gameModule;
@@ -175,7 +176,6 @@ DWORD WINAPI injectorConnectionThread(LPVOID lpParam) {
 									CloseHandle(file);
 								}
 							}
-							g_Data.setAccountInformation(AccountInformation::fromToken(data.at("discordAuth").get<std::string>(), serialNum));
 						}
 					}
 					if (flags & (1 << 2))  // WIP Features
@@ -214,11 +214,11 @@ DWORD WINAPI injectorConnectionThread(LPVOID lpParam) {
 					break;
 				}
 				case CMD_LOG: {
-					if(injectorToHorion->dataSize > 4 && injectorToHorion->dataSize < 2999){
-						injectorToHorion->data[injectorToHorion->dataSize] = 0; // null terminator
+					if (injectorToHorion->dataSize > 4 && injectorToHorion->dataSize < 2999) {
+						injectorToHorion->data[injectorToHorion->dataSize] = 0;  // null terminator
 
 						char* command = reinterpret_cast<char*>(&injectorToHorion->data[3]);
-						if(command[1] == cmdMgr->prefix)
+						if (command[1] == cmdMgr->prefix)
 							command++;
 
 						cmdMgr->execute(command);
@@ -234,7 +234,8 @@ DWORD WINAPI injectorConnectionThread(LPVOID lpParam) {
 
 			// Send log messages
 			{
-				auto vecLock = Logger::GetTextToInjectorLock();;
+				auto vecLock = Logger::GetTextToInjectorLock();
+				;
 
 				if (loggedIn && g_Data.isPacketToInjectorQueueEmpty()) {
 					auto* stringPrintVector = Logger::GetTextToSend();
@@ -242,14 +243,14 @@ DWORD WINAPI injectorConnectionThread(LPVOID lpParam) {
 					if (stringPrintVector->size() > 0 && g_Data.isPacketToInjectorQueueEmpty()) {
 						auto str = *stringPrintVector->begin();
 						stringPrintVector->erase(stringPrintVector->begin());
-						
+
 						auto wstr = Utils::stringToWstring(str->text);
-						
+
 						const wchar_t* ident = L"log ";
 						size_t identLength = wcslen(ident);
 						size_t textLength = wcslen(wstr.c_str()) + identLength;
 
-						if(textLength < 2990){
+						if (textLength < 2990) {
 							HorionDataPacket packet;
 							packet.cmd = CMD_LOG;
 							auto tmp = std::shared_ptr<unsigned char[]>(new unsigned char[(textLength + 1) * sizeof(wchar_t)]);
@@ -259,7 +260,7 @@ DWORD WINAPI injectorConnectionThread(LPVOID lpParam) {
 							wcscpy_s((wchar_t*)(packet.data.get() + identLength * sizeof(wchar_t)), textLength - identLength + 1, wstr.c_str());
 							packet.dataArraySize = (int)wcslen((wchar_t*)packet.data.get()) * sizeof(wchar_t);
 
-							if(packet.dataArraySize < 2999)
+							if (packet.dataArraySize < 2999)
 								g_Data.sendPacketToInjector(packet);
 						}
 					}

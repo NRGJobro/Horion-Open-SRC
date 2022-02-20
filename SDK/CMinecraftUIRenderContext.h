@@ -1,7 +1,7 @@
 #pragma once
 
-#include "TextHolder.h"
 #include "../Utils/HMath.h"
+#include "TextHolder.h"
 
 struct MC_Color;
 
@@ -35,7 +35,7 @@ private:
 	virtual void unk5();
 
 public:
-	virtual float getLineLength(TextHolder* str, float textSize, bool unknown);
+	virtual float getLineLength(TextHolder* str, float textSize);  //bool unknown
 	virtual float getLineHeight();
 };
 
@@ -46,25 +46,44 @@ struct TextMeasureData {
 	bool bool2;
 };
 
+class NinesliceInfo {  // how the fuck did onix find what goes in this
+private:
+	char pad_0x0000[0xFF];  //0x0000
+};
+
 class C_MinecraftUIRenderContext {
 private:
-	float _[140];
+	virtual auto Constructor() -> void{};
 
 public:
-	C_TexturePtr* getTexture(C_TexturePtr* ptr, C_FilePath& path);
-	virtual ~C_MinecraftUIRenderContext();
-	virtual float getLineLength(C_Font* font, TextHolder* str, float textSize, bool unknown);
+	virtual float getLineLength(C_Font* font, TextHolder* str, float textSize);  //bool unknown
 	virtual float getTextAlpha();
 	virtual void setTextAlpha(float alpha);
-	virtual __int64 drawDebugText(const float* pos, TextHolder* text, float* color, float alpha, unsigned int textAlignment, const float* textMeasureData, const void* caretMeasureData);
+	virtual void drawDebugText(const float* pos, TextHolder* text, float* color, float alpha, unsigned int textAlignment, const float* textMeasureData, const void* caretMeasureData);
 	virtual __int64 drawText(C_Font* font, const float* pos, TextHolder* text, const float* color, float alpha, unsigned int textAlignment, const TextMeasureData* textMeasureData, const uintptr_t* caretMeasureData);
-	virtual void flushText(float timeSinceLastFlush);                       // time used for ticking the obfuscated text
-	virtual __int64 drawImage(C_TexturePtr* texturePtr, vec2_t& ImagePos, vec2_t& ImageDimension,__int64& a4,vec2_t& idk);  // didnt bother putting in the parameters
-	virtual __int64 drawNinesliceNOTIMPLEMENTED();
+	virtual void flushText(float timeSinceLastFlush);
+	virtual __int64 drawImage(C_TexturePtr* texturePtr, vec2_t& ImagePos, vec2_t& ImageDimension, __int64& a4, vec2_t& idk);
+	virtual void drawNineslice(C_TexturePtr* texturePtr, void* nineslice);
 	virtual __int64 flushImages(MC_Color& color, __int64 flushImageAddr, __int64 hashedString);
-	virtual __int64 beginSharedMeshBatchNOTIMPLEMENTED();
-	virtual __int64 endSharedMeshBatchNOTIMPLEMENTED();
+	virtual void beginSharedMeshBatch(uintptr_t ComponentRenderBatch);
+	virtual void endSharedMeshBatch(float timeSinceLastFlush);
 	virtual void drawRectangle(const float* pos, const float* color, float alpha, int lineWidth);  // line width is guessed
 	virtual void fillRectangle(const float* pos, const float* color, float alpha);
-	// There are a few more functions but didnt bother
+	virtual void increaseStencilRef();
+	virtual void decreaseStencilRef();
+	virtual void resetStencilRef();
+	virtual void fillvec4_tangleStencil(vec4_t position);
+	virtual void enableScissorTest(vec4_t position);
+	virtual void disableScissorTest();
+	virtual void setClippingvec4_tangle(vec4_t position);
+	virtual void setFullClippingvec4_tangle();
+	virtual void saveCurrentClippingvec4_tangle();
+	virtual void restoreSavedClippingvec4_tangle();
+	virtual int getFullClippingvec4_tangle();
+	virtual void updateCustom(uintptr_t a1);
+	virtual void renderCustom(uintptr_t a1, int a2, vec4_t position);
+	virtual void cleanup();
+	virtual void removePersistentMeshes();
+	virtual C_TexturePtr* getTexture(C_TexturePtr* ptr, C_FilePath& path);
+	virtual int getZippedTexture(C_TexturePtr* Path, C_TexturePtr* ResourceLocation, bool a3);
 };

@@ -1,8 +1,8 @@
 #include "Tag.h"
 
-#include "../Utils/Utils.h"
-#include "../Utils/Logger.h"
 #include "../Memory/GameData.h"
+#include "../Utils/Logger.h"
+#include "../Utils/Utils.h"
 #ifndef WIN32_LEAN_AND_MEAN
 #define WIN32_LEAN_AND_MEAN
 #endif
@@ -231,7 +231,6 @@ void CompoundTag::write(std::stringstream& builder) {
 				Handler::handleWrite(&variant->tag, builder);
 			}
 
-
 			__int64** v17 = (__int64**)v11[2];
 			if (*((BYTE*)v17 + 0x19)) {
 				for (i = v11[1]; !*(BYTE*)(i + 0x19); i = *(__int64*)(i + 8)) {
@@ -255,7 +254,6 @@ void CompoundTag::write(std::stringstream& builder) {
 		} else {
 			builder << MojangsonToken::ELEMENT_SEPERATOR.getSymbol();
 		}
-
 		builder << it->first << MojangsonToken::ELEMENT_PAIR_SEPERATOR.getSymbol();
 		yeet::handleWrite(&it->second, builder);
 	}*/
