@@ -27,8 +27,8 @@ public:
 	vec3_t rayHitVec;  //0xAC4
 private:
 	C_Entity *entityPtr;          //0xAD0
-	C_Entity *entityPtr2;         //0xAD0
-	uint64_t GamingEntityFinder;  //0xAD0
+	C_Entity *entityPtr2;         //0xAD8
+	uint64_t GamingEntityFinder;  //0xAE0
 
 	virtual void DONTREMOVEPLS();
 
