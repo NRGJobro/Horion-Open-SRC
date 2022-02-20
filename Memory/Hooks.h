@@ -9,7 +9,6 @@
 #include "../Horion/DrawUtils.h"
 #include "../Horion/ImmediateGui.h"
 #include "../Horion/Menu/ClickGui.h"
-#include "../Horion/Menu/TabGui.h"
 #include "../Horion/Module/ModuleManager.h"
 #include "../SDK/CBlockLegacy.h"
 #include "../SDK/CCamera.h"
@@ -33,6 +32,9 @@
 #include <intrin.h>
 
 #include <thread>
+#include <unordered_map>
+
+#include "../Utils/Logger.h"
 
 class VMTHook;
 class FuncHook;
@@ -80,8 +82,8 @@ public:
 	static void Enable();
 
 private:
+	static void Actor_baseTick(C_Entity* _this);
 	static void* Player_tickWorld(C_Player* _this, __int64);
-	static bool playerCallBack(C_Player* lp, __int64 cock, __int64 penis);
 	static void ClientInstanceScreenModel_sendChatMessage(void* _this, TextHolder* text);
 	static __int64 UIScene_setupAndRender(C_UIScene* uiscene, __int64 screencontext);
 	static __int64 UIScene_render(C_UIScene* uiscene, __int64 screencontext);
@@ -96,7 +98,6 @@ private:
 	static void LoopbackPacketSender_sendToServer(C_LoopbackPacketSender* a, C_Packet* packet);
 	static float LevelRendererPlayer_getFov(__int64 _this, float a2, bool a3);
 	static void MultiLevelPlayer_tick(C_EntityList* entityList);
-	static void Actor_baseTick(C_Entity* _this);
 	static void GameMode_startDestroyBlock(C_GameMode* _this, vec3_ti* a2, uint8_t face, void* a4, void* a5);
 	static void HIDController_keyMouse(C_HIDController* _this, void* a2, void* a3);
 	static int BlockLegacy_getRenderLayer(C_BlockLegacy* a1);
@@ -108,7 +109,6 @@ private:
 	static float GetGamma(uintptr_t* a1);
 	static bool Actor_isInWater(C_Entity* _this);
 	static void JumpPower(C_Entity* _this, float a2);
-	static __int64 MinecraftGame_onAppSuspended(__int64 _this);
 	static void Actor_ascendLadder(C_Entity* _this);
 	static void Actor_swing(C_Entity* _this);
 	static void Actor_startSwimming(C_Entity* _this);
@@ -117,32 +117,35 @@ private:
 	static __int64 GameMode_attack(C_GameMode* _this, C_Entity*);
 	static __int64 ConnectionRequest_create(__int64 _this, __int64 privateKeyManager, void* a3, TextHolder* selfSignedId, TextHolder* serverAddress, __int64 clientRandomId, TextHolder* skinId, SkinData* skinData, __int64 capeData, CoolSkinData* coolSkinStuff, TextHolder* deviceId, int inputMode, int uiProfile, int guiScale, TextHolder* languageCode, bool sendEduModeParams, TextHolder* tenantId, __int64 unused, TextHolder* platformUserId, TextHolder* thirdPartyName, bool thirdPartyNameOnly, TextHolder* platformOnlineId, TextHolder* platformOfflineId, TextHolder* capeId);
 	static void InventoryTransactionManager_addAction(C_InventoryTransactionManager* a1, C_InventoryAction* a2);
-	static __int64 PaintingRenderer__render(__int64 _this, __int64 a2, __int64 a3);
 	static bool DirectoryPackAccessStrategy__isTrusted(__int64 _this);
 	static bool ReturnTrue(__int64 _this);
 	static __int64 SkinRepository___loadSkinPack(__int64 _this, __int64 pack, __int64 a3);
 	static GamerTextHolder* toStyledString(__int64 strIn, GamerTextHolder* strOut);
+	static __int64 MinecraftGame_onAppSuspended(__int64 _this);
 	static __int64 prepFeaturedServers(__int64 a1);
 	static __int64 prepFeaturedServersFirstTime(__int64 a1, __int64 a2);
 	static __int64 InGamePlayScreen___renderLevel(__int64 playScreen, __int64 a2, __int64 a3);
 	static __int64 Cube__compile(__int64 a1, __int64 a2);
 	static void LocalPlayer__updateFromCamera(__int64 a1, C_Camera* a2);
 	static bool Mob__isImmobile(C_Entity*);
+	static bool playerCallBack(C_Player* lp, __int64 cock, __int64 penis);
 	static void InventoryTransactionManager__addAction(C_InventoryTransactionManager*, C_InventoryAction&);
 	static void LevelRendererPlayer__renderNameTags(__int64 a1, __int64 a2, TextHolder* name, __int64 a4);
 
+	std::unique_ptr<FuncHook> Actor_rotationHook;
+	std::unique_ptr<FuncHook> setPosHook;
+	std::unique_ptr<FuncHook> Actor_baseTickHook;
 	std::unique_ptr<FuncHook> Player_tickWorldHook;
 	std::unique_ptr<FuncHook> ClientInstanceScreenModel_sendChatMessageHook;
 	std::unique_ptr<FuncHook> UIScene_setupAndRenderHook;
 	std::unique_ptr<FuncHook> UIScene_renderHook;
-	std::unique_ptr<FuncHook> playerCallBack_Hook;
 	std::unique_ptr<FuncHook> RenderTextHook;
-	std::unique_ptr<FuncHook> Actor_baseTickHook;
 	std::unique_ptr<FuncHook> Dimension_getFogColorHook;
 	std::unique_ptr<FuncHook> Dimension_getTimeOfDayHook;
 	std::unique_ptr<FuncHook> Dimension_getSunIntensityHook;
 	std::unique_ptr<FuncHook> ChestBlockActor_tickHook;
 	std::unique_ptr<FuncHook> Actor_lerpMotionHook;
+	std::unique_ptr<FuncHook> playerCallBack_Hook;
 	std::unique_ptr<FuncHook> AppPlatform_getGameEditionHook;
 	std::unique_ptr<FuncHook> PleaseAutoCompleteHook;
 	std::unique_ptr<FuncHook> LoopbackPacketSender_sendToServerHook;
@@ -159,27 +162,33 @@ private:
 	std::unique_ptr<FuncHook> GetGammaHook;
 	std::unique_ptr<FuncHook> Actor_isInWaterHook;
 	std::unique_ptr<FuncHook> JumpPowerHook;
+	std::unique_ptr<FuncHook> RMBManagerThingyHook;
 	std::unique_ptr<FuncHook> MinecraftGame_onAppSuspendedHook;
 	std::unique_ptr<FuncHook> Actor_ascendLadderHook;
 	std::unique_ptr<FuncHook> Actor_swingHook;
+	std::unique_ptr<FuncHook> Actor_lookAtHook;
 	std::unique_ptr<FuncHook> Actor_startSwimmingHook;
 	std::unique_ptr<FuncHook> RakNetInstance_tickHook;
 	std::unique_ptr<FuncHook> GameMode_getPickRangeHook;
 	std::unique_ptr<FuncHook> GameMode_attackHook;
 	std::unique_ptr<FuncHook> ConnectionRequest_createHook;
-	std::unique_ptr<FuncHook> InventoryTransactionManager_addActionHook;
-	std::unique_ptr<FuncHook> PaintingRenderer__renderHook;
-	std::unique_ptr<FuncHook> DirectoryPackAccessStrategy__isTrustedHook;
+	std::unique_ptr<FuncHook> InventoryTransactionManager_addActionHook;	std::unique_ptr<FuncHook> DirectoryPackAccessStrategy__isTrustedHook;
 	std::unique_ptr<FuncHook> ZipPackAccessStrategy__isTrustedHook;
 	std::unique_ptr<FuncHook> SkinRepository___checkSignatureFileInPack;
 	std::unique_ptr<FuncHook> SkinRepository___loadSkinPackHook;
 	std::unique_ptr<FuncHook> toStyledStringHook;
 	std::unique_ptr<FuncHook> prepFeaturedServersHook;
 	std::unique_ptr<FuncHook> prepFeaturedServersFirstTimeHook;
+	std::unique_ptr<FuncHook> swapchain__presentHook;
 	std::unique_ptr<FuncHook> InGamePlayScreen___renderLevelHook;
+	std::unique_ptr<FuncHook> swapchain__resizeBuffersHook;
 	std::unique_ptr<FuncHook> cube__compileHook;
 	std::unique_ptr<FuncHook> LocalPlayer__updateFromCameraHook;
 	std::unique_ptr<FuncHook> Mob__isImmobileHook;
+	std::unique_ptr<FuncHook> testyHook;
+	std::unique_ptr<FuncHook> getDestroySpeedHook;
+	std::unique_ptr<FuncHook> Actor__isInvisibleHook;
+	std::unique_ptr<FuncHook> FishingHook___fishHookEventHook;
 	std::unique_ptr<FuncHook> InventoryTransactionManager__addActionHook;
 	std::unique_ptr<FuncHook> LevelRendererPlayer__renderNameTagsHook;
 };
