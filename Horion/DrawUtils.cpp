@@ -405,12 +405,8 @@ void DrawUtils::drawNameTags(C_Entity* ent, float textSize, bool drawHealth, boo
 }
 
 void DrawUtils::drawEntityBox(C_Entity* ent, float lineWidth) {
-	vec3_t* start = ent->getPosOld();
-	vec3_t* end = ent->getPos();
-
-	vec3_t lerped = start->lerp(end, lerpT);
-
-	AABB render(lerped, ent->width, ent->height, end->y - ent->aabb.lower.y);
+	vec3_t end = ent->eyePos0;
+	AABB render(end, ent->width, ent->height, end.y - ent->aabb.lower.y);
 	render.upper.y += 0.1f;
 
 	drawBox(render.lower, render.upper, lineWidth, true);
