@@ -12,9 +12,9 @@ const char* Timer::getModuleName() {
 }
 
 void Timer::onTick(C_GameMode* gm) {
-	*g_Data.getClientInstance()->minecraft->timer = static_cast<float>(timer);
+	g_Data.getClientInstance()->minecraft->setTimerSpeed(timer);
 }
 
 void Timer::onDisable() {
-	*g_Data.getClientInstance()->minecraft->timer = 20.f;
+	g_Data.getClientInstance()->minecraft->setTimerSpeed(20.f);
 }

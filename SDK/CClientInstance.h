@@ -16,7 +16,7 @@ public:
 	void setTimerSpeed(float tps) {
 		*this->timer = tps;
 		*this->otherTimer = tps;
-	};
+	}
 };
 
 class Tessellator;
@@ -290,8 +290,8 @@ public:
 	float fovY;  //0x0694
 private:
 	char pad_0670[0x1B8];  //0x0678z
-public:
-private:
+
+
 	virtual __int64 destructorClientInstance();
 	// Duplicate destructor
 	virtual __int64 onInitMinecraftGame(void);
