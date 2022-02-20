@@ -584,7 +584,11 @@ public:
 
 class Dimension {
 private:
-	char pad_0x0[0xB8];  //0x0
+	char pad_0x0[0x5A];  //0x0
+public:
+	__int16 maxHeight;  //0x5A
+private:
+	char pad_0x5E[0x5A];  //0x5E
 public:
 	class BrightnessRamp *brightnessRamp;  //0xB8
 private:
@@ -596,7 +600,11 @@ private:
 public:
 	bool hasCeiling;  //0xE5
 private:
-	char pad_0xE6[0x3A];  //0xE6
+	char pad_0xE6[0x2];  //0xE6
+public:
+	int timeThingy;  //0xE8
+private:
+	char pad_0xEC[0x34];  //0xEC
 public:
 	class Weather *weather;  //0x120
 };
