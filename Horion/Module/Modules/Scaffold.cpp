@@ -148,8 +148,4 @@ void Scaffold::onTick(C_GameMode* gm) {
 void Scaffold::onDisable() {
 	if (g_Data.getLocalPlayer() == nullptr)
 		return;
-	__int64 id = *g_Data.getLocalPlayer()->getUniqueId();
-	C_PlayerInventoryProxy* supplies = g_Data.getLocalPlayer()->getSupplies();
-	C_MobEquipmentPacket a(id, *g_Data.getLocalPlayer()->getSelectedItem(), supplies->selectedHotbarSlot, supplies->selectedHotbarSlot);
-	g_Data.getClientInstance()->loopbackPacketSender->sendToServer(&a);
 }
