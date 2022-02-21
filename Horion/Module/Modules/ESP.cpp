@@ -27,12 +27,12 @@ void doRenderStuff(C_Entity* ent, bool isRegularEntitie) {
 		return;
 	static auto noFriendsModule = moduleMgr->getModule<NoFriends>();
 	if (!noFriendsModule->isEnabled() && FriendList::findPlayer(ent->getNameTag()->getText())) {
-		DrawUtils::setColor(0.1f, 0.9f, 0.1f, (float)fmax(0.1f, (float)fmin(1.f, 15 / (ent->damageTime + 1))));
+		DrawUtils::setColor(0.1f, 0.9f, 0.1f, 1.f);
 	} else if (Target::isValidTarget(ent)) {
 		if (espMod->doRainbow)
-			DrawUtils::setColor(rcolors[0], rcolors[1], rcolors[2], (float)fmax(0.1f, (float)fmin(1.f, 15 / (ent->damageTime + 1))));
+			DrawUtils::setColor(rcolors[0], rcolors[1], rcolors[2], 1.f);
 		else
-			DrawUtils::setColor(0.9f, 0.9f, 0.9f, (float)fmax(0.1f, (float)fmin(1.f, 15 / (ent->damageTime + 1))));
+			DrawUtils::setColor(0.9f, 0.9f, 0.9f, 1.f);
 	} else if (espMod->isMobEsp) {
 		if (ent->getNameTag()->getTextLength() <= 1 && ent->getEntityTypeId() == 63)
 			return;
@@ -43,15 +43,15 @@ void doRenderStuff(C_Entity* ent, bool isRegularEntitie) {
 		if (!localPlayer->canAttack(ent, false))
 			return;
 		if (espMod->doRainbow)
-			DrawUtils::setColor(rcolors[0], rcolors[1], rcolors[2], (float)fmax(0.1f, (float)fmin(1.f, 15 / (ent->damageTime + 1))));
+			DrawUtils::setColor(rcolors[0], rcolors[1], rcolors[2], 1.f);
 		else
-			DrawUtils::setColor(0.9f, 0.9f, 0.9f, (float)fmax(0.1f, (float)fmin(1.f, 15 / (ent->damageTime + 1))));
+			DrawUtils::setColor(0.9f, 0.9f, 0.9f, 1.f);
 	} else
 		return;
 	if (espMod->is2d)
-		DrawUtils::draw2D(ent, (float)fmax(0.4f, 1 / (float)fmax(1, localPlayer->getPos()->dist(*ent->getPos()) * 3.f)));
+		DrawUtils::draw2D(ent, (float)fmax(0.4f, 1 / (float)fmax(1, localPlayer->eyePos0.dist(ent->eyePos0) * 3.f)));
 	else 
-		DrawUtils::drawEntityBox(ent, (float)fmax(0.2f, 1 / (float)fmax(1, localPlayer->getPos()->dist(*ent->getPos()))));
+		DrawUtils::drawEntityBox(ent, (float)fmax(0.2f, 1 / (float)fmax(1, localPlayer->eyePos0.dist(ent->eyePos0))));
 	
 	
 }
