@@ -781,15 +781,6 @@ if (GameData::shouldHide() || !moduleMgr->isInitialized())
 		}
 	}
 
-	// Zoom calc
-	{
-		static auto zoomModule = moduleMgr->getModule<Zoom>();
-		if (zoomModule->isEnabled()) zoomModule->target = zoomModule->strength;
-		zoomModule->modifier = zoomModule->target - ((zoomModule->target - zoomModule->modifier) * 0.8f);
-		if (abs(zoomModule->modifier - zoomModule->target) < 0.1f && !zoomModule->isEnabled())
-			zoomModule->zooming = false;
-	}
-
 	if (shouldPostRender) moduleMgr->onPostRender(renderCtx);
 	HImGui.endFrame();
 	DrawUtils::flush();
@@ -1318,8 +1309,16 @@ float Hooks::GetGamma(uintptr_t* a1) {
 			obtainedSettings++;
 		} else if (!strcmp(settingname->getText(), "gfx_field_of_view")) {
 			float* FieldOfView = (float*)((uintptr_t)list[i] + 24);
-			//if (zoomMod->isEnabled())
-				//zoomMod->OGFov = *FieldOfView;
+			if (zoomMod->isEnabled())
+				zoomMod->OGFov = *FieldOfView;
+			// Zoom calc
+			{
+				static auto zoomModule = moduleMgr->getModule<Zoom>();
+				if (zoomModule->isEnabled()) zoomModule->target = zoomModule->strength;
+				zoomModule->modifier = zoomModule->target - ((zoomModule->target - zoomModule->modifier) * 0.8f);
+				if (abs(zoomModule->modifier - zoomModule->target) < 0.1f && !zoomModule->isEnabled())
+					zoomModule->zooming = false;
+			}
 			obtainedSettings++;
 		}
 		if (obtainedSettings == 3) break;

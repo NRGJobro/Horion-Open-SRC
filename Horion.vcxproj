@@ -365,7 +365,6 @@
     <ClCompile Include="Horion\Module\Modules\Velocity.cpp" />
     <ClCompile Include="Horion\Module\Modules\Waypoints.cpp" />
     <ClCompile Include="Horion\Module\Modules\Xray.cpp" />
-    <ClCompile Include="Horion\Module\Modules\Zoom.cpp" />
     <ClCompile Include="Horion\path\goals\JoeGoal.cpp" />
     <ClCompile Include="Horion\path\goals\JoeGoalXYZ.cpp" />
     <ClCompile Include="Horion\path\goals\JoeGoalXZ.cpp" />
