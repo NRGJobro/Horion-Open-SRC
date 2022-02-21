@@ -310,7 +310,6 @@
     <ClCompile Include="Horion\Module\Modules\Fly.cpp" />
     <ClCompile Include="Horion\Module\Modules\FollowPathModule.cpp" />
     <ClCompile Include="Horion\Module\Modules\Freecam.cpp" />
-    <ClCompile Include="Horion\Module\Modules\Freelook.cpp" />
     <ClCompile Include="Horion\Module\Modules\Fucker.cpp" />
     <ClCompile Include="Horion\Module\Modules\FullBright.cpp" />
     <ClCompile Include="Horion\Module\Modules\Glide.cpp" />

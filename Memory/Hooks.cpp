@@ -1729,10 +1729,13 @@ bool Hooks::Mob__isImmobile(C_Entity* ent) {
 void Hooks::Actor__setRot(C_Entity* _this, vec2_t& angle) {
 	auto func = g_Hooks.Actor__setRotHook->GetFastcall<void, C_Entity*, vec2_t&>();
 	auto killauraMod = moduleMgr->getModule<Killaura>();
+	auto freelookMod = moduleMgr->getModule<Freelook>();
 	if (killauraMod->isEnabled() && !killauraMod->targetListEmpty && killauraMod->rotations && _this == g_Data.getLocalPlayer()) {
 		func(_this, angle = killauraMod->angle);
 	}
-
+	if (freelookMod->isEnabled() && g_Data.getLocalPlayer() == _this) {
+		func(_this, angle = freelookMod->oldPos);
+	}
 	func(_this, angle);
 }
 
