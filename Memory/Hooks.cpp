@@ -270,7 +270,7 @@ void Hooks::Enable() {
 	MH_EnableHook(MH_ALL_HOOKS);
 }
 
-bool Hooks::playerCallBack(C_Player* lp, __int64 cock, __int64 penis) {
+bool Hooks::playerCallBack(C_Player* lp, __int64 a2, __int64 a3) {
 	static auto oTick = g_Hooks.playerCallBack_Hook->GetFastcall<bool, C_Player*, __int64, __int64>();
 	//if (lp == g_Data.getLocalPlayer())
 		//moduleMgr->onPlayerTick(lp);
@@ -292,7 +292,7 @@ bool Hooks::playerCallBack(C_Player* lp, __int64 cock, __int64 penis) {
 			g_Hooks.entityList.clear();
 			g_Hooks.entityList = validEntities;
 		}
-	return oTick(lp, cock, penis);
+	return oTick(lp, a2, a3);
 }
 
 void* Hooks::Player_tickWorld(C_Player* _this, __int64 unk) {
