@@ -9,25 +9,26 @@
 #include "CInventory.h"
 #include "CInventoryTransaction.h"
 #include "TextHolder.h"
+#include "Dimension.h"
 
 class C_GameMode;
 
 class PointingStruct {
 private:
-	char firstpad[0x688];  //0x8 (Too lazy to fix comments)
+	char firstpad[0x688];  //0x8
 public:
-	int levelTicks;  //0x5F0
+	int levelTicks;  //0x690
 private:
-	char secondpad[0x41C];  //0x5F4
+	char secondpad[0x41C];  //0x694
 public:
-	int rayHitType;    //0x0A28
-	int blockSide;     //0x0A2C
-	vec3_ti block;     //0x0A30
-	vec3_t rayHitVec;  //0x0A3C
+	int rayHitType;    //0xAB0
+	int blockSide;     //0xAB4
+	vec3_ti block;     //0xAB8
+	vec3_t rayHitVec;  //0xAC4
 private:
-	C_Entity *entityPtr;          //0x0A48
-	C_Entity *entityPtr2;         //0x0A50
-	uint64_t GamingEntityFinder;  //0x0A58
+	C_Entity *entityPtr;          //0xAD0
+	C_Entity *entityPtr2;         //0xAD8
+	uint64_t GamingEntityFinder;  //0xAE0
 
 	virtual void DONTREMOVEPLS();
 
@@ -581,33 +582,6 @@ public:
 	}
 };
 #pragma pack(pop)
-
-class Dimension {
-private:
-	char pad_0x0[0x5A];  //0x0
-public:
-	__int16 maxHeight;  //0x5A
-private:
-	char pad_0x5E[0x5A];  //0x5E
-public:
-	class BrightnessRamp *brightnessRamp;  //0xB8
-private:
-	char pad_0xC0[0x20];  //0xC0
-public:
-	int dimensionId;  //0xE0
-private:
-	char pad_0xE4[0x1];  //0xE4
-public:
-	bool hasCeiling;  //0xE5
-private:
-	char pad_0xE6[0x2];  //0xE6
-public:
-	int timeThingy;  //0xE8
-private:
-	char pad_0xEC[0x34];  //0xEC
-public:
-	class Weather *weather;  //0x120
-};
 
 class C_ServerPlayer;
 

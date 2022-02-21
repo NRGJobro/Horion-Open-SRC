@@ -528,8 +528,8 @@ struct glmatrixf {
 struct AABB {
 	vec3_t lower;
 	vec3_t upper;
-	bool isZero = false;
-	char padding[3];
+	//bool isZero = false;
+	//char padding[3];
 	AABB() {}
 	AABB(vec3_t l, vec3_t h) : lower(l), upper(h){};
 	AABB(const AABB &aabb) {
@@ -538,15 +538,15 @@ struct AABB {
 	}
 	AABB(vec3_t lower, float width, float height, float eyeHeight) {
 		lower = lower.sub(vec3_t(width, eyeHeight * 2, width).div(2));
-		lower = lower;
-		upper = {lower.x + width, lower.y + height, lower.z + width};
+		this->lower = lower;
+		this->upper = {lower.x + width, lower.y + height, lower.z + width};
 	}
 
-	inline bool operator==(const AABB &rhs) const {
+	bool operator==(const AABB &rhs) const {
 		return lower == rhs.lower && upper == rhs.upper;
 	}
 
-	bool isFullBlock(){
+	bool isFullBlock() {
 		auto diff = lower.sub(upper);
 		return fabsf(diff.y) == 1 && fabsf(diff.x) == 1 && fabsf(diff.z) == 1;
 	}
