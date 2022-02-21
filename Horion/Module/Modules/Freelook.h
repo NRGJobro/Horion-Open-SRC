@@ -1,27 +1,20 @@
 #pragma once
 #include "Module.h"
-
 class Freelook : public IModule {
-private:
-	vec2_t initialViewAngles = {};
 public:
-	int resetViewTick = -1;
-	vec2_t lastCameraAngle = {0, 0};
-	bool redirectMouse = false;
-	bool isThirdPerson = false;
-	bool cameraFacesFront = false;
+	vec2_t oldPos;
+	vec2_t Pos;
+	bool hold = true;
 
-	Freelook();
-	~Freelook();
-
-	virtual const char* getModuleName() override;
-	bool isFlashMode() override {
-		return true;
+	Freelook() : IModule(0, Category::VISUAL, "Look around freely without moving your rotation") {
+		registerBoolSetting("Hold", &hold, hold);
 	}
-	void onTick(C_GameMode* mode) override;
-	void onEnable() override;
-	void onDisable() override;
-	void onPostRender(C_MinecraftUIRenderContext* ctx) override;
+	~Freelook(){};
+
+	virtual const char* getModuleName() override { return "Freelook"; }
+	void onEnable() override { oldPos = g_Data.getLocalPlayer()->viewAngles; }
+	void onDisable() override { g_Data.getLocalPlayer()->setRot(oldPos);
+	}
 	bool callWhenDisabled() override {
 		return true;
 	}

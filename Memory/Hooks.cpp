@@ -781,15 +781,6 @@ if (GameData::shouldHide() || !moduleMgr->isInitialized())
 		}
 	}
 
-	// Zoom calc
-	{
-		static auto zoomModule = moduleMgr->getModule<Zoom>();
-		if (zoomModule->isEnabled()) zoomModule->target = zoomModule->strength;
-		zoomModule->modifier = zoomModule->target - ((zoomModule->target - zoomModule->modifier) * 0.8f);
-		if (abs(zoomModule->modifier - zoomModule->target) < 0.1f && !zoomModule->isEnabled())
-			zoomModule->zooming = false;
-	}
-
 	if (shouldPostRender) moduleMgr->onPostRender(renderCtx);
 	HImGui.endFrame();
 	DrawUtils::flush();
@@ -1318,8 +1309,16 @@ float Hooks::GetGamma(uintptr_t* a1) {
 			obtainedSettings++;
 		} else if (!strcmp(settingname->getText(), "gfx_field_of_view")) {
 			float* FieldOfView = (float*)((uintptr_t)list[i] + 24);
-			//if (zoomMod->isEnabled())
-				//zoomMod->OGFov = *FieldOfView;
+			if (zoomMod->isEnabled())
+				zoomMod->OGFov = *FieldOfView;
+			// Zoom calc
+			{
+				static auto zoomModule = moduleMgr->getModule<Zoom>();
+				if (zoomModule->isEnabled()) zoomModule->target = zoomModule->strength;
+				zoomModule->modifier = zoomModule->target - ((zoomModule->target - zoomModule->modifier) * 0.8f);
+				if (abs(zoomModule->modifier - zoomModule->target) < 0.1f && !zoomModule->isEnabled())
+					zoomModule->zooming = false;
+			}
 			obtainedSettings++;
 		}
 		if (obtainedSettings == 3) break;
@@ -1730,10 +1729,13 @@ bool Hooks::Mob__isImmobile(C_Entity* ent) {
 void Hooks::Actor__setRot(C_Entity* _this, vec2_t& angle) {
 	auto func = g_Hooks.Actor__setRotHook->GetFastcall<void, C_Entity*, vec2_t&>();
 	auto killauraMod = moduleMgr->getModule<Killaura>();
+	auto freelookMod = moduleMgr->getModule<Freelook>();
 	if (killauraMod->isEnabled() && !killauraMod->targetListEmpty && killauraMod->rotations && _this == g_Data.getLocalPlayer()) {
 		func(_this, angle = killauraMod->angle);
 	}
-
+	if (freelookMod->isEnabled() && g_Data.getLocalPlayer() == _this) {
+		func(_this, angle = freelookMod->oldPos);
+	}
 	func(_this, angle);
 }
 
