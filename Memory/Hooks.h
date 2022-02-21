@@ -130,7 +130,7 @@ private:
 	static bool Mob__isImmobile(C_Entity*);
 	static void Actor__setRot(C_Entity* _this, vec2_t& angle);
 	static void test(void* _this);
-	static bool playerCallBack(C_Player* lp, __int64 cock, __int64 penis);
+	static bool playerCallBack(C_Player* lp, __int64 a2, __int64 a3);
 	static void InventoryTransactionManager__addAction(C_InventoryTransactionManager*, C_InventoryAction&);
 	static void LevelRendererPlayer__renderNameTags(__int64 a1, __int64 a2, TextHolder* name, __int64 a4);
 
