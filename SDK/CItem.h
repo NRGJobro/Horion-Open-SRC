@@ -39,26 +39,26 @@ class C_ItemStack;
 class PointingStruct;
 
 class C_Item {
-	char pad_0008[0x70];  //0x0008
+	char pad_0008[0x70];  //0x8
 public:
-	int16_t maxStackSize;  //0x078
-	int16_t itemId;        //0x07A
+	int16_t maxStackSize;  //0x78
+	int16_t itemId;        //0x7A
 private:
-	char pad_0094[4];  //0x0094
+	char pad_0094[4];  //0x7C
 public:
-	TextHolder tileName;  //0x080
+	TextHolder tileName;  //0x80
 private:
-	char pad_00B8[8];  //0x00B8
+	char pad_00B8[8];  //0xA0
 public:
-	TextHolder name;  //0x088
+	TextHolder name;  //0xA8
 private:
-	char pad_00E0[8];  //0x00E0
+	char pad_00E0[8];  //0xC8
 public:
-	TextHolder isFrom;  //0x00E8
+	TextHolder isFrom;  //0xD0
 private:
-	char pad_0108[80];  //0x0108
+	char pad_0108[80];  //0xF0
 public:
-	int16_t duration;  //0x0158
+	int16_t duration;  //0x140
 
 private:
 	virtual void destructor();                     // 0
