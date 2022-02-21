@@ -17,8 +17,8 @@ const char* NoSlowDown::getModuleName() {
 
 void NoSlowDown::onEnable() {
 	if (opcode == 0 || opcode1 == 0) {
-		opcode = reinterpret_cast<uint8_t*>(FindSignature("F3 0F 11 46 ? 45 89 ? ? F3 0F 10 46 ?"));
-		opcode1 = reinterpret_cast<uint8_t*>(FindSignature("F3 0F 11 46 ? F3 0F 10 4E ?"));
+		opcode = reinterpret_cast<uint8_t*>(FindSignature("F3 0F 11 46 0C F3 0F 10 05"));
+		opcode1 = reinterpret_cast<uint8_t*>(FindSignature("F3 0F 11 46 0C 41 C7"));
 	}
 
 	DWORD oldProtect = 0;
@@ -53,8 +53,8 @@ void NoSlowDown::onEnable() {
 
 void NoSlowDown::onDisable() {
 	if (opcode == 0 || opcode1 == 0) {
-		opcode = reinterpret_cast<uint8_t*>(FindSignature("F3 0F 11 46 ? 45 89 ? ? F3 0F 10 46 ?"));
-		opcode1 = reinterpret_cast<uint8_t*>(FindSignature("F3 0F 11 46 ? F3 0F 10 4E ?"));
+		opcode = reinterpret_cast<uint8_t*>(FindSignature("F3 0F 11 46 0C F3 0F 10 05"));
+		opcode1 = reinterpret_cast<uint8_t*>(FindSignature("F3 0F 11 46 0C 41 C7"));
 	}
 
 	DWORD oldProtect = 0;
