@@ -92,9 +92,14 @@ public:
 class C_AnimatePacket : public C_Packet {
 public:
 	C_AnimatePacket();
-	//C_AnimatePacket(class AnimatePacket Action, Actor&);
-	signed int actionId;   //Test
-	long entityRuntimeId;  //Test
+
+private:
+	char padding[0x28];
+
+public:
+	int64_t entityId;
+	int64_t action;
+	float unknown;
 };
 
 class C_NPCRequestPacket : public C_Packet {
@@ -226,16 +231,17 @@ public:
 private:
 	char filler[0x28];  // 0x8
 public:
-	__int64 entityRuntimeID;  //0x28
-	vec3_t Position;          //0x30
-	float pitch;              //0x3c
-	float yaw;                //0x40
-	float headYaw;            //0x44
-	uint8_t mode;             //0x48
+	__int64 entityRuntimeID;
+	vec3_t Position;
+	float pitch;
+	float yaw;
+	float headYaw;
+	unsigned char mode;
 	bool onGround;
-	__int64 ridingEid;
-	int int1;
-	int int2;
+	__int64 ridingRuntimeEntId;//The runtime ID of the entity that the player might currently be riding. If not riding, this should be left 0
+	int tpCause;//Only needs to exist if Mode cause is 2 (teleport).
+	int entityType;//Only needs to exist if Mode cause is 2 (teleport).
+	__int64 unk;
 };
 
 #pragma pack(pop)
