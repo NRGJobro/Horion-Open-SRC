@@ -237,17 +237,16 @@ public:
 private:
 	char filler[0x28];  // 0x8
 public:
-	__int64 entityRuntimeID;
-	vec3_t Position;
-	float pitch;
-	float yaw;
-	float headYaw;
-	unsigned char mode;
+	__int64 entityRuntimeID;  //0x28
+	vec3_t Position;          //0x30
+	float pitch;              //0x3c
+	float yaw;                //0x40
+	float headYaw;            //0x44
+	uint8_t mode;             //0x48
 	bool onGround;
-	__int64 ridingRuntimeEntId;//The runtime ID of the entity that the player might currently be riding. If not riding, this should be left 0
-	int tpCause;//Only needs to exist if Mode cause is 2 (teleport).
-	int entityType;//Only needs to exist if Mode cause is 2 (teleport).
-	__int64 unk;
+	__int64 ridingEid;
+	int int1;
+	int int2;
 };
 
 #pragma pack(pop)
