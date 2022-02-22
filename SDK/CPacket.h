@@ -114,10 +114,13 @@ public:
 class PlayerSkinPacket : public C_Packet {
 public:
 	PlayerSkinPacket();
-	__int64 UUID;             //Test
-	__int64 skin;             //Test
-	std::string skinName;     //Test
-	std::string oldSkinName;  //Test
+private:
+	char padding[0x28];
+public:
+	__int64 UUID;
+	__int64 skin;  //meant to be skin class
+	std::string skinName;
+	std::string oldSkinName;
 };
 
 class NetworkLatencyPacket : public C_Packet {
