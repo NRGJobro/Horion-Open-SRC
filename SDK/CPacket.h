@@ -144,8 +144,11 @@ public:
 class C_InteractPacket : public C_Packet {
 public:
 	C_InteractPacket(/**enum InteractPacket::Action, class ActorRuntimeID, vec3_t const&*/);
-	unsigned char actionID;      //Test
-	long targetRuntimeEntityID;  //Test
+private:
+	char padding[0x28];
+public:
+	int action;
+	long target;
 };
 
 class ActorEventPacket : public C_Packet {
