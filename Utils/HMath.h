@@ -81,8 +81,8 @@ struct vec2_t {
 	float dot(const vec2_t &o) const { return x * o.x + y * o.y; }
 
 	vec2_t normAngles() {
-		float x = x;
-		float y = y;
+		float x = this->x;
+		float y = this->y;
 		while (x > 90.f)
 			x -= 180.0f;
 		while (x < -90.f)
@@ -528,8 +528,8 @@ struct glmatrixf {
 struct AABB {
 	vec3_t lower;
 	vec3_t upper;
-	//bool isZero = false;
-	//char padding[3];
+	bool isZero = false;
+	char padding[3];
 	AABB() {}
 	AABB(vec3_t l, vec3_t h) : lower(l), upper(h){};
 	AABB(const AABB &aabb) {
@@ -542,11 +542,11 @@ struct AABB {
 		this->upper = {lower.x + width, lower.y + height, lower.z + width};
 	}
 
-	bool operator==(const AABB &rhs) const {
+	inline bool operator==(const AABB &rhs) const {
 		return lower == rhs.lower && upper == rhs.upper;
 	}
 
-	bool isFullBlock() {
+	bool isFullBlock(){
 		auto diff = lower.sub(upper);
 		return fabsf(diff.y) == 1 && fabsf(diff.x) == 1 && fabsf(diff.z) == 1;
 	}
@@ -580,7 +580,6 @@ struct AABB {
 inline int random(int start, int end) {
 	return rand() % (end - start + 1) + start;
 }
-
 inline float randomf(int start, int end) {
 	return (float)random(start, end);
 }
