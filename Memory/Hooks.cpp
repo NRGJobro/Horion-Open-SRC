@@ -286,7 +286,7 @@ bool Hooks::playerCallBack(C_Player* lp, __int64 a2, __int64 a3) {
 				if (info.State & MEM_FREE) continue;
 				if (info.State & MEM_RESERVE) continue;
 
-				if (ent.ent != nullptr && *(__int64*)ent.ent > 0x6FF000000000 && *(__int64*)ent.ent < 0x800000000000 && *((int64_t*)ent.ent + 1) < 0x6FF000000000 && *(__int64*)ent.ent <= Utils::getBase() + 0x10000000)
+				if (*(__int64*)ent.ent != 0xFFFFFFFFFFFFFCD7 && entity != nullptr && ent.ent != nullptr && entity->isAlive() && *(__int64*)ent.ent > 0x6FF000000000 && *(__int64*)ent.ent < 0x800000000000 && *((int64_t*)ent.ent + 1) < 0x6FF000000000 && *(__int64*)ent.ent <= Utils::getBase() + 0x10000000)
 					validEntities.push_back(ent);
 			}
 			g_Hooks.entityList.clear();
@@ -395,27 +395,8 @@ __int64 Hooks::RenderText(__int64 a1, C_MinecraftUIRenderContext* renderCtx) {
 	C_GuiData* dat = g_Data.getClientInstance()->getGuiData();
 
 	DrawUtils::setCtx(renderCtx, dat);
-
-	if (g_Data.getLocalPlayer() != nullptr) {
-		if (!g_Data.getLocalPlayer() || !g_Data.getLocalPlayer()->pointingStruct || !*(&g_Data.getLocalPlayer()->region + 1))
-			g_Hooks.entityList.clear();
-
-		std::vector<EntityListPointerHolder> validEntities;
-		for (const auto& ent : g_Hooks.entityList) {
-			auto entity = ent.ent;
-			MEMORY_BASIC_INFORMATION info;
-			VirtualQuery(ent.ent, &info, sizeof(MEMORY_BASIC_INFORMATION));
-			if (info.State & MEM_FREE) continue;
-			if (info.State & MEM_RESERVE) continue;
-
-			if (ent.ent != nullptr && *(__int64*)ent.ent > 0x6FF000000000 && *(__int64*)ent.ent < 0x800000000000 && *((int64_t*)ent.ent + 1) < 0x6FF000000000 && *(__int64*)ent.ent <= Utils::getBase() + 0x10000000)
-				validEntities.push_back(ent);
-		}
-		g_Hooks.entityList.clear();
-		g_Hooks.entityList = validEntities;
-	}
-
-if (GameData::shouldHide() || !moduleMgr->isInitialized())
+ {
+	if (GameData::shouldHide() || !moduleMgr->isInitialized())
 		return oText(a1, renderCtx);
 
 	static auto hudModule = moduleMgr->getModule<HudModule>();
