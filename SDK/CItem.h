@@ -97,7 +97,9 @@ public:
 	virtual __int64 setExplodable(bool);                                                                                                   // 32
 	virtual __int64 setFireResistant(bool);                                                                                                // 33
 	virtual __int64 setIsGlint(bool);                                                                                                      // 34
-	virtual __int64 setShouldDespawn(bool);                                                                                                // 35
+	virtual __int64 setShouldDespawn(bool);												       // 35
+	virtual void buildNetworkTag(void);//We forgored these funcs, the vtable index numbers are now invalid
+    	virtual void initializeFromNetwork(CompoundTag const &);
 	virtual __int64 getBlockShape(void);                                                                                                   // 36
 	virtual bool canBeDepleted(void);                                                                                                      // 37
 	virtual bool canDestroySpecial(C_Block const &);                                                                                       // 38
