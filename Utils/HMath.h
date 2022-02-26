@@ -528,8 +528,8 @@ struct glmatrixf {
 struct AABB {
 	vec3_t lower;
 	vec3_t upper;
-	bool isZero = false;
-	char padding[3];
+	//bool isZero = false;
+	//char padding[3];
 	AABB() {}
 	AABB(vec3_t l, vec3_t h) : lower(l), upper(h){};
 	AABB(const AABB &aabb) {
@@ -542,7 +542,7 @@ struct AABB {
 		this->upper = {lower.x + width, lower.y + height, lower.z + width};
 	}
 
-	inline bool operator==(const AABB &rhs) const {
+	bool operator==(const AABB &rhs) const {
 		return lower == rhs.lower && upper == rhs.upper;
 	}
 
