@@ -580,10 +580,14 @@ __int64 Hooks::RenderText(__int64 a1, C_MinecraftUIRenderContext* renderCtx) {
 				float yOffset = 0;  // Offset of next Text
 				vec2_t windowSize = g_Data.getClientInstance()->getGuiData()->windowSize;
 				vec2_t windowSizeReal = g_Data.getClientInstance()->getGuiData()->windowSizeReal;
-
 				vec2_t mousePos = *g_Data.getClientInstance()->getMousePos();
-				mousePos.div(windowSizeReal);
-				mousePos.mul(windowSize);
+
+					// Convert mousePos to visual Pos
+					{
+
+						mousePos = mousePos.div(windowSizeReal);
+						mousePos = mousePos.mul(windowSize);
+					}
 
 				// Draw Horion logo
 				if (shouldRenderWatermark) {
