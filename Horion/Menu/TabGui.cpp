@@ -14,14 +14,14 @@ struct SelectedItemInformation {
 	}
 
 	void interp() {
-		currentSelectedItemInterpol += (selectedItemId - currentSelectedItemInterpol) * 0.2f;
+		currentSelectedItemInterpol += (selectedItemId - currentSelectedItemInterpol) * 0.05f;
 	}
 
 	void rollback() {
-		rollbackVal *= 0.7f;
+		rollbackVal *= 0.895f;
 	}
 	void rollin() {
-		rollbackVal = 1 - ((1 - rollbackVal) * 0.7f);
+		rollbackVal = 1 - ((1 - rollbackVal) * 0.95f);
 	}
 };
 
