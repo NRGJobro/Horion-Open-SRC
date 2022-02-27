@@ -393,7 +393,6 @@
     <ClCompile Include="Memory\SlimMem.cpp" />
     <ClCompile Include="SDK\CBlockLegacy.cpp" />
     <ClCompile Include="SDK\CCamera.cpp" />
-    <ClCompile Include="SDK\CChestBlockActor.cpp" />
     <ClCompile Include="SDK\CClientInstance.cpp" />
     <ClCompile Include="SDK\CComplexInventoryTransaction.cpp" />
     <ClCompile Include="SDK\CEntity.cpp" />
