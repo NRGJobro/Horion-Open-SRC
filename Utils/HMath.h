@@ -542,7 +542,7 @@ struct AABB {
 		this->upper = {lower.x + width, lower.y + height, lower.z + width};
 	}
 
-	bool operator==(const AABB &rhs) const {
+	inline bool operator==(const AABB &rhs) const {
 		return lower == rhs.lower && upper == rhs.upper;
 	}
 
