@@ -18,7 +18,7 @@ struct SelectedItemInformation {
 	}
 
 	void rollback() {
-		rollbackVal *= 0.895f;
+		rollbackVal *= 0.95f;
 	}
 	void rollin() {
 		rollbackVal = 1 - ((1 - rollbackVal) * 0.95f);
