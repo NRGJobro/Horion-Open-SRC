@@ -859,7 +859,7 @@ void ClickGui::onLoadConfig(void* confVoid) {
 		auto obj = conf->at("ClickGuiMenu");
 		if (obj.is_null())
 			return;
-		for (int i = 0; i <= (int)Category::SERVER /*last category*/; i++) {
+		for (int i = 0; i <= (int)Category::CUSTOM /*last category*/; i++) {
 			auto catName = ClickGui::catToName((Category)i);
 			if (obj.contains(catName)) {
 				auto value = obj.at(catName);
