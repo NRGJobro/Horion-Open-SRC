@@ -18,7 +18,7 @@ C_PlayerInventoryProxy *C_Player::getSupplies() {
 	}*/
 	return *reinterpret_cast<C_PlayerInventoryProxy **>(reinterpret_cast<__int64>(this) + offset);
 }
-void C_LocalPlayer::unlockAchievments() {  // MinecraftEventing::fireEventAwardAchievement
+void C_LocalPlayer::unlockAchievements() {  // MinecraftEventing::fireEventAwardAchievement
 	using fireEventAward = void(__fastcall *)(void *, int);
 	static fireEventAward fireEventAwardFunc = reinterpret_cast<fireEventAward>(FindSignature("48 85 C9 0F 84 ? ? ? ? 48 89 5C 24 ? 57 48 81 EC ? ? ? ? 48 8B 01"));
 	for (int i = 0; i < 118; i++)

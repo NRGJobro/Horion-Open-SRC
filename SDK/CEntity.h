@@ -698,7 +698,7 @@ class C_ServerPlayer : public C_Player {
 
 class C_LocalPlayer : public C_Player {
 public:
-	void unlockAchievments();
+	void unlockAchievements();
 
 	void swingArm() {
 		//using SwingArm = void(__thiscall*)(void*);
