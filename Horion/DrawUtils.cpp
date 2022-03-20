@@ -101,9 +101,13 @@ void DrawUtils::setColor(float r, float g, float b, float a) {
 }
 
 C_Font* DrawUtils::getFont(Fonts font) {
+	static auto TestFont = moduleMgr->getModule<FontChanger>();
 
-	if (true)
+	if (TestFont->Fonts.selected == 1)
+		return g_Data.getClientInstance()->minecraftGame->mcFont;
+	else
 		return g_Data.getClientInstance()->minecraftGame->getOldFont();
+
 	switch (font) {
 	case Fonts::SMOOTH:
 		return g_Data.getClientInstance()->minecraftGame->getTheGoodFontThankYou();
@@ -113,6 +117,9 @@ C_Font* DrawUtils::getFont(Fonts font) {
 		break;
 	case Fonts::RUNE:
 		return g_Data.getClientInstance()->_getRuneFont();
+		break;
+	case Fonts::MCFONT:
+		return g_Data.getClientInstance()->minecraftGame->mcFont;
 		break;
 	default:
 		return g_Data.getClientInstance()->_getFont();
