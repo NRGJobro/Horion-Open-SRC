@@ -20,8 +20,8 @@ C_PlayerInventoryProxy *C_Player::getSupplies() {
 }
 void C_LocalPlayer::unlockAchievments() {  // MinecraftEventing::fireEventAwardAchievement
 	using fireEventAward = void(__fastcall *)(void *, int);
-	static fireEventAward fireEventAwardFunc = reinterpret_cast<fireEventAward>(FindSignature("48 85 C9 0F 84 ?? ?? ?? ?? 55 56 57 48 8D AC 24 ?? ?? ?? ?? 48 81 EC ?? ?? ?? ?? 48 C7 44 24 ?? FE FF FF FF 48 89 9C 24 ?? ?? ?? ?? 48 8B 05 ?? ?? ?? ?? 48 33 C4 48 89 85 ?? ?? ?? ?? 8B"));
-	for (int i = 0; i < 100; i++)
+	static fireEventAward fireEventAwardFunc = reinterpret_cast<fireEventAward>(FindSignature("48 85 C9 0F 84 ? ? ? ? 48 89 5C 24 ? 57 48 81 EC ? ? ? ? 48 8B 01"));
+	for (int i = 0; i < 118; i++)
 		fireEventAwardFunc(this, i);
 }
 void C_LocalPlayer::applyTurnDelta(vec2_t *viewAngleDelta) {
