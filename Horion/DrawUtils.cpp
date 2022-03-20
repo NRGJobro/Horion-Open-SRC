@@ -101,9 +101,9 @@ void DrawUtils::setColor(float r, float g, float b, float a) {
 }
 
 C_Font* DrawUtils::getFont(Fonts font) {
-	static auto TestFont = moduleMgr->getModule<FontChanger>();
+	static auto fontChangerModule = moduleMgr->getModule<FontChanger>();
 
-	if (TestFont->Fonts.selected == 1)
+	if (fontChangerModule->Fonts.selected == 1)
 		return g_Data.getClientInstance()->minecraftGame->mcFont;
 	else
 		return g_Data.getClientInstance()->minecraftGame->getOldFont();
