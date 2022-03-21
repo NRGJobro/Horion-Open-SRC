@@ -42,7 +42,7 @@ public:
 struct TextMeasureData {
 	float textSize;
 	int idk;
-	bool bool1;
+	bool displayShadow;
 	bool bool2;
 };
 
