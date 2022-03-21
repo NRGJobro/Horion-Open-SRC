@@ -46,9 +46,71 @@ struct TextMeasureData {
 	bool bool2;
 };
 
-class NinesliceInfo {  // how the fuck did onix find what goes in this
-private:
-	char pad_0x0000[0xFF];  //0x0000
+struct ImageInfo_t {
+	char Present;
+	char ResolutionUnits;
+	__int16 XDensity;
+	__int16 YDensity;
+};
+
+struct ImageInfo {
+	char FileName[1025];
+	ImageInfo_t JfifHeader;
+	char CameraMake[32];
+	char CameraModel[40];
+	char DateTime[20];
+	unsigned int Height;
+	unsigned int Width;
+	int Orientation;
+	int IsColor;
+	int Process;
+	int FlashUsed;
+	float FocalLength;
+	float ExposureTime;
+	float ApertureFNumber;
+	float Distance;
+	float CCDWidth;
+	float ExposureBias;
+	float DigitalZoomRatio;
+	int FocalLength35mmEquiv;
+	int Whitebalance;
+	int MeteringMode;
+	int ExposureProgram;
+	int ExposureMode;
+	int ISOequivalent;
+	int LightSource;
+	int DistanceRange;
+	float xResolution;
+	float yResolution;
+	int ResolutionUnit;
+	char Comments[16000];
+	int CommentWidthchars;
+	unsigned int ThumbnailOffset;
+	unsigned int ThumbnailSize;
+	unsigned int LargestExifOffset;
+	char ThumbnailAtEnd;
+	int ThumbnailSizeOffset;
+	int DateTimeOffsets[10];
+	int numDateTimeTags;
+	int GpsInfoPresent;
+	char GpsLat[31];
+	char GpsLong[31];
+	char GpsAlt[20];
+	int QualityGuess;
+};
+
+class NinesliceInfo {
+public:
+	ImageInfo TopLeft;
+	ImageInfo TopRight;
+	ImageInfo BottomLeft;
+	ImageInfo BottomRight;
+	vec2_t UVScale;
+	std::vector<ImageInfo> Left;
+	std::vector<ImageInfo> Top;
+	std::vector<ImageInfo> Right;
+	std::vector<ImageInfo> Bottom;
+	std::vector<ImageInfo> Middle;
 };
 
 class C_MinecraftUIRenderContext {
@@ -64,7 +126,7 @@ public:
 	virtual void flushText(float timeSinceLastFlush);
 	virtual __int64 drawImage(C_TexturePtr* texturePtr, vec2_t& ImagePos, vec2_t& ImageDimension, __int64& a4, vec2_t& idk);
 	virtual void drawNineslice(C_TexturePtr* texturePtr, void* nineslice);
-	virtual __int64 flushImages(MC_Color& color, __int64 flushImageAddr, __int64 hashedString);
+	virtual __int64 flushImages(MC_Color& color, float alpha, __int64 hashedString);
 	virtual void beginSharedMeshBatch(uintptr_t ComponentRenderBatch);
 	virtual void endSharedMeshBatch(float timeSinceLastFlush);
 	virtual void drawRectangle(const float* pos, const float* color, float alpha, int lineWidth);  // line width is guessed
