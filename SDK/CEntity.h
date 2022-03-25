@@ -580,6 +580,8 @@ public:
 	class PointingStruct *getPointingStruct() {
 		return *reinterpret_cast<class PointingStruct **>(reinterpret_cast<__int64>(this) + 0x368);
 	}
+
+	void lerpTo(vec3_t const &pos, vec2_t const &a2, int a3);
 };
 #pragma pack(pop)
 
