@@ -68,7 +68,7 @@ void CrystalAura::CPlace(C_GameMode* gm, vec3_t* pos) {
 		C_Block* block = gm->player->region->getBlock(blockPos);
 		C_Block* upperBlock = gm->player->region->getBlock(upperBlockPos);
 		bool idk = true;
-		gm->buildBlock(&blockPos, g_Data.getLocalPlayer()->pointingStruct->blockSide, idk);
+		gm->buildBlock(&blockPos, g_Data.getLocalPlayer()->level->blockSide, idk);
 		return;
 	}
 	vec3_ti bestPos;
@@ -153,7 +153,7 @@ void CrystalAura::onTick(C_GameMode* gm) {
 				for (auto& i : targetList)
 					CPlace(gm, i->getPos());
 			else {
-				auto ptr = g_Data.getLocalPlayer()->pointingStruct;
+				auto ptr = g_Data.getLocalPlayer()->level;
 				if (ptr->getEntity() == nullptr && ptr->rayHitType == 0)
 					CPlace(gm, &ptr->block.toFloatVector());
 			}
@@ -191,7 +191,7 @@ void CrystalAura::onPreRender(C_MinecraftUIRenderContext* renderCtx) {
 		g_Data.getLocalPlayer() == nullptr)
 		return;
 	
-	auto ptr = g_Data.getLocalPlayer()->pointingStruct;
+	auto ptr = g_Data.getLocalPlayer()->level;
 	if (ptr != nullptr)
 		if (ptr->getEntity() == nullptr && ptr->rayHitType == 0)
 			if (g_Data.getLocalPlayer()->region->getBlock(ptr->block)->toLegacy()->blockId == 49 ||

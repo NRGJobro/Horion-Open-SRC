@@ -11,7 +11,7 @@ const char* MidClick::getModuleName() {
 }
 
 void MidClick::onTick(C_GameMode* gm) {
-	C_Entity* entity = g_Data.getLocalPlayer()->pointingStruct->getEntity();
+	C_Entity* entity = g_Data.getLocalPlayer()->level->getEntity();
 	if (entity == nullptr) 
 		return;
 

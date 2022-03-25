@@ -36,7 +36,7 @@ public:
 
 class C_Player;
 class C_ItemStack;
-class PointingStruct;
+class Level;
 
 class C_Item {
 	char pad_0008[0x70];  //0x8
@@ -118,7 +118,7 @@ public:
 	virtual bool isLiquidClipItem(int);                                                                                                    // 51
 	virtual __int64 shouldInteractionWithBlockBypassLiquid(C_Block const &);                                                               // 52
 	virtual __int64 requiresInteract(void);                                                                                                // 53
-	virtual __int64 appendFormattedHovertext(C_ItemStack const &, PointingStruct &, std::string &, bool);                                  // 54
+	virtual __int64 appendFormattedHovertext(C_ItemStack const &, Level &, std::string &, bool);                                  // 54
 	virtual bool isValidRepairItem();                                                                                                      // 55
 	virtual __int64 getEnchantSlot(void);                                                                                                  // 56
 	virtual __int64 getEnchantValue(void);                                                                                                 // 57
@@ -145,7 +145,7 @@ public:
 	virtual bool canUseOnSimTick(void);                                                                                                    // 78
 	virtual __int64 use(C_ItemStack &, C_Player &);                                                                                        // 79
 	virtual __int64 dispense(C_BlockSource &, __int64, int, vec3_t const &, unsigned char);                                                // 80
-	virtual __int64 useTimeDepleted(C_ItemStack &, PointingStruct *, C_Player *);                                                          // 81
+	virtual __int64 useTimeDepleted(C_ItemStack &, Level *, C_Player *);                                                          // 81
 	virtual __int64 releaseUsing(C_ItemStack &, C_Player *, int);                                                                          // 82
 	virtual __int64 getDestroySpeed(C_ItemStack const &, C_Block const &);                                                                 // 83
 	virtual __int64 hurtActor(C_ItemStack &, C_Entity &, C_Entity &);                                                                      // 84
@@ -160,12 +160,12 @@ public:
 	virtual __int64 readUserData(C_ItemStack &, __int64, __int64);                                                                         // 93
 	virtual __int64 writeUserData(C_ItemStack const &, __int64);                                                                           // 94
 	virtual __int64 getMaxStackSize(class ItemDescriptor const *);                                                                         // 95
-	virtual __int64 inventoryTick(C_ItemStack &, PointingStruct &, C_Entity &, int, bool);                                                 // 96
-	virtual __int64 refreshedInContainer(C_ItemStack const &, PointingStruct &);                                                           // 97
+	virtual __int64 inventoryTick(C_ItemStack &, Level &, C_Entity &, int, bool);                                                 // 96
+	virtual __int64 refreshedInContainer(C_ItemStack const &, Level &);                                                           // 97
 	virtual __int64 getCooldownType(void);                                                                                                 // 98
 	virtual __int64 getCooldownTime(void);                                                                                                 // 99
 	virtual __int64 fixupCommon(C_ItemStack &);                                                                                            // 100
-	virtual __int64 fixupCommon(C_ItemStack &, PointingStruct &);                                                                          // 101
+	virtual __int64 fixupCommon(C_ItemStack &, Level &);                                                                          // 101
 	virtual __int64 getDamageValue(CompoundTag const *);                                                                                   // 102
 	virtual __int64 setDamageValue(C_ItemStack &, short);                                                                                  // 103
 	virtual __int64 getInHandUpdateType(C_Player const &, C_ItemStack const &, C_ItemStack const &, bool, bool);                           // 104

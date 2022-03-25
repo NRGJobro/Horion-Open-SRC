@@ -18,7 +18,7 @@ const char* Tracer::getModuleName() {
 
 void Tracer::onLevelRender() {
 	if (old) {
-		vec3_t origin = g_Data.getLocalPlayer()->pointingStruct->rayHitVec;
+		vec3_t origin = g_Data.getLocalPlayer()->level->rayHitVec;
 		g_Data.forEachEntity([&](C_Entity* ent, bool valid) {
 			if (ent != g_Data.getLocalPlayer() && Target::isValidTarget(ent) && g_Data.canUseMoveKeys()) {
 				DrawUtils::setColor(255, 255, 255, 1);

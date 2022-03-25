@@ -11,8 +11,8 @@ TestCommand::~TestCommand() {
 }
 
 void listEnts() {
-	PointingStruct* pointingStruct = g_Data.getLocalPlayer()->getPointingStruct();
-	auto entity = pointingStruct->getEntity();
+	Level* level = g_Data.getLocalPlayer()->getlevel();
+	auto entity = level->getEntity();
 	if (entity != nullptr) {
 		auto id = entity->getEntityTypeId();
 		char* name = entity->getNameTag()->getText();
@@ -41,10 +41,10 @@ void itemId() {
 
 void showAimedBlockInfo() {
 	C_LocalPlayer* player = g_Data.getLocalPlayer();
-	PointingStruct* pointingStruct = g_Data.getLocalPlayer()->getPointingStruct();
-	C_Block* block = g_Data.getLocalPlayer()->region->getBlock(pointingStruct->block);
-	auto entity = pointingStruct->getEntity();
-	if (block != nullptr && pointingStruct != nullptr && entity == nullptr && block->blockLegacy->blockId != 7) {
+	Level* level = g_Data.getLocalPlayer()->getlevel();
+	C_Block* block = g_Data.getLocalPlayer()->region->getBlock(level->block);
+	auto entity = level->getEntity();
+	if (block != nullptr && level != nullptr && entity == nullptr && block->blockLegacy->blockId != 7) {
 		char* name = block->toLegacy()->name.getText();
 		auto id = block->toLegacy()->blockId;
 		g_Data.getGuiData()->displayClientMessageF("---------------");

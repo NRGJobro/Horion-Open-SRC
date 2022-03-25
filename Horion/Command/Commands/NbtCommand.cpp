@@ -18,8 +18,8 @@ bool NbtCommand::execute(std::vector<std::string>* args) {
 		assertTrue(args->size() > 2);
 	}
 
-	PointingStruct* pointingStruct = g_Data.getLocalPlayer()->pointingStruct;
-	C_BlockActor* blockActor = g_Data.getLocalPlayer()->region->getBlockEntity(pointingStruct->block);
+	Level* level = g_Data.getLocalPlayer()->level;
+	C_BlockActor* blockActor = g_Data.getLocalPlayer()->region->getBlockEntity(level->block);
 	C_PlayerInventoryProxy* supplies = g_Data.getLocalPlayer()->getSupplies();
 	C_Inventory* inv = supplies->inventory;
 	C_InventoryTransactionManager* manager = g_Data.getLocalPlayer()->getTransactionManager();
@@ -35,12 +35,12 @@ bool NbtCommand::execute(std::vector<std::string>* args) {
 			boy->write(build);
 			delete boy;
 		} else {
-			if (pointingStruct->getEntity() != nullptr) {
+			if (level->getEntity() != nullptr) {
 				if (g_Data.getRakNetInstance()->serverIp.getTextLength() >= 1) {
 					clientMessageF("%sNBT tags for mobs only works in local world!", RED);
 					return true;
 				}
-				pointingStruct->getEntity()->save(tag.get());
+				level->getEntity()->save(tag.get());
 				tag->write(build);
 			} else if (blockActor != nullptr) {
 				blockActor->save(tag.get());

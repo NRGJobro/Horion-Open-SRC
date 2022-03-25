@@ -21,7 +21,7 @@ void Teleport::onTick(C_GameMode* gm) {
 	if (GameData::isRightClickDown() && !hasClicked) {
 		hasClicked = true;
 
-		vec3_ti block = g_Data.getLocalPlayer()->getPointingStruct()->block;
+		vec3_ti block = g_Data.getLocalPlayer()->getlevel()->block;
 		if (block == vec3_ti(0, 0, 0)) return;
 		vec3_t pos = block.toFloatVector();
 		pos.x += 0.5f;

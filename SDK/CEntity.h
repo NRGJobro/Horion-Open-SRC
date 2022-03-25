@@ -13,7 +13,7 @@
 
 class C_GameMode;
 
-class PointingStruct {
+class Level {
 private:
 	char firstpad[0x688];  //0x8
 public:
@@ -107,7 +107,7 @@ public:
 private:
 	char pad_0360[8];  //0x0360
 public:
-	PointingStruct *pointingStruct;  //0x0368
+	Level *level;  //0x0368
 private:
 	char pad_0370[328];  //0x0370
 public:
@@ -577,8 +577,8 @@ public:
 		return *reinterpret_cast<float *>(this + 0x1040);
 	}
 
-	class PointingStruct *getPointingStruct() {
-		return *reinterpret_cast<class PointingStruct **>(reinterpret_cast<__int64>(this) + 0x368);
+	class Level *getlevel() {
+		return *reinterpret_cast<class Level **>(reinterpret_cast<__int64>(this) + 0x368);
 	}
 
 	void lerpTo(vec3_t const &pos, vec2_t const &a2, int a3);

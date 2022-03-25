@@ -16,15 +16,15 @@ void Nbt::onTick(C_GameMode* gm) {
 	if (!GameData::canUseMoveKeys()) {
 		return;
 	}
-	PointingStruct* pointingStruct = g_Data.getLocalPlayer()->pointingStruct;
+	Level* level = g_Data.getLocalPlayer()->level;
 	
 	if (GameData::isRightClickDown()) {  // && Utils::getClipboardText() != lastCopy) {
-		if (pointingStruct->getEntity() != nullptr) {
+		if (level->getEntity() != nullptr) {
 
 			if (!(g_Data.getRakNetInstance()->serverIp.getTextLength() < 1))
 				return;
 			std::unique_ptr<CompoundTag> tag = std::make_unique<CompoundTag>();
-			pointingStruct->getEntity()->save(tag.get());
+			level->getEntity()->save(tag.get());
 			std::stringstream build;
 			tag->write(build);
 			auto str = build.str();

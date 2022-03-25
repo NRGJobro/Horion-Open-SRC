@@ -36,7 +36,7 @@ void C_LocalPlayer::setGameModeType(int gma) {
 	this->setC_PlayerGameType(gma);
 }
 
-bool PointingStruct::hasEntity() {
+bool Level::hasEntity() {
 	return rayHitType == 1;
 }
 
@@ -50,7 +50,7 @@ void C_Entity::lerpTo(vec3_t const &pos, vec2_t const &a2, int a3) { //lerpTo wa
 	lerp(this, pos, a2, a3);
 }
 
-C_Entity *PointingStruct::getEntity() {
+C_Entity *Level::getEntity() {
 	if (rayHitType != 1) return nullptr;
 	C_Entity *retval = nullptr;
 	g_Data.forEachEntity([this, &retval](C_Entity *ent, bool b) {

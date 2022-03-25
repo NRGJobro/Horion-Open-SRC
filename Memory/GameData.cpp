@@ -165,7 +165,7 @@ void GameData::setRakNetInstance(C_RakNetInstance* raknet) {
 
 void GameData::forEachEntity(std::function<void(C_Entity*, bool)> callback) {
 	/*//Player EntityList
-	C_EntityList* entityList = (C_EntityList*)g_Data.getLocalPlayer()->pointingStruct;
+	C_EntityList* entityList = (C_EntityList*)g_Data.getLocalPlayer()->level;
 	uintptr_t start = ((uintptr_t)entityList + 0x70);
 	uintptr_t stop = ((uintptr_t)entityList + 0x78);
 	start = *(uintptr_t*)start;
@@ -192,7 +192,7 @@ void GameData::forEachEntity(std::function<void(C_Entity*, bool)> callback) {
 		}
 	}*/
 
-	if (localPlayer && localPlayer->pointingStruct) {
+	if (localPlayer && localPlayer->level) {
 		for (const auto& ent : g_Hooks.entityList)
 			if (ent.ent != nullptr) callback(ent.ent, false);
 	}
