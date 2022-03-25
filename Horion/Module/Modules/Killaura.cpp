@@ -35,9 +35,12 @@ void findEntity(C_Entity* currentEntity, bool isRegularEntity) {
 	if (!g_Data.getLocalPlayer()->isAlive())
 		return;
 
-	if(!currentEntity->isAlive())
+	if (!currentEntity->isAlive())
 		return;
 
+	if (currentEntity->getEntityTypeId() == 66) // falling block
+		return;
+	  
 	if (currentEntity->getEntityTypeId() == 69)  // XP
 		return;
 
