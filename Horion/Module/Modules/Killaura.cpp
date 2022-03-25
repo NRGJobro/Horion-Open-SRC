@@ -19,7 +19,6 @@ const char* Killaura::getModuleName() {
 }
 
 static std::vector<C_Entity*> targetList;
-
 void findEntity(C_Entity* currentEntity, bool isRegularEntity) {
 	static auto killauraMod = moduleMgr->getModule<Killaura>();
 
