@@ -677,7 +677,7 @@ public:
 	virtual __int64 getC_ItemCooldownLeft();                                                             // 426
 	virtual __int64 getC_ItemCooldownLeft(unsigned long);                                                // 427
 	virtual __int64 getMaxC_ItemCooldownLeft(void);                                                      // 428
-	virtual bool isC_ItemInCooldown();                                                                   // 429
+	virtual bool isItemInCooldown(HashedString const &);                                                 // 429
 	virtual __int64 sendInventoryTransaction(C_InventoryTransaction const &);                            // 430
 	virtual __int64 sendComplexInventoryTransaction(__int64);                                            // 431
 	virtual __int64 sendNetworkPacket(class C_Packet &);                                                 // 432
