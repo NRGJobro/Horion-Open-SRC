@@ -74,8 +74,8 @@ add_library(Horion SHARED
         Horion/Command/Commands/ScriptCommand.h
         Horion/Command/Commands/ServerCommand.cpp
         Horion/Command/Commands/ServerCommand.h
-        Horion/Command/Commands/setoffhandCommand.cpp
-        Horion/Command/Commands/setoffhandCommand.h
+        Horion/Command/Commands/SetOffhandCommand.cpp
+        Horion/Command/Commands/SetOffhandCommand.h
         Horion/Command/Commands/SetprefixCommand.cpp
         Horion/Command/Commands/SetprefixCommand.h
         Horion/Command/Commands/SpammerCommand.cpp
