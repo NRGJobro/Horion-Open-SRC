@@ -4,11 +4,11 @@ EditionFaker::EditionFaker() : IModule(0, Category::MISC, "Fakes your device") {
 		edition = SettingEnum(this)
 				.addEntry(EnumEntry("Unknown", 0))
 				.addEntry(EnumEntry("Android", 1))
-				.addEntry(EnumEntry("iOS", 2))
-				.addEntry(EnumEntry("macOS", 3))
+				.addEntry(EnumEntry("iOS", 2)) 
+				.addEntry(EnumEntry("macOS", 3)) // OS_X
 				.addEntry(EnumEntry("FireOS", 4))
 				.addEntry(EnumEntry("GearVR", 5))
-				.addEntry(EnumEntry("Hololens", 6))
+				.addEntry(EnumEntry("Hololens", 6)) 
 				.addEntry(EnumEntry("Win10", 7)) // Windows 10 (PC)
 				.addEntry(EnumEntry("Win32", 8)) // Windows
 				.addEntry(EnumEntry("Linux", 9)) // Dedicated
