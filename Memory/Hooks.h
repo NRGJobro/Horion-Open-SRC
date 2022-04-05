@@ -24,7 +24,6 @@
 #include "../resource.h"
 #include "GameData.h"
 #include "MinHook.h"
-//#include "../Horion/Game/Game.h"
 
 #include <d3d11.h>
 #include <d3dcompiler.h>

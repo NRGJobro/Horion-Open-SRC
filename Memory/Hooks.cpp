@@ -6,7 +6,7 @@
 #include <glm/ext/matrix_transform.hpp>  // perspective, translate, rotate
 #include <glm/gtc/constants.hpp>
 #include <glm/mat4x4.hpp>         // mat4
-#include <glm/trigonometric.hpp>  //radians
+#include <glm/trigonometric.hpp>  // radians
 
 #include "../SDK/Tag.h"
 #include "../Horion/Menu/TabGui.h"
