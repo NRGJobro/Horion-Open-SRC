@@ -2,7 +2,7 @@
 #include "Module.h"
 class Timer : public IModule {
 private:
-	int timer = 50;
+	float timer = 50.f;
 
 public:
 	Timer();
