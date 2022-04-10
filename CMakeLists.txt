@@ -308,6 +308,7 @@ add_library(Horion SHARED
         Memory/MinHook.h
         Memory/SlimMem.cpp
         Memory/SlimMem.h
+        SDK/CAttribute.h
         SDK/CBlockLegacy.h
         SDK/CChestBlockActor.h
         SDK/CClientInstance.h
