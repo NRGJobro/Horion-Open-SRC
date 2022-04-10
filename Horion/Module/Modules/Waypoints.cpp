@@ -2,10 +2,10 @@
 
 #include <algorithm>
 
-Waypoints::Waypoints() : IModule(0, Category::VISUAL, "Shows holograms for user-defined coordinates") {
+Waypoints::Waypoints() : IModule(0, Category::VISUAL, "Shows holograms for user-defined coordinates.") {
 	registerFloatSetting("Size", &size, size, 0.3f, 1.6f);
 	registerBoolSetting("Interdimensional", &interdimensional, interdimensional);
-	registerBoolSetting("Show coordinates", &showCoordinates, showCoordinates);
+	registerBoolSetting("Show Coordinates", &showCoordinates, showCoordinates);
 }
 
 Waypoints::~Waypoints() {

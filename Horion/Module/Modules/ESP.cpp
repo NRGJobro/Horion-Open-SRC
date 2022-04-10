@@ -2,10 +2,10 @@
 
 #include "../../../Utils/Target.h"
 
-ESP::ESP() : IModule('O', Category::VISUAL, "Makes it easier to find entities around you") {
-	registerBoolSetting("rainbow", &doRainbow, doRainbow);
+ESP::ESP() : IModule('O', Category::VISUAL, "Makes it easier to find entities around you.") {
+	registerBoolSetting("Rainbow", &doRainbow, doRainbow);
 	registerBoolSetting("MobEsp", &isMobEsp, isMobEsp);
-	registerBoolSetting("2d", &is2d, is2d);
+	registerBoolSetting("2D", &is2d, is2d);
 }
 
 ESP::~ESP() {

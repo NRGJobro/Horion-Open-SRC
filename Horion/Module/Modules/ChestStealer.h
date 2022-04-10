@@ -1,5 +1,7 @@
 #pragma once
+
 #include "Module.h"
+
 class ChestStealer : public IModule {
 private:
 	int delay = 0;

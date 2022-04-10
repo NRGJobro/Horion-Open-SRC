@@ -1,15 +1,15 @@
 #include "CrystalAura.h"
 
-CrystalAura::CrystalAura() : IModule(VK_NUMPAD0, Category::COMBAT, "Destroys nearby Crystals") {
+CrystalAura::CrystalAura() : IModule(VK_NUMPAD0, Category::COMBAT, "Destroys nearby End Crystals.") {
 	registerIntSetting("Range", &range, range, 1, 10);
-	registerIntSetting("Crystal range", &cRange, cRange, 1, 15);
-	registerIntSetting("Place range", &eRange, eRange, 1, 5);
-	registerIntSetting("Player range", &pRange, pRange, 1, 10);
-	registerBoolSetting("Auto select", &AutoSelect, AutoSelect);
+	registerIntSetting("Crystal Range", &cRange, cRange, 1, 15);
+	registerIntSetting("Place Range", &eRange, eRange, 1, 5);
+	registerIntSetting("Player Range", &pRange, pRange, 1, 10);
+	registerBoolSetting("Autoselect", &AutoSelect, AutoSelect);
 	registerBoolSetting("Autoplace", &autoplace, autoplace);
-	registerBoolSetting("Enhance place", &pEnhanced, pEnhanced);
-	registerBoolSetting("Enhance destroy", &dEnhanced, dEnhanced);
-	registerBoolSetting("preview", &Preview, Preview);
+	registerBoolSetting("Enhance Slace", &pEnhanced, pEnhanced);
+	registerBoolSetting("Enhance Destroy", &dEnhanced, dEnhanced);
+	registerBoolSetting("Preview", &Preview, Preview);
 	delay = 0;
 }
 CrystalAura::~CrystalAura() {

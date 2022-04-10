@@ -1,4 +1,5 @@
 #pragma once
+
 #include "../../../Memory/GameData.h"
 #include "../../FriendList/FriendList.h"
 #include "../../../Utils/keys.h"

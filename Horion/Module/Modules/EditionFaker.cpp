@@ -1,6 +1,6 @@
 #include "EditionFaker.h"
 
-EditionFaker::EditionFaker() : IModule(0, Category::MISC, "Fakes your device") {
+EditionFaker::EditionFaker() : IModule(0, Category::MISC, "Fakes your device.") {
 		edition = SettingEnum(this)
 				.addEntry(EnumEntry("Unknown", 0))
 				.addEntry(EnumEntry("Android", 1))

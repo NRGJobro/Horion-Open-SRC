@@ -1,6 +1,8 @@
 #pragma once
+
 #include "../ModuleManager.h"
 #include "Module.h"
+
 class Zoom : public IModule {
 public:
 	float strength = 0.5f;

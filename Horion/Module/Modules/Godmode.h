@@ -1,5 +1,7 @@
 #pragma once
+
 #include "Module.h"
+
 class Godmode : public IModule {
 private:
 	int regendelay = 5;

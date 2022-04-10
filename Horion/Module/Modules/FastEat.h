@@ -1,5 +1,7 @@
 #pragma once
+
 #include "Module.h"
+
 class FastEat : public IModule {
 public:
 	FastEat();

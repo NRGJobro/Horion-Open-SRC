@@ -1,5 +1,7 @@
 #pragma once
+
 #include "Module.h"
+
 class Criticals : public IModule {
 public:
 	Criticals();

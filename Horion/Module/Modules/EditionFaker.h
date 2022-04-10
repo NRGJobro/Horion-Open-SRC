@@ -1,5 +1,7 @@
 #pragma once
+
 #include "Module.h"
+
 class EditionFaker : public IModule {
 public:
 	SettingEnum edition;

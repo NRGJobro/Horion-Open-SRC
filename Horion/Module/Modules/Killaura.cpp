@@ -1,11 +1,11 @@
 #include "Killaura.h"
 
-Killaura::Killaura() : IModule('P', Category::COMBAT, "Attacks entities around you automatically") {
+Killaura::Killaura() : IModule('P', Category::COMBAT, "Attacks entities around you automatically.") {
 	registerBoolSetting("MultiAura", &isMulti, isMulti);
 	registerBoolSetting("MobAura", &isMobAura, isMobAura);
-	registerFloatSetting("range", &range, range, 2.f, 20.f);
-	registerIntSetting("delay", &delay, delay, 0, 20);
-	registerBoolSetting("hurttime", &hurttime, hurttime);
+	registerFloatSetting("Range", &range, range, 2.f, 20.f);
+	registerIntSetting("Delay", &delay, delay, 0, 20);
+	registerBoolSetting("Hurttime", &hurttime, hurttime);
 	registerBoolSetting("AutoWeapon", &autoweapon, autoweapon);
 	registerBoolSetting("Rotations", &rotations, rotations);
 	registerBoolSetting("Silent Rotations", &silent, silent);

@@ -1,6 +1,6 @@
 #include "Fly.h"
 
-Fly::Fly() : IModule(0, Category::MOVEMENT, "Enables fly like in creative mode") {
+Fly::Fly() : IModule(0, Category::MOVEMENT, "Enables fly like in creative mode.") {
 	mode = (*new SettingEnum(this)).addEntry(EnumEntry("Fly", 1)).addEntry(EnumEntry("CubeGlide", 2));
 	registerEnumSetting("Mode", &mode, 0);
 	registerFloatSetting("CubeGlide Speed", &speed, speed, 1.f, 3.f);

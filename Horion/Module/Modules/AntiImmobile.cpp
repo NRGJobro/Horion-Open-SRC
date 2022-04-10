@@ -1,6 +1,6 @@
 #include "AntiImmobile.h"
 
-AntiImmobile::AntiImmobile() : IModule(0, Category::MISC, "Disables immobile flag set by some servers to prevent you from moving") {
+AntiImmobile::AntiImmobile() : IModule(0, Category::MISC, "Disables the immobile flag set by some servers to prevent you from moving.") {
 }
 AntiImmobile::~AntiImmobile() {
 }

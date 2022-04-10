@@ -1,8 +1,8 @@
 #include "Godmode.h"
 
-Godmode::Godmode() : IModule(0, Category::MISC, "Regen health so fast you won't die") {
-	registerIntSetting("regen delay", &regendelay, regendelay, 1, 20);
-	registerIntSetting("regen value", &regenvalue, regenvalue, 1, 20);
+Godmode::Godmode() : IModule(0, Category::MISC, "Regen health so fast you won't die.") {
+	registerIntSetting("Regen Delay", &regendelay, regendelay, 1, 20);
+	registerIntSetting("Regen Value", &regenvalue, regenvalue, 1, 20);
 }
 
 Godmode::~Godmode() {

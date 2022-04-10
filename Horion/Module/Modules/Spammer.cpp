@@ -1,10 +1,10 @@
 #include "Spammer.h"
 #include "../../../Utils/Utils.h"
 
-Spammer::Spammer() : IModule(0, Category::MISC, "Spams a message in a specified delay") {
-	registerIntSetting("delay", &delay, delay, 1, 10);
-	registerIntSetting("length", &length, length, 1, 60);
-	registerBoolSetting("bypass", &bypass, bypass);
+Spammer::Spammer() : IModule(0, Category::MISC, "Spams a message in a specified delay.") {
+	registerIntSetting("Delay", &delay, delay, 1, 10);
+	registerIntSetting("Length", &length, length, 1, 60);
+	registerBoolSetting("Nypass", &bypass, bypass);
 }
 
 Spammer::~Spammer() {

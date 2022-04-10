@@ -1,5 +1,7 @@
 #pragma once
+
 #include "Module.h"
+
 class HighJump : public IModule {
 public:
 	float jumpPower = 1.8f;

@@ -1,11 +1,11 @@
 #include "AutoClicker.h"
 
 AutoClicker::AutoClicker() : IModule(0, Category::COMBAT, "A simple autoclicker, automatically clicks for you.") {
-	registerBoolSetting("rightclick", &rightclick, rightclick);
-	registerBoolSetting("only weapons", &weapons, weapons);
-	registerBoolSetting("break blocks", &breakBlocks, breakBlocks);
-	registerIntSetting("delay", &delay, delay, 0, 20);
-	registerBoolSetting("hold", &hold, hold);
+	registerBoolSetting("RightClick", &rightclick, rightclick);
+	registerBoolSetting("Only Weapons", &weapons, weapons);
+	registerBoolSetting("Break Blocks", &breakBlocks, breakBlocks);
+	registerIntSetting("Delay", &delay, delay, 0, 20);
+	registerBoolSetting("Hold", &hold, hold);
 }
 
 AutoClicker::~AutoClicker() {

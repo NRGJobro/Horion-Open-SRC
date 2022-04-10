@@ -23,7 +23,7 @@
 using json = nlohmann::json;
 
 
-TestModule::TestModule() : IModule(0, Category::MISC, "For testing purposes") {
+TestModule::TestModule() : IModule(0, Category::MISC, "For testing purposes only!") {
 	enum1 = SettingEnum(this)
 		.addEntry(EnumEntry("1", 1))
 		.addEntry(EnumEntry("2", 2))

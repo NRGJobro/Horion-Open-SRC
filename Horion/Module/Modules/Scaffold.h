@@ -1,5 +1,7 @@
 #pragma once
+
 #include "Module.h"
+
 class Scaffold : public IModule {
 private:
 	bool spoof = false;

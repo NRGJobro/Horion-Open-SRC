@@ -1,5 +1,7 @@
 #pragma once
+
 #include "Module.h"
+
 class Glide : public IModule {
 private:
 	float glideMod = -0.01f;

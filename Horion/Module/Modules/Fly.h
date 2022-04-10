@@ -1,5 +1,7 @@
 #pragma once
+
 #include "Module.h"
+
 class Fly : public IModule {
 private:
 	float speed = 1.5f;

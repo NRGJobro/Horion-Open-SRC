@@ -1,5 +1,7 @@
 #pragma once
+
 #include "Module.h"
+
 class Freecam : public IModule {
 private:
 	vec3_t oldPos;

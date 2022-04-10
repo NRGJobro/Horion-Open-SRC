@@ -1,5 +1,7 @@
 #pragma once
+
 #include "Module.h"
+
 class Derp : public IModule {
 private:
 	int counter = 0;

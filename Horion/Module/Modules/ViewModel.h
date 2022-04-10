@@ -1,5 +1,7 @@
 #pragma once
+
 #include "Module.h"
+
 class ViewModel : public IModule {
 private:
 	int delay = 0;

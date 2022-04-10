@@ -1,6 +1,6 @@
 #include "Phase.h"
 
-Phase::Phase() : IModule('I', Category::MOVEMENT, "Walk through walls") {
+Phase::Phase() : IModule('I', Category::MOVEMENT, "Walk straight through walls.") {
 }
 
 Phase::~Phase() {

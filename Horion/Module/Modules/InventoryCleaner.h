@@ -1,5 +1,7 @@
 #pragma once
+
 #include "Module.h"
+
 class InventoryCleaner : public IModule {
 private:
 	bool sorted = false;

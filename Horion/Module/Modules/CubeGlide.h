@@ -1,5 +1,7 @@
 #pragma once
+
 #include "Module.h"
+
 class CubeGlide : public IModule {
 private:
 	float speed = 1.5f;

@@ -1,5 +1,7 @@
 #pragma once
+
 #include "Module.h"
+
 class Crasher : public IModule {
 public:
 	Crasher();

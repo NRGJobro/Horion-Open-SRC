@@ -2,7 +2,7 @@
 #include "../../DrawUtils.h"
 #include "../../Scripting/ScriptManager.h"
 
-HudModule::HudModule() : IModule(0, Category::VISUAL, "Displays ArrayList/TabGUI") {
+HudModule::HudModule() : IModule(0, Category::VISUAL, "Displays things like the ArrayList/TabGUI.") {
 	registerBoolSetting("TabGui", &tabgui, tabgui);
 	registerBoolSetting("ArrayList", &arraylist, arraylist);
 	registerBoolSetting("ClickToggle", &clickToggle, clickToggle);

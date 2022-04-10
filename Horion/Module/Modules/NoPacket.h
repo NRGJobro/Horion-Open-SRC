@@ -1,5 +1,7 @@
 #pragma once
+
 #include "Module.h"
+
 class NoPacket : public IModule {
 public:
 	NoPacket();
