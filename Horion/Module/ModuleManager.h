@@ -96,6 +96,7 @@
 #include "Modules/ViewModel.h"
 #include "Modules/Twerk.h"
 #include "Modules/FontChanger.h"
+#include "Modules/ClientTheme.h"
 
 #ifdef _DEBUG
 #include "Modules/PacketLogger.h"

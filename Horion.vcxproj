@@ -297,6 +297,7 @@
     <ClCompile Include="Horion\Module\Modules\StorageESP.cpp" />
     <ClCompile Include="Horion\Module\Modules\ChestStealer.cpp" />
     <ClCompile Include="Horion\Module\Modules\ClickGuiMod.cpp" />
+	<ClCompile Include="Horion\Module\Modules\ClientTheme.cpp" />
     <ClCompile Include="Horion\Module\Modules\Compass.cpp" />
     <ClCompile Include="Horion\Module\Modules\Crasher.cpp" />
     <ClCompile Include="Horion\Module\Modules\Criticals.cpp" />

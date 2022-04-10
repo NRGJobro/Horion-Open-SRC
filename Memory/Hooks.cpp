@@ -562,6 +562,7 @@ __int64 Hooks::RenderText(__int64 a1, C_MinecraftUIRenderContext* renderCtx) {
 				shouldRenderTabGui = hudModule->tabgui && hudModule->isEnabled();
 				shouldRenderArrayList = hudModule->arraylist && hudModule->isEnabled();
 				shouldRenderWatermark = hudModule->watermark && hudModule->isEnabled();
+				static auto ClientThemes = moduleMgr->getModule<ClientTheme>();
 
 				if (clickGuiModule->isEnabled()) {
 					ClickGui::render();
@@ -614,7 +615,11 @@ __int64 Hooks::RenderText(__int64 a1, C_MinecraftUIRenderContext* renderCtx) {
 							windowSize.y - margin);
 
 						DrawUtils::drawRectangle(rect, MC_Color(rcolors), 1.f, 2.f);
-						DrawUtils::fillRectangle(rect, MC_Color(12, 12, 12), 1.f);
+						if (ClientThemes->Theme.selected == 1) {
+							DrawUtils::fillRectangle(rect, MC_Color(13, 29, 48), 1.f);
+						} else {
+							DrawUtils::fillRectangle(rect, MC_Color(12, 12, 12), 1.f);
+						}
 						DrawUtils::drawText(vec2_t(rect.x + borderPadding, rect.y), &name, MC_Color(rcolors), nameTextSize);
 						DrawUtils::drawText(vec2_t(rect.x + borderPadding + nameLength, rect.w - 7), &version, MC_Color(rcolors), versionTextSize);
 					}
@@ -742,7 +747,11 @@ __int64 Hooks::RenderText(__int64 a1, C_MinecraftUIRenderContext* renderCtx) {
 							currColor[0] += 1.f / a * c;
 							Utils::ColorConvertHSVtoRGB(currColor[0], currColor[1], currColor[2], currColor[0], currColor[1], currColor[2]);
 
-							DrawUtils::fillRectangle(rectPos, MC_Color(12, 12, 12), 1.f);
+							if (ClientThemes->Theme.selected == 1) {
+								DrawUtils::fillRectangle(rectPos, MC_Color(13, 29, 48), 1.f);
+							} else {
+								DrawUtils::fillRectangle(rectPos, MC_Color(12, 12, 12), 1.f);
+							}
 							DrawUtils::fillRectangle(leftRect, MC_Color(currColor), 1.f);
 							if (!GameData::canUseMoveKeys() && rectPos.contains(&mousePos) && hudModule->clickToggle) {
 								vec4_t selectedRect = rectPos;
