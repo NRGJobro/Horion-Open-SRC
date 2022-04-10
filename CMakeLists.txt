@@ -330,6 +330,7 @@ add_library(Horion SHARED
         SDK/MojangsonToken.h
         SDK/Tag.h
         SDK/TextHolder.h
+        SDK/Weather.h
         Utils/ChakraHelper.h
         Utils/DllHelper.h
         Utils/HMath.h
