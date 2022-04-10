@@ -1,5 +1,7 @@
 #pragma once
+
 #include "Module.h"
+
 class NoWeb : public IModule {
 public:
 	NoWeb();

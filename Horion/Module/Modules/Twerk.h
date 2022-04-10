@@ -1,5 +1,7 @@
 #pragma once
+
 #include "Module.h"
+
 class Twerk : public IModule {
 public:
 	Twerk();

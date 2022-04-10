@@ -1,5 +1,7 @@
 #pragma once
+
 #include "Module.h"
+
 class Teams : public IModule {
 private:
 	bool alliedCheck = false;

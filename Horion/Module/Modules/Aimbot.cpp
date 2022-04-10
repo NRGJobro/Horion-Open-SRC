@@ -1,15 +1,15 @@
 #include "Aimbot.h"
 
-Aimbot::Aimbot() : IModule(0, Category::COMBAT, "Automatically aims at the nearest entity") {
-	registerFloatSetting("range", &range, range, 3.f, 8.f);
-	registerBoolSetting("Require click", &click, click);
-	registerBoolSetting("only swords/axes", &sword, sword);
-	registerBoolSetting("vertical", &vertical, vertical);
-	registerFloatSetting("horizontal speed", &horizontalspeed, horizontalspeed, 10.f, 90.f);
-	registerFloatSetting("vertical speed", &verticalspeed, verticalspeed, 10.f, 90.f);
-	registerFloatSetting("horizontal range", &horizontalrange, horizontalrange, 20.f, 180.f);
-	registerFloatSetting("vertical range", &verticalrange, verticalrange, 20.f, 180.f);
-	registerBoolSetting("aimlock", &lock, lock);
+Aimbot::Aimbot() : IModule(0, Category::COMBAT, "Automatically aims at the nearest entity.") {
+	registerFloatSetting("Range", &range, range, 3.f, 8.f);
+	registerBoolSetting("Require Click", &click, click);
+	registerBoolSetting("Only Swords/Axes", &sword, sword);
+	registerBoolSetting("Vertical", &vertical, vertical);
+	registerFloatSetting("Horizontal Speed", &horizontalspeed, horizontalspeed, 10.f, 90.f);
+	registerFloatSetting("Vertical Speed", &verticalspeed, verticalspeed, 10.f, 90.f);
+	registerFloatSetting("Horizontal Range", &horizontalrange, horizontalrange, 20.f, 180.f);
+	registerFloatSetting("Vertical Range", &verticalrange, verticalrange, 20.f, 180.f);
+	registerBoolSetting("Aimlock", &lock, lock);
 }
 
 Aimbot::~Aimbot() {

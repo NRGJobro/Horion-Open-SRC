@@ -1,5 +1,7 @@
 #pragma once
+
 #include "Module.h"
+
 class NoSlowDown : public IModule {
 private:
 	uint8_t* opcode = 0;

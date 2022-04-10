@@ -1,5 +1,7 @@
 #pragma once
+
 #include "Module.h"
+
 class PacketLogger : public IModule {
 public:
 	PacketLogger();

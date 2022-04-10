@@ -1,5 +1,7 @@
 #pragma once
+
 #include "Module.h"
+
 class RainbowSky : public IModule {
 public:
 	RainbowSky();

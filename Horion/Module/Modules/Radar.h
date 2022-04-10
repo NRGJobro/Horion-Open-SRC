@@ -1,6 +1,8 @@
 #pragma once
+
 #include "Module.h"
 #include "../../DrawUtils.h"
+
 class Radar : public IModule {
 public:
 	Radar();

@@ -1,9 +1,9 @@
 #include "InfiniteAura.h"
 
-InfiniteAura::InfiniteAura() : IModule(0, Category::COMBAT, "Killaura with infinite reach") {
-	registerBoolSetting("multiaura", &isMulti, isMulti);
-	registerFloatSetting("range", &range, range, 15, 100);
-	registerIntSetting("delay", &delay, delay, 15, 20);
+InfiniteAura::InfiniteAura() : IModule(0, Category::COMBAT, "Killaura but with infinite reach.") {
+	registerBoolSetting("MultiAura", &isMulti, isMulti);
+	registerFloatSetting("Range", &range, range, 15, 100);
+	registerIntSetting("Delay", &delay, delay, 15, 20);
 }
 
 InfiniteAura::~InfiniteAura() {

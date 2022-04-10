@@ -152,7 +152,7 @@ add_library(Horion SHARED
         Horion/Module/Modules/EditionFaker.h
         Horion/Module/Modules/ESP.cpp
         Horion/Module/Modules/ESP.h
-        Horion/Module/Modules/FastEast.cpp
+        Horion/Module/Modules/FastEat.cpp
         Horion/Module/Modules/FastEat.h
         Horion/Module/Modules/FastLadder.cpp
         Horion/Module/Modules/FastLadder.h

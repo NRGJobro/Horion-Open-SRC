@@ -1,5 +1,7 @@
 #pragma once
+
 #include "Module.h"
+
 class InventoryMove : public IModule {
 private:
 	bool keyPressed = false;

@@ -1,4 +1,5 @@
 #pragma once
+
 #include "Module.h"
 #include "../../Scripting/ScriptInstance.h"
 

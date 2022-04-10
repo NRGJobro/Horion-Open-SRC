@@ -1,6 +1,6 @@
 #include "MidClick.h"
 
-MidClick::MidClick() : IModule(0, Category::PLAYER, "Click a player with your mouse wheel to add as friend") {
+MidClick::MidClick() : IModule(0, Category::PLAYER, "Click a player with your mouse wheel to add em as a friend.") {
 }
 
 MidClick::~MidClick() {

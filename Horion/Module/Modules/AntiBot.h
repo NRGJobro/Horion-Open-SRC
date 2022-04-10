@@ -1,5 +1,7 @@
 #pragma once
+
 #include "Module.h"
+
 class AntiBot : public IModule {
 private:
 	bool hitboxCheck = true;

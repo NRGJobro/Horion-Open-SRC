@@ -2,7 +2,7 @@
 
 #include "../../../Utils/Logger.h"
 
-Scaffold::Scaffold() : IModule(VK_NUMPAD1, Category::WORLD, "Automatically build blocks beneath you") {
+Scaffold::Scaffold() : IModule(VK_NUMPAD1, Category::WORLD, "Automatically build blocks beneath you.") {
 	registerBoolSetting("Spoof", &spoof, spoof);
 	registerBoolSetting("Staircase Mode", &staircaseMode, staircaseMode);
 }

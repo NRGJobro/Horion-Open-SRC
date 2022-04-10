@@ -1,5 +1,7 @@
 #pragma once
+
 #include "Module.h"
+
 class Timer : public IModule {
 private:
 	int timer = 50;

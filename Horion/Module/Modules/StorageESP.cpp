@@ -2,7 +2,7 @@
 
 #include "../../DrawUtils.h"
 
-StorageESP::StorageESP() : IModule(0, Category::VISUAL, "ESP for storage blocks") {
+StorageESP::StorageESP() : IModule(0, Category::VISUAL, "ESP for but storage blocks.") {
 }
 
 StorageESP::~StorageESP() {

@@ -1,5 +1,7 @@
 #pragma once
+
 #include "Module.h"
+
 class Xray : public IModule {
 public:
 	bool* smoothLightningSetting = nullptr;

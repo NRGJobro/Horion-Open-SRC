@@ -4,7 +4,7 @@ JavascriptModule::JavascriptModule() : IModule(0, Category::CUSTOM, "") {
 }
 
 JavascriptModule::~JavascriptModule() {
-	logF("deleted java module %s", getModuleName());
+	logF("deleted javascript module %s", getModuleName());
 }
 
 void JavascriptModule::setBackingScript(std::shared_ptr<JsScriptModule> mod) {

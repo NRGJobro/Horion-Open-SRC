@@ -1,5 +1,7 @@
 #pragma once
+
 #include "Module.h"
+
 class Blink : public IModule {
 private:
 	std::vector<C_MovePlayerPacket*> MovePlayerPacketHolder;

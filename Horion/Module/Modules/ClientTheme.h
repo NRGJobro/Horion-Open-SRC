@@ -1,5 +1,7 @@
 #pragma once
+
 #include "Module.h"
+
 class ClientTheme : public IModule {
 public:
 	SettingEnum Theme;
