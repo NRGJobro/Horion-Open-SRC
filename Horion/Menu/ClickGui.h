@@ -70,6 +70,9 @@ private:
 			case Category::CUSTOM:
 				categoryName = "Scripts";
 				break;
+			case Category::CLIENT:
+				categoryName = "Client";
+				break;
 			}
 		}
 		return categoryName;

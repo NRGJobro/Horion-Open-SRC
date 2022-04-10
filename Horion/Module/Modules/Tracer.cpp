@@ -6,7 +6,7 @@
 
 bool old = false;
 Tracer::Tracer() : IModule('R', Category::VISUAL, "Draws lines to ESP highlighted entities") {
-	registerBoolSetting("3D Tracers", &old, old);
+	//registerBoolSetting("3D Tracers", &old, old);
 }
 
 Tracer::~Tracer() {

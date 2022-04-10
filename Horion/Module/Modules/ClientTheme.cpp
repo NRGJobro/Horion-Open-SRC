@@ -1,5 +1,5 @@
 #include "ClientTheme.h"
-ClientTheme::ClientTheme() : IModule(0, Category::VISUAL, "Go for a retro style or streanline") {
+ClientTheme::ClientTheme() : IModule(0, Category::CLIENT, "Go for a retro style or streanline") {
 	registerEnumSetting("Client Theme", &Theme, 0);
 	Theme = SettingEnum(this)
 				.addEntry(EnumEntry("Current", 0))

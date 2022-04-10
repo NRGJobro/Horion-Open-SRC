@@ -163,6 +163,9 @@ void ClickGui::renderCategory(Category category) {
 		case Category::CUSTOM:
 			ourWindow->pos.x = yot / 7.f * 6.f;
 			break;
+		case Category::CLIENT:
+			ourWindow->pos.x = yot / 7.f * 6.f;
+			break;
 		}
 	}
 
@@ -874,6 +877,7 @@ void ClickGui::render() {
 	renderCategory(Category::PLAYER);
 	renderCategory(Category::WORLD);
 	renderCategory(Category::MISC);
+	renderCategory(Category::CLIENT);
 
 	if (scriptMgr.getNumEnabledScripts() > 0)
 		renderCategory(Category::CUSTOM);

@@ -48,7 +48,6 @@ void ModuleManager::initModules() {
 		moduleList.push_back(std::shared_ptr<IModule>(new Fucker()));
 		moduleList.push_back(std::shared_ptr<IModule>(new NoSlowDown()));
 		moduleList.push_back(std::shared_ptr<IModule>(new AutoTotem()));
-		moduleList.push_back(std::shared_ptr<IModule>(new InfiniteAura()));
 		moduleList.push_back(std::shared_ptr<IModule>(new ClickGuiMod()));
 		moduleList.push_back(std::shared_ptr<IModule>(new ChestStealer()));
 		moduleList.push_back(std::shared_ptr<IModule>(new Fly()));
@@ -61,7 +60,6 @@ void ModuleManager::initModules() {
 		moduleList.push_back(std::shared_ptr<IModule>(new NoWeb()));
 		moduleList.push_back(std::shared_ptr<IModule>(new FastLadder()));
 		moduleList.push_back(std::shared_ptr<IModule>(new StackableItem()));
-		moduleList.push_back(std::shared_ptr<IModule>(new FastEat()));
 		moduleList.push_back(std::shared_ptr<IModule>(new Jesus()));
 		moduleList.push_back(std::shared_ptr<IModule>(new AutoArmor()));
 		moduleList.push_back(std::shared_ptr<IModule>(new ExtendedBlockReach()));

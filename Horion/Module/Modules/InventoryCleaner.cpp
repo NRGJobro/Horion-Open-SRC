@@ -8,7 +8,7 @@ InventoryCleaner::InventoryCleaner() : IModule(0, Category::PLAYER, "Automatical
 	registerBoolSetting("Food", &keepFood, keepFood);
 	registerBoolSetting("Blocks", &keepBlocks, keepBlocks);
 	registerBoolSetting("OpenInv", &openInv, openInv);
-	registerBoolSetting("AutoSort", &autoSort, autoSort);
+	//registerBoolSetting("AutoSort", &autoSort, autoSort);
 }
 
 InventoryCleaner::~InventoryCleaner() {
