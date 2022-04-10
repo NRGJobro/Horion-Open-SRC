@@ -36,7 +36,7 @@ void StorageESP::onPreRender(C_MinecraftUIRenderContext* renderCtx) {
 		if (storageID == 54) DrawUtils::setColor(1.f, 1.f, 1.f, math);                     // Normal Chest
 		if (storageID == 146) DrawUtils::setColor(.92f, .14f, .14f, math);                 // Trapped Chest
 		if (storageID == 130) DrawUtils::setColor(0.435294f, 0.215686f, 0.631372f, math);  // Ender Chest
-		if (storageID == 458) DrawUtils::setColor(0.62, 0.31, 0.04, math);                 // Barrel
+		if (storageID == 458) DrawUtils::setColor(0.62f, 0.31f, 0.04f, math);                 // Barrel
 		if (storageID == 205) DrawUtils::setColor(.49f, .17f, .95f, math);                 // Undyed Shulker Box
 		if (storageID == 218) DrawUtils::setColor(.08f, .91f, .99f, math);                 // Shulker Box
 

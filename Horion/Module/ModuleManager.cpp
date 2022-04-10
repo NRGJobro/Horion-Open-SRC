@@ -104,6 +104,7 @@ void ModuleManager::initModules() {
 		moduleList.push_back(std::shared_ptr<IModule>(new Twerk()));
 		moduleList.push_back(std::shared_ptr<IModule>(new FollowPathModule()));
 		moduleList.push_back(std::shared_ptr<IModule>(new FontChanger()));
+		moduleList.push_back(std::shared_ptr<IModule>(new ClientTheme()));
 
 #ifdef _DEBUG
 		moduleList.push_back(std::shared_ptr<IModule>(new PacketLogger()));

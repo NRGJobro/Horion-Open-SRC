@@ -378,40 +378,47 @@ void DrawUtils::drawNameTags(C_Entity* ent, float textSize, bool drawHealth, boo
 		vec4_t subRectPos = rectPos;
 		subRectPos.y = subRectPos.w - 1.f * textSize;
 		static auto nametagsMod = moduleMgr->getModule<NameTags>();
-		fillRectangle(rectPos, MC_Color(12, 12, 12), nametagsMod->opacity);
-		if (nametagsMod->underline) {
-			fillRectangle(subRectPos, MC_Color(85, 85, 85), 0.9f);
-		}
-		drawText(textPos, &text, MC_Color(255, 255, 255), textSize);
-
-		static auto nameTagsMod = moduleMgr->getModule<NameTags>();
-
-		if (ent->getEntityTypeId() == 63 && nameTagsMod->displayArmor) {  // is player, show armor
-			auto* player = reinterpret_cast<C_Player*>(ent);
-			float scale = textSize * 0.6f;
-			float spacing = scale + 15.f;
-			float x = rectPos.x + 1.f * textSize;
-			float y = rectPos.y - 20.f * scale;
-			// armor
-			for (int i = 0; i < 4; i++) {
-				C_ItemStack* stack = player->getArmor(i);
-				if (stack->item != nullptr) {
-					DrawUtils::drawItem(stack, vec2_t(x, y), 1.f, scale, stack->isEnchanted());
-					x += scale * spacing;
+		static auto ClientThemes = moduleMgr->getModule<ClientTheme>();
+		if (ClientThemes->Theme.selected == 1) {
+			fillRectangle(rectPos, MC_Color(13, 29, 48), nametagsMod->opacity);
+			if (nametagsMod->underline) {
+				fillRectangle(subRectPos, MC_Color(30, 110, 20), 0.9f);
+			} else {
+				fillRectangle(rectPos, MC_Color(12, 12, 12), nametagsMod->opacity);
+				if (nametagsMod->underline) {
+					fillRectangle(subRectPos, MC_Color(85, 85, 85), 0.9f);
 				}
-			}
-			// item
-			{
-				C_ItemStack* stack = player->getSelectedItem();
-				if (stack->item != nullptr) {
-					DrawUtils::drawItem(stack, vec2_t(rectPos.z - 1.f - 15.f * scale, y), 1.f, scale, stack->isEnchanted());
+				drawText(textPos, &text, MC_Color(255, 255, 255), textSize);
+
+				static auto nameTagsMod = moduleMgr->getModule<NameTags>();
+
+				if (ent->getEntityTypeId() == 63 && nameTagsMod->displayArmor) {  // is player, show armor
+					auto* player = reinterpret_cast<C_Player*>(ent);
+					float scale = textSize * 0.6f;
+					float spacing = scale + 15.f;
+					float x = rectPos.x + 1.f * textSize;
+					float y = rectPos.y - 20.f * scale;
+					// armor
+					for (int i = 0; i < 4; i++) {
+						C_ItemStack* stack = player->getArmor(i);
+						if (stack->item != nullptr) {
+							DrawUtils::drawItem(stack, vec2_t(x, y), 1.f, scale, stack->isEnchanted());
+							x += scale * spacing;
+						}
+					}
+					// item
+					{
+						C_ItemStack* stack = player->getSelectedItem();
+						if (stack->item != nullptr) {
+							DrawUtils::drawItem(stack, vec2_t(rectPos.z - 1.f - 15.f * scale, y), 1.f, scale, stack->isEnchanted());
+						}
+					}
 				}
 			}
 		}
 	}
 }
-
-void DrawUtils::drawEntityBox(C_Entity* ent, float lineWidth) {
+	void DrawUtils::drawEntityBox(C_Entity* ent, float lineWidth) {
 	vec3_t end = ent->eyePos0;
 	AABB render(end, ent->width, ent->height, end.y - ent->aabb.lower.y);
 	render.upper.y += 0.1f;
