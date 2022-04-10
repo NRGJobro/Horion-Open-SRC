@@ -1,5 +1,4 @@
 #pragma once
-
 #include "Module.h"
 
 class FontChanger : public IModule {

@@ -485,6 +485,7 @@
     <ClInclude Include="Horion\Module\Modules\ChestESP.h" />
     <ClInclude Include="Horion\Module\Modules\ChestStealer.h" />
     <ClInclude Include="Horion\Module\Modules\ClickGuiMod.h" />
+    <ClInclude Include="Horion\Module\Modules\ClientTheme.h" />
     <ClInclude Include="Horion\Module\Modules\Compass.h" />
     <ClInclude Include="Horion\Module\Modules\Crasher.h" />
     <ClInclude Include="Horion\Module\Modules\Criticals.h" />
@@ -497,6 +498,7 @@
     <ClInclude Include="Horion\Module\Modules\FastLadder.h" />
     <ClInclude Include="Horion\Module\Modules\Fly.h" />
     <ClInclude Include="Horion\Module\Modules\FollowPathModule.h" />
+    <ClInclude Include="Horion\Module\Modules\FontChanger.h" />
     <ClInclude Include="Horion\Module\Modules\Freecam.h" />
     <ClInclude Include="Horion\Module\Modules\Freelook.h" />
     <ClInclude Include="Horion\Module\Modules\Fucker.h" />

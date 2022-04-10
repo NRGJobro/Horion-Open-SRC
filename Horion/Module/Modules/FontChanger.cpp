@@ -6,8 +6,10 @@ FontChanger::FontChanger() : IModule(0, Category::VISUAL, "Font Changer.") {
 				.addEntry(EnumEntry("Notosans", 0))
 				.addEntry(EnumEntry("Mojangles", 1));
 }
+
 FontChanger::~FontChanger() {
 }
+
 const char* FontChanger::getModuleName() {
 	return ("CustomFont");
 }
