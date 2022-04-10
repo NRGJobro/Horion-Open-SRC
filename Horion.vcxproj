@@ -297,7 +297,7 @@
     <ClCompile Include="Horion\Module\Modules\StorageESP.cpp" />
     <ClCompile Include="Horion\Module\Modules\ChestStealer.cpp" />
     <ClCompile Include="Horion\Module\Modules\ClickGuiMod.cpp" />
-	<ClCompile Include="Horion\Module\Modules\ClientTheme.cpp" />
+    <ClCompile Include="Horion\Module\Modules\ClientTheme.cpp" />
     <ClCompile Include="Horion\Module\Modules\Compass.cpp" />
     <ClCompile Include="Horion\Module\Modules\Crasher.cpp" />
     <ClCompile Include="Horion\Module\Modules\Criticals.cpp" />
@@ -310,8 +310,8 @@
     <ClCompile Include="Horion\Module\Modules\FastLadder.cpp" />
     <ClCompile Include="Horion\Module\Modules\Fly.cpp" />
     <ClCompile Include="Horion\Module\Modules\FollowPathModule.cpp" />
-	<ClCompile Include="Horion\Module\Modules\FontChanger.cpp" />
-	<ClCompile Include="Horion\Module\Modules\Freecam.cpp" />
+    <ClCompile Include="Horion\Module\Modules\FontChanger.cpp" />
+    <ClCompile Include="Horion\Module\Modules\Freecam.cpp" />
     <ClCompile Include="Horion\Module\Modules\Fucker.cpp" />
     <ClCompile Include="Horion\Module\Modules\FullBright.cpp" />
     <ClCompile Include="Horion\Module\Modules\Glide.cpp" />
@@ -393,6 +393,7 @@
     <ClCompile Include="Memory\GameData.cpp" />
     <ClCompile Include="Memory\Hooks.cpp" />
     <ClCompile Include="Memory\SlimMem.cpp" />
+    <ClCompile Include="SDK\CAttribute.h" />
     <ClCompile Include="SDK\CBlockLegacy.cpp" />
     <ClCompile Include="SDK\CCamera.cpp" />
     <ClCompile Include="SDK\CClientInstance.cpp" />

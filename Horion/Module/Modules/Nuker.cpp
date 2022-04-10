@@ -2,7 +2,7 @@
 
 Nuker::Nuker() : IModule(VK_NUMPAD5, Category::WORLD, "Break multiple blocks at once.") {
 	registerIntSetting("Radius", &nukerRadius, nukerRadius, 1, 10);
-	registerBoolSetting("Aeinminer", &veinMiner, veinMiner);
+	registerBoolSetting("Veinminer", &veinMiner, veinMiner);
 	registerBoolSetting("Autodestroy", &autodestroy, autodestroy);
 }
 
