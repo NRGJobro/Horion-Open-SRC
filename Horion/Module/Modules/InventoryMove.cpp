@@ -7,7 +7,7 @@ InventoryMove::~InventoryMove() {
 }
 
 const char* InventoryMove::getModuleName() {
-	return ("InventoryMove");
+	return ("InvMove");
 }
 
 void InventoryMove::onTick(C_GameMode* gm) {

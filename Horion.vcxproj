@@ -300,7 +300,6 @@
 	<ClCompile Include="Horion\Module\Modules\ClientTheme.cpp" />
     <ClCompile Include="Horion\Module\Modules\Compass.cpp" />
     <ClCompile Include="Horion\Module\Modules\Crasher.cpp" />
-    <ClCompile Include="Horion\Module\Modules\Criticals.cpp" />
     <ClCompile Include="Horion\Module\Modules\CrystalAura.cpp" />
     <ClCompile Include="Horion\Module\Modules\CubeGlide.cpp" />
     <ClCompile Include="Horion\Module\Modules\Derp.cpp" />
@@ -337,7 +336,8 @@
     <ClCompile Include="Horion\Module\Modules\NoPacket.cpp" />
     <ClCompile Include="Horion\Module\Modules\NoSlowDown.cpp" />
     <ClCompile Include="Horion\Module\Modules\NoSwing.cpp" />
-    <ClCompile Include="Horion\Module\Modules\NoWeb.cpp" />
+	<ClCompile Include="Horion\Module\Modules\Notifications.cpp" />
+	<ClCompile Include="Horion\Module\Modules\NoWeb.cpp" />
     <ClCompile Include="Horion\Module\Modules\Nuker.cpp" />
     <ClCompile Include="Horion\Module\Modules\PacketLogger.cpp" />
     <ClCompile Include="Horion\Module\Modules\Phase.cpp" />
@@ -484,7 +484,6 @@
     <ClInclude Include="Horion\Module\Modules\ClickGuiMod.h" />
     <ClInclude Include="Horion\Module\Modules\Compass.h" />
     <ClInclude Include="Horion\Module\Modules\Crasher.h" />
-    <ClInclude Include="Horion\Module\Modules\Criticals.h" />
     <ClInclude Include="Horion\Module\Modules\CrystalAura.h" />
     <ClInclude Include="Horion\Module\Modules\CubeGlide.h" />
     <ClInclude Include="Horion\Module\Modules\Derp.h" />

@@ -65,7 +65,6 @@ void ModuleManager::initModules() {
 		moduleList.push_back(std::shared_ptr<IModule>(new ExtendedBlockReach()));
 		moduleList.push_back(std::shared_ptr<IModule>(new AutoClicker()));
 		moduleList.push_back(std::shared_ptr<IModule>(new NameTags()));
-		moduleList.push_back(std::shared_ptr<IModule>(new Criticals()));
 		moduleList.push_back(std::shared_ptr<IModule>(new Bhop()));
 		moduleList.push_back(std::shared_ptr<IModule>(new Tower()));
 		moduleList.push_back(std::shared_ptr<IModule>(new AntiVoid()));
@@ -82,27 +81,26 @@ void ModuleManager::initModules() {
 		moduleList.push_back(std::shared_ptr<IModule>(new Timer()));
 		moduleList.push_back(std::shared_ptr<IModule>(new NightMode()));
 		moduleList.push_back(std::shared_ptr<IModule>(new NoSwing()));
-		//moduleList.push_back(std::shared_ptr<IModule>(new CubeGlide()));
 		moduleList.push_back(std::shared_ptr<IModule>(new AirStuck()));
 		moduleList.push_back(std::shared_ptr<IModule>(new Zoom()));
 		moduleList.push_back(std::shared_ptr<IModule>(new Teams()));
 		moduleList.push_back(std::shared_ptr<IModule>(new Nbt()));
-		//moduleList.push_back(std::shared_ptr<IModule>(new Godmode()));
 		moduleList.push_back(std::shared_ptr<IModule>(new Freelook()));
 		moduleList.push_back(std::shared_ptr<IModule>(new AutoSneak()));
 		moduleList.push_back(std::shared_ptr<IModule>(new NoHurtcam()));
 		moduleList.push_back(std::shared_ptr<IModule>(new AntiImmobile()));
 		moduleList.push_back(std::shared_ptr<IModule>(new Waypoints()));
 		moduleList.push_back(std::shared_ptr<IModule>(new TimeChanger()));
-		moduleList.push_back(std::shared_ptr<IModule>(new	Spider()));
-		moduleList.push_back(std::shared_ptr<IModule>(new	Compass()));
-		moduleList.push_back(std::shared_ptr<IModule>(new	Radar()));
+		moduleList.push_back(std::shared_ptr<IModule>(new Spider()));
+		moduleList.push_back(std::shared_ptr<IModule>(new Compass()));
+		moduleList.push_back(std::shared_ptr<IModule>(new Radar()));
 		moduleList.push_back(std::shared_ptr<IModule>(new VanillaPlus()));
 		moduleList.push_back(std::shared_ptr<IModule>(new ViewModel()));
 		moduleList.push_back(std::shared_ptr<IModule>(new Twerk()));
 		moduleList.push_back(std::shared_ptr<IModule>(new FollowPathModule()));
 		moduleList.push_back(std::shared_ptr<IModule>(new FontChanger()));
 		moduleList.push_back(std::shared_ptr<IModule>(new ClientTheme()));
+		moduleList.push_back(std::shared_ptr<IModule>(new Notifications()));
 
 #ifdef _DEBUG
 		moduleList.push_back(std::shared_ptr<IModule>(new PacketLogger()));

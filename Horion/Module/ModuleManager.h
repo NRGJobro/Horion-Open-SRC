@@ -30,7 +30,6 @@
 #include "Modules/ClickGuiMod.h"
 #include "Modules/Teleport.h"
 #include "Modules/Crasher.h"
-#include "Modules/Criticals.h"
 #include "Modules/CrystalAura.h"
 #include "Modules/Derp.h"
 #include "Modules/ESP.h"
@@ -95,6 +94,7 @@
 #include "Modules/Twerk.h"
 #include "Modules/FontChanger.h"
 #include "Modules/ClientTheme.h"
+#include "Modules/Notifications.h"
 
 #ifdef _DEBUG
 #include "Modules/PacketLogger.h"
