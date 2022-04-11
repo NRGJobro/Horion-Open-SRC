@@ -3,7 +3,7 @@
 #include "Module.h"
 #include "../ModuleManager.h"
 
-class Fucker : public IModule {
+class Breaker : public IModule {
 private:
 	int range = 5;
 	bool beds = true;
@@ -14,8 +14,8 @@ private:
 	bool barrels = false;
 
 public:
-	Fucker();
-	~Fucker();
+	Breaker();
+	~Breaker();
 
 	// Inherited via IModule
 	virtual const char* getModuleName() override;

@@ -1,6 +1,6 @@
 #include "FontChanger.h"
 
-FontChanger::FontChanger() : IModule(0, Category::VISUAL, "Font Changer.") {
+FontChanger::FontChanger() : IModule(0, Category::CLIENT, "Font Changer.") {
 	registerEnumSetting("Fonts", &Fonts, 0);
 	Fonts = SettingEnum(this)
 				.addEntry(EnumEntry("Notosans", 0))

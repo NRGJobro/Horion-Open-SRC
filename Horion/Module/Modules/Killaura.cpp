@@ -84,7 +84,7 @@ void Killaura::findWeapon() {
 	supplies->selectedHotbarSlot = slot;
 }
 
-void Killaura::onTick(C_GameMode* gm) {
+void Killaura::onLevelRender() {
 	targetListEmpty = targetList.empty();
 	//Loop through all our players and retrieve their information
 	targetList.clear();

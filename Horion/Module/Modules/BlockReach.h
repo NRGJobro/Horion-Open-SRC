@@ -2,13 +2,13 @@
 
 #include "Module.h"
 
-class ExtendedBlockReach : public IModule {
+class BlockReach : public IModule {
 private:
 	float blockReach = 7.f;
 
 public:
-	ExtendedBlockReach();
-	~ExtendedBlockReach();
+	BlockReach();
+	~BlockReach();
 
 	inline float getBlockReach() { return blockReach; };
 	inline void setBlockReach(float reach) { blockReach = reach; };
