@@ -61,7 +61,7 @@
 #include "Modules/NoPacket.h"
 #include "Modules/NoSlowDown.h"
 #include "Modules/NoWeb.h"
-#include "Modules/Notifications.h"
+//#include "Modules/Notifications.h"
 #include "Modules/Nuker.h"
 #include "Modules/Phase.h"
 #include "Modules/RainbowSky.h"
