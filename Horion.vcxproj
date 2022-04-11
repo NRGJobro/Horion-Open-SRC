@@ -340,7 +340,7 @@
     <ClCompile Include="Horion\Module\Modules\NoSlowDown.cpp" />
     <ClCompile Include="Horion\Module\Modules\NoSwing.cpp" />
     <ClCompile Include="Horion\Module\Modules\NoWeb.cpp" />
-    <ClCompile Include="Horion\Module\Modules\Notifications.h" />
+    <ClCompile Include="Horion\Module\Modules\Notifications.cpp" />
     <ClCompile Include="Horion\Module\Modules\Nuker.cpp" />
     <ClCompile Include="Horion\Module\Modules\PacketLogger.cpp" />
     <ClCompile Include="Horion\Module\Modules\Phase.cpp" />
