@@ -323,20 +323,18 @@ bool IModule::isFlashMode() {
 }
 
 void IModule::setEnabled(bool enabled) {
-	static auto Logmsg = moduleMgr->getModule<Notifications>();
 	if (this->enabled != enabled) {
 		this->enabled = enabled;
 #ifndef _DEBUG
 		if (!isFlashMode())  // Only print jetpack stuff in debug mode
 #endif
-			if (Logmsg->isEnabled()) {
-				g_Data.getClientInstance()->getGuiData()->displayClientMessageF("[%sHorion%s] %s%s %s%s%s", GOLD, WHITE, GRAY, enabled ? "Enabled" : "Disabled", BOLD, WHITE, this->getModuleName());
-			}
-				if (enabled)
-					this->onEnable();
-				else
-					this->onDisable();
-			}
+			logF("%s %s", enabled ? "Enabled" : "Disabled", this->getModuleName());
+
+		if (enabled)
+			this->onEnable();
+		else
+			this->onDisable();
+	}
 }
 
 void IModule::toggle() {
