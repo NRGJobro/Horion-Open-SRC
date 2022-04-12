@@ -140,8 +140,6 @@ add_library(Horion SHARED
         Horion/Module/Modules/ClickGuiMod.h
         Horion/Module/Modules/Crasher.cpp
         Horion/Module/Modules/Crasher.h
-        Horion/Module/Modules/Criticals.cpp
-        Horion/Module/Modules/Criticals.h
         Horion/Module/Modules/CrystalAura.cpp
         Horion/Module/Modules/CrystalAura.h
         Horion/Module/Modules/CubeGlide.cpp

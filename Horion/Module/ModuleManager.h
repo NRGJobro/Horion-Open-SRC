@@ -30,7 +30,7 @@
 #include "Modules/ClickGuiMod.h"
 #include "Modules/Teleport.h"
 #include "Modules/Crasher.h"
-#include "Modules/Criticals.h"
+//#include "Modules/Criticals.h"
 #include "Modules/CrystalAura.h"
 #include "Modules/Derp.h"
 #include "Modules/ESP.h"
