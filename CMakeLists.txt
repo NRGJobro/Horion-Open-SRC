@@ -140,8 +140,6 @@ add_library(Horion SHARED
         Horion/Module/Modules/ClickGuiMod.h
         Horion/Module/Modules/Crasher.cpp
         Horion/Module/Modules/Crasher.h
-        Horion/Module/Modules/Criticals.cpp
-        Horion/Module/Modules/Criticals.h
         Horion/Module/Modules/CrystalAura.cpp
         Horion/Module/Modules/CrystalAura.h
         Horion/Module/Modules/CubeGlide.cpp
@@ -160,8 +158,8 @@ add_library(Horion SHARED
         Horion/Module/Modules/Fly.h
         Horion/Module/Modules/Freecam.cpp
         Horion/Module/Modules/Freecam.h
-        Horion/Module/Modules/Fucker.cpp
-        Horion/Module/Modules/Fucker.h
+        Horion/Module/Modules/Breaker.cpp
+        Horion/Module/Modules/Breaker.h
         Horion/Module/Modules/FullBright.cpp
         Horion/Module/Modules/FullBright.h
         Horion/Module/Modules/Glide.cpp
@@ -174,8 +172,8 @@ add_library(Horion SHARED
         Horion/Module/Modules/Hitbox.h
         Horion/Module/Modules/HudModule.cpp
         Horion/Module/Modules/HudModule.h
-        Horion/Module/Modules/ExtendedBlockReach.cpp
-        Horion/Module/Modules/ExtendedBlockReach.h
+        Horion/Module/Modules/BlockReach.cpp
+        Horion/Module/Modules/BlockReach.h
         Horion/Module/Modules/InfiniteReach.cpp
         Horion/Module/Modules/InfiniteReach.h
         Horion/Module/Modules/InstaBreak.cpp
@@ -216,6 +214,8 @@ add_library(Horion SHARED
         Horion/Module/Modules/NoSwing.h
         Horion/Module/Modules/NoWeb.cpp
         Horion/Module/Modules/NoWeb.h
+        Horion/Module/Modules/Notifications.cpp
+        Horion/Module/Modules/Notifications.h
         Horion/Module/Modules/Nuker.cpp
         Horion/Module/Modules/Nuker.h
         Horion/Module/Modules/PacketLogger.cpp
@@ -308,6 +308,7 @@ add_library(Horion SHARED
         Memory/MinHook.h
         Memory/SlimMem.cpp
         Memory/SlimMem.h
+        SDK/CAttribute.h
         SDK/CBlockLegacy.h
         SDK/CChestBlockActor.h
         SDK/CClientInstance.h

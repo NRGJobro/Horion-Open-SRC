@@ -32,8 +32,8 @@ unsigned int focusedElement = -1;
 bool isFocused = false;
 static constexpr float textPaddingX = 2.0f;
 static constexpr float textPaddingY = 1.0f;
-static constexpr float textSize = 1.0f;
-static constexpr float textHeight = textSize * 10.0f;
+static constexpr float textSize = 0.9f;
+static constexpr float textHeight = textSize * 9.0f;
 static constexpr float categoryMargin = 0.5f;
 static constexpr float paddingRight = 13.5f;
 static constexpr float crossSize = textHeight / 2.f;
@@ -163,6 +163,9 @@ void ClickGui::renderCategory(Category category) {
 		case Category::CUSTOM:
 			ourWindow->pos.x = yot / 7.f * 6.f;
 			break;
+		case Category::CLIENT:
+			ourWindow->pos.x = yot / 7.f * 7.f;
+			break;
 		}
 	}
 
@@ -201,8 +204,8 @@ void ClickGui::renderCategory(Category category) {
 
 	if (ourWindow->isInAnimation) {
 		if (ourWindow->isExtended) {
-			ourWindow->animation *= 0.85f;
-			if (ourWindow->animation < 0.001f) {
+			ourWindow->animation *= 0.895f;
+			if (ourWindow->animation < 0.01f) {
 				ourWindow->yOffset = 0; // reset scroll
 				ourWindow->isInAnimation = false;
 			}
@@ -775,7 +778,7 @@ void ClickGui::renderCategory(Category category) {
 				shouldToggleRightClick = false;
 				ourWindow->isExtended = !ourWindow->isExtended;
 				if (ourWindow->isExtended && ourWindow->animation == 0)
-					ourWindow->animation = 0.2f;
+					ourWindow->animation = 0.002f;
 				else if (!ourWindow->isExtended && ourWindow->animation == 1)
 					ourWindow->animation = 0;
 				ourWindow->isInAnimation = true;
@@ -874,6 +877,7 @@ void ClickGui::render() {
 	renderCategory(Category::PLAYER);
 	renderCategory(Category::WORLD);
 	renderCategory(Category::MISC);
+	renderCategory(Category::CLIENT);
 
 	if (scriptMgr.getNumEnabledScripts() > 0)
 		renderCategory(Category::CUSTOM);

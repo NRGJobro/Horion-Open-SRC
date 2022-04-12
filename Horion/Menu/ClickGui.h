@@ -24,7 +24,7 @@ struct ClickWindow {
 	vec2_t size;
 	bool isExtended = true;
 	bool isInAnimation = false;
-	float animation = 0;
+	float animation = 0.1;
 	const char* name;
 	std::map<unsigned int, std::shared_ptr<ClickModule>> moduleMap;
 
@@ -69,6 +69,9 @@ private:
 				break;
 			case Category::CUSTOM:
 				categoryName = "Scripts";
+				break;
+			case Category::CLIENT:
+				categoryName = "Client";
 				break;
 			}
 		}

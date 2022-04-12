@@ -1,6 +1,6 @@
-#include "Fucker.h"
+#include "Breaker.h"
 
-Fucker::Fucker() : IModule(VK_NUMPAD9, Category::MISC, "Destroys certain blocks around you.") {
+Breaker::Breaker() : IModule(VK_NUMPAD9, Category::MISC, "Destroys certain blocks around you.") {
 	registerIntSetting("Range", &range, range, 1, 10);
 	registerBoolSetting("Beds", &beds, beds);
 	registerBoolSetting("Eggs", &eggs, eggs);
@@ -10,14 +10,14 @@ Fucker::Fucker() : IModule(VK_NUMPAD9, Category::MISC, "Destroys certain blocks 
 	registerBoolSetting("Barrels", &barrels, barrels);
 }
 
-Fucker::~Fucker() {
+Breaker::~Breaker() {
 }
 
-const char* Fucker::getModuleName() {
-	return ("Fucker");
+const char* Breaker::getModuleName() {
+	return ("Breaker");
 }
 
-void Fucker::onTick(C_GameMode* gm) {
+void Breaker::onTick(C_GameMode* gm) {
 	vec3_t* pos = gm->player->getPos();
 	for (int x = (int)pos->x - range; x < pos->x + range; x++) {
 		for (int z = (int)pos->z - range; z < pos->z + range; z++) {
