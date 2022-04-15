@@ -14,7 +14,7 @@ CommandMgr::~CommandMgr() {
 void CommandMgr::initCommands() {
 	logF("Initializing commands");
 
-		commandList.push_back(new CommandBlockExploitCommand());
+	commandList.push_back(new CommandBlockExploitCommand());
 	commandList.push_back(new RelativeTeleportCommand());
 	commandList.push_back(new PlayerTeleportCommand());
 	commandList.push_back(new FriendListCommand());
