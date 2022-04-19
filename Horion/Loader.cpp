@@ -357,7 +357,7 @@ DWORD WINAPI start(LPVOID lpParam) {
 	std::thread countThread([] {
 		while (isRunning) {
 			Sleep(1000);
-			g_Data.fps = g_Data.frameCount;
+			g_Data.fps = g_Data.frameCount / 3;
 			g_Data.frameCount = 0;
 			g_Data.cpsLeft = g_Data.leftclickCount;
 			g_Data.leftclickCount = 0;
