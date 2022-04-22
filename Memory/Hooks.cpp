@@ -645,7 +645,7 @@ __int64 Hooks::RenderText(__int64 a1, C_MinecraftUIRenderContext* renderCtx) {
 							IModuleContainer(std::shared_ptr<IModule> mod) {
 								const char* moduleNameChr = mod->getModuleName();
 								this->enabled = mod->isEnabled();
-								this->keybind = mod->getKeybind();
+								this->keybind = mod->getKey();
 								this->backingModule = mod;
 								this->pos = mod->getPos();
 
