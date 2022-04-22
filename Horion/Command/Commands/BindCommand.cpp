@@ -72,7 +72,7 @@ bool BindCommand::execute(std::vector<std::string>* args) {
 		}
 		return true;
 	} else {
-		clientMessageF("%s%s is currently bound to %s", RED, mod->getModuleName(), Utils::getKeybindName(mod->getKeybind()));
+		clientMessageF("%s%s is currently bound to %s", RED, mod->getModuleName(), Utils::getKeybindName(mod->getKey()));
 		return true;
 	}
 	
