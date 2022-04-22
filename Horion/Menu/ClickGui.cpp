@@ -937,7 +937,7 @@ void ClickGui::onKeyUpdate(int key, bool isDown) {
 		clickGuiMod->setEnabled(false);
 		return;
 	default:
-		if (key == clickGuiMod->getKeybind())
+		if (key == clickGuiMod->getKey())
 			clickGuiMod->setEnabled(false);
 	}
 	
