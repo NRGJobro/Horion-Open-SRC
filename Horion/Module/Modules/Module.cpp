@@ -183,7 +183,7 @@ const char* IModule::getRawModuleName() {
 	return getModuleName();
 }
 
-int IModule::getKeybind() {
+int IModule::getKey() {
 	return this->keybind;
 }
 
@@ -199,7 +199,7 @@ void IModule::onTick(C_GameMode*) {
 }
 
 void IModule::onKeyUpdate(int key, bool isDown) {
-	if (key == getKeybind()) {
+	if (key == getKey()) {
 		if (isFlashMode())
 			setEnabled(isDown);
 		else if (isDown)
