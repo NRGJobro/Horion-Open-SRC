@@ -4,7 +4,9 @@
 
 class Fly : public IModule {
 private:
-	float speed = 1.5f;
+	float horizontalSpeed = 1.5f;
+	float verticalSpeed = 0.5;
+	
 	int gameTick = 0;
 
 public:
