@@ -1,6 +1,12 @@
 #include "NoFall.h"
 
-NoFall::NoFall() : IModule(VK_NUMPAD3, Category::MOVEMENT, "Prevents you from taking falldamage.") {
+NoFall::NoFall() : IModule(VK_NUMPAD3, Category::PLAYER, "Prevents you from taking falldamage") {
+	mode = (*new SettingEnum(this))
+		//.addEntry(EnumEntry("Vanilla", 0))
+		.addEntry(EnumEntry("Mineplex", 1))
+		.addEntry(EnumEntry("CubeCraft", 2))
+		.addEntry(EnumEntry("Nukkit", 3));
+	registerEnumSetting("Mode", &mode, 0);
 }
 
 NoFall::~NoFall() {
@@ -11,13 +17,43 @@ const char* NoFall::getModuleName() {
 }
 
 void NoFall::onSendPacket(C_Packet* packet) {
-	if (g_Data.getLocalPlayer() != nullptr && g_Data.getLocalPlayer()->fallDistance > 2.f) {
+	C_LocalPlayer* localPlayer = g_Data.getLocalPlayer();
+	if (localPlayer == nullptr)
+		return;
+
+	if (localPlayer->fallDistance > 2.f) {
 		if (packet->isInstanceOf<C_MovePlayerPacket>()) {
 			C_MovePlayerPacket* movePacket = reinterpret_cast<C_MovePlayerPacket*>(packet);
 			movePacket->onGround = true;
-		} /*else if (packet->isInstanceOf<C_ActorFallPacket>()) {
-			C_ActorFallPacket* fallPacket = reinterpret_cast<C_ActorFallPacket*>(packet);
-			fallPacket->fallDistance = 0.f;
-		}*/
+		}
+	}
+}
+
+void NoFall::onTick(C_GameMode* gm) {
+	C_LocalPlayer* localPlayer = g_Data.getLocalPlayer();
+
+	if (localPlayer->fallDistance > 2.f) {
+		switch (mode.selected) {
+				/*
+		case 0:{
+			C_PlayerActionPacket actionPacket;
+			actionPacket.action = 7; //重生
+			actionPacket.entityRuntimeId = localPlayer->entityRuntimeId;
+			g_Data.getClientInstance()->loopbackPacketSender->sendToServer(&actionPacket);
+		}
+			break;
+			*/
+		case 2:{
+			localPlayer->velocity.y = 0.f;
+			localPlayer->setPos((*localPlayer->getPos()).add(0, 0.2, 0));
+		}
+			break;
+		case 3:{
+			C_PlayerActionPacket actionPacket;
+			actionPacket.action = 15;  //启动鞘翅
+			actionPacket.entityRuntimeId = localPlayer->entityRuntimeId;
+			g_Data.getClientInstance()->loopbackPacketSender->sendToServer(&actionPacket);
+		}
+		}
 	}
 }
