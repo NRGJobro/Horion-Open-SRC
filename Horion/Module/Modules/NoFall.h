@@ -5,6 +5,8 @@
 
 class NoFall : public IModule {
 public:
+	SettingEnum mode;
+	
 	NoFall();
 	~NoFall();
 
