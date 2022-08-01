@@ -21,7 +21,7 @@ void NoFall::onSendPacket(C_Packet* packet) {
 	if (localPlayer == nullptr)
 		return;
 
-	if (localPlayer->fallDistance > 2.f) {
+	if (localPlayer->fallDistance > 2.f && mode.selected == 1) {
 		if (packet->isInstanceOf<C_MovePlayerPacket>()) {
 			C_MovePlayerPacket* movePacket = reinterpret_cast<C_MovePlayerPacket*>(packet);
 			movePacket->onGround = true;
@@ -37,7 +37,7 @@ void NoFall::onTick(C_GameMode* gm) {
 				/*
 		case 0:{
 			C_PlayerActionPacket actionPacket;
-			actionPacket.action = 7; //重生
+			actionPacket.action = 7; //Respawn
 			actionPacket.entityRuntimeId = localPlayer->entityRuntimeId;
 			g_Data.getClientInstance()->loopbackPacketSender->sendToServer(&actionPacket);
 		}
@@ -50,7 +50,7 @@ void NoFall::onTick(C_GameMode* gm) {
 			break;
 		case 3:{
 			C_PlayerActionPacket actionPacket;
-			actionPacket.action = 15;  //启动鞘翅
+			actionPacket.action = 15;  //Open Elytra
 			actionPacket.entityRuntimeId = localPlayer->entityRuntimeId;
 			g_Data.getClientInstance()->loopbackPacketSender->sendToServer(&actionPacket);
 		}

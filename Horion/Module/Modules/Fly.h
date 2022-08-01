@@ -6,7 +6,7 @@ class Fly : public IModule {
 private:
 	float horizontalSpeed = 1.5f;
 	float verticalSpeed = 0.5;
-	
+
 	int gameTick = 0;
 
 public:
@@ -16,9 +16,9 @@ public:
 	SettingEnum mode;
 
 	// Inherited via IModule
-	virtual bool isFlashMode() override;
 	virtual void onEnable() override;
 	virtual const char* getModuleName() override;
 	virtual void onTick(C_GameMode* gm) override;
 	virtual void onDisable() override;
+	virtual void onMove(C_MoveInputHandler* input) override;
 };
