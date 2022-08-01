@@ -22,7 +22,7 @@ void ModuleManager::initModules() {
 		moduleList.push_back(std::shared_ptr<IModule>(new HudModule()));
 		moduleList.push_back(std::shared_ptr<IModule>(new Killaura()));
 		moduleList.push_back(std::shared_ptr<IModule>(new ESP()));
-		moduleList.push_back(std::shared_ptr<IModule>(new Jetpack()));
+		//moduleList.push_back(std::shared_ptr<IModule>(new Jetpack()));
 		moduleList.push_back(std::shared_ptr<IModule>(new Aimbot()));
 		moduleList.push_back(std::shared_ptr<IModule>(new TriggerBot()));
 		moduleList.push_back(std::shared_ptr<IModule>(new StorageESP()));
@@ -85,7 +85,7 @@ void ModuleManager::initModules() {
 		moduleList.push_back(std::shared_ptr<IModule>(new NightMode()));
 		moduleList.push_back(std::shared_ptr<IModule>(new NoSwing()));
 		//moduleList.push_back(std::shared_ptr<IModule>(new CubeGlide()));
-		moduleList.push_back(std::shared_ptr<IModule>(new AirStuck()));
+		//moduleList.push_back(std::shared_ptr<IModule>(new AirStuck()));
 		moduleList.push_back(std::shared_ptr<IModule>(new Zoom()));
 		moduleList.push_back(std::shared_ptr<IModule>(new Teams()));
 		moduleList.push_back(std::shared_ptr<IModule>(new Nbt()));
