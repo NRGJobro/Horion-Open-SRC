@@ -4,12 +4,14 @@
 
 class EditionFaker : public IModule {
 public:
-	SettingEnum edition;
-	
 	EditionFaker();
 	~EditionFaker();
+	
+	SettingEnum edition;
+	SettingEnum inputMode;
 
 	int getFakedEditon();
+	int getFakedInputMode();
 
 	// Inherited via IModule
 	virtual const char* getModuleName() override;
