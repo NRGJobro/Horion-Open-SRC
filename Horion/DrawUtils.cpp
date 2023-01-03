@@ -341,21 +341,17 @@ void DrawUtils::drawBox(const vec3_t& lower, const vec3_t& upper, float lineWidt
 	}
 }
 
-void DrawUtils::drawImage(std::string FilePath, vec2_t& imagePos, vec2_t& ImageDimension, vec2_t& idk) {
-	if (texturePtr == nullptr) {
-		texturePtr = new C_TexturePtr();
-		C_FilePath file(FilePath);
-		renderCtx->getTexture(texturePtr, file);
-	}
-
-	__int64 yot = 0;
-	static unsigned __int64 hashedString = 0xA99285D21E94FC80;
-	static uintptr_t flushImageAddr = FindSignature("48 8B C4 55 56 57 41 54 41 55 41 56 41 57 ?? ?? ?? ?? ?? ?? ?? 48 ?? ?? ?? ?? ?? ?? 48 ?? ?? ?? ?? ?? ?? ?? 48 89 58 ?? 0F 29 70 ?? 0F 29 78 ?? 44 0F 29 40 ?? 48 8B 05 ?? ?? ?? ?? 48 33 C4 ?? ?? ?? ?? ?? ?? ?? 4D 8B E1 44 0F 28 C2 4C 8B F2 4C 8B F9");
+void DrawUtils::drawImage(std::string filePath, vec2_t& imagePos, vec2_t& imageDimension, vec2_t& idk, vec2_t& idk2, MC_Color flushColor) {
+	texturePtr = new C_TexturePtr();
+	C_FilePath file(filePath);
+	renderCtx->getTexture(texturePtr, file);
+	static HashedString flushString = HashedString(0xA99285D21E94FC80, "ui_flush");
+	static uintptr_t flushImageAddr = FindSignature("48 8B C4 48 89 58 ? 48 89 70 ? 55 57 41 54 41 56 41 57 48 8D A8 ? ? ? ? 48 81 EC ? ? ? ? 0F 29 70 ? 48 8B 05 ? ? ? ? 48 33 C4 48 89 85 ? ? ? ? 4D 8B E1");
 
 	if (texturePtr != nullptr) {
-		renderCtx->drawImage(texturePtr, imagePos, ImageDimension, yot, idk);
-		MC_Color col(1.f, 1.f, 1.f);
-		renderCtx->flushImages(col, flushImageAddr, (__int64)&hashedString);
+		renderCtx->drawImage(texturePtr, imagePos, imageDimension, idk, idk2);
+		renderCtx->flushImages(flushColor, flushImageAddr, flushString);
+		delete texturePtr;
 	}
 }
 

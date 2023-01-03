@@ -56,6 +56,7 @@ void TestModule::onMove(C_MoveInputHandler* hand){
 }
 
 void TestModule::onPostRender(C_MinecraftUIRenderContext* renderCtx) {
+	DrawUtils::drawImage("textures/entity/steve.png", vec2_t(10 + 5, 40 + 5), vec2_t(30, 30), vec2_t(0.125f, 0.125f), vec2_t(0.125f, 0.125f));
 }
 
 void TestModule::onSendPacket(C_Packet* p) {

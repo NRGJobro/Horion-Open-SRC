@@ -32,14 +32,19 @@ private:
 
 class HashedString {
 private:
-	unsigned __int64 hash;
+	uint64_t hash;
 	TextHolder text;  // 0x0008
 
 public:
 	HashedString(const std::string& text) {
 		this->text.setText(text);
-
 		this->computeHash();
+	}
+
+	HashedString(uint64_t inputhash, std::string text) {
+		memset(this, 0x0, sizeof(HashedString));
+		this->hash = inputhash;
+		this->text.setText(text);
 	}
 
 	void computeHash() {

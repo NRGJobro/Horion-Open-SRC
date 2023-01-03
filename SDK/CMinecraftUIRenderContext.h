@@ -124,9 +124,9 @@ public:
 	virtual void drawDebugText(const float* pos, TextHolder* text, float* color, float alpha, unsigned int textAlignment, const float* textMeasureData, const void* caretMeasureData);
 	virtual __int64 drawText(C_Font* font, const float* pos, TextHolder* text, const float* color, float alpha, unsigned int textAlignment, const TextMeasureData* textMeasureData, const uintptr_t* caretMeasureData);
 	virtual void flushText(float timeSinceLastFlush);
-	virtual __int64 drawImage(C_TexturePtr* texturePtr, vec2_t& ImagePos, vec2_t& ImageDimension, __int64& a4, vec2_t& idk);
+	virtual __int64 drawImage(const C_TexturePtr* texturePtr, vec2_t const& ImagePos, vec2_t const& ImageDimension, vec2_t const& idk, vec2_t const& idk2);  // didnt bother putting in the parameters
 	virtual void drawNineslice(C_TexturePtr* texturePtr, void* nineslice);
-	virtual __int64 flushImages(MC_Color& color, float alpha, __int64 hashedString);
+	virtual __int64 flushImages(MC_Color& color, __int64 flushImageAddr, class HashedString& hashedString);
 	virtual void beginSharedMeshBatch(uintptr_t ComponentRenderBatch);
 	virtual void endSharedMeshBatch(float timeSinceLastFlush);
 	virtual void drawRectangle(const float* pos, const float* color, float alpha, int lineWidth);  // line width is guessed
