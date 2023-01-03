@@ -22,9 +22,9 @@ void Hooks::Init() {
 	// clang-format off
 	// Vtables
 	{
-		// GameMode::vtable
+		// GameMode::vtable //good
 		{
-			uintptr_t sigOffset = FindSignature("48 8D 05 ? ? ? ? 48 8B D9 48 89 01 8B FA 48 8B 89 ? ? ? ? 48 85 C9 74 ? 48 8B 01 BA ? ? ? ? FF 10 48 8B 8B");
+			uintptr_t sigOffset = FindSignature("48 8D 05 ? ? ? ? 48 89 01 48 89 51 ? 48 C7 41 ? FF FF FF FF C7 41 ? FF FF FF FF ");
 			int offset = *reinterpret_cast<int*>(sigOffset + 3);
 			uintptr_t** gameModeVtable = reinterpret_cast<uintptr_t**>(sigOffset + offset + /*length of instruction*/ 7);
 			if (gameModeVtable == 0x0 || sigOffset == 0x0)
@@ -38,7 +38,7 @@ void Hooks::Init() {
 			}
 		}
 		
-		// BlockLegacy::vtable
+		// BlockLegacy::vtable // Not updated
 		{
 			intptr_t sigOffset = FindSignature("48 8D 05 ?? ?? ?? ?? 48 89 06 EB 03 49 8B F4 4D 89 26");  // BlockLegacy constructor
 			int offset = *reinterpret_cast<int*>(sigOffset + 3);
@@ -49,7 +49,7 @@ void Hooks::Init() {
 			}
 		}
 
-		// LocalPlayer::vtable
+		// LocalPlayer::vtable // Not updated
 		{
 			uintptr_t sigOffset = FindSignature("48 8D 05 ? ? ? ? 48 89 01 48 8B 89 ? ? ? ? 48 8B 01 FF 90 ? ? ? ? 48 8B 10");
 			int offset = *reinterpret_cast<int*>(sigOffset + 3);
@@ -81,9 +81,9 @@ void Hooks::Init() {
 			}
 		}
 
-		// MoveInputHandler::vtable
+		// MoveInputHandler::vtable //good
 		{
-			uintptr_t sigOffset = FindSignature("48 8D 0D ? ? ? ? 49 89 48 ? 49 89 80 ? ? ? ? 49 89 80 ? ? ? ? 48 39 87 ? ? ? ? 74 20 48 8B 8F");
+			uintptr_t sigOffset = FindSignature("48 8D 05 ? ? ? ? 33 C9 48 89 4B ? 48 89 4B ? 48 89 4B ? 48 89 4B ?");
 			int offset = *reinterpret_cast<int*>(sigOffset + 3);
 			uintptr_t** moveInputVtable = reinterpret_cast<uintptr_t**>(sigOffset + offset + 7);
 			if (moveInputVtable == 0x0 || sigOffset == 0x0)
