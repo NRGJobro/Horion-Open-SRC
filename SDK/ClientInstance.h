@@ -270,27 +270,24 @@ private:
 public:
 	PtrToGameSettings1* ptr;  //0x100
 private:
-	char pad_0x108[0x8];  //0x108
+	char pad_0x108[0x8];  // 0x108
 public:
-	class HitDetectSystem* hitDetectSystem;  //0x110
+	class HitDetectSystem* hitDetectSystem;  // 0x110
+private:
+	char pad_0118[0x340];  // 0x0118 + 0x3A0
+public:
+	Vec2 mousePos;  // 0x458
+private:
+	char pad_0460[0x78];
+
+public:
 	struct {
 		char pad[0x238];
 		struct {
 			__int64 materialPtr;
 			size_t refCount;
 		} entityLineMaterial;
-	} * itemInHandRenderer;  //0x04D8
-private:
-	char pad_04C8[0x1B0];  //0x04D0
-public:
-	float fovX;  //0x0680
-private:
-	char pad_068C[0x10];  //0x0684
-public:
-	float fovY;  //0x0694
-private:
-	char pad_0670[0x1B8];  //0x0678z
-
+	} * itemInHandRenderer;  // 0x04D8
 
 	virtual __int64 destructorClientInstance();
 	// Duplicate destructor
