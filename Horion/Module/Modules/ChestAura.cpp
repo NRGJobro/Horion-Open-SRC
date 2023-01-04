@@ -12,8 +12,8 @@ const char* ChestAura::getModuleName() {
 	return ("ChestAura");
 }
 
-void ChestAura::onTick(C_GameMode* gm) {
-	if (g_Data.getLocalPlayer()->getSupplies()->inventory->isFull())
+void ChestAura::onTick(GameMode* gm) {
+	if (Game.getLocalPlayer()->getSupplies()->inventory->isFull())
 		return;
 
 	Vec3* pos = gm->player->getPos();
@@ -21,8 +21,8 @@ void ChestAura::onTick(C_GameMode* gm) {
 		for (int z = (int)pos->z - range; z < pos->z + range; z++) {
 			for (int y = (int)pos->y - range; y < pos->y + range; y++) {
 				Vec3i pos = Vec3i(x, y, z);
-				C_Block* block = gm->player->region->getBlock(pos);
-				if (block != nullptr && g_Data.canUseMoveKeys()) {
+				Block* block = gm->player->region->getBlock(pos);
+				if (block != nullptr && Game.canUseMoveKeys()) {
 					auto id = gm->player->region->getBlock(pos)->toLegacy()->blockId;
 					bool open = false;
 					if (id == 54) open = true;                  // Chests

@@ -17,7 +17,7 @@ const char* Breaker::getModuleName() {
 	return ("Breaker");
 }
 
-void Breaker::onTick(C_GameMode* gm) {
+void Breaker::onTick(GameMode* gm) {
 	Vec3* pos = gm->player->getPos();
 	for (int x = (int)pos->x - range; x < pos->x + range; x++) {
 		for (int z = (int)pos->z - range; z < pos->z + range; z++) {
@@ -35,14 +35,14 @@ void Breaker::onTick(C_GameMode* gm) {
 
 				if (destroy) {
 					gm->destroyBlock(&blockPos, 0);
-					g_Data.getLocalPlayer()->swingArm();
+					Game.getLocalPlayer()->swingArm();
 					return;
 				}
 				
 				if (eat) {
 					bool idk = true;
 					gm->buildBlock(&blockPos, 0, idk);
-					g_Data.getLocalPlayer()->swingArm();
+					Game.getLocalPlayer()->swingArm();
 					return;
 				}
 			}
@@ -50,12 +50,12 @@ void Breaker::onTick(C_GameMode* gm) {
 	}
 
 	if (treasures) {
-		g_Data.forEachEntity([](C_Entity* ent, bool b) {
+		Game.forEachEntity([](Entity* ent, bool b) {
 			std::string name = ent->getNameTag()->getText();
 			int id = ent->getEntityTypeId();
-			if (name.find("Treasure") != std::string::npos && g_Data.getLocalPlayer()->getPos()->dist(*ent->getPos()) <= 5) {
-				g_Data.getLocalPlayer()->swingArm();
-				g_Data.getCGameMode()->attack(ent);
+			if (name.find("Treasure") != std::string::npos && Game.getLocalPlayer()->getPos()->dist(*ent->getPos()) <= 5) {
+				Game.getLocalPlayer()->swingArm();
+				Game.getGameMode()->attack(ent);
 			}
 		});
 	}

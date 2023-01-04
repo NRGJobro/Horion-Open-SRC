@@ -12,9 +12,9 @@ const char* Derp::getModuleName() {
 	return "Derp";
 }
 
-void Derp::onTick(C_GameMode* gm) {
+void Derp::onTick(GameMode* gm) {
 	if (packetMode) {
-		C_MovePlayerPacket p(g_Data.getLocalPlayer(), *g_Data.getLocalPlayer()->getPos());
+		C_MovePlayerPacket p(Game.getLocalPlayer(), *Game.getLocalPlayer()->getPos());
 		if (epicStroke) {
 			p.pitch = (float)(rand() % 360);
 			p.yaw = (float)(rand() % 360);
@@ -22,7 +22,7 @@ void Derp::onTick(C_GameMode* gm) {
 			p.pitch = (float)(counter % 360);
 			p.yaw = (float)(counter % 360);
 		}
-		g_Data.getClientInstance()->loopbackPacketSender->sendToServer(&p);
+		Game.getClientInstance()->loopbackPacketSender->sendToServer(&p);
 	} else {
 		if (epicStroke) {
 			gm->player->pitch = (float)(rand() % 360);

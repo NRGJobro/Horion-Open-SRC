@@ -23,12 +23,12 @@ public:
 		zooming = true;
 	}
 	void onLevelRender() {
-		if (g_Data.getLocalPlayer() != nullptr && g_Data.isInGame())
-			g_Data.getLocalPlayer()->setFieldOfViewModifier(strength);
+		if (Game.getLocalPlayer() != nullptr && Game.isInGame())
+			Game.getLocalPlayer()->setFieldOfViewModifier(strength);
 	}
 	void onDisable() {
-		g_Data.getLocalPlayer()->setFieldOfViewModifier(OGFov);
-		target = g_Data.fov;
+		Game.getLocalPlayer()->setFieldOfViewModifier(OGFov);
+		target = Game.fov;
 	}
 	virtual const char* getModuleName() override {
 		return "Zoom";

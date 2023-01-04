@@ -16,8 +16,8 @@ const char* NameTags::getModuleName() {
 	return ("NameTags");
 }
 
-void drawNameTags(C_Entity* ent, bool) {
-	C_LocalPlayer* localPlayer = g_Data.getLocalPlayer();
+void drawNameTags(Entity* ent, bool) {
+	LocalPlayer* localPlayer = Game.getLocalPlayer();
 	static auto nameTagsMod = moduleMgr->getModule<NameTags>();
 
 	if (ent != localPlayer) {
@@ -27,15 +27,15 @@ void drawNameTags(C_Entity* ent, bool) {
 			return;
 		if (Target::isValidTarget(ent) && nameTagsMod != nullptr) {
 			nameTagsMod->nameTags.insert(Utils::sanitize(ent->getNameTag()->getText()));
-			float dist = ent->getPos()->dist(*g_Data.getLocalPlayer()->getPos());
+			float dist = ent->getPos()->dist(*Game.getLocalPlayer()->getPos());
 			DrawUtils::drawNameTags(ent, fmax(0.6f, 3.f / dist));
 			DrawUtils::flush();
 		}
 	}
 }
 
-void NameTags::onPreRender(C_MinecraftUIRenderContext* renderCtx) {
-	C_LocalPlayer* localPlayer = g_Data.getLocalPlayer();
+void NameTags::onPreRender(MinecraftUIRenderContext* renderCtx) {
+	LocalPlayer* localPlayer = Game.getLocalPlayer();
 	if (localPlayer == nullptr || !GameData::canUseMoveKeys()) return;
 
 	if (ingameNametagSetting)
@@ -46,7 +46,7 @@ void NameTags::onPreRender(C_MinecraftUIRenderContext* renderCtx) {
 		} else
 			*ingameNametagSetting = false;  //disable other ppl's nametags
 
-	g_Data.forEachEntity(drawNameTags);
+	Game.forEachEntity(drawNameTags);
 }
 
 void NameTags::onDisable() {

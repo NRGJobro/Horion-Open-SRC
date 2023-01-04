@@ -16,8 +16,8 @@ const char* NoFall::getModuleName() {
 	return ("NoFall");
 }
 
-void NoFall::onSendPacket(C_Packet* packet) {
-	C_LocalPlayer* localPlayer = g_Data.getLocalPlayer();
+void NoFall::onSendPacket(Packet* packet) {
+	LocalPlayer* localPlayer = Game.getLocalPlayer();
 	if (localPlayer == nullptr)
 		return;
 
@@ -29,17 +29,17 @@ void NoFall::onSendPacket(C_Packet* packet) {
 	}
 }
 
-void NoFall::onTick(C_GameMode* gm) {
-	C_LocalPlayer* localPlayer = g_Data.getLocalPlayer();
+void NoFall::onTick(GameMode* gm) {
+	LocalPlayer* localPlayer = Game.getLocalPlayer();
 
 	if (localPlayer->fallDistance > 2.f) {
 		switch (mode.selected) {
 				/*
 		case 0:{
-			C_PlayerActionPacket actionPacket;
+			PlayerActionPacket actionPacket;
 			actionPacket.action = 7; //Respawn
 			actionPacket.entityRuntimeId = localPlayer->entityRuntimeId;
-			g_Data.getClientInstance()->loopbackPacketSender->sendToServer(&actionPacket);
+			Game.getClientInstance()->loopbackPacketSender->sendToServer(&actionPacket);
 		}
 			break;
 			*/
@@ -49,10 +49,10 @@ void NoFall::onTick(C_GameMode* gm) {
 		}
 			break;
 		case 3:{
-			C_PlayerActionPacket actionPacket;
+			PlayerActionPacket actionPacket;
 			actionPacket.action = 15;  //Open Elytra
 			actionPacket.entityRuntimeId = localPlayer->entityRuntimeId;
-			g_Data.getClientInstance()->loopbackPacketSender->sendToServer(&actionPacket);
+			Game.getClientInstance()->loopbackPacketSender->sendToServer(&actionPacket);
 		}
 		}
 	}

@@ -15,8 +15,8 @@ const char* Compass::getModuleName() {
 	return "Compass";
 }
 
-void Compass::onPreRender(C_MinecraftUIRenderContext* renderCtx) {
-	C_LocalPlayer* player = g_Data.getLocalPlayer();
+void Compass::onPreRender(MinecraftUIRenderContext* renderCtx) {
+	LocalPlayer* player = Game.getLocalPlayer();
 
 	if (player == nullptr || !GameData::canUseMoveKeys()) return;
 
@@ -43,7 +43,7 @@ void Compass::onPreRender(C_MinecraftUIRenderContext* renderCtx) {
 
 	const int deg = (int)(player->yaw + 180);
 	const float degSubOffset = 0;  // -fmodf(player->yaw, 1)
-	const float sCenter = g_Data.getGuiData()->widthGame / 2;
+	const float sCenter = Game.getGuiData()->widthGame / 2;
 
 	for (int off = -range; off <= range; off++) {
 		int oDeg = (deg + off) % 360;

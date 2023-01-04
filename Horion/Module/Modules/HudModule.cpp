@@ -1,6 +1,6 @@
 #include "HudModule.h"
 #include "../../DrawUtils.h"
-#include "../../Scripting/ScriptManager.h"
+#include "../ModuleManager.h"
 
 HudModule::HudModule() : IModule(0, Category::CLIENT, "Displays things like the ArrayList/TabGUI.") {
 	registerBoolSetting("TabGui", &tabgui, tabgui);
@@ -27,7 +27,7 @@ const char* HudModule::getModuleName() {
 void HudModule::drawKeystroke(char key, const Vec2& pos) {
 	static auto ClientThemes = moduleMgr->getModule<ClientTheme>();
 	std::string keyString = Utils::getKeybindName(key);
-	C_GameSettingsInput* input = g_Data.getClientInstance()->getGameSettingsInput();
+	GameSettingsInput* input = Game.getClientInstance()->getGameSettingsInput();
 	if (key == *input->forwardKey) {
 		Vec4 rectPos(
 			pos.x,
@@ -120,19 +120,17 @@ void HudModule::drawRightMouseKeystroke(Vec2 pos) {
 	DrawUtils::drawText(textPos, &keyString, MC_Color(255, 255, 255), 1.f, 1.f);
 }
 
-void HudModule::onPostRender(C_MinecraftUIRenderContext* renderCtx) {
+void HudModule::onPostRender(MinecraftUIRenderContext* renderCtx) {
 	static auto ClientThemes = moduleMgr->getModule<ClientTheme>();
 
-	Vec2 windowSize = g_Data.getClientInstance()->getGuiData()->windowSize;
+	Vec2 windowSize = Game.getClientInstance()->getGuiData()->windowSize;
 	float f = 10.f * scale;
 	std::string tempStr("Movement");
 	float len = DrawUtils::getTextWidth(&tempStr, scale) + 7.f;
 	float startY = tabgui ? 6 * f : 0.f;
-	if(tabgui && scriptMgr.getNumEnabledScripts() > 0)
-		startY += f;
 	{  // FPS
-		if (!(g_Data.getLocalPlayer() == nullptr || !fps)) {
-			std::string fpsText = "FPS: " + std::to_string(g_Data.getFPS());
+		if (!(Game.getLocalPlayer() == nullptr || !fps)) {
+			std::string fpsText = "FPS: " + std::to_string(Game.getFPS());
 			Vec4 rectPos = Vec4(2.5f, startY + 5.f * scale, len, startY + 15.f * scale);
 			Vec2 textPos = Vec2(rectPos.x + 1.5f, rectPos.y + 1.f);
 			if (ClientThemes->Theme.selected == 1) {
@@ -146,8 +144,8 @@ void HudModule::onPostRender(C_MinecraftUIRenderContext* renderCtx) {
 		}
 	}
 	{  // CPS
-		if (!(g_Data.getLocalPlayer() == nullptr || !cps)) {
-			std::string cpsText = "CPS: " + std::to_string(g_Data.getLeftCPS()) + " - " + std::to_string(g_Data.getRightCPS());
+		if (!(Game.getLocalPlayer() == nullptr || !cps)) {
+			std::string cpsText = "CPS: " + std::to_string(Game.getLeftCPS()) + " - " + std::to_string(Game.getRightCPS());
 			Vec4 rectPos = Vec4(2.5f, startY + 5.f * scale, len, startY + 15.f * scale);
 			Vec2 textPos = Vec2(rectPos.x + 1.5f, rectPos.y + 1.f);
 			if (ClientThemes->Theme.selected == 1) {
@@ -161,8 +159,8 @@ void HudModule::onPostRender(C_MinecraftUIRenderContext* renderCtx) {
 		}
 	}
 	{  // Coordinates
-		if (!(g_Data.getLocalPlayer() == nullptr || !coordinates)) {
-			Vec3* pos = g_Data.getLocalPlayer()->getPos();
+		if (!(Game.getLocalPlayer() == nullptr || !coordinates)) {
+			Vec3* pos = Game.getLocalPlayer()->getPos();
 
 			std::string coordsX = "X: " + std::to_string((int)floorf(pos->x));
 			std::string coordsY = "Y: " + std::to_string((int)floorf(pos->y));
@@ -183,30 +181,30 @@ void HudModule::onPostRender(C_MinecraftUIRenderContext* renderCtx) {
 	}
 	{  // ArmorHUD
 		
-		if (!(g_Data.getLocalPlayer() == nullptr || !displayArmor || !GameData::canUseMoveKeys())) {
+		if (!(Game.getLocalPlayer() == nullptr || !displayArmor || !GameData::canUseMoveKeys())) {
 			static float constexpr scale = 1.f;
 			static float constexpr opacity = 0.25f;
 			static float constexpr spacing = scale + 15.f;
-			C_LocalPlayer* player = g_Data.getLocalPlayer();
+			LocalPlayer* player = Game.getLocalPlayer();
 			float x = windowSize.x / 2.f + 5.f;
 			float y = windowSize.y - 57.5f;
 			for (int i = 0; i < 4; i++) {
-				C_ItemStack* stack = player->getArmor(i);
+				ItemStack* stack = player->getArmor(i);
 				if (stack->isValid()) {
 					DrawUtils::drawItem(stack, Vec2(x, y), opacity, scale, stack->isEnchanted());
 					x += scale * spacing;
 				}
 			}
-			C_PlayerInventoryProxy* supplies = g_Data.getLocalPlayer()->getSupplies();
-			C_ItemStack* item = supplies->inventory->getItemStack(supplies->selectedHotbarSlot);
+			PlayerInventoryProxy* supplies = Game.getLocalPlayer()->getSupplies();
+			ItemStack* item = supplies->inventory->getItemStack(supplies->selectedHotbarSlot);
 			//x += scale * spacing;
 			if (item->isValid())
 				DrawUtils::drawItem(item, Vec2(x, y), opacity, scale, item->isEnchanted());
 		}
 	}
 	{  // Keystrokes
-		if (!(g_Data.getLocalPlayer() == nullptr || !keystrokes || !GameData::canUseMoveKeys())) {
-			C_GameSettingsInput* input = g_Data.getClientInstance()->getGameSettingsInput();
+		if (!(Game.getLocalPlayer() == nullptr || !keystrokes || !GameData::canUseMoveKeys())) {
+			GameSettingsInput* input = Game.getClientInstance()->getGameSettingsInput();
 			HudModule::drawKeystroke(*input->forwardKey, Vec2(32.f, windowSize.y - 84));
 			HudModule::drawKeystroke(*input->leftKey, Vec2(10.f, windowSize.y - 62));
 			HudModule::drawKeystroke(*input->backKey, Vec2(32.f, windowSize.y - 62));

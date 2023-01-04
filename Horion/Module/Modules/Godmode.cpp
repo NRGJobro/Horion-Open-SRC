@@ -12,7 +12,7 @@ const char* Godmode::getModuleName() {
 	return "Godmode";
 }
 
-void Godmode::onTick(C_GameMode* gm) {
+void Godmode::onTick(GameMode* gm) {
 	delay++;
 	if (delay >= regendelay) {
 		delay = 0;
@@ -20,7 +20,7 @@ void Godmode::onTick(C_GameMode* gm) {
 	}
 }
 
-void Godmode::onSendPacket(C_Packet* p) {
+void Godmode::onSendPacket(Packet* p) {
 	if (p->isInstanceOf<C_MovePlayerPacket>()) {
 		C_MovePlayerPacket* movePacket = reinterpret_cast<C_MovePlayerPacket*>(p);
 		movePacket->onGround = true;

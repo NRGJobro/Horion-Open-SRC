@@ -13,7 +13,7 @@ const char* ClickGuiMod::getModuleName() {
 }
 
 void ClickGuiMod::onEnable() {
-	g_Data.getClientInstance()->releaseMouse();
+	Game.getClientInstance()->releaseMouse();
 }
 
 bool ClickGuiMod::allowAutoStart() {
@@ -21,12 +21,12 @@ bool ClickGuiMod::allowAutoStart() {
 }
 
 void ClickGuiMod::onDisable() {
-	g_Data.getClientInstance()->grabMouse();
+	Game.getClientInstance()->grabMouse();
 }
 
-void ClickGuiMod::onPostRender(C_MinecraftUIRenderContext* renderCtx) {
+void ClickGuiMod::onPostRender(MinecraftUIRenderContext* renderCtx) {
 	if (GameData::canUseMoveKeys())
-		g_Data.getClientInstance()->releaseMouse();
+		Game.getClientInstance()->releaseMouse();
 }
 void ClickGuiMod::onLoadConfig(void* conf) {
 	IModule::onLoadConfig(conf);

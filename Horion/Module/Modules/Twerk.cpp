@@ -11,10 +11,10 @@ const char* Twerk::getModuleName() {
 	return ("Twerk");
 }
 
-void Twerk::onTick(C_GameMode* gm) {
+void Twerk::onTick(GameMode* gm) {
 	Odelay++;
 	if (Odelay > delay * 20) {
-		C_GameSettingsInput* input = g_Data.getClientInstance()->getGameSettingsInput();
+		GameSettingsInput* input = Game.getClientInstance()->getGameSettingsInput();
 		if (gm->player->isSneaking()) {
 			isSneaking = false;
 		} 
@@ -23,7 +23,7 @@ void Twerk::onTick(C_GameMode* gm) {
 				isSneaking = true;
 			}
 		}
-		g_Data.getClientInstance()->getMoveTurnInput()->isSneakDown = isSneaking;
+		Game.getClientInstance()->getMoveTurnInput()->isSneakDown = isSneaking;
 		Odelay = 0;
 	}
 }

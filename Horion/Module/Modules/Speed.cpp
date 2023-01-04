@@ -11,23 +11,23 @@ const char* Speed::getModuleName() {
 	return ("Speed");  // 48 8D 15 ?? ?? ?? ?? 48 8B CB FF 90 ?? ?? ?? ?? 48 8B D8
 }
 
-void Speed::onTick(C_GameMode* gm) {
-	C_LocalPlayer* localPlayer = g_Data.getLocalPlayer();
+void Speed::onTick(GameMode* gm) {
+	LocalPlayer* localPlayer = Game.getLocalPlayer();
 
-	float* speedAdr = reinterpret_cast<float*>(g_Data.getLocalPlayer()->getSpeed() + 0x84);
+	float* speedAdr = reinterpret_cast<float*>(Game.getLocalPlayer()->getSpeed() + 0x84);
 	*speedAdr = speed;
 }
 
 void Speed::onEnable() {
-	if (g_Data.getLocalPlayer() == nullptr) {
+	if (Game.getLocalPlayer() == nullptr) {
 		setEnabled(false);
 		return;
 	} else {
-		origSpeed = *reinterpret_cast<float*>(g_Data.getLocalPlayer()->getSpeed() + 0x84);
+		origSpeed = *reinterpret_cast<float*>(Game.getLocalPlayer()->getSpeed() + 0x84);
 	}
 }
 
 void Speed::onDisable() {
-	if (g_Data.getLocalPlayer() != nullptr)
-		*reinterpret_cast<float*>(g_Data.getLocalPlayer()->getSpeed() + 0x84) = origSpeed;
+	if (Game.getLocalPlayer() != nullptr)
+		*reinterpret_cast<float*>(Game.getLocalPlayer()->getSpeed() + 0x84) = origSpeed;
 }

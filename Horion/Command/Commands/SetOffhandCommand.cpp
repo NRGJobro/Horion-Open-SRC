@@ -24,28 +24,28 @@ bool SetOffhandCommand::execute(std::vector<std::string>* args) {
 	} catch (const std::invalid_argument&) {
 	}
 
-	C_Inventory* inv = g_Data.getLocalPlayer()->getSupplies()->inventory;
-	C_ItemStack* yot = nullptr;
-	auto transactionManager = g_Data.getLocalPlayer()->getTransactionManager();
+	Inventory* inv = Game.getLocalPlayer()->getSupplies()->inventory;
+	ItemStack* yot = nullptr;
+	auto transactionManager = Game.getLocalPlayer()->getTransactionManager();
 
 	if (itemId == 0) {
 		TextHolder tempText(args->at(1));
 		std::unique_ptr<void*> ItemPtr = std::make_unique<void*>();
 		std::unique_ptr<void*> buffer = std::make_unique<void*>();
-		C_Item*** cStack = ItemRegistry::lookUpByName(ItemPtr.get(), buffer.get(), tempText);
+		Item*** cStack = ItemRegistry::lookUpByName(ItemPtr.get(), buffer.get(), tempText);
 		if (*cStack == nullptr) {
 			clientMessageF("%sInvalid item name!", RED);
 			return true;
 		}
-		yot = new C_ItemStack(***cStack, count, itemData);
+		yot = new ItemStack(***cStack, count, itemData);
 	} else {
 		std::unique_ptr<void*> ItemPtr = std::make_unique<void*>();
-		C_Item*** cStack = ItemRegistry::getItemFromId(ItemPtr.get(), itemId);
+		Item*** cStack = ItemRegistry::getItemFromId(ItemPtr.get(), itemId);
 		if (cStack == nullptr || *cStack == nullptr || **cStack == nullptr) {
 			clientMessageF("%sInvalid item ID!", RED);
 			return true;
 		}
-		yot = new C_ItemStack(***cStack, count, itemData);
+		yot = new ItemStack(***cStack, count, itemData);
 	}
 
 	if (yot != nullptr)
@@ -61,16 +61,16 @@ bool SetOffhandCommand::execute(std::vector<std::string>* args) {
 	ItemDescriptor* desc = nullptr;
 	desc = new ItemDescriptor((*yot->item)->itemId, itemData);
 
-	C_InventoryAction* firstAction = nullptr;
-	C_InventoryAction* secondAction = nullptr;
+	InventoryAction* firstAction = nullptr;
+	InventoryAction* secondAction = nullptr;
 
-	firstAction = new C_InventoryAction(0, desc, nullptr, yot, nullptr, count, 507, 99999);
+	firstAction = new InventoryAction(0, desc, nullptr, yot, nullptr, count, 507, 99999);
 
 	transactionManager->addInventoryAction(*firstAction);
 
 	delete firstAction;
 	delete desc;
-	g_Data.getLocalPlayer()->setOffhandSlot(yot);
+	Game.getLocalPlayer()->setOffhandSlot(yot);
 
 	clientMessageF("%sSuccessfully set item to offhand!", GREEN);
 	return true;

@@ -1,6 +1,6 @@
 #include "Tracer.h"
 
-#include "../../../SDK/CCamera.h"
+#include "../../../SDK/Camera.h"
 #include "../../DrawUtils.h"
 #include "../ModuleManager.h"
 
@@ -18,9 +18,9 @@ const char* Tracer::getModuleName() {
 
 void Tracer::onLevelRender() {
 	if (old) {
-		Vec3 origin = g_Data.getLocalPlayer()->level->rayHitVec;
-		g_Data.forEachEntity([&](C_Entity* ent, bool valid) {
-			if (ent != g_Data.getLocalPlayer() && Target::isValidTarget(ent) && g_Data.canUseMoveKeys()) {
+		Vec3 origin = Game.getLocalPlayer()->level->rayHitVec;
+		Game.forEachEntity([&](Entity* ent, bool valid) {
+			if (ent != Game.getLocalPlayer() && Target::isValidTarget(ent) && Game.canUseMoveKeys()) {
 				DrawUtils::setColor(255, 255, 255, 1);
 				DrawUtils::drawLine3d(origin, *ent->getPos());
 			}
@@ -28,20 +28,20 @@ void Tracer::onLevelRender() {
 	}
 }
 std::shared_ptr<glmatrixf> refdef2;
-void Tracer::onPreRender(C_MinecraftUIRenderContext* renderCtx) {
-	glmatrixf* badrefdef = g_Data.getClientInstance()->getRefDef();
+void Tracer::onPreRender(MinecraftUIRenderContext* renderCtx) {
+	glmatrixf* badrefdef = Game.getClientInstance()->getRefDef();
 	refdef2 = std::shared_ptr<glmatrixf>(badrefdef->correct());
 
 	if (!old) {
-		g_Data.forEachEntity([&](C_Entity* ent, bool valid) {
-			if (ent != g_Data.getLocalPlayer() && Target::isValidTarget(ent) && g_Data.canUseMoveKeys()) {
+		Game.forEachEntity([&](Entity* ent, bool valid) {
+			if (ent != Game.getLocalPlayer() && Target::isValidTarget(ent) && Game.canUseMoveKeys()) {
 				static auto tracerMod = moduleMgr->getModule<Tracer>();
 				Vec2 target;
 				Vec2 screenSize;
-				screenSize.x = g_Data.getGuiData()->widthGame;
-				screenSize.y = g_Data.getGuiData()->heightGame;
-				refdef2->OWorldToScreen(g_Data.getClientInstance()->levelRenderer->getOrigin(), ent->eyePos0, target, g_Data.getClientInstance()->getFov(), screenSize);
-				Vec2 mid(((g_Data.getClientInstance()->getGuiData()->widthGame) / 2), ((g_Data.getClientInstance()->getGuiData()->heightGame) / 2));
+				screenSize.x = Game.getGuiData()->widthGame;
+				screenSize.y = Game.getGuiData()->heightGame;
+				refdef2->OWorldToScreen(Game.getClientInstance()->levelRenderer->getOrigin(), ent->eyePos0, target, Game.getClientInstance()->getFov(), screenSize);
+				Vec2 mid(((Game.getClientInstance()->getGuiData()->widthGame) / 2), ((Game.getClientInstance()->getGuiData()->heightGame) / 2));
 				if (target != Vec2(0, 0)) {
 					DrawUtils::setColor(255, 255, 255, 1);
 					DrawUtils::drawLine(mid, target, 0.2f);

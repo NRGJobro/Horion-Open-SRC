@@ -15,8 +15,8 @@ const char* Waypoints::getModuleName() {
 	return "Waypoints";
 }
 
-void Waypoints::onPreRender(C_MinecraftUIRenderContext* renderCtx) {
-	C_LocalPlayer* localPlayer = g_Data.getLocalPlayer();
+void Waypoints::onPreRender(MinecraftUIRenderContext* renderCtx) {
+	LocalPlayer* localPlayer = Game.getLocalPlayer();
 	if (localPlayer == nullptr || !GameData::canUseMoveKeys())
 		return;
 	int currentDimension = -1;
@@ -38,7 +38,7 @@ void Waypoints::onPreRender(C_MinecraftUIRenderContext* renderCtx) {
 			pos.z *= 8;
 		} else if (currentDimension != wpDimension)
 			continue;
-		float dist = pos.dist(*g_Data.getLocalPlayer()->getPos());
+		float dist = pos.dist(*Game.getLocalPlayer()->getPos());
 
 		constexpr bool useFloatingPoint = false;
 		constexpr bool fadeOutAtDistance = true;

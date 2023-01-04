@@ -7,7 +7,7 @@ XpCommand::~XpCommand() {
 }
 
 bool XpCommand::execute(std::vector<std::string>* args) {
-	auto player = g_Data.getLocalPlayer();
+	auto player = Game.getLocalPlayer();
 	if (!player) return false;
 
 	std::string amount = args->at(1);

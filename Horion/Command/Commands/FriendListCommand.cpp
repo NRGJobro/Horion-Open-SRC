@@ -14,7 +14,7 @@ bool FriendListCommand::execute(std::vector<std::string>* args) {
 	std::string searchedName = args->at(2);                                                     // Friend to add/remove
 	std::transform(searchedName.begin(), searchedName.end(), searchedName.begin(), ::tolower);  // tolower
 
-	C_EntityList* entList = g_Data.getEntityList();
+	EntityList* entList = Game.getEntityList();
 	size_t listSize = entList->getListSize();
 
 	if (listSize > 10000) {
@@ -24,7 +24,7 @@ bool FriendListCommand::execute(std::vector<std::string>* args) {
 	std::string playerName;
 	//Loop through all our players and retrieve their information
 	for (size_t i = 0; i < listSize; i++) {
-		C_Entity* currentEntity = entList->get(i);
+		Entity* currentEntity = entList->get(i);
 
 		std::string currentEntityName(currentEntity->getNameTag()->getText());
 
@@ -33,7 +33,7 @@ bool FriendListCommand::execute(std::vector<std::string>* args) {
 		if (currentEntity == 0)
 			break;
 
-		if (currentEntity == g_Data.getLocalPlayer())  // Skip Local player
+		if (currentEntity == Game.getLocalPlayer())  // Skip Local player
 			continue;
 
 		if (currentEntityName.find(searchedName) == std::string::npos)  // Continue if name not found

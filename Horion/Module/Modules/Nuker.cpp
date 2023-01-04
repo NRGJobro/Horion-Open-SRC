@@ -13,7 +13,7 @@ const char* Nuker::getModuleName() {
 	return ("Nuker");
 }
 
-void Nuker::onTick(C_GameMode* gm) {
+void Nuker::onTick(GameMode* gm) {
 	if (!autodestroy) return;
 	Vec3i tempPos = *gm->player->getPos();
 	for (int x = -nukerRadius; x < nukerRadius; x++) {

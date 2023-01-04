@@ -11,8 +11,8 @@ struct MaterialPtr {
 using tess_vertex_t = void(__fastcall*)(Tessellator* _this, float v1, float v2, float v3);
 using meshHelper_renderImm_t = void(__fastcall*)(__int64, Tessellator* tesselator, MaterialPtr*);
 
-C_MinecraftUIRenderContext* renderCtx;
-C_GuiData* guiData;
+MinecraftUIRenderContext* renderCtx;
+GuiData* guiData;
 __int64 screenContext2d;
 __int64 game3dContext;
 Tessellator* tesselator;
@@ -22,7 +22,7 @@ Vec2 fov;
 Vec2 screenSize;
 Vec3 origin;
 float lerpT;
-C_TexturePtr* texturePtr = nullptr;
+TexturePtr* texturePtr = nullptr;
 
 static MaterialPtr* uiMaterial = nullptr;
 static MaterialPtr* entityFlatStaticMaterial = nullptr;
@@ -42,20 +42,20 @@ void initializeSigs() {
 	hasInitializedSigs = true;
 }
 
-void DrawUtils::setCtx(C_MinecraftUIRenderContext* ctx, C_GuiData* gui) {
+void DrawUtils::setCtx(MinecraftUIRenderContext* ctx, GuiData* gui) {
 	if (!hasInitializedSigs)
 		initializeSigs();
 	LARGE_INTEGER EndingTime, ElapsedMicroseconds;
 	LARGE_INTEGER Frequency;
 	QueryPerformanceFrequency(&Frequency);
 	QueryPerformanceCounter(&EndingTime);
-	ElapsedMicroseconds.QuadPart = EndingTime.QuadPart - g_Data.getLastUpdateTime();
+	ElapsedMicroseconds.QuadPart = EndingTime.QuadPart - Game.getLastUpdateTime();
 
 	ElapsedMicroseconds.QuadPart *= 1000000;
 	int ticksPerSecond = 20;
-	if(g_Data.getClientInstance()->minecraft)
-		if (g_Data.getClientInstance()->minecraft->timer != nullptr)
-			ticksPerSecond = (int)*g_Data.getClientInstance()->minecraft->timer;
+	if(Game.getClientInstance()->minecraft)
+		if (Game.getClientInstance()->minecraft->timer != nullptr)
+			ticksPerSecond = (int)*Game.getClientInstance()->minecraft->timer;
 	if(ticksPerSecond < 1)
 		ticksPerSecond = 1;
 	ElapsedMicroseconds.QuadPart /= Frequency.QuadPart / ticksPerSecond;
@@ -72,14 +72,14 @@ void DrawUtils::setCtx(C_MinecraftUIRenderContext* ctx, C_GuiData* gui) {
 	tesselator = *reinterpret_cast<Tessellator**>(screenContext2d + 0xB0);
 	colorHolder = *reinterpret_cast<float**>(screenContext2d + 0x30);
 
-	glmatrixf* badrefdef = g_Data.getClientInstance()->getRefDef();
+	glmatrixf* badrefdef = Game.getClientInstance()->getRefDef();
 
 	refdef = std::shared_ptr<glmatrixf>(badrefdef->correct());
-	fov = g_Data.getClientInstance()->getFov();
+	fov = Game.getClientInstance()->getFov();
 	screenSize.x = gui->widthGame;
 	screenSize.y = gui->heightGame;
-	if (g_Data.getClientInstance()->levelRenderer != nullptr)
-		origin = g_Data.getClientInstance()->levelRenderer->getOrigin();
+	if (Game.getClientInstance()->levelRenderer != nullptr)
+		origin = Game.getClientInstance()->levelRenderer->getOrigin();
 
 	if (uiMaterial == nullptr) {
 		// 2 Sigs, wanted one comes first
@@ -87,8 +87,8 @@ void DrawUtils::setCtx(C_MinecraftUIRenderContext* ctx, C_GuiData* gui) {
 		int offset = *reinterpret_cast<int*>(sigOffset + 3);
 		uiMaterial = reinterpret_cast<MaterialPtr*>(sigOffset + offset + 7);
 	}
-	if(entityFlatStaticMaterial == nullptr && g_Data.isInGame()){
-		entityFlatStaticMaterial = reinterpret_cast<MaterialPtr*>(g_Data.getClientInstance()->itemInHandRenderer->entityLineMaterial.materialPtr);
+	if(entityFlatStaticMaterial == nullptr && Game.isInGame()){
+		entityFlatStaticMaterial = reinterpret_cast<MaterialPtr*>(Game.getClientInstance()->itemInHandRenderer->entityLineMaterial.materialPtr);
 	}
 }
 
@@ -100,29 +100,29 @@ void DrawUtils::setColor(float r, float g, float b, float a) {
 	*reinterpret_cast<uint8_t*>(colorHolder + 4) = 1;
 }
 
-C_Font* DrawUtils::getFont(Fonts font) {
+Font* DrawUtils::getFont(Fonts font) {
 	static auto fontChangerModule = moduleMgr->getModule<FontChanger>();
 
 	if (fontChangerModule->Fonts.selected == 1)
-		return g_Data.getClientInstance()->minecraftGame->mcFont;
+		return Game.getClientInstance()->minecraftGame->mcFont;
 	else
-		return g_Data.getClientInstance()->minecraftGame->getOldFont();
+		return Game.getClientInstance()->minecraftGame->getOldFont();
 
 	switch (font) {
 	case Fonts::SMOOTH:
-		return g_Data.getClientInstance()->minecraftGame->getTheGoodFontThankYou();
+		return Game.getClientInstance()->minecraftGame->getTheGoodFontThankYou();
 		break;
 	case Fonts::UNICOD:
-		return g_Data.getClientInstance()->minecraftGame->getTheBetterFontYes();
+		return Game.getClientInstance()->minecraftGame->getTheBetterFontYes();
 		break;
 	case Fonts::RUNE:
-		return g_Data.getClientInstance()->_getRuneFont();
+		return Game.getClientInstance()->_getRuneFont();
 		break;
 	case Fonts::MCFONT:
-		return g_Data.getClientInstance()->minecraftGame->mcFont;
+		return Game.getClientInstance()->minecraftGame->mcFont;
 		break;
 	default:
-		return g_Data.getClientInstance()->_getFont();
+		return Game.getClientInstance()->_getFont();
 		break;
 	}
 }
@@ -143,7 +143,7 @@ MatrixStack* DrawUtils::getMatrixStack() {
 float DrawUtils::getTextWidth(std::string* textStr, float textSize, Fonts font) {
 	TextHolder text(*textStr);
 
-	C_Font* fontPtr = getFont(font);
+	Font* fontPtr = getFont(font);
 
 	float ret = renderCtx->getLineLength(fontPtr, &text, textSize);
 
@@ -151,7 +151,7 @@ float DrawUtils::getTextWidth(std::string* textStr, float textSize, Fonts font) 
 }
 
 float DrawUtils::getFontHeight(float textSize, Fonts font) {
-	C_Font* fontPtr = getFont(font);
+	Font* fontPtr = getFont(font);
 
 	float ret = fontPtr->getLineHeight() * textSize;
 
@@ -211,7 +211,7 @@ void DrawUtils::drawLine(const Vec2& start, const Vec2& end, float lineWidth) {
 
 void DrawUtils::drawText(const Vec2& pos, std::string* textStr, const MC_Color& color, float textSize, float alpha, Fonts font) {
 	TextHolder text(*textStr);
-	C_Font* fontPtr = getFont(font);
+	Font* fontPtr = getFont(font);
 	static uintptr_t caretMeasureData = 0xFFFFFFFF;
 
 
@@ -341,10 +341,10 @@ void DrawUtils::drawBox(const Vec3& lower, const Vec3& upper, float lineWidth, b
 	}
 }
 
-void DrawUtils::drawImage(std::string FilePath, Vec2& imagePos, Vec2& ImageDimension, Vec2& idk) {
+void DrawUtils::drawImage(std::string filePath, Vec2& imagePos, Vec2& ImageDimension, Vec2& idk) {
 	if (texturePtr == nullptr) {
-		texturePtr = new C_TexturePtr();
-		C_FilePath file(FilePath);
+		texturePtr = new TexturePtr();
+		FilePath file(filePath);
 		renderCtx->getTexture(texturePtr, file);
 	}
 
@@ -359,7 +359,7 @@ void DrawUtils::drawImage(std::string FilePath, Vec2& imagePos, Vec2& ImageDimen
 	}
 }
 
-void DrawUtils::drawNameTags(C_Entity* ent, float textSize, bool drawHealth, bool useUnicodeFont) {
+void DrawUtils::drawNameTags(Entity* ent, float textSize, bool drawHealth, bool useUnicodeFont) {
 	Vec2 textPos;
 	Vec4 rectPos;
 	std::string text = ent->getNameTag()->getText();
@@ -393,14 +393,14 @@ void DrawUtils::drawNameTags(C_Entity* ent, float textSize, bool drawHealth, boo
 				static auto nameTagsMod = moduleMgr->getModule<NameTags>();
 
 				if (ent->getEntityTypeId() == 63 && nameTagsMod->displayArmor) {  // is player, show armor
-					auto* player = reinterpret_cast<C_Player*>(ent);
+					auto* player = reinterpret_cast<Player*>(ent);
 					float scale = textSize * 0.6f;
 					float spacing = scale + 15.f;
 					float x = rectPos.x + 1.f * textSize;
 					float y = rectPos.y - 20.f * scale;
 					// armor
 					for (int i = 0; i < 4; i++) {
-						C_ItemStack* stack = player->getArmor(i);
+						ItemStack* stack = player->getArmor(i);
 						if (stack->item != nullptr) {
 							DrawUtils::drawItem(stack, Vec2(x, y), 1.f, scale, stack->isEnchanted());
 							x += scale * spacing;
@@ -408,7 +408,7 @@ void DrawUtils::drawNameTags(C_Entity* ent, float textSize, bool drawHealth, boo
 					}
 					// item
 					{
-						C_ItemStack* stack = player->getSelectedItem();
+						ItemStack* stack = player->getSelectedItem();
 						if (stack->item != nullptr) {
 							DrawUtils::drawItem(stack, Vec2(rectPos.z - 1.f - 15.f * scale, y), 1.f, scale, stack->isEnchanted());
 						}
@@ -418,7 +418,7 @@ void DrawUtils::drawNameTags(C_Entity* ent, float textSize, bool drawHealth, boo
 		}
 	}
 }
-	void DrawUtils::drawEntityBox(C_Entity* ent, float lineWidth) {
+	void DrawUtils::drawEntityBox(Entity* ent, float lineWidth) {
 	Vec3 end = ent->eyePos0;
 	AABB render(end, ent->width, ent->height, end.y - ent->aabb.lower.y);
 	render.upper.y += 0.1f;
@@ -426,9 +426,9 @@ void DrawUtils::drawNameTags(C_Entity* ent, float textSize, bool drawHealth, boo
 	drawBox(render.lower, render.upper, lineWidth, true);
 }
 
-void DrawUtils::draw2D(C_Entity* ent, float lineWidth) {
+void DrawUtils::draw2D(Entity* ent, float lineWidth) {
 	Vec3 base = ent->eyePos0;
-	float ofs = (g_Data.getLocalPlayer()->yaw + 90.f) * (PI / 180);
+	float ofs = (Game.getLocalPlayer()->yaw + 90.f) * (PI / 180);
 
 	Vec3 corners[4];
 	Vec2 corners2d[4];
@@ -463,11 +463,11 @@ void DrawUtils::draw2D(C_Entity* ent, float lineWidth) {
 	}
 }
 
-void DrawUtils::drawItem(C_ItemStack* item, const Vec2& itemPos, float opacity, float scale, bool isEnchanted) {
+void DrawUtils::drawItem(ItemStack* item, const Vec2& itemPos, float opacity, float scale, bool isEnchanted) {
 	__int64 scnCtx = reinterpret_cast<__int64*>(renderCtx)[2];
-	auto* screenCtx = reinterpret_cast<C_ScreenContext*>(scnCtx);
-	C_BaseActorRenderContext baseActorRenderCtx(screenCtx, g_Data.getClientInstance(), g_Data.getClientInstance()->minecraftGame);
-	C_ItemRenderer* renderer = baseActorRenderCtx.renderer;
+	auto* screenCtx = reinterpret_cast<ScreenContext*>(scnCtx);
+	BaseActorRenderContext baseActorRenderCtx(screenCtx, Game.getClientInstance(), Game.getClientInstance()->minecraftGame);
+	ItemRenderer* renderer = baseActorRenderCtx.renderer;
 	renderer->renderGuiItemNew(&baseActorRenderCtx, item, 0, itemPos.x, itemPos.y, opacity, scale, isEnchanted);
 }
 
@@ -556,20 +556,20 @@ inline void DrawUtils::tess__begin(Tessellator* tess, int vertexFormat, int numV
 }
 void DrawUtils::setGameRenderContext(__int64 ctx) {
 	game3dContext = ctx;
-	if (g_Data.getClientInstance()->levelRenderer != nullptr)
-		origin = g_Data.getClientInstance()->levelRenderer->getOrigin();
+	if (Game.getClientInstance()->levelRenderer != nullptr)
+		origin = Game.getClientInstance()->levelRenderer->getOrigin();
 
 	if(ctx){
 		LARGE_INTEGER EndingTime, ElapsedMicroseconds;
 		LARGE_INTEGER Frequency;
 		QueryPerformanceFrequency(&Frequency);
 		QueryPerformanceCounter(&EndingTime);
-		ElapsedMicroseconds.QuadPart = EndingTime.QuadPart - g_Data.getLastUpdateTime();
+		ElapsedMicroseconds.QuadPart = EndingTime.QuadPart - Game.getLastUpdateTime();
 
 		ElapsedMicroseconds.QuadPart *= 1000000;
 		int ticksPerSecond = 20;
-		if(g_Data.getClientInstance()->minecraft)
-			ticksPerSecond = (int)*g_Data.getClientInstance()->minecraft->timer;
+		if(Game.getClientInstance()->minecraft)
+			ticksPerSecond = (int)*Game.getClientInstance()->minecraft->timer;
 		if(ticksPerSecond < 1)
 			ticksPerSecond = 1;
 		ElapsedMicroseconds.QuadPart /= Frequency.QuadPart / ticksPerSecond;

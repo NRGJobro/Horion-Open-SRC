@@ -10,7 +10,7 @@ public:
 	bool showTooltips = true;
 
 	// Inherited via IModule
-	virtual void onPostRender(C_MinecraftUIRenderContext* renderCtx) override;
+	virtual void onPostRender(MinecraftUIRenderContext* renderCtx) override;
 	virtual const char* getModuleName() override;
 	virtual void onDisable() override;
 	virtual void onEnable() override;

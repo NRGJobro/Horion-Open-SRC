@@ -15,8 +15,8 @@ private:
 	bool Preview = true;
 	bool AutoSelect = true;
 	bool FinishSelect = false;
-	C_PlayerInventoryProxy* supplies = nullptr;
-	C_Inventory* inv = nullptr;
+	PlayerInventoryProxy* supplies = nullptr;
+	Inventory* inv = nullptr;
 
 public:
 	CrystalAura();
@@ -24,8 +24,8 @@ public:
 
 	// Inherited via IModule
 	virtual const char* getModuleName() override;
-	virtual void onTick(C_GameMode* gm) override;
-	virtual void onPreRender(C_MinecraftUIRenderContext* renderCtx) override;
+	virtual void onTick(GameMode* gm) override;
+	virtual void onPreRender(MinecraftUIRenderContext* renderCtx) override;
 	virtual void onEnable() override;
 	virtual void onDisable() override;
 
@@ -33,6 +33,6 @@ public:
 	int pRange = 5;
 	int range = 10;
 
-	void CPlace(C_GameMode* gm, Vec3* pos);
-	void DestroyC(C_Entity* ent, int range);
+	void CPlace(GameMode* gm, Vec3* pos);
+	void DestroyC(Entity* ent, int range);
 };

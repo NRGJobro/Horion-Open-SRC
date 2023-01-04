@@ -18,12 +18,12 @@ bool NbtCommand::execute(std::vector<std::string>* args) {
 		assertTrue(args->size() > 2);
 	}
 
-	Level* level = g_Data.getLocalPlayer()->level;
-	C_BlockActor* blockActor = g_Data.getLocalPlayer()->region->getBlockEntity(level->block);
-	C_PlayerInventoryProxy* supplies = g_Data.getLocalPlayer()->getSupplies();
-	C_Inventory* inv = supplies->inventory;
-	C_InventoryTransactionManager* manager = g_Data.getLocalPlayer()->getTransactionManager();
-	C_ItemStack* item = g_Data.getLocalPlayer()->getSelectedItem();
+	Level* level = Game.getLocalPlayer()->level;
+	BlockActor* blockActor = Game.getLocalPlayer()->region->getBlockEntity(level->block);
+	PlayerInventoryProxy* supplies = Game.getLocalPlayer()->getSupplies();
+	Inventory* inv = supplies->inventory;
+	InventoryTransactionManager* manager = Game.getLocalPlayer()->getTransactionManager();
+	ItemStack* item = Game.getLocalPlayer()->getSelectedItem();
 
 	if (args->at(1) == "read" || args->at(1) == "save") {
 		std::unique_ptr<CompoundTag> tag = std::make_unique<CompoundTag>();
@@ -36,7 +36,7 @@ bool NbtCommand::execute(std::vector<std::string>* args) {
 			delete boy;
 		} else {
 			if (level->getEntity() != nullptr) {
-				if (g_Data.getRakNetInstance()->serverIp.getTextLength() >= 1) {
+				if (Game.getRakNetInstance()->serverIp.getTextLength() >= 1) {
 					clientMessageF("%sNBT tags for mobs only works in local world!", RED);
 					return true;
 				}
@@ -73,8 +73,8 @@ bool NbtCommand::execute(std::vector<std::string>* args) {
 		}
 
 		{
-			manager->addInventoryAction(C_InventoryAction(supplies->selectedHotbarSlot, item, nullptr));
-			manager->addInventoryAction(C_InventoryAction(0, nullptr, item, 507, 99999));
+			manager->addInventoryAction(InventoryAction(supplies->selectedHotbarSlot, item, nullptr));
+			manager->addInventoryAction(InventoryAction(0, nullptr, item, 507, 99999));
 		}
 
 		if (tag.size() > 1 && tag.front() == MojangsonToken::COMPOUND_START.getSymbol() && tag.back() == MojangsonToken::COMPOUND_END.getSymbol()) {
@@ -90,8 +90,8 @@ bool NbtCommand::execute(std::vector<std::string>* args) {
 		}
 
 		{
-			manager->addInventoryAction(C_InventoryAction(0, item, nullptr, 507, 99999));
-			manager->addInventoryAction(C_InventoryAction(supplies->selectedHotbarSlot, nullptr, item));
+			manager->addInventoryAction(InventoryAction(0, item, nullptr, 507, 99999));
+			manager->addInventoryAction(InventoryAction(supplies->selectedHotbarSlot, nullptr, item));
 		}
 
 		clientMessageF("%s%s", GREEN, "Successfully loaded mojangson !");

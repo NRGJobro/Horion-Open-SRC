@@ -8,7 +8,7 @@ const char *FollowPathModule::getModuleName() {
 	return "FollowPath";
 }
 
-void FollowPathModule::startSearch(Vec3i startNode, C_BlockSource* region, float searchTimeout, std::function<void(bool, JoePath)> callback){
+void FollowPathModule::startSearch(Vec3i startNode, BlockSource* region, float searchTimeout, std::function<void(bool, JoePath)> callback){
 	if(pathFinder){
 		logF("Already searching!");
 		return;
@@ -30,7 +30,7 @@ void FollowPathModule::startSearch(Vec3i startNode, C_BlockSource* region, float
 
 bool shouldStartSearch = false;
 void FollowPathModule::onEnable() {
-	if(!g_Data.isInGame() || !g_Data.getLocalPlayer()->isAlive()){
+	if(!Game.isInGame() || !Game.getLocalPlayer()->isAlive()){
 		setEnabled(false);
 		return;
 	}
@@ -56,12 +56,12 @@ void FollowPathModule::onDisable() {
 	goal.reset();
 }
 
-void FollowPathModule::onTick(C_GameMode *mode) {
+void FollowPathModule::onTick(GameMode *mode) {
 	if (!shouldStartSearch)
 		return;
 	shouldStartSearch = false;
 
-	auto player = g_Data.getLocalPlayer();
+	auto player = Game.getLocalPlayer();
 	auto pPos = player->eyePos0;
 	Vec3i startNode((int)floorf(pPos.x), (int)roundf(pPos.y - 1.62f), (int)floorf(pPos.z));
 
@@ -87,9 +87,9 @@ void FollowPathModule::onTick(C_GameMode *mode) {
 	});
 }
 
-void FollowPathModule::onMove(C_MoveInputHandler *handler) {
+void FollowPathModule::onMove(MoveInputHandler *handler) {
 	if(movementController){
-		movementController->step(g_Data.getLocalPlayer(), g_Data.getClientInstance()->getMoveTurnInput());
+		movementController->step(Game.getLocalPlayer(), Game.getClientInstance()->getMoveTurnInput());
 		if(engageDelay > 0)
 			engageDelay--;
 
@@ -104,7 +104,7 @@ void FollowPathModule::onMove(C_MoveInputHandler *handler) {
 					movementController = std::make_unique<JoeMovementController>(path);
 				}else if(!pathFinder){
 					setEnabled(false);
-				}else if(g_Data.getLocalPlayer()->isInWater()){
+				}else if(Game.getLocalPlayer()->isInWater()){
 					handler->isJumping = true;
 				}
 			}else{
@@ -137,7 +137,7 @@ void FollowPathModule::onMove(C_MoveInputHandler *handler) {
 			float timeForSearch = std::clamp(timeSpent - 0.5f, 1.f, 3.f);
 			auto lastSeg = curPath->getSegment(curPath->getNumSegments() - 1);
 			nextPath.reset();
-			startSearch(lastSeg.getEnd(), g_Data.getLocalPlayer()->region, timeForSearch, [&](bool succeeded, JoePath tempPath){
+			startSearch(lastSeg.getEnd(), Game.getLocalPlayer()->region, timeForSearch, [&](bool succeeded, JoePath tempPath){
 			  if(!succeeded){
 				  clientMessageF("%sCould not find subsequent path!", RED);
 
@@ -157,7 +157,7 @@ void FollowPathModule::onMove(C_MoveInputHandler *handler) {
 	}
 }
 void FollowPathModule::onLevelRender() {
-	if(!g_Data.isInGame()){
+	if(!Game.isInGame()){
 		setEnabled(false);
 		return;
 	}

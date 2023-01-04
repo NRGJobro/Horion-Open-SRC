@@ -28,7 +28,7 @@ void Hooks::Init() {
 			int offset = *reinterpret_cast<int*>(sigOffset + 3);
 			uintptr_t** gameModeVtable = reinterpret_cast<uintptr_t**>(sigOffset + offset + /*length of instruction*/ 7);
 			if (gameModeVtable == 0x0 || sigOffset == 0x0)
-				logF("C_GameMode signature not working!!!");
+				logF("GameMode signature not working!!!");
 			else {
 				g_Hooks.GameMode_startDestroyBlockHook = std::make_unique<FuncHook>(gameModeVtable[1], Hooks::GameMode_startDestroyBlock);
 
@@ -44,7 +44,7 @@ void Hooks::Init() {
 			int offset = *reinterpret_cast<int*>(sigOffset + 3);
             uintptr_t** blockLegacyVtable = reinterpret_cast<uintptr_t**>(sigOffset + offset + 7);
 			if (blockLegacyVtable == 0x0 || sigOffset == 0x0)
-				logF("C_BlockLegacy signature not working!!!");
+				logF("BlockLegacy signature not working!!!");
 			else {
 			}
 		}
@@ -55,7 +55,7 @@ void Hooks::Init() {
 			int offset = *reinterpret_cast<int*>(sigOffset + 3);
 			uintptr_t** localPlayerVtable = reinterpret_cast<uintptr_t**>(sigOffset + offset + /*length of instruction*/ 7);
 			if (localPlayerVtable == 0x0 || sigOffset == 0x0)
-				logF("C_LocalPlayer signature not working!!!");
+				logF("LocalPlayer signature not working!!!");
 			else {
 				g_Hooks.Actor_startSwimmingHook = std::make_unique<FuncHook>(localPlayerVtable[201], Hooks::Actor_startSwimming);
 
@@ -87,7 +87,7 @@ void Hooks::Init() {
 			int offset = *reinterpret_cast<int*>(sigOffset + 3);
 			uintptr_t** moveInputVtable = reinterpret_cast<uintptr_t**>(sigOffset + offset + 7);
 			if (moveInputVtable == 0x0 || sigOffset == 0x0)
-				logF("C_MoveInputHandler signature not working!!!");
+				logF("MoveInputHandler signature not working!!!");
 			else {
 				g_Hooks.MoveInputHandler_tickHook = std::make_unique<FuncHook>(moveInputVtable[1], Hooks::MoveInputHandler_tick);
 			}
@@ -162,7 +162,7 @@ void Hooks::Init() {
 		void* getGameEdition = reinterpret_cast<void*>(FindSignature("8B 91 ?? ?? ?? ?? 85 D2 74 1C 83 EA 01"));
 		g_Hooks.AppPlatform_getGameEditionHook = std::make_unique<FuncHook>(getGameEdition, Hooks::AppPlatform_getGameEdition);
 
-		uintptr_t** packetSenderVtable = reinterpret_cast<uintptr_t**>(*(uintptr_t*)g_Data.getClientInstance()->loopbackPacketSender);
+		uintptr_t** packetSenderVtable = reinterpret_cast<uintptr_t**>(*(uintptr_t*)Game.getClientInstance()->loopbackPacketSender);
 		g_Hooks.LoopbackPacketSender_sendToServerHook = std::make_unique<FuncHook>(packetSenderVtable[2], Hooks::LoopbackPacketSender_sendToServer);
 
 		void* getFov = reinterpret_cast<void*>(FindSignature("40 53 48 83 EC ?? 0F 29 7C 24 ?? 44"));
@@ -227,11 +227,11 @@ void Hooks::Init() {
 			static auto origFunc = g_Hooks.lambdaHooks.at(lambda_counter)->GetFastcall<void, __int64, glm::mat4&, float>();
 			
 			static auto testMod = moduleMgr->getModule<ViewModel>();
-			auto p = g_Data.getLocalPlayer();
+			auto p = Game.getLocalPlayer();
 			float degrees = fmodf(p->getPosOld()->lerp(p->getPos(), lerpT).x, 5) - 2.5f;
 			degrees *= 180 / 2.5f;
 
-			auto pos = g_Data.getClientInstance()->levelRenderer->getOrigin();
+			auto pos = Game.getClientInstance()->levelRenderer->getOrigin();
 			
 			glm::mat4 View = matrix;
 			
@@ -270,12 +270,12 @@ void Hooks::Enable() {
 	MH_EnableHook(MH_ALL_HOOKS);
 }
 
-bool Hooks::playerCallBack(C_Player* lp, __int64 a2, __int64 a3) {
-	static auto oTick = g_Hooks.playerCallBack_Hook->GetFastcall<bool, C_Player*, __int64, __int64>();
-	//if (lp == g_Data.getLocalPlayer())
+bool Hooks::playerCallBack(Player* lp, __int64 a2, __int64 a3) {
+	static auto oTick = g_Hooks.playerCallBack_Hook->GetFastcall<bool, Player*, __int64, __int64>();
+	//if (lp == Game.getLocalPlayer())
 		//moduleMgr->onPlayerTick(lp);
-		if (g_Data.getLocalPlayer() != nullptr && lp == g_Data.getLocalPlayer()) {
-			if (!g_Data.getLocalPlayer() || !g_Data.getLocalPlayer()->level || !*(&g_Data.getLocalPlayer()->region + 1))
+		if (Game.getLocalPlayer() != nullptr && lp == Game.getLocalPlayer()) {
+			if (!Game.getLocalPlayer() || !Game.getLocalPlayer()->level || !*(&Game.getLocalPlayer()->region + 1))
 				g_Hooks.entityList.clear();
 
 			std::vector<EntityListPointerHolder> validEntities;
@@ -295,13 +295,13 @@ bool Hooks::playerCallBack(C_Player* lp, __int64 a2, __int64 a3) {
 	return oTick(lp, a2, a3);
 }
 
-void* Hooks::Player_tickWorld(C_Player* _this, __int64 unk) {
-	static auto oTick = g_Hooks.Player_tickWorldHook->GetFastcall<void*, C_Player*, __int64>();
+void* Hooks::Player_tickWorld(Player* _this, __int64 unk) {
+	static auto oTick = g_Hooks.Player_tickWorldHook->GetFastcall<void*, Player*, __int64>();
 	auto o = oTick(_this, unk);
 
-	if (_this == g_Data.getLocalPlayer()) {
+	if (_this == Game.getLocalPlayer()) {
 		// TODO: refactor all modules to not use GameMode
-		C_GameMode* gm = *reinterpret_cast<C_GameMode**>(reinterpret_cast<__int64>(_this) + 0x1238);
+		GameMode* gm = *reinterpret_cast<GameMode**>(reinterpret_cast<__int64>(_this) + 0x1238);
 		GameData::updateGameData(gm);
 		moduleMgr->onWorldTick(gm);
 	}
@@ -324,17 +324,17 @@ void Hooks::ClientInstanceScreenModel_sendChatMessage(void* _this, TextHolder* t
 			static bool helpedUser = false;
 			if (!helpedUser) {
 				helpedUser = true;
-				g_Data.getClientInstance()->getGuiData()->displayClientMessageF("%sYour Horion prefix is: \"%s%c%s\"", RED, YELLOW, cmdMgr->prefix, RED);
-				g_Data.getClientInstance()->getGuiData()->displayClientMessageF("%sEnter \"%s%cprefix .%s\" to reset your prefix", RED, YELLOW, cmdMgr->prefix, RED);
+				Game.getClientInstance()->getGuiData()->displayClientMessageF("%sYour Horion prefix is: \"%s%c%s\"", RED, YELLOW, cmdMgr->prefix, RED);
+				Game.getClientInstance()->getGuiData()->displayClientMessageF("%sEnter \"%s%cprefix .%s\" to reset your prefix", RED, YELLOW, cmdMgr->prefix, RED);
 			}
 		}
 	}
 	oSendMessage(_this, text);
 }
 
-void Hooks::Actor_baseTick(C_Entity* ent) {
-	static auto oFunc = g_Hooks.Actor_baseTickHook->GetFastcall<void, C_Entity*>();
-	C_LocalPlayer* player = g_Data.getLocalPlayer();
+void Hooks::Actor_baseTick(Entity* ent) {
+	static auto oFunc = g_Hooks.Actor_baseTickHook->GetFastcall<void, Entity*>();
+	LocalPlayer* player = Game.getLocalPlayer();
 	if (!player || !player->getlevel()) return oFunc(ent);
 
 	static int tickCountThen = 0;
@@ -362,15 +362,15 @@ void Hooks::Actor_baseTick(C_Entity* ent) {
 	return oFunc(ent);
 }
 
-__int64 Hooks::UIScene_setupAndRender(C_UIScene* uiscene, __int64 screencontext) {
-	static auto oSetup = g_Hooks.UIScene_setupAndRenderHook->GetFastcall<__int64, C_UIScene*, __int64>();
+__int64 Hooks::UIScene_setupAndRender(UIScene* uiscene, __int64 screencontext) {
+	static auto oSetup = g_Hooks.UIScene_setupAndRenderHook->GetFastcall<__int64, UIScene*, __int64>();
 	g_Hooks.shouldRender = false;
 	
 	return oSetup(uiscene, screencontext);
 }
 
-__int64 Hooks::UIScene_render(C_UIScene* uiscene, __int64 screencontext) {
-	static auto oRender = g_Hooks.UIScene_renderHook->GetFastcall<__int64, C_UIScene*, __int64>();
+__int64 Hooks::UIScene_render(UIScene* uiscene, __int64 screencontext) {
+	static auto oRender = g_Hooks.UIScene_renderHook->GetFastcall<__int64, UIScene*, __int64>();
 
 	g_Hooks.shouldRender = false;
 
@@ -389,10 +389,10 @@ __int64 Hooks::UIScene_render(C_UIScene* uiscene, __int64 screencontext) {
 	return oRender(uiscene, screencontext);
 }
 
-__int64 Hooks::RenderText(__int64 a1, C_MinecraftUIRenderContext* renderCtx) {
-	static auto oText = g_Hooks.RenderTextHook->GetFastcall<__int64, __int64, C_MinecraftUIRenderContext*>();
+__int64 Hooks::RenderText(__int64 a1, MinecraftUIRenderContext* renderCtx) {
+	static auto oText = g_Hooks.RenderTextHook->GetFastcall<__int64, __int64, MinecraftUIRenderContext*>();
 
-	C_GuiData* dat = g_Data.getClientInstance()->getGuiData();
+	GuiData* dat = Game.getClientInstance()->getGuiData();
 
 	DrawUtils::setCtx(renderCtx, dat);
 	{
@@ -404,9 +404,9 @@ __int64 Hooks::RenderText(__int64 a1, C_MinecraftUIRenderContext* renderCtx) {
 
 		HImGui.startFrame();
 
-		g_Data.frameCount++;
+		Game.frameCount++;
 
-		auto wid = g_Data.getClientInstance()->getGuiData()->windowSize;
+		auto wid = Game.getClientInstance()->getGuiData()->windowSize;
 
 		// Call PreRender() functions
 		moduleMgr->onPreRender(renderCtx);
@@ -437,126 +437,13 @@ __int64 Hooks::RenderText(__int64 a1, C_MinecraftUIRenderContext* renderCtx) {
 			std::string screenName(g_Hooks.currentScreenName);
 			if (strcmp(screenName.c_str(), "start_screen") == 0) {
 				// Draw BIG epic horion watermark
-				/*{
+				{
 					std::string text = "H O R I O N";
 					Vec2 textPos = Vec2(wid.x / 2.f - DrawUtils::getTextWidth(&text, 8.f) / 2.f, wid.y / 9.5f);
 					Vec4 rectPos = Vec4(textPos.x - 55.f, textPos.y - 15.f, textPos.x + DrawUtils::getTextWidth(&text, 8.f) + 55.f, textPos.y + 75.f);
 					DrawUtils::fillRectangle(rectPos, MC_Color(13, 29, 48, 1), 1.f);
 					DrawUtils::drawRectangle(rectPos, rcolors, 1.f, 2.f);
 					DrawUtils::drawText(textPos, &text, MC_Color(255, 255, 255, 1), 8.f);
-				}*/
-
-				// Draw Custom Geo Button
-				if (g_Data.allowWIPFeatures() && g_Data.isInjectorConnectionActive()) {
-					if (HImGui.Button("Load Script Folder", Vec2(wid.x * (0.765f - 0.5f), wid.y * 0.92f), true)) {
-						HorionDataPacket packet;
-						packet.cmd = CMD_FOLDERCHOOSER;
-						auto tmp = std::shared_ptr<unsigned char[]>(new unsigned char[300]);
-						packet.data.swap(tmp);
-						memset(packet.data.get(), 0, 300);
-						strcpy_s((char*)packet.data.get(), 200, "{\"title\": \"Select a Script Folder\", \"filter\":\".js\"}");
-						packet.dataArraySize = (int)strlen((char*)packet.data.get());
-						packet.params[0] = g_Data.addInjectorResponseCallback([](std::shared_ptr<HorionDataPacket> pk) {
-							if (pk->params[0] != 1) {  // Dialog Canceled, reset geo
-								auto box = g_Data.addInfoBox("Scripting", "Invalid Folder");
-								box->closeTimer = 1;
-								return;
-							}
-
-							wchar_t* jsonData = reinterpret_cast<wchar_t*>(pk->data.get());
-							std::wstring jsonDataStr(jsonData);
-
-							json parsed = json::parse(jsonDataStr);
-							if (parsed["path"].is_string()) {
-								auto box = g_Data.addInfoBox("Importing Script", "Please wait...");
-								std::thread gamer([parsed, box]() {
-									auto result = scriptMgr.importScriptFolder(parsed["path"].get<std::string>());
-									if (result)
-										box->fadeTarget = 0;
-									else {
-										box->message = "Script import error, \ncheck the console";
-										box->closeTimer = 2;
-									}
-								});
-								gamer.detach();
-							}
-						});
-
-						g_Data.sendPacketToInjector(packet);
-					}
-					if (HImGui.Button("Custom Geometry", Vec2(wid.x * 0.765f, wid.y * 0.92f), true)) {
-						HorionDataPacket packet;
-						packet.cmd = CMD_FILECHOOSER;
-						auto tmp = std::shared_ptr<unsigned char[]>(new unsigned char[300]);
-						packet.data.swap(tmp);
-						memset(packet.data.get(), 0, 300);
-						strcpy_s((char*)packet.data.get(), 200, "{\"title\": \"Select a 3d object\", \"filter\":\"Object Files (*.obj)|*.obj\"}");
-						packet.dataArraySize = (int)strlen((char*)packet.data.get());
-						packet.params[0] = g_Data.addInjectorResponseCallback([](std::shared_ptr<HorionDataPacket> pk) {
-							if (pk->params[0] != 1 && std::get<0>(g_Data.getCustomGeoOverride())) {  // Dialog Canceled, reset geo
-								auto box = g_Data.addInfoBox("Geometry reset", "Geometry override removed");
-								box->closeTimer = 1;
-								return;
-							}
-
-							wchar_t* jsonData = reinterpret_cast<wchar_t*>(pk->data.get());
-							std::wstring jsonDataStr(jsonData);
-
-							json parsed = json::parse(jsonDataStr);
-							if (parsed["path"].is_string()) {
-								auto box = g_Data.addInfoBox("Importing Skin", "Please wait...");
-								std::thread gamer([parsed, box]() {
-									SkinUtil::importGeo(Utils::stringToWstring(parsed["path"].get<std::string>()));
-									box->fadeTarget = 0;
-								});
-								gamer.detach();
-							}
-						});
-
-						g_Data.sendPacketToInjector(packet);
-					}
-					if (HImGui.Button("Custom Texture", Vec2(wid.x * 0.5f, wid.y * 0.92f), true)) {
-						HorionDataPacket packet;
-						packet.cmd = CMD_FILECHOOSER;
-						auto tmp = std::shared_ptr<unsigned char[]>(new unsigned char[500]);
-						packet.data.swap(tmp);
-						memset(packet.data.get(), 0, 500);
-						strcpy_s((char*)packet.data.get(), 400, "{\"title\": \"Select a raw image file\", \"filter\":\"Raw image files (*.data, *.raw)|*.data;*.raw\"}");
-						packet.dataArraySize = (int)strlen((char*)packet.data.get());
-						packet.params[0] = g_Data.addInjectorResponseCallback([](std::shared_ptr<HorionDataPacket> pk) {
-							if (pk->params[0] != 1 && std::get<0>(g_Data.getCustomTextureOverride())) {  // Dialog Canceled, reset texture
-								auto box = g_Data.addInfoBox("Texture reset", "Texture override removed");
-								box->closeTimer = 1;
-								return;
-							}
-
-							wchar_t* jsonData = reinterpret_cast<wchar_t*>(pk->data.get());
-							std::wstring jsonDataStr(jsonData);
-
-							json parsed = json::parse(jsonDataStr);
-							if (parsed["path"].is_string()) {
-								auto box = g_Data.addInfoBox("Importing texture...", "");
-								std::thread gamer([parsed, box]() {
-									auto contents = Utils::readFileContents(Utils::stringToWstring(parsed["path"].get<std::string>()));
-									if (contents.size() > 0) {
-										auto texturePtr = std::shared_ptr<unsigned char[]>(new unsigned char[contents.size() + 1]);
-										memcpy(texturePtr.get(), contents.c_str(), contents.size());
-										texturePtr.get()[contents.size()] = 0;
-										g_Data.setCustomTextureOverride(true, std::make_shared<std::tuple<std::shared_ptr<unsigned char[]>, size_t>>(texturePtr, contents.size()));
-										box->title = "Success";
-										box->closeTimer = 0.3f;
-									} else {
-										box->title = "Error!";
-										box->message = "Could not read texture file (empty?)";
-										box->closeTimer = 2.f;
-									}
-								});
-								gamer.detach();
-							}
-						});
-
-						g_Data.sendPacketToInjector(packet);
-					}
 				}
 			} else {
 				shouldRenderTabGui = hudModule->tabgui && hudModule->isEnabled();
@@ -579,9 +466,9 @@ __int64 Hooks::RenderText(__int64 a1, C_MinecraftUIRenderContext* renderCtx) {
 					static constexpr bool isOnRightSide = true;
 
 					float yOffset = 0;  // Offset of next Text
-					Vec2 windowSize = g_Data.getClientInstance()->getGuiData()->windowSize;
-					Vec2 windowSizeReal = g_Data.getClientInstance()->getGuiData()->windowSizeReal;
-					Vec2 mousePos = *g_Data.getClientInstance()->getMousePos();
+					Vec2 windowSize = Game.getClientInstance()->getGuiData()->windowSize;
+					Vec2 windowSizeReal = Game.getClientInstance()->getGuiData()->windowSizeReal;
+					Vec2 mousePos = *Game.getClientInstance()->getMousePos();
 
 					// Convert mousePos to visual Pos
 					{
@@ -780,7 +667,7 @@ __int64 Hooks::RenderText(__int64 a1, C_MinecraftUIRenderContext* renderCtx) {
 
 		// Draw Info / Alert Boxes
 		{
-			auto box = g_Data.getFreshInfoBox();
+			auto box = Game.getFreshInfoBox();
 			if (box) {
 				box->fade();
 				if (box->fadeTarget == 1 && box->closeTimer <= 0 && box->closeTimer > -1)
@@ -887,18 +774,18 @@ float Hooks::Dimension_getSunIntensity(__int64 a1, float a2, Vec3* a3, float a4)
 	return oGetSunIntensity(a1, a2, a3, a4);
 }
 
-void Hooks::ChestBlockActor_tick(C_ChestBlockActor* _this, void* a) {
-	static auto oTick = g_Hooks.ChestBlockActor_tickHook->GetFastcall<void, C_ChestBlockActor*, void*>();
+void Hooks::ChestBlockActor_tick(ChestBlockActor* _this, void* a) {
+	static auto oTick = g_Hooks.ChestBlockActor_tickHook->GetFastcall<void, ChestBlockActor*, void*>();
 	oTick(_this, a);
 	static auto* storageEspMod = moduleMgr->getModule<StorageESP>();
 	if (_this != nullptr && storageEspMod->isEnabled())
 		GameData::addChestToList(_this);
 }
 
-void Hooks::Actor_lerpMotion(C_Entity* _this, Vec3 motVec) {
-	static auto oLerp = g_Hooks.Actor_lerpMotionHook->GetFastcall<void, C_Entity*, Vec3>();
+void Hooks::Actor_lerpMotion(Entity* _this, Vec3 motVec) {
+	static auto oLerp = g_Hooks.Actor_lerpMotionHook->GetFastcall<void, Entity*, Vec3>();
 
-	if (g_Data.getLocalPlayer() != _this)
+	if (Game.getLocalPlayer() != _this)
 		return oLerp(_this, motVec);
 
 	static auto noKnockbackmod = moduleMgr->getModule<Velocity>();
@@ -997,17 +884,17 @@ void Hooks::PleaseAutoComplete(__int64 a1, __int64 a2, TextHolder* text, int a4)
 			} else
 				maxReplaceLength = firstResult.cmdAlias.size();
 
-			g_Data.getGuiData()->displayClientMessageF("==========");
+			Game.getGuiData()->displayClientMessageF("==========");
 			if (searchResults.size() > 1) {
 				for (auto it = searchResults.begin(); it != searchResults.end(); ++it) {
 					LilPlump plump = *it;
-					g_Data.getGuiData()->displayClientMessageF("%s%s - %s%s", plump.cmdAlias.c_str(), GRAY, ITALIC, plump.command->getDescription());
+					Game.getGuiData()->displayClientMessageF("%s%s - %s%s", plump.cmdAlias.c_str(), GRAY, ITALIC, plump.command->getDescription());
 				}
 			}
 			if (firstResult.command->getUsage(firstResult.cmdAlias.c_str() + 1)[0] == 0)
-				g_Data.getGuiData()->displayClientMessageF("%s%s %s- %s", WHITE, firstResult.cmdAlias.c_str(), GRAY, firstResult.command->getDescription());
+				Game.getGuiData()->displayClientMessageF("%s%s %s- %s", WHITE, firstResult.cmdAlias.c_str(), GRAY, firstResult.command->getDescription());
 			else
-				g_Data.getGuiData()->displayClientMessageF("%s%s %s %s- %s", WHITE, firstResult.cmdAlias.c_str(), firstResult.command->getUsage(firstResult.cmdAlias.c_str() + 1 /*exclude prefix*/), GRAY, firstResult.command->getDescription());
+				Game.getGuiData()->displayClientMessageF("%s%s %s %s- %s", WHITE, firstResult.cmdAlias.c_str(), firstResult.command->getUsage(firstResult.cmdAlias.c_str() + 1 /*exclude prefix*/), GRAY, firstResult.command->getDescription());
 
 			if (firstResult.shouldReplace) {
 				if (search.size() == firstResult.cmdAlias.size() - 1 && searchResults.size() == 1) {
@@ -1025,15 +912,15 @@ void Hooks::PleaseAutoComplete(__int64 a1, __int64 a2, TextHolder* text, int a4)
 	oAutoComplete(a1, a2, text, a4);
 }
 
-void Hooks::LoopbackPacketSender_sendToServer(C_LoopbackPacketSender* a, C_Packet* packet) {
-	static auto oFunc = g_Hooks.LoopbackPacketSender_sendToServerHook->GetFastcall<void, C_LoopbackPacketSender*, C_Packet*>();
+void Hooks::LoopbackPacketSender_sendToServer(LoopbackPacketSender* a, Packet* packet) {
+	static auto oFunc = g_Hooks.LoopbackPacketSender_sendToServerHook->GetFastcall<void, LoopbackPacketSender*, Packet*>();
 
 	static auto autoSneakMod = moduleMgr->getModule<AutoSneak>();
 	static auto freecamMod = moduleMgr->getModule<Freecam>();
 	static auto blinkMod = moduleMgr->getModule<Blink>();
 	static auto noPacketMod = moduleMgr->getModule<NoPacket>();
 
-	if (noPacketMod->isEnabled() && g_Data.isInGame())
+	if (noPacketMod->isEnabled() && Game.isInGame())
 		return;
 
 	if (freecamMod->isEnabled() || blinkMod->isEnabled()) {
@@ -1070,10 +957,10 @@ void Hooks::LoopbackPacketSender_sendToServer(C_LoopbackPacketSender* a, C_Packe
 		}
 	}
 
-	if (autoSneakMod->isEnabled() && g_Data.getLocalPlayer() != nullptr && autoSneakMod->doSilent && packet->isInstanceOf<C_PlayerActionPacket>()) {
-		auto* pp = reinterpret_cast<C_PlayerActionPacket*>(packet);
+	if (autoSneakMod->isEnabled() && Game.getLocalPlayer() != nullptr && autoSneakMod->doSilent && packet->isInstanceOf<PlayerActionPacket>()) {
+		auto* pp = reinterpret_cast<PlayerActionPacket*>(packet);
 
-		if (pp->action == 12 && pp->entityRuntimeId == g_Data.getLocalPlayer()->entityRuntimeId)
+		if (pp->action == 12 && pp->entityRuntimeId == Game.getLocalPlayer()->entityRuntimeId)
 			return;  //dont send uncrouch
 	}
 
@@ -1094,16 +981,16 @@ float Hooks::LevelRendererPlayer_getFov(__int64 _this, float a2, bool a3) {
 	return oGetFov(_this, a2, a3);
 }
 
-void Hooks::MultiLevelPlayer_tick(C_EntityList* _this) {
-	static auto oTick = g_Hooks.MultiLevelPlayer_tickHook->GetFastcall<void, C_EntityList*>();
-	C_GameMode* gm = g_Data.getCGameMode();
+void Hooks::MultiLevelPlayer_tick(EntityList* _this) {
+	static auto oTick = g_Hooks.MultiLevelPlayer_tickHook->GetFastcall<void, EntityList*>();
+	GameMode* gm = Game.getGameMode();
 	if (gm != nullptr) moduleMgr->onTick(gm);
 	oTick(_this);
 	GameData::EntityList_tick(_this);
 }
 
-void Hooks::GameMode_startDestroyBlock(C_GameMode* _this, Vec3i* a2, uint8_t face, void* a4, void* a5) {
-	static auto oFunc = g_Hooks.GameMode_startDestroyBlockHook->GetFastcall<void, C_GameMode*, Vec3i*, uint8_t, void*, void*>();
+void Hooks::GameMode_startDestroyBlock(GameMode* _this, Vec3i* a2, uint8_t face, void* a4, void* a5) {
+	static auto oFunc = g_Hooks.GameMode_startDestroyBlockHook->GetFastcall<void, GameMode*, Vec3i*, uint8_t, void*, void*>();
 
 	static auto nukerModule = moduleMgr->getModule<Nuker>();
 	static auto instaBreakModule = moduleMgr->getModule<InstaBreak>();
@@ -1115,7 +1002,7 @@ void Hooks::GameMode_startDestroyBlock(C_GameMode* _this, Vec3i* a2, uint8_t fac
 		const bool isVeinMiner = nukerModule->isVeinMiner();
 		const bool isAutoMode = nukerModule->isAutoMode();
 
-		C_BlockSource* region = g_Data.getLocalPlayer()->region;
+		BlockSource* region = Game.getLocalPlayer()->region;
 		auto selectedBlockId = ((region->getBlock(*a2)->blockLegacy))->blockId;
 		uint8_t selectedBlockData = region->getBlock(*a2)->data;
 
@@ -1127,7 +1014,7 @@ void Hooks::GameMode_startDestroyBlock(C_GameMode* _this, Vec3i* a2, uint8_t fac
 						tempPos.y = a2->y + y;
 						tempPos.z = a2->z + z;
 						if (tempPos.y > 0) {
-							C_Block* blok = region->getBlock(tempPos);
+							Block* blok = region->getBlock(tempPos);
 							uint8_t data = blok->data;
 							auto id = blok->blockLegacy->blockId;
 							if (blok->blockLegacy->material->isSolid == true && (!isVeinMiner || (id == selectedBlockId && data == selectedBlockData)))
@@ -1147,16 +1034,16 @@ void Hooks::GameMode_startDestroyBlock(C_GameMode* _this, Vec3i* a2, uint8_t fac
 	oFunc(_this, a2, face, a4, a5);
 }
 
-void Hooks::HIDController_keyMouse(C_HIDController* _this, void* a2, void* a3) {
-	static auto oFunc = g_Hooks.HIDController_keyMouseHook->GetFastcall<void, C_HIDController*, void*, void*>();
+void Hooks::HIDController_keyMouse(HIDController* _this, void* a2, void* a3) {
+	static auto oFunc = g_Hooks.HIDController_keyMouseHook->GetFastcall<void, HIDController*, void*, void*>();
 	GameData::setHIDController(_this);
 	isTicked = true;
 	oFunc(_this, a2, a3);
 	return;
 }
 
-int Hooks::BlockLegacy_getRenderLayer(C_BlockLegacy* a1) {
-	static auto oFunc = g_Hooks.BlockLegacy_getRenderLayerHook->GetFastcall<int, C_BlockLegacy*>();
+int Hooks::BlockLegacy_getRenderLayer(BlockLegacy* a1) {
+	static auto oFunc = g_Hooks.BlockLegacy_getRenderLayerHook->GetFastcall<int, BlockLegacy*>();
 
 	static auto xrayMod = moduleMgr->getModule<Xray>();
 	if (xrayMod->isEnabled()) {
@@ -1180,8 +1067,8 @@ int Hooks::BlockLegacy_getRenderLayer(C_BlockLegacy* a1) {
 	return oFunc(a1);
 }
 
-__int8* Hooks::BlockLegacy_getLightEmission(C_BlockLegacy* a1, __int8* a2) {
-	static auto oFunc = g_Hooks.BlockLegacy_getLightEmissionHook->GetFastcall<__int8*, C_BlockLegacy*, __int8*>();
+__int8* Hooks::BlockLegacy_getLightEmission(BlockLegacy* a1, __int8* a2) {
+	static auto oFunc = g_Hooks.BlockLegacy_getLightEmissionHook->GetFastcall<__int8*, BlockLegacy*, __int8*>();
 
 	static auto xrayMod = moduleMgr->getModule<Xray>();
 	if (xrayMod->isEnabled()) {
@@ -1241,9 +1128,9 @@ void Hooks::ClickFunc(__int64 a1, char mouseButton, char isDown, __int16 mouseX,
 
 	if (isDown)
 		if (mouseButton == 1)
-			g_Data.leftclickCount++;
+			Game.leftclickCount++;
 		else if (mouseButton == 2)
-			g_Data.rightclickCount++;
+			Game.rightclickCount++;
 
 	if (clickGuiModule->isEnabled()) {
 		if (mouseButton == 4) {
@@ -1255,8 +1142,8 @@ void Hooks::ClickFunc(__int64 a1, char mouseButton, char isDown, __int16 mouseX,
 	return oFunc(a1, mouseButton, isDown, mouseX, mouseY, relativeMovementX, relativeMovementY, a8);
 }
 
-__int64 Hooks::MoveInputHandler_tick(C_MoveInputHandler* a1, C_Entity* a2) {
-	static auto oTick = g_Hooks.MoveInputHandler_tickHook->GetFastcall<__int64, C_MoveInputHandler*, C_Entity*>();
+__int64 Hooks::MoveInputHandler_tick(MoveInputHandler* a1, Entity* a2) {
+	static auto oTick = g_Hooks.MoveInputHandler_tickHook->GetFastcall<__int64, MoveInputHandler*, Entity*>();
 
 	auto ret = oTick(a1, a2);
 	moduleMgr->onMove(a1);
@@ -1264,8 +1151,8 @@ __int64 Hooks::MoveInputHandler_tick(C_MoveInputHandler* a1, C_Entity* a2) {
 	return 0;
 }
 
-__int64 Hooks::ChestScreenController_tick(C_ChestScreenController* a1) {
-	static auto oFunc = g_Hooks.ChestScreenController_tickHook->GetFastcall<__int64, C_ChestScreenController*>();
+__int64 Hooks::ChestScreenController_tick(ChestScreenController* a1) {
+	static auto oFunc = g_Hooks.ChestScreenController_tickHook->GetFastcall<__int64, ChestScreenController*>();
 
 	static auto chestStealerMod = moduleMgr->getModule<ChestStealer>();
 	if (chestStealerMod->isEnabled()) chestStealerMod->chestScreenController_tick(a1);
@@ -1328,10 +1215,10 @@ float Hooks::GetGamma(uintptr_t* a1) {
 	return ofunc(a1);
 }
 
-bool Hooks::Actor_isInWater(C_Entity* _this) {
-	static auto oFunc = g_Hooks.Actor_isInWaterHook->GetFastcall<bool, C_Entity*>();
+bool Hooks::Actor_isInWater(Entity* _this) {
+	static auto oFunc = g_Hooks.Actor_isInWaterHook->GetFastcall<bool, Entity*>();
 
-	if (g_Data.getLocalPlayer() != _this)
+	if (Game.getLocalPlayer() != _this)
 		return oFunc(_this);
 
 	static auto airSwimModule = moduleMgr->getModule<AirSwim>();
@@ -1341,10 +1228,10 @@ bool Hooks::Actor_isInWater(C_Entity* _this) {
 	return oFunc(_this);
 }
 
-void Hooks::JumpPower(C_Entity* a1, float a2) {
-	static auto oFunc = g_Hooks.JumpPowerHook->GetFastcall<void, C_Entity*, float>();
+void Hooks::JumpPower(Entity* a1, float a2) {
+	static auto oFunc = g_Hooks.JumpPowerHook->GetFastcall<void, Entity*, float>();
 	static auto highJumpMod = moduleMgr->getModule<HighJump>();
-	if (highJumpMod->isEnabled() && g_Data.getLocalPlayer() == a1) {
+	if (highJumpMod->isEnabled() && Game.getLocalPlayer() == a1) {
 		a1->velocity.y = highJumpMod->jumpPower;
 		return;
 	}
@@ -1352,43 +1239,43 @@ void Hooks::JumpPower(C_Entity* a1, float a2) {
 }
 
 
-void Hooks::Actor_ascendLadder(C_Entity* _this) {
-	static auto oFunc = g_Hooks.Actor_ascendLadderHook->GetFastcall<void, C_Entity*>();
+void Hooks::Actor_ascendLadder(Entity* _this) {
+	static auto oFunc = g_Hooks.Actor_ascendLadderHook->GetFastcall<void, Entity*>();
 
 	static auto fastLadderModule = moduleMgr->getModule<FastLadder>();
-	if (fastLadderModule->isEnabled() && g_Data.getLocalPlayer() == _this) {
+	if (fastLadderModule->isEnabled() && Game.getLocalPlayer() == _this) {
 		_this->velocity.y = fastLadderModule->speed;
 		return;
 	}
 	return oFunc(_this);
 }
 
-void Hooks::Actor_swing(C_Entity* _this) {
-	static auto oFunc = g_Hooks.Actor_swingHook->GetFastcall<void, C_Entity*>();
+void Hooks::Actor_swing(Entity* _this) {
+	static auto oFunc = g_Hooks.Actor_swingHook->GetFastcall<void, Entity*>();
 	static auto noSwingMod = moduleMgr->getModule<NoSwing>();
 	if(!noSwingMod->isEnabled()) return oFunc(_this);
 }
 
-void Hooks::Actor_startSwimming(C_Entity* _this) {
-	static auto oFunc = g_Hooks.Actor_startSwimmingHook->GetFastcall<void, C_Entity*>();
+void Hooks::Actor_startSwimming(Entity* _this) {
+	static auto oFunc = g_Hooks.Actor_startSwimmingHook->GetFastcall<void, Entity*>();
 
 	static auto jesusModule = moduleMgr->getModule<Jesus>();
-	if (jesusModule->isEnabled() && g_Data.getLocalPlayer() == _this)
+	if (jesusModule->isEnabled() && Game.getLocalPlayer() == _this)
 		return;
 
 	oFunc(_this);
 }
 
-void Hooks::RakNetInstance_tick(C_RakNetInstance* _this, __int64 a2, __int64 a3) {
-	static auto oTick = g_Hooks.RakNetInstance_tickHook->GetFastcall<void, C_RakNetInstance*, __int64, __int64>();
+void Hooks::RakNetInstance_tick(RakNetInstance* _this, __int64 a2, __int64 a3) {
+	static auto oTick = g_Hooks.RakNetInstance_tickHook->GetFastcall<void, RakNetInstance*, __int64, __int64>();
 	GameData::setRakNetInstance(_this);
 	oTick(_this, a2, a3);
 }
 
-float Hooks::GameMode_getPickRange(C_GameMode* _this, __int64 a2, char a3) {
-	static auto oFunc = g_Hooks.GameMode_getPickRangeHook->GetFastcall<float, C_GameMode*, __int64, char>();
+float Hooks::GameMode_getPickRange(GameMode* _this, __int64 a2, char a3) {
+	static auto oFunc = g_Hooks.GameMode_getPickRangeHook->GetFastcall<float, GameMode*, __int64, char>();
 
-	if (g_Data.getLocalPlayer() != nullptr) {
+	if (Game.getLocalPlayer() != nullptr) {
 		static auto BlockReachModule = moduleMgr->getModule<BlockReach>();
 		if (BlockReachModule->isEnabled())
 			return BlockReachModule->getBlockReach();
@@ -1404,22 +1291,22 @@ float Hooks::GameMode_getPickRange(C_GameMode* _this, __int64 a2, char a3) {
 __int64 Hooks::ConnectionRequest_create(__int64 _this, __int64 privateKeyManager, void* a3, TextHolder* selfSignedId, TextHolder* serverAddress, __int64 clientRandomId, TextHolder* skinId, SkinData* skinData, __int64 capeData, CoolSkinData* coolSkinStuff, TextHolder* deviceId, int inputMode, int uiProfile, int guiScale, TextHolder* languageCode, bool sendEduModeParams, TextHolder* tenantId, __int64 unused, TextHolder* platformUserId, TextHolder* thirdPartyName, bool thirdPartyNameOnly, TextHolder* platformOnlineId, TextHolder* platformOfflineId, TextHolder* capeId) {
 	static auto oFunc = g_Hooks.ConnectionRequest_createHook->GetFastcall<__int64, __int64, __int64, void*, TextHolder*, TextHolder*, __int64, TextHolder*, SkinData*, __int64, CoolSkinData*, TextHolder*, int, int, int, TextHolder*, bool, TextHolder*, __int64, TextHolder*, TextHolder*, bool, TextHolder*, TextHolder*, TextHolder*>();
 
-	auto geoOverride = g_Data.getCustomGeoOverride();
+	auto geoOverride = Game.getCustomGeoOverride();
 
-	if (g_Data.allowWIPFeatures()) {
+	/* if (Game.allowWIPFeatures()) {
 		logF("Connection Request: InputMode: %i UiProfile: %i GuiScale: %i", inputMode, uiProfile, guiScale);
 
 		//Logger::WriteBigLogFileF(skinGeometryData->getTextLength() + 20, "Geometry: %s", skinGeometryData->getText());
-		auto hResourceGeometry = FindResourceA((HMODULE)g_Data.getDllModule(), MAKEINTRESOURCEA(IDR_TEXT1), "TEXT");
-		auto hMemoryGeometry = LoadResource((HMODULE)g_Data.getDllModule(), hResourceGeometry);
+		auto hResourceGeometry = FindResourceA((HMODULE)Game.getDllModule(), MAKEINTRESOURCEA(IDR_TEXT1), "TEXT");
+		auto hMemoryGeometry = LoadResource((HMODULE)Game.getDllModule(), hResourceGeometry);
 
-		auto sizeGeometry = SizeofResource((HMODULE)g_Data.getDllModule(), hResourceGeometry);
+		auto sizeGeometry = SizeofResource((HMODULE)Game.getDllModule(), hResourceGeometry);
 		auto ptrGeometry = LockResource(hMemoryGeometry);
 
-		auto hResourceSteve = FindResourceA((HMODULE)g_Data.getDllModule(), MAKEINTRESOURCEA(IDR_STEVE), (char*)RT_RCDATA);
-		auto hMemorySteve = LoadResource((HMODULE)g_Data.getDllModule(), hResourceSteve);
+		auto hResourceSteve = FindResourceA((HMODULE)Game.getDllModule(), MAKEINTRESOURCEA(IDR_STEVE), (char*)RT_RCDATA);
+		auto hMemorySteve = LoadResource((HMODULE)Game.getDllModule(), hResourceSteve);
 
-		auto sizeSteve = SizeofResource((HMODULE)g_Data.getDllModule(), hResourceSteve);
+		auto sizeSteve = SizeofResource((HMODULE)Game.getDllModule(), hResourceSteve);
 		auto ptrSteve = LockResource(hMemorySteve);
 
 		//std::unique_ptr<TextHolder> newGeometryData(new TextHolder(ptrGeometry, sizeGeometry));
@@ -1429,20 +1316,20 @@ __int64 Hooks::ConnectionRequest_create(__int64 _this, __int64 privateKeyManager
 			auto overrideGeo = std::get<1>(geoOverride);
 			newGeometryData = new TextHolder(*overrideGeo.get());
 		} else {  // Default Skin
-				  /*char* str;  // Obj text
-			{
-				auto hResourceObj = FindResourceA(g_Data.getDllModule(), MAKEINTRESOURCEA(IDR_OBJ), "TEXT");
-				auto hMemoryObj = LoadResource(g_Data.getDllModule(), hResourceObj);
+				  //char* str;  // Obj text
+		//	{
+			//	auto hResourceObj = FindResourceA(Game.getDllModule(), MAKEINTRESOURCEA(IDR_OBJ), "TEXT");
+				//auto hMemoryObj = LoadResource(Game.getDllModule(), hResourceObj);
 
-				auto sizeObj = SizeofResource(g_Data.getDllModule(), hResourceObj);
-				auto ptrObj = LockResource(hMemoryObj);
-
+				//auto sizeObj = SizeofResource(Game.getDllModule(), hResourceObj);
+				//auto ptrObj = LockResource(hMemoryObj);
+			//
 				str = new char[sizeObj + 1];
-				memset(str, 0, sizeObj + 1);
+			////	memset(str, 0, sizeObj + 1);
 				memcpy(str, ptrObj, sizeObj);
-			}
+			//}
 
-			newGeometryData = new TextHolder(SkinUtil::modGeometry(reinterpret_cast<char*>(ptrGeometry), SkinUtil::objToMesh(str)));*/
+			//newGeometryData = new TextHolder(SkinUtil::modGeometry(reinterpret_cast<char*>(ptrGeometry), SkinUtil::objToMesh(str)));
 		}
 
 		SkinData* newSkinData = new SkinData();
@@ -1451,7 +1338,7 @@ __int64 Hooks::ConnectionRequest_create(__int64 _this, __int64 privateKeyManager
 		newSkinData->skinData = ptrSteve;
 		newSkinData->skinSize = sizeSteve;
 
-		auto texOverride = g_Data.getCustomTextureOverride();
+		auto texOverride = Game.getCustomTextureOverride();
 		auto texture = std::get<1>(texOverride);  // Put it here so it won't go out of scope until after it has been used
 		if (std::get<0>(texOverride)) {           // Enabled
 			newSkinData->skinData = std::get<0>(*texture.get()).get();
@@ -1461,7 +1348,7 @@ __int64 Hooks::ConnectionRequest_create(__int64 _this, __int64 privateKeyManager
 		//Logger::WriteBigLogFileF(newGeometryData->getTextLength() + 20, "Geometry: %s", newGeometryData->getText());
 		TextHolder* newSkinResourcePatch = new TextHolder(Utils::base64_decode("ewogICAiZ2VvbWV0cnkiIDogewogICAgICAiYW5pbWF0ZWRfZmFjZSIgOiAiZ2VvbWV0cnkuYW5pbWF0ZWRfZmFjZV9wZXJzb25hXzRjZGJiZmFjYTI0YTk2OGVfMF8wIiwKICAgICAgImRlZmF1bHQiIDogImdlb21ldHJ5LnBlcnNvbmFfNGNkYmJmYWNhMjRhOTY4ZV8wXzAiCiAgIH0KfQo="));
 
-		TextHolder* fakeName = g_Data.getFakeName();
+		TextHolder* fakeName = Game.getFakeName();
 		TextHolder resourcePatchBackup;
 
 		if (newGeometryData != nullptr) {
@@ -1492,15 +1379,14 @@ __int64 Hooks::ConnectionRequest_create(__int64 _this, __int64 privateKeyManager
 		delete newSkinData;
 		delete newSkinResourcePatch;
 		return res;
-	} else {
-		TextHolder* fakeName = g_Data.getFakeName();
+	} else {*/
+		TextHolder* fakeName = Game.getFakeName();
 		__int64 res = oFunc(_this, privateKeyManager, a3, selfSignedId, serverAddress, clientRandomId, skinId, skinData, capeData, coolSkinStuff, deviceId, inputMode, uiProfile, guiScale, languageCode, sendEduModeParams, tenantId, unused, platformUserId, fakeName != nullptr ? fakeName : thirdPartyName, fakeName != nullptr ? true : thirdPartyNameOnly, platformOnlineId, platformOfflineId, capeId);
 		return res;
-	}
 }
 
-void Hooks::InventoryTransactionManager_addAction(C_InventoryTransactionManager* a1, C_InventoryAction* a2) {
-	static auto Func = g_Hooks.InventoryTransactionManager_addActionHook->GetFastcall<void, C_InventoryTransactionManager*, C_InventoryAction*>();
+void Hooks::InventoryTransactionManager_addAction(InventoryTransactionManager* a1, InventoryAction* a2) {
+	static auto Func = g_Hooks.InventoryTransactionManager_addActionHook->GetFastcall<void, InventoryTransactionManager*, InventoryAction*>();
 	Func(a1, a2);
 }
 
@@ -1550,154 +1436,19 @@ GamerTextHolder* Hooks::toStyledString(__int64 strIn, GamerTextHolder* strOut) {
 	return func(strIn, strOut);
 }
 
-void prepCoolBean() {
-	if (g_Data.getClientInstance() && g_Data.getClientInstance()->minecraftGame->getServerEntries() && *reinterpret_cast<__int64*>(g_Data.getClientInstance()->minecraftGame->getServerEntries() + 0x50)) {
-		auto serverEntries = g_Data.getClientInstance()->minecraftGame->getServerEntries() + 0x48;
-
-		struct ThirdPartyServer {
-			TextHolder serverName;
-			TextHolder uuid;
-			TextHolder masterPlayerAccount;
-			TextHolder serverName2;
-			TextHolder lobbyDescription;
-			TextHolder domain;            // contains the last two parts of the domain .hivebedrock.network .mineplex.com
-			TextHolder pathToServerIcon;  // C:\Users\user\AppData\Local\Packages\Microsoft.MinecraftUWP_8wekyb3d8bbwe\LocalCache\minecraftpe\ContentCache\ThirdPartyServer\\<file hash>.jpg
-			TextHolder serverAddress;
-			int coolBoye;
-
-			ThirdPartyServer() {
-				memset(this, 0, sizeof(ThirdPartyServer));
-			}
-		};
-
-		struct BeansEntry {
-			BeansEntry* nextEntry;
-			BeansEntry* prevEntry;
-			TextHolder masterPlayer;
-			float unk;
-			char filler[0x3c];
-			TextHolder masterPlayer2;
-			TextHolder serverName;
-			char filler2[8];
-			std::shared_ptr<ThirdPartyServer>* start;  // array
-			std::shared_ptr<ThirdPartyServer>* end;    // end of array
-		};
-
-		auto listEnd = *reinterpret_cast<BeansEntry**>(serverEntries);
-
-		auto current = listEnd;
-		int count = 0;
-		while (listEnd != current->nextEntry) {
-			current = current->nextEntry;
-			count++;
-		}
-		if (count > 5)  // we already added a server
-			goto end;
-
-		// make new one
-		BeansEntry* epic = new BeansEntry();
-		epic->nextEntry = listEnd;
-		epic->prevEntry = current;
-		epic->masterPlayer.setText("");
-		epic->unk = current->unk;
-		memcpy(epic->filler, current->filler, sizeof(BeansEntry::filler));
-		epic->masterPlayer2.setText("");
-		epic->serverName.setText("Epic");
-		memcpy(epic->filler2, current->filler2, sizeof(BeansEntry::filler2));
-
-		auto cT = current->start[0].get();
-
-		std::shared_ptr<ThirdPartyServer>* start = new std::shared_ptr<ThirdPartyServer>[1];
-
-		{
-			ThirdPartyServer* t = new ThirdPartyServer();
-
-			t->coolBoye = cT->coolBoye;
-			t->uuid.setText("");
-			t->masterPlayerAccount = cT->masterPlayerAccount;
-			t->lobbyDescription = cT->lobbyDescription;
-			t->pathToServerIcon.setText("");
-			t->serverName.setText("Horion Server");
-			t->serverName2.setText("Horion Server");  // This is the one actually displayed
-			t->domain.setText(".horionbeta.club");
-			t->serverAddress.setText("mc.horionbeta.club");
-			start[0] = std::shared_ptr<ThirdPartyServer>(t);
-		}
-
-		epic->start = start;
-		epic->end = &start[1];
-
-		current->nextEntry = epic;
-
-		// increase count
-		*reinterpret_cast<__int64*>(g_Data.getClientInstance()->minecraftGame->getServerEntries() + 0x50) += 1;
-	end:;
-	}
-}
-
-__int64 Hooks::prepFeaturedServers(__int64 a1) {
-	static auto func = g_Hooks.prepFeaturedServersHook->GetFastcall<__int64, __int64>();
-	auto ret = func(a1);
-
-	if (g_Data.getClientInstance() == nullptr)
-		return ret;
-
-	if (g_Data.allowWIPFeatures())
-		prepCoolBean();
-
-	return ret;
-}
-
-__int64 Hooks::prepFeaturedServersFirstTime(__int64 a1, __int64 a2) {
-	static auto func = g_Hooks.prepFeaturedServersFirstTimeHook->GetFastcall<__int64, __int64, __int64>();
-
-	if (g_Data.allowWIPFeatures())
-		prepCoolBean();
-
-	auto ret = func(a1, a2);
-
-	return ret;
-}
-
-
-__int64 Hooks::Cube__compile(__int64 a1, __int64 a2) {
-	auto func = g_Hooks.cube__compileHook->GetFastcall<__int64, __int64, __int64>();
-
-	auto ret = func(a1, a2);
-
-	auto end = *reinterpret_cast<__int64*>(a1 + 0x38);
-	auto it = *reinterpret_cast<__int64*>(a1 + 0x30);
-	auto boi = it + 0x1C;
-	while (it != end) {  // loop through PolygonQuad
-		if (it != boi + 0x34) {
-			auto iter2 = boi - 0xC;
-			do {
-				// PolygonQuad::compile
-				float* floatyBoi = reinterpret_cast<float*>(iter2 - 16);
-				logF("%.1f %.1f %.1f", floatyBoi[0], floatyBoi[1], floatyBoi[2]);
-				iter2 += 0x14;
-			} while (iter2 - 0x10 != boi + 0x34);
-		}
-		boi += 0x50;
-		it += 0x50;
-	}
-
-	return ret;
-}
-
 __int64 Hooks::InGamePlayScreen___renderLevel(__int64 playScreen, __int64 a2, __int64 a3) {
 	auto func = g_Hooks.InGamePlayScreen___renderLevelHook->GetFastcall<__int64, __int64, __int64, __int64>();
 	return func(playScreen, a2, a3);
 }
-__int64 Hooks::GameMode_attack(C_GameMode* _this, C_Entity* ent) {
-	auto func = g_Hooks.GameMode_attackHook->GetFastcall<__int64, C_GameMode*, C_Entity*>();
+__int64 Hooks::GameMode_attack(GameMode* _this, Entity* ent) {
+	auto func = g_Hooks.GameMode_attackHook->GetFastcall<__int64, GameMode*, Entity*>();
 	moduleMgr->onAttack(ent);
 	return func(_this, ent);
 }
-void Hooks::LocalPlayer__updateFromCamera(__int64 a1, C_Camera* camera) {
-	auto func = g_Hooks.LocalPlayer__updateFromCameraHook->GetFastcall<__int64, __int64, C_Camera*>();
+void Hooks::LocalPlayer__updateFromCamera(__int64 a1, Camera* camera) {
+	auto func = g_Hooks.LocalPlayer__updateFromCameraHook->GetFastcall<__int64, __int64, Camera*>();
 	/* auto noHurtcamMod = moduleMgr->getModule<NoHurtcam>();
-	if (noHurtcamMod->isEnabled() && g_Data.isInGame() && g_Data.getLocalPlayer()->isAlive()) {
+	if (noHurtcamMod->isEnabled() && Game.isInGame() && Game.getLocalPlayer()->isAlive()) {
 		Vec2 rot;
 		camera->getPlayerRotation(&rot);
 		if (camera->facesPlayerFront) {
@@ -1710,24 +1461,24 @@ void Hooks::LocalPlayer__updateFromCamera(__int64 a1, C_Camera* camera) {
 	*/
 	func(a1, camera);
 }
-bool Hooks::Mob__isImmobile(C_Entity* ent) {
-	auto func = g_Hooks.Mob__isImmobileHook->GetFastcall<bool, C_Entity*>();
+bool Hooks::Mob__isImmobile(Entity* ent) {
+	auto func = g_Hooks.Mob__isImmobileHook->GetFastcall<bool, Entity*>();
 
 	static auto antiImmobileMod = moduleMgr->getModule<AntiImmobile>();
-	if (antiImmobileMod->isEnabled() && ent == g_Data.getLocalPlayer())
+	if (antiImmobileMod->isEnabled() && ent == Game.getLocalPlayer())
 		return false;
 
 	return func(ent);
 }
 
-void Hooks::Actor__setRot(C_Entity* _this, Vec2& angle) {
-	auto func = g_Hooks.Actor__setRotHook->GetFastcall<void, C_Entity*, Vec2&>();
+void Hooks::Actor__setRot(Entity* _this, Vec2& angle) {
+	auto func = g_Hooks.Actor__setRotHook->GetFastcall<void, Entity*, Vec2&>();
 	auto killauraMod = moduleMgr->getModule<Killaura>();
 	auto freelookMod = moduleMgr->getModule<Freelook>();
-	if (killauraMod->isEnabled() && !killauraMod->targetListEmpty && killauraMod->rotations && _this == g_Data.getLocalPlayer()) {
+	if (killauraMod->isEnabled() && !killauraMod->targetListEmpty && killauraMod->rotations && _this == Game.getLocalPlayer()) {
 		func(_this, angle = killauraMod->angle);
 	}
-	if (freelookMod->isEnabled() && g_Data.getLocalPlayer() == _this) {
+	if (freelookMod->isEnabled() && Game.getLocalPlayer() == _this) {
 		func(_this, angle = freelookMod->oldPos);
 	}
 	func(_this, angle);
@@ -1738,8 +1489,8 @@ void Hooks::test(void* _this) {
 	func(_this);
 }
 
-void Hooks::InventoryTransactionManager__addAction(C_InventoryTransactionManager* _this, C_InventoryAction& action) {
-	auto func = g_Hooks.InventoryTransactionManager__addActionHook->GetFastcall<void, C_InventoryTransactionManager*, C_InventoryAction&>();
+void Hooks::InventoryTransactionManager__addAction(InventoryTransactionManager* _this, InventoryAction& action) {
+	auto func = g_Hooks.InventoryTransactionManager__addActionHook->GetFastcall<void, InventoryTransactionManager*, InventoryAction&>();
 
 #ifdef TEST_DEBUG
 	char* srcName = "none";

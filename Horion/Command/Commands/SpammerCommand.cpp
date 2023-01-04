@@ -10,7 +10,7 @@ SpammerCommand::~SpammerCommand() {
 }
 
 bool SpammerCommand::execute(std::vector<std::string>* args) {
-	assertTrue(g_Data.getLocalPlayer() != nullptr);
+	assertTrue(Game.getLocalPlayer() != nullptr);
 	std::string option = args->at(1);
 	std::transform(option.begin(), option.end(), option.begin(), ::tolower);
 
@@ -64,9 +64,9 @@ bool SpammerCommand::execute(std::vector<std::string>* args) {
 		for (int i = 0; i < times; i++) {
 			C_TextPacket textPacket;
 			textPacket.message.setText(text + (spamMod->getBypass() ? (" | " + Utils::randomString(spamMod->getLength())) : ""));
-			textPacket.sourceName = *g_Data.getLocalPlayer()->getNameTag();
-			textPacket.xboxUserId = TextHolder(std::to_string(g_Data.getLocalPlayer()->getUserId()));
-			g_Data.getClientInstance()->loopbackPacketSender->sendToServer(&textPacket);
+			textPacket.sourceName = *Game.getLocalPlayer()->getNameTag();
+			textPacket.xboxUserId = TextHolder(std::to_string(Game.getLocalPlayer()->getUserId()));
+			Game.getClientInstance()->loopbackPacketSender->sendToServer(&textPacket);
 		}
 		return true;
 	}

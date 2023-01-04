@@ -13,6 +13,6 @@ public:
 	~ChestStealer();
 
 	// Inherited via IModule
-	virtual void chestScreenController_tick(C_ChestScreenController* c);
+	virtual void chestScreenController_tick(ChestScreenController* c);
 	virtual const char* getModuleName() override;
 };

@@ -31,16 +31,16 @@ void SkinUtil::importGeo(std::wstring filePath) {
 	if (contents.size() == 0)
 		return;
 
-	auto hResourceGeometry = FindResourceA((HMODULE)g_Data.getDllModule(), MAKEINTRESOURCEA(IDR_TEXT1), "TEXT");
-	auto hMemoryGeometry = LoadResource((HMODULE)g_Data.getDllModule(), hResourceGeometry);
+	auto hResourceGeometry = FindResourceA((HMODULE)Game.getDllModule(), MAKEINTRESOURCEA(IDR_TEXT1), "TEXT");
+	auto hMemoryGeometry = LoadResource((HMODULE)Game.getDllModule(), hResourceGeometry);
 
-	auto sizeGeometry = SizeofResource((HMODULE)g_Data.getDllModule(), hResourceGeometry);
+	auto sizeGeometry = SizeofResource((HMODULE)Game.getDllModule(), hResourceGeometry);
 	auto ptrGeometry = LockResource(hMemoryGeometry);
 	logF("Starting geometry import");
 	auto mesh = SkinUtil::objToMesh(contents.c_str());
 	logF("Mesh created (verts: %i, uvs: %i, normals: %i, faces: %i)", mesh.vertices.size(), mesh.uvs.size(), mesh.normals.size(), mesh.faces.size());
 	std::string moddedGeo = SkinUtil::modGeometry(reinterpret_cast<char*>(ptrGeometry), mesh);
-	g_Data.setCustomGeometryOverride(true, std::make_shared<std::string>(moddedGeo));
+	Game.setCustomGeometryOverride(true, std::make_shared<std::string>(moddedGeo));
 	logF("Geometry import done");
 
 	if (hMemoryGeometry)

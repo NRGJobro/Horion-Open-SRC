@@ -8,7 +8,7 @@
 #include "../Utils/Utils.h"
 #include "Hooks.h"
 
-GameData g_Data;
+GameData Game;
 
 size_t AABBHasher::operator()(const AABB& i) const {
 	return Utils::posToHash(i.lower);
@@ -20,20 +20,20 @@ void GameData::retrieveClientInstance() {
 		sigOffset = FindSignature("48 8B 15 ? ? ? ? 4C 8B 02 4C 89 06 40 84 FF 74 ? 48 8B CD E8 ? ? ? ? 48 8B C6 48 8B 4C 24 ? 48 33 CC E8 ? ? ? ? 48 8B 5C 24 ? 48 8B 6C 24 ? 48 8B 74 24 ? 48 83 C4 ? 5F C3 B9 ? ? ? ? E8 ? ? ? ? CC E8 ? ? ? ? CC CC CC CC CC CC CC CC CC CC CC 48 89 5C 24 ? 48 89 6C 24 ? 56");
 		if (sigOffset != 0x0) {
 			int offset = *reinterpret_cast<int*>((sigOffset + 3));                                                 // Get Offset from code
-			clientInstanceOffset = sigOffset - g_Data.gameModule->ptrBase + offset + /*length of instruction*/ 7;  // Offset is relative
+			clientInstanceOffset = sigOffset - Game.gameModule->ptrBase + offset + /*length of instruction*/ 7;  // Offset is relative
 			logF("client: %llX", clientInstanceOffset);
 		}
 	}
 	// clientInstanceOffset = 0x03CD5058;  // pointer scanned, can't find good signatures so it'll stay
-	g_Data.clientInstance = reinterpret_cast<C_ClientInstance*>(g_Data.slimMem->ReadPtr<uintptr_t*>(g_Data.gameModule->ptrBase + clientInstanceOffset, {0x0, 0x0, 0x58}));
+	Game.clientInstance = reinterpret_cast<ClientInstance*>(Game.slimMem->ReadPtr<uintptr_t*>(Game.gameModule->ptrBase + clientInstanceOffset, {0x0, 0x0, 0x58}));
 #ifdef _DEBUG
-	if (g_Data.clientInstance == 0)
+	if (Game.clientInstance == 0)
 		throw std::exception("Client Instance is 0");
 #endif
 }
 
 bool GameData::canUseMoveKeys() {
-	MinecraftGame* mc = g_Data.clientInstance->minecraftGame;
+	MinecraftGame* mc = Game.clientInstance->minecraftGame;
 	if (mc == nullptr) {
 		return false;
 	}
@@ -47,13 +47,13 @@ bool GameData::isKeyDown(int key) {
 		uintptr_t sigOffset = FindSignature("48 8D 0D ? ? ? ? 89 1C B9");
 		if (sigOffset != 0x0) {
 			int offset = *reinterpret_cast<int*>((sigOffset + 3));                                         // Get Offset from code
-			keyMapOffset = sigOffset - g_Data.gameModule->ptrBase + offset + /*length of instruction*/ 7;  // Offset is relative
-			logF("KeyMap: %llX", keyMapOffset + g_Data.gameModule->ptrBase);
+			keyMapOffset = sigOffset - Game.gameModule->ptrBase + offset + /*length of instruction*/ 7;  // Offset is relative
+			logF("KeyMap: %llX", keyMapOffset + Game.gameModule->ptrBase);
 		}
 	}
 	// All keys are mapped as bools, though aligned as ints (4 byte)
 	// key0 00 00 00 key1 00 00 00 key2 00 00 00 ...
-	return *reinterpret_cast<bool*>(g_Data.gameModule->ptrBase + keyMapOffset + ((uintptr_t)key * 0x4));
+	return *reinterpret_cast<bool*>(Game.gameModule->ptrBase + keyMapOffset + ((uintptr_t)key * 0x4));
 }
 bool GameData::isKeyPressed(int key) {
 	if (isKeyDown(key)) {
@@ -65,50 +65,50 @@ bool GameData::isKeyPressed(int key) {
 }
 
 bool GameData::isRightClickDown() {
-	if (g_Data.hidController == 0)
+	if (Game.hidController == 0)
 		return false;
-	return g_Data.hidController->rightClickDown;
+	return Game.hidController->rightClickDown;
 }
 
 bool GameData::isLeftClickDown() {
-	if (g_Data.hidController == 0)
+	if (Game.hidController == 0)
 		return false;
-	return g_Data.hidController->leftClickDown;
+	return Game.hidController->leftClickDown;
 }
 
 bool GameData::isWheelDown() {
-	if (g_Data.hidController == 0)
+	if (Game.hidController == 0)
 		return false;
-	return g_Data.hidController->wheelDown;
+	return Game.hidController->wheelDown;
 }
 
 bool GameData::shouldTerminate() {
-	return g_Data.shouldTerminateB;
+	return Game.shouldTerminateB;
 }
 
 void GameData::terminate() {
-	g_Data.getClientInstance()->minecraft->setTimerSpeed(20.f);
-	g_Data.shouldTerminateB = true;
+	Game.getClientInstance()->minecraft->setTimerSpeed(20.f);
+	Game.shouldTerminateB = true;
 }
 
 bool GameData::shouldHide() {
-	return g_Data.shouldHideB;
+	return Game.shouldHideB;
 }
 
 void GameData::hide() {
-	g_Data.shouldHideB = !(g_Data.shouldHideB);
+	Game.shouldHideB = !(Game.shouldHideB);
 }
 
-void GameData::updateGameData(C_GameMode* gameMode) {
+void GameData::updateGameData(GameMode* gameMode) {
 	retrieveClientInstance();
-	g_Data.localPlayer = g_Data.getLocalPlayer();
+	Game.localPlayer = Game.getLocalPlayer();
 
-	if (g_Data.localPlayer != nullptr && gameMode->player == g_Data.localPlayer) {  // GameMode::tick might also be run on the local server
-		g_Data.gameMode = gameMode;
-		QueryPerformanceCounter(reinterpret_cast<LARGE_INTEGER*>(&g_Data.lastUpdate));
+	if (Game.localPlayer != nullptr && gameMode->player == Game.localPlayer) {  // GameMode::tick might also be run on the local server
+		Game.gameMode = gameMode;
+		QueryPerformanceCounter(reinterpret_cast<LARGE_INTEGER*>(&Game.lastUpdate));
 
-		if (g_Data.localPlayer != nullptr) {
-			C_GuiData* guiData = g_Data.clientInstance->getGuiData();
+		if (Game.localPlayer != nullptr) {
+			GuiData* guiData = Game.clientInstance->getGuiData();
 
 			if (guiData != nullptr) {
 				{
@@ -131,9 +131,9 @@ void GameData::updateGameData(C_GameMode* gameMode) {
 #endif
 				}
 				{
-					auto lock = std::lock_guard<std::mutex>(g_Data.textPrintLock);
+					auto lock = std::lock_guard<std::mutex>(Game.textPrintLock);
 
-					auto& stringPrintVector = g_Data.textPrintList;
+					auto& stringPrintVector = Game.textPrintList;
 					int numPrinted = 0;
 					std::vector<std::string>::iterator it;
 					for (it = stringPrintVector.begin(); it != stringPrintVector.end(); ++it) {
@@ -151,28 +151,28 @@ void GameData::updateGameData(C_GameMode* gameMode) {
 	}
 }
 
-void GameData::EntityList_tick(C_EntityList* list) {
-	g_Data.entityList = list;
+void GameData::EntityList_tick(EntityList* list) {
+	Game.entityList = list;
 }
 
-void GameData::setHIDController(C_HIDController* Hid) {
-	g_Data.hidController = Hid;
+void GameData::setHIDController(HIDController* Hid) {
+	Game.hidController = Hid;
 }
 
-void GameData::setRakNetInstance(C_RakNetInstance* raknet) {
-	g_Data.raknetInstance = raknet;
+void GameData::setRakNetInstance(RakNetInstance* raknet) {
+	Game.raknetInstance = raknet;
 }
 
-void GameData::forEachEntity(std::function<void(C_Entity*, bool)> callback) {
+void GameData::forEachEntity(std::function<void(Entity*, bool)> callback) {
 	/*//Player EntityList
-	C_EntityList* entityList = (C_EntityList*)g_Data.getLocalPlayer()->level;
+	EntityList* entityList = (EntityList*)Game.getLocalPlayer()->level;
 	uintptr_t start = ((uintptr_t)entityList + 0x70);
 	uintptr_t stop = ((uintptr_t)entityList + 0x78);
 	start = *(uintptr_t*)start;
 	stop = *(uintptr_t*)stop;
 	//logF("size: %i", (stop - start) / sizeof(uintptr_t*));
 	while (start < stop) {
-		C_Entity* ent = *(C_Entity**)start;
+		Entity* ent = *(Entity**)start;
 		if (ent != nullptr)
 			callback(ent, false);
 		start += 8;
@@ -180,13 +180,13 @@ void GameData::forEachEntity(std::function<void(C_Entity*, bool)> callback) {
 	// New EntityList
 	{
 		// MultiplayerLevel::directTickEntities
-		__int64 region = reinterpret_cast<__int64>(g_Data.getLocalPlayer()->region);
+		__int64 region = reinterpret_cast<__int64>(Game.getLocalPlayer()->region);
 		__int64* entityIdMap = *(__int64**)(*(__int64*)(region + 0x20) + 0x138i64);
 		for (__int64* i = (__int64*)*entityIdMap; i != entityIdMap; i = (__int64*)*i) {
 			__int64 actor = i[3];
 			// !isRemoved() && !isGlobal()
 			if (actor && !*(char*)(actor + 993) && !*(char*)(actor + 994)) {
-				C_Entity* ent = reinterpret_cast<C_Entity*>(actor);
+				Entity* ent = reinterpret_cast<Entity*>(actor);
 				callback(ent, false);
 			}
 		}
@@ -198,59 +198,40 @@ void GameData::forEachEntity(std::function<void(C_Entity*, bool)> callback) {
 	}
 }
 
-void GameData::addChestToList(C_ChestBlockActor* chest) {
+void GameData::addChestToList(ChestBlockActor* chest) {
 	if (chest == nullptr || !chest->isMainSubchest())
 		return;
 	AABB chestAabb = chest->getFullAABB();
-	std::lock_guard<std::mutex> listGuard(g_Data.chestListMutex);
-	if (g_Data.chestList.count(chestAabb) > 0)
+	std::lock_guard<std::mutex> listGuard(Game.chestListMutex);
+	if (Game.chestList.count(chestAabb) > 0)
 		return;
 
-	g_Data.chestList.insert(chestAabb);
+	Game.chestList.insert(chestAabb);
 }
 
 void GameData::initGameData(const SlimUtils::SlimModule* gameModule, SlimUtils::SlimMem* slimMem, void* hDllInst) {
-	g_Data.gameModule = gameModule;
-	g_Data.slimMem = slimMem;
-	g_Data.hDllInst = hDllInst;
-	g_Data.networkedData.xorKey = rand() % 0xFFFF | ((rand() % 0xFFFF) << 16);
+	Game.gameModule = gameModule;
+	Game.slimMem = slimMem;
+	Game.hDllInst = hDllInst;
 	retrieveClientInstance();
 #ifdef _DEBUG
-	logF("base: %llX", g_Data.getModule()->ptrBase);
-	logF("clientInstance %llX", g_Data.clientInstance);
-	logF("localPlayer %llX", g_Data.getLocalPlayer());
-	if (g_Data.clientInstance != nullptr) {
-		logF("minecraftGame: %llX", g_Data.clientInstance->minecraftGame);
-		logF("levelRenderer: %llX", g_Data.clientInstance->levelRenderer);
+	logF("base: %llX", Game.getModule()->ptrBase);
+	logF("clientInstance %llX", Game.clientInstance);
+	logF("localPlayer %llX", Game.getLocalPlayer());
+	if (Game.clientInstance != nullptr) {
+		logF("minecraftGame: %llX", Game.clientInstance->minecraftGame);
+		logF("levelRenderer: %llX", Game.clientInstance->levelRenderer);
 	}
 
 #endif
 }
-void GameData::sendPacketToInjector(HorionDataPacket horionDataPack) {
-	if (!isInjectorConnectionActive())
-		throw std::exception("Horion injector connection not active");
-	if (horionDataPack.dataArraySize >= 3000) {
-		logF("Tried to send data packet with array size: %i %llX", horionDataPack.dataArraySize, horionDataPack.data.get());
-		throw std::exception("Data packet data too big");
-	}
-
-	horionToInjectorQueue.push(horionDataPack);
-}
-void GameData::callInjectorResponseCallback(int id, std::shared_ptr<HorionDataPacket> packet) {
-	if (injectorToHorionResponseCallbacks.find(id) == injectorToHorionResponseCallbacks.end()) {
-		logF("No response callback for request with id=%i!", id);
-		return;
-	}
-	injectorToHorionResponseCallbacks[id](packet);
-	injectorToHorionResponseCallbacks.erase(id);
-}
 void GameData::log(const char* fmt, ...) {
-	auto lock = std::lock_guard<std::mutex>(g_Data.textPrintLock);
+	auto lock = std::lock_guard<std::mutex>(Game.textPrintLock);
 	va_list arg;
 	va_start(arg, fmt);
 	char message[300];
 	vsprintf_s(message, 300, fmt, arg);
 	std::string msg(message);
-	g_Data.textPrintList.push_back(msg);
+	Game.textPrintList.push_back(msg);
 	va_end(arg);
 }

@@ -159,7 +159,7 @@ void ModuleManager::onSaveConfig(void* confVoid) {
 	}
 }
 
-void ModuleManager::onWorldTick(C_GameMode* gameMode) {
+void ModuleManager::onWorldTick(GameMode* gameMode) {
 	if (!isInitialized())
 		return;
 	auto lock = lockModuleList();
@@ -169,7 +169,7 @@ void ModuleManager::onWorldTick(C_GameMode* gameMode) {
 	}
 }
 
-void ModuleManager::onTick(C_GameMode* gameMode) {
+void ModuleManager::onTick(GameMode* gameMode) {
 	if (!isInitialized())
 		return;
 	auto lock = lockModuleList();
@@ -179,7 +179,7 @@ void ModuleManager::onTick(C_GameMode* gameMode) {
 	}
 }
 
-void ModuleManager::onAttack(C_Entity* attackEnt) {
+void ModuleManager::onAttack(Entity* attackEnt) {
 	if (!isInitialized())
 		return;
 
@@ -199,7 +199,7 @@ void ModuleManager::onKeyUpdate(int key, bool isDown) {
 	}
 }
 
-void ModuleManager::onPreRender(C_MinecraftUIRenderContext* renderCtx) {
+void ModuleManager::onPreRender(MinecraftUIRenderContext* renderCtx) {
 	if (!isInitialized())
 		return;
 	auto mutex = lockModuleList();
@@ -210,7 +210,7 @@ void ModuleManager::onPreRender(C_MinecraftUIRenderContext* renderCtx) {
 	}
 }
 
-void ModuleManager::onPostRender(C_MinecraftUIRenderContext* renderCtx) {
+void ModuleManager::onPostRender(MinecraftUIRenderContext* renderCtx) {
 	if (!isInitialized())
 		return;
 	auto mutex = lockModuleList();
@@ -221,7 +221,7 @@ void ModuleManager::onPostRender(C_MinecraftUIRenderContext* renderCtx) {
 	}
 }
 
-void ModuleManager::onSendPacket(C_Packet* packet) {
+void ModuleManager::onSendPacket(Packet* packet) {
 	if (!isInitialized())
 		return;
 	auto lock = lockModuleList();
@@ -247,7 +247,7 @@ int ModuleManager::getEnabledModuleCount() {
 	}
 	return i;
 }
-void ModuleManager::onMove(C_MoveInputHandler* hand) {
+void ModuleManager::onMove(MoveInputHandler* hand) {
 	if (!isInitialized())
 		return;
 	auto lock = lockModuleList();
@@ -266,4 +266,4 @@ void ModuleManager::onLevelRender() {
 	}
 }
 
-ModuleManager* moduleMgr = new ModuleManager(&g_Data);
+ModuleManager* moduleMgr = new ModuleManager(&Game);

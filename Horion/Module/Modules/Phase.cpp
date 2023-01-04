@@ -10,11 +10,11 @@ const char* Phase::getModuleName() {
 	return ("Phase");
 }
 
-void Phase::onTick(C_GameMode* gm) {
+void Phase::onTick(GameMode* gm) {
 	gm->player->aabb.upper.y = gm->player->aabb.lower.y;
 }
 
 void Phase::onDisable() {
-	if (g_Data.getLocalPlayer() != nullptr)
-		g_Data.getLocalPlayer()->aabb.upper.y += 1.8f;
+	if (Game.getLocalPlayer() != nullptr)
+		Game.getLocalPlayer()->aabb.upper.y += 1.8f;
 }

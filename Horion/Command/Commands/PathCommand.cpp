@@ -61,8 +61,8 @@ bool PathCommand::execute(std::vector<std::string> *args) {
 		nameOfPlayerLower = Utils::sanitize(nameOfPlayerLower);
 
 		Vec3 pos{};
-		auto playerFinder = [&](C_Entity* e, bool isNewList){
-			if(e == g_Data.getLocalPlayer())
+		auto playerFinder = [&](Entity* e, bool isNewList){
+			if(e == Game.getLocalPlayer())
 				return;
 			std::string name(e->getNameTag()->getText());
 			std::transform(name.begin(), name.end(), name.begin(), ::tolower);
@@ -72,7 +72,7 @@ bool PathCommand::execute(std::vector<std::string> *args) {
 
 			pos = e->eyePos0;
 		};
-		g_Data.forEachEntity(playerFinder);
+		Game.forEachEntity(playerFinder);
 
 		if(pos.iszero()){
 			clientMessageF("%s Player \"%s\" could not be found!", GOLD, nameOfPlayer.c_str());

@@ -195,7 +195,7 @@ bool IModule::allowAutoStart() {
 	return true;
 }
 
-void IModule::onTick(C_GameMode*) {
+void IModule::onTick(GameMode*) {
 }
 
 void IModule::onKeyUpdate(int key, bool isDown) {
@@ -213,16 +213,16 @@ void IModule::onEnable() {
 void IModule::onDisable() {
 }
 
-void IModule::onPreRender(C_MinecraftUIRenderContext* renderCtx) {
+void IModule::onPreRender(MinecraftUIRenderContext* renderCtx) {
 }
 
-void IModule::onPostRender(C_MinecraftUIRenderContext* renderCtx) {
+void IModule::onPostRender(MinecraftUIRenderContext* renderCtx) {
 }
 
-void IModule::onSendPacket(C_Packet*) {
+void IModule::onSendPacket(Packet*) {
 }
 
-void IModule::onWorldTick(C_GameMode*) {
+void IModule::onWorldTick(GameMode*) {
 }
 
 void IModule::onLoadConfig(void* confVoid) {
@@ -348,12 +348,12 @@ bool IModule::isEnabled() {
 const char* IModule::getTooltip() {
 	return this->tooltip;
 }
-void IModule::onAttack(C_Entity*) {
+void IModule::onAttack(Entity*) {
 }
 bool IModule::callWhenDisabled() {
 	return false;
 }
-void IModule::onMove(C_MoveInputHandler*) {
+void IModule::onMove(MoveInputHandler*) {
 }
 void IModule::onLevelRender() {
 }

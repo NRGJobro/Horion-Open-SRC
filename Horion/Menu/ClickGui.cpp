@@ -1,6 +1,5 @@
 #include "ClickGui.h"
 
-#include "../Scripting/ScriptManager.h"
 #include "../Module/Modules/ClickGuiMod.h"
 
 #include "../../Utils/Logger.h"
@@ -107,7 +106,7 @@ void ClickGui::renderLabel(const char* text) {
 }
 
 void ClickGui::renderTooltip(std::string* text) {
-	Vec2 windowSize = g_Data.getClientInstance()->getGuiData()->windowSize;
+	Vec2 windowSize = Game.getClientInstance()->getGuiData()->windowSize;
 	Vec2 currentTooltipPos = Vec2(5.f, windowSize.y - 15.f);
 	float textWidth = DrawUtils::getTextWidth(text, textSize);
 	Vec2 textPos = Vec2(
@@ -139,7 +138,7 @@ void ClickGui::renderCategory(Category category) {
 
 	// Reset Windows to pre-set positions to avoid confusion
 	if (resetStartPos && ourWindow->pos.x <= 0) {
-		float yot = g_Data.getGuiData()->windowSize.x;
+		float yot = Game.getGuiData()->windowSize.x;
 		ourWindow->pos.y = 4;
 		switch (category) {
 		case Category::COMBAT:
@@ -160,11 +159,8 @@ void ClickGui::renderCategory(Category category) {
 		case Category::MISC:
 			ourWindow->pos.x = yot / 7.f * 5.f;
 			break;
-		case Category::CUSTOM:
-			ourWindow->pos.x = yot / 7.f * 6.f;
-			break;
 		case Category::CLIENT:
-			ourWindow->pos.x = yot / 7.f * 7.f;
+			ourWindow->pos.x = yot / 7.f * 6.f;
 			break;
 		}
 	}
@@ -189,12 +185,12 @@ void ClickGui::renderCategory(Category category) {
 
 	const float xEnd = currentXOffset + windowSize->x + paddingRight;
 
-	Vec2 mousePos = *g_Data.getClientInstance()->getMousePos();
+	Vec2 mousePos = *Game.getClientInstance()->getMousePos();
 
 	// Convert mousePos to visual Pos
 	{
-		Vec2 windowSize = g_Data.getClientInstance()->getGuiData()->windowSize;
-		Vec2 windowSizeReal = g_Data.getClientInstance()->getGuiData()->windowSizeReal;
+		Vec2 windowSize = Game.getClientInstance()->getGuiData()->windowSize;
+		Vec2 windowSizeReal = Game.getClientInstance()->getGuiData()->windowSizeReal;
 
 		mousePos = mousePos.div(windowSizeReal);
 		mousePos = mousePos.mul(windowSize);
@@ -225,7 +221,7 @@ void ClickGui::renderCategory(Category category) {
 		}
 
 		bool overflowing = false;
-		const float cutoffHeight = roundf(g_Data.getGuiData()->heightGame * 0.75f) + 0.5f /*fix flickering related to rounding errors*/;
+		const float cutoffHeight = roundf(Game.getGuiData()->heightGame * 0.75f) + 0.5f /*fix flickering related to rounding errors*/;
 		int moduleIndex = 0;
 		for (auto& mod : moduleList) {
 			moduleIndex++;
@@ -238,7 +234,7 @@ void ClickGui::renderCategory(Category category) {
 					overflowing = true;
 					break;
 				}
-			}else if ((currentYOffset - ourWindow->pos.y) > cutoffHeight || currentYOffset > g_Data.getGuiData()->heightGame - 5) {
+			}else if ((currentYOffset - ourWindow->pos.y) > cutoffHeight || currentYOffset > Game.getGuiData()->heightGame - 5) {
 				overflowing = true;
 				break;
 			}
@@ -631,7 +627,7 @@ void ClickGui::renderCategory(Category category) {
 										DrawUtils::fillRectangle(rectPos, moduleColor, backgroundAlpha);
 									}
 								}
-								if ((currentYOffset - ourWindow->pos.y) > (g_Data.getGuiData()->heightGame * 0.75)) {
+								if ((currentYOffset - ourWindow->pos.y) > (Game.getGuiData()->heightGame * 0.75)) {
 									overflowing = true;
 									break;
 								}
@@ -835,7 +831,7 @@ void ClickGui::renderCategory(Category category) {
 
 	// anti idiot
 	{
-		Vec2 windowSize = g_Data.getClientInstance()->getGuiData()->windowSize;
+		Vec2 windowSize = Game.getClientInstance()->getGuiData()->windowSize;
 
 		if (ourWindow->pos.x + ourWindow->size.x > windowSize.x) {
 			ourWindow->pos.x = windowSize.x - ourWindow->size.x;
@@ -865,8 +861,8 @@ void ClickGui::render() {
 		DrawUtils::fillRectangle(Vec4(
 									 0,
 									 0,
-									 g_Data.getClientInstance()->getGuiData()->widthGame,
-									 g_Data.getClientInstance()->getGuiData()->heightGame),
+									 Game.getClientInstance()->getGuiData()->widthGame,
+									 Game.getClientInstance()->getGuiData()->heightGame),
 								 MC_Color(12, 12, 12), 0.2f);
 	}
 
@@ -879,9 +875,6 @@ void ClickGui::render() {
 	renderCategory(Category::MISC);
 	renderCategory(Category::CLIENT);
 
-	if (scriptMgr.getNumEnabledScripts() > 0)
-		renderCategory(Category::CUSTOM);
-
 	shouldToggleLeftClick = false;
 	shouldToggleRightClick = false;
 	resetStartPos = false;
@@ -893,7 +886,7 @@ void ClickGui::init() { initialised = true; }
 
 void ClickGui::onMouseClickUpdate(int key, bool isDown) {
 	static auto clickGuiMod = moduleMgr->getModule<ClickGuiMod>();
-	if (clickGuiMod->isEnabled() && g_Data.isInGame())
+	if (clickGuiMod->isEnabled() && Game.isInGame())
 	switch (key) {
 	case 1:  // Left Click
 		isLeftClickDown = isDown;
@@ -951,7 +944,7 @@ void ClickGui::onLoadConfig(void* confVoid) {
 		auto obj = conf->at("ClickGuiMenu");
 		if (obj.is_null())
 			return;
-		for (int i = 0; i <= (int)Category::CUSTOM /*last category*/; i++) {
+		for (int i = 0; i <= (int)Category::CLIENT /*last category*/; i++) {
 			auto catName = ClickGui::catToName((Category)i);
 			if (obj.contains(catName)) {
 				auto value = obj.at(catName);

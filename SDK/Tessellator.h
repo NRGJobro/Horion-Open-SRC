@@ -14,7 +14,7 @@ public:
 	void addPostTransformOffset(float x, float y, float z);
 };
 
-class C_Block;
+class Block;
 
 namespace mce {
 class Mesh;
@@ -22,5 +22,5 @@ class Mesh;
 
 class BlockTessellator {
 public:
-	mce::Mesh* getMeshForBlockInWorld(Tessellator * t, C_Block * block, Vec3i & pos);
+	mce::Mesh* getMeshForBlockInWorld(Tessellator * t, Block * block, Vec3i & pos);
 };

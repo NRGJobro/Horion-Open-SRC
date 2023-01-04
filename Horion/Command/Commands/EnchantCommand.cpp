@@ -71,26 +71,26 @@ bool EnchantCommand::execute(std::vector<std::string>* args) {
 	if (args->size() > 3)
 		isAuto = static_cast<bool>(assertInt(args->at(3)));
 
-	C_PlayerInventoryProxy* supplies = g_Data.getLocalPlayer()->getSupplies();
-	C_Inventory* inv = supplies->inventory;
-	C_InventoryTransactionManager* manager = g_Data.getLocalPlayer()->getTransactionManager();
+	PlayerInventoryProxy* supplies = Game.getLocalPlayer()->getSupplies();
+	Inventory* inv = supplies->inventory;
+	InventoryTransactionManager* manager = Game.getLocalPlayer()->getTransactionManager();
 
 	int selectedSlot = supplies->selectedHotbarSlot;
-	C_ItemStack* item = inv->getItemStack(selectedSlot);
+	ItemStack* item = inv->getItemStack(selectedSlot);
 
-	C_InventoryAction* firstAction = nullptr;
-	C_InventoryAction* secondAction = nullptr;
+	InventoryAction* firstAction = nullptr;
+	InventoryAction* secondAction = nullptr;
 
 	ItemDescriptor* desc = nullptr;
 	desc = new ItemDescriptor((*item->item)->itemId, 0); 
 
 	if (isAuto) {
 		{
-			firstAction = new C_InventoryAction(supplies->selectedHotbarSlot, desc, nullptr, item, nullptr, item->count);
-			if (strcmp(g_Data.getRakNetInstance()->serverIp.getText(), "mco.mineplex.com") == 0)
-				secondAction = new C_InventoryAction(0, nullptr, desc, nullptr, item, item->count, 32766, 100);
+			firstAction = new InventoryAction(supplies->selectedHotbarSlot, desc, nullptr, item, nullptr, item->count);
+			if (strcmp(Game.getRakNetInstance()->serverIp.getText(), "mco.mineplex.com") == 0)
+				secondAction = new InventoryAction(0, nullptr, desc, nullptr, item, item->count, 32766, 100);
 			else 
-				secondAction = new C_InventoryAction(0, nullptr, desc, nullptr, item, item->count, 507, 99999);
+				secondAction = new InventoryAction(0, nullptr, desc, nullptr, item, item->count, 507, 99999);
 			manager->addInventoryAction(*firstAction);
 			manager->addInventoryAction(*secondAction);
 			delete firstAction;
@@ -98,9 +98,9 @@ bool EnchantCommand::execute(std::vector<std::string>* args) {
 		}
 	}
 
-	using getEnchantsFromUserData_t = void(__fastcall*)(C_ItemStack*, void*);
+	using getEnchantsFromUserData_t = void(__fastcall*)(ItemStack*, void*);
 	using addEnchant_t = bool(__fastcall*)(void*, __int64);
-	using saveEnchantsToUserData_t = void(__fastcall*)(C_ItemStack*, void*);
+	using saveEnchantsToUserData_t = void(__fastcall*)(ItemStack*, void*);
 
 	static getEnchantsFromUserData_t getEnchantsFromUserData = reinterpret_cast<getEnchantsFromUserData_t>(FindSignature("48 89 5C 24 ? 55 56 57 48 81 EC ? ? ? ? 48 8B F2 48 8B D9 48 89 54 24 ? 33 FF 89 7C 24 ? E8 ? ? ? ? 84 C0"));
 	static addEnchant_t addEnchant = reinterpret_cast<addEnchant_t>(FindSignature("48 89 5C 24 ?? 48 89 54 24 ?? 57 48 83 EC ?? 45 0F"));
@@ -122,14 +122,14 @@ bool EnchantCommand::execute(std::vector<std::string>* args) {
 
 			if (addEnchant(EnchantData, enchantPair)) {  // Upper 4 bytes = level, lower 4 bytes = enchant type
 				saveEnchantsToUserData(item, EnchantData);
-				__int64 proxy = reinterpret_cast<__int64>(g_Data.getLocalPlayer()->getSupplies());
+				__int64 proxy = reinterpret_cast<__int64>(Game.getLocalPlayer()->getSupplies());
 				if (!*(uint8_t*)(proxy + 168))
-					(*(void(__fastcall**)(unsigned long long, unsigned long long, C_ItemStack*))(**(unsigned long long**)(proxy + 176) + 72i64))(
+					(*(void(__fastcall**)(unsigned long long, unsigned long long, ItemStack*))(**(unsigned long long**)(proxy + 176) + 72i64))(
 						*(unsigned long long*)(proxy + 176),
 						*(unsigned int*)(proxy + 16),
 						item);  // Player::selectItem
 
-				 //g_Data.getLocalPlayer()->sendInventory();
+				 //Game.getLocalPlayer()->sendInventory();
 			}
 			free(EnchantData);
 		}
@@ -145,14 +145,14 @@ bool EnchantCommand::execute(std::vector<std::string>* args) {
 
 		if (addEnchant(EnchantData, enchantPair)) {  // Upper 4 bytes = level, lower 4 bytes = enchant type
 			saveEnchantsToUserData(item, EnchantData);
-			__int64 proxy = reinterpret_cast<__int64>(g_Data.getLocalPlayer()->getSupplies());
+			__int64 proxy = reinterpret_cast<__int64>(Game.getLocalPlayer()->getSupplies());
 			if (!*(uint8_t*)(proxy + 168))
-				(*(void(__fastcall**)(unsigned long long, unsigned long long, C_ItemStack*))(**(unsigned long long**)(proxy + 176) + 72i64))(
+				(*(void(__fastcall**)(unsigned long long, unsigned long long, ItemStack*))(**(unsigned long long**)(proxy + 176) + 72i64))(
 					*(unsigned long long*)(proxy + 176),
 					*(unsigned int*)(proxy + 16),
 					item);  // Player::selectItem
 
-			//g_Data.getLocalPlayer()->sendInventory();
+			//Game.getLocalPlayer()->sendInventory();
 			clientMessageF("%sEnchant successful!", GREEN);
 		} else
 			clientMessageF("%sEnchant failed, try using a lower enchant-level", RED);
@@ -161,11 +161,11 @@ bool EnchantCommand::execute(std::vector<std::string>* args) {
 	}
 
 	if (isAuto) {
-		if (strcmp(g_Data.getRakNetInstance()->serverIp.getText(), "mco.mineplex.com") == 0)
-			firstAction = new C_InventoryAction(0, desc, nullptr, item, nullptr, item->count, 32766, 100);
+		if (strcmp(Game.getRakNetInstance()->serverIp.getText(), "mco.mineplex.com") == 0)
+			firstAction = new InventoryAction(0, desc, nullptr, item, nullptr, item->count, 32766, 100);
 		else
-			firstAction = new C_InventoryAction(0, desc, nullptr, item, nullptr, item->count, 507, 99999);
-		secondAction = new C_InventoryAction(supplies->selectedHotbarSlot, nullptr, desc, nullptr, item, item->count);
+			firstAction = new InventoryAction(0, desc, nullptr, item, nullptr, item->count, 507, 99999);
+		secondAction = new InventoryAction(supplies->selectedHotbarSlot, nullptr, desc, nullptr, item, item->count);
 		manager->addInventoryAction(*firstAction);
 		manager->addInventoryAction(*secondAction);
 		delete firstAction;

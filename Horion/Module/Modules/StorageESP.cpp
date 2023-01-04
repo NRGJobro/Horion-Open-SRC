@@ -12,14 +12,14 @@ const char* StorageESP::getModuleName() {
 	return ("StorageESP");
 }
 
-void StorageESP::onPreRender(C_MinecraftUIRenderContext* renderCtx) {
-	if (!g_Data.isInGame() || !GameData::canUseMoveKeys() || g_Data.getLocalPlayer() == nullptr)
+void StorageESP::onPreRender(MinecraftUIRenderContext* renderCtx) {
+	if (!Game.isInGame() || !GameData::canUseMoveKeys() || Game.getLocalPlayer() == nullptr)
 		return;
 
 	auto ourListLock = std::scoped_lock(this->listLock);
 
 	for (const auto& chest : bufferedChestList) {
-		auto storageID = g_Data.getLocalPlayer()->region->getBlock(chest.upper)->blockLegacy->blockId;
+		auto storageID = Game.getLocalPlayer()->region->getBlock(chest.upper)->blockLegacy->blockId;
 		float math = (float)fmax(0.3f, (float)fmin(1.f, 15));
 		DrawUtils::setColor(1.f, 1.f, 1.f, math);
 
@@ -28,7 +28,7 @@ void StorageESP::onPreRender(C_MinecraftUIRenderContext* renderCtx) {
 			blockPos.x -= 1;
 		if (blockPos.z < 0)
 			blockPos.z -= 1;
-		storageID = g_Data.getLocalPlayer()->region->getBlock(blockPos)->toLegacy()->blockId;
+		storageID = Game.getLocalPlayer()->region->getBlock(blockPos)->toLegacy()->blockId;
 
 		auto mathVect = Vec3(chest.upper.floor().add(Vec3(1.f, 1.f, 1.f)).sub(chest.upper));
 		mathVect.y = floor(mathVect.y);
@@ -40,14 +40,14 @@ void StorageESP::onPreRender(C_MinecraftUIRenderContext* renderCtx) {
 		if (storageID == 205) DrawUtils::setColor(.49f, .17f, .95f, math);                 // Undyed Shulker Box
 		if (storageID == 218) DrawUtils::setColor(.08f, .91f, .99f, math);                 // Shulker Box
 
-		DrawUtils::drawBox(chest.lower, chest.upper, (float)fmax(0.2f, 1 / (float)fmax(1, g_Data.getLocalPlayer()->eyePos0.dist(chest.lower))), true);  // Fancy math to give an illusion of good esp
+		DrawUtils::drawBox(chest.lower, chest.upper, (float)fmax(0.2f, 1 / (float)fmax(1, Game.getLocalPlayer()->eyePos0.dist(chest.lower))), true);  // Fancy math to give an illusion of good esp
 	}
 }
 
-void StorageESP::onTick(C_GameMode* gm) {
+void StorageESP::onTick(GameMode* gm) {
 	// Swap list
-	auto listLock = g_Data.lockChestList();
-	auto& chestList = g_Data.getChestList();
+	auto listLock = Game.lockChestList();
+	auto& chestList = Game.getChestList();
 	auto ourListLock = std::scoped_lock(this->listLock);
 
 	this->bufferedChestList.clear();

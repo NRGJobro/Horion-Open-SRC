@@ -11,12 +11,12 @@ const char* AirJump::getModuleName() {
 	return ("AirJump");
 }
 
-void AirJump::onTick(C_GameMode* gm) {
+void AirJump::onTick(GameMode* gm) {
 	if (legacyMode) {
 		gm->player->onGround = true;
 		return;
 	}
-	C_GameSettingsInput* input = g_Data.getClientInstance()->getGameSettingsInput();
+	GameSettingsInput* input = Game.getClientInstance()->getGameSettingsInput();
 
 	if (input == nullptr)
 		return;

@@ -11,8 +11,8 @@ const char* Bhop::getModuleName() {
 	return ("Bhop");
 }
 
-void Bhop::onMove(C_MoveInputHandler* input) {
-	auto player = g_Data.getLocalPlayer();
+void Bhop::onMove(MoveInputHandler* input) {
+	auto player = Game.getLocalPlayer();
 	if (player == nullptr) return;
 
 	if (player->isInLava() == 1 || player->isInWater() == 1) 

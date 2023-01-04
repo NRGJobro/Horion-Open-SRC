@@ -12,8 +12,8 @@ const char* Spider::getModuleName() {
 	return "Spider";
 }
 
-void Spider::onMove(C_MoveInputHandler* input) {
-	C_LocalPlayer* player = g_Data.getLocalPlayer();
+void Spider::onMove(MoveInputHandler* input) {
+	LocalPlayer* player = Game.getLocalPlayer();
 	if (player == nullptr)
 		return;
 
@@ -61,7 +61,7 @@ void Spider::onMove(C_MoveInputHandler* input) {
 			auto block = player->region->getBlock(side);
 			if (block == nullptr || block->blockLegacy == nullptr)
 				continue;
-			C_BlockLegacy* blockLegacy = block->toLegacy();
+			BlockLegacy* blockLegacy = block->toLegacy();
 			if (blockLegacy == nullptr)
 				continue;
 			AABB collisionVec;

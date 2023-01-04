@@ -64,16 +64,16 @@ void ImmediateGui::onMouseClickUpdate(int key, bool isDown) {
 }
 
 void ImmediateGui::startFrame() {
-	Vec2 windowSize = g_Data.getClientInstance()->getGuiData()->windowSize;
-	Vec2 windowSizeReal = g_Data.getClientInstance()->getGuiData()->windowSizeReal;
-	mousePos = *g_Data.getClientInstance()->getMousePos();
+	Vec2 windowSize = Game.getClientInstance()->getGuiData()->windowSize;
+	Vec2 windowSizeReal = Game.getClientInstance()->getGuiData()->windowSizeReal;
+	mousePos = *Game.getClientInstance()->getMousePos();
 	mousePos = mousePos.div(windowSizeReal);
 	mousePos = mousePos.mul(windowSize);
 
 	leftMb.update();
 	rightMb.update();
 
-	if (g_Data.getClientInstance()->getMouseGrabbed()) {
+	if (Game.getClientInstance()->getMouseGrabbed()) {
 		leftMb.isClicked = false;
 		rightMb.isClicked = false;
 

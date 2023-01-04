@@ -1,8 +1,8 @@
 #pragma once
 
 #include "../Memory/GameData.h"
-#include "../SDK/CClientInstance.h"
-#include "../SDK/CMinecraftUIRenderContext.h"
+#include "../SDK/ClientInstance.h"
+#include "../SDK/MinecraftUIRenderContext.h"
 #include "../SDK/Tessellator.h"
 #include "../Utils/HMath.h"
 #include "../Utils/Target.h"
@@ -17,7 +17,7 @@ enum class Fonts { DEFAULT,
 using mce__VertexFormat__disableHalfFloats_t = void(__fastcall*)(__int64, int, int);
 using Tessellator__initializeFormat_t = void(__fastcall*)(__int64, __int64);
 
-extern C_MinecraftUIRenderContext* renderCtx;
+extern MinecraftUIRenderContext* renderCtx;
 extern mce__VertexFormat__disableHalfFloats_t mce__VertexFormat__disableHalfFloats;
 extern Tessellator__initializeFormat_t Tessellator__initializeFormat;
 
@@ -85,12 +85,12 @@ class MatrixStack;
 
 class DrawUtils {
 public:
-	static void setCtx(C_MinecraftUIRenderContext* ctx, C_GuiData* guiData);
+	static void setCtx(MinecraftUIRenderContext* ctx, GuiData* guiData);
 	static void setGameRenderContext(__int64 ctx);
 	static void flush();
 	static void setColor(float r, float g, float b, float a);  // rgba, values from 0 to 1
 	static inline void tess__begin(Tessellator* tesselator, int vertexFormat = 3, int numVerticesReserved = 0);
-	static C_Font* getFont(Fonts font);
+	static Font* getFont(Fonts font);
 	static Tessellator* get3dTessellator();
 	static __int64 getScreenContext();
 	static MatrixStack* getMatrixStack();
@@ -125,10 +125,10 @@ public:
 
 	static void drawText(const Vec2& pos, std::string* text, const MC_Color& color, float textSize = 1, float alpha = 1, Fonts font = Fonts::SMOOTH);
 	static void drawBox(const Vec3& lower, const Vec3& upper, float lineWidth, bool outline = false);
-	static void drawEntityBox(C_Entity* ent, float lineWidth);
-	static void draw2D(C_Entity* ent, float lineWidth);
-	static void drawNameTags(C_Entity* ent, float textSize, bool drawHealth = false, bool useUnicodeFont = false);
-	static void drawItem(C_ItemStack* item, const Vec2& ItemPos, float opacity, float scale, bool isEnchanted);
+	static void drawEntityBox(Entity* ent, float lineWidth);
+	static void draw2D(Entity* ent, float lineWidth);
+	static void drawNameTags(Entity* ent, float textSize, bool drawHealth = false, bool useUnicodeFont = false);
+	static void drawItem(ItemStack* item, const Vec2& ItemPos, float opacity, float scale, bool isEnchanted);
 	static float getLerpTime();
 	static Vec3 getOrigin();
 

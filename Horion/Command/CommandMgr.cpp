@@ -1,4 +1,5 @@
 #include "CommandMgr.h"
+#include "../../Utils/Logger.h"
 
 CommandMgr::CommandMgr(GameData* gm) {
 	gameData = gm;
@@ -45,8 +46,6 @@ void CommandMgr::initCommands() {
 	commandList.push_back(new XpCommand());
 	commandList.push_back(new CommandBlockExploitCommand());
 	commandList.push_back(new NameSpoofCommand());
-	commandList.push_back(new ExecuteCommand());
-	commandList.push_back(new ScriptCommand());
 	commandList.push_back(new PathCommand());
 
 #ifdef _DEBUG
@@ -84,17 +83,17 @@ void CommandMgr::execute(char* message) {
 				if (*it == cmd) {
 					try {
 						if (!c->execute(&args))
-							g_Data.getClientInstance()->getGuiData()->displayClientMessageF("%s%sUsage: %s%c%s %s", RED, BOLD, RESET, cmdMgr->prefix, c->getCommand(), c->getUsage(cmd.c_str()));
+							Game.getClientInstance()->getGuiData()->displayClientMessageF("%s%sUsage: %s%c%s %s", RED, BOLD, RESET, cmdMgr->prefix, c->getCommand(), c->getUsage(cmd.c_str()));
 					} catch (...) {
-						g_Data.getClientInstance()->getGuiData()->displayClientMessageF("%s%sUsage: %s%c%s %s", RED, BOLD, RESET, cmdMgr->prefix, c->getCommand(), c->getUsage(cmd.c_str()));
+						Game.getClientInstance()->getGuiData()->displayClientMessageF("%s%sUsage: %s%c%s %s", RED, BOLD, RESET, cmdMgr->prefix, c->getCommand(), c->getUsage(cmd.c_str()));
 					}
 					return;
 				}
 			}
 		}
 
-		g_Data.getClientInstance()->getGuiData()->displayClientMessageF("[%sHorion%s] %sCommand '%s' could not be found!", GOLD, WHITE, RED, cmd.c_str());
+		Game.getClientInstance()->getGuiData()->displayClientMessageF("[%sHorion%s] %sCommand '%s' could not be found!", GOLD, WHITE, RED, cmd.c_str());
 	}
 }
 
-CommandMgr* cmdMgr = new CommandMgr(&g_Data);
+CommandMgr* cmdMgr = new CommandMgr(&Game);

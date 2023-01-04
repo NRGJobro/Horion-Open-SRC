@@ -4,17 +4,17 @@
 
 #include "../Horion/Module/ModuleManager.h"
 
-C_LocalPlayer** localPlayer;
+LocalPlayer** localPlayer;
 
-void Target::init(C_LocalPlayer** cl) {
+void Target::init(LocalPlayer** cl) {
 	localPlayer = cl;
 }
 
-bool Target::isValidTarget(C_Entity* ent) {
+bool Target::isValidTarget(Entity* ent) {
 	if (ent == nullptr)
 		return false;
 
-	auto localPlayer = g_Data.getLocalPlayer();
+	auto localPlayer = Game.getLocalPlayer();
 
 	if (ent == localPlayer)
 		return false;

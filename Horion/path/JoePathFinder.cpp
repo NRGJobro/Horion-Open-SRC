@@ -10,7 +10,7 @@
 #include "../../Memory/GameData.h"
 #include <set>
 
-JoePathFinder::JoePathFinder(Vec3i start, C_BlockSource* reg, std::shared_ptr<JoeGoal> goal) : startPos(start), region(reg), goal(goal) {
+JoePathFinder::JoePathFinder(Vec3i start, BlockSource* reg, std::shared_ptr<JoeGoal> goal) : startPos(start), region(reg), goal(goal) {
 }
 
 struct NodeRef {
@@ -63,7 +63,7 @@ NodeRef findNode(std::unordered_map<unsigned __int64, Node>& allNodes, Vec3i& po
 	return NodeRef(posHash);
 }
 
-__forceinline bool isDangerous(const Vec3i& pos, C_BlockSource* reg, bool allowWater){
+__forceinline bool isDangerous(const Vec3i& pos, BlockSource* reg, bool allowWater){
 	auto obs1 = reg->getBlock(pos)->toLegacy();
 	if(obs1->material->isSuperHot)
 		return true;
@@ -96,11 +96,11 @@ __forceinline bool isDangerous(const Vec3i& pos, C_BlockSource* reg, bool allowW
 	}
 	return false;
 }
-__forceinline bool isDangerousPlayer(const Vec3i& pos, C_BlockSource* reg, bool allowWater = false){
+__forceinline bool isDangerousPlayer(const Vec3i& pos, BlockSource* reg, bool allowWater = false){
 	return isDangerous(pos, reg, allowWater) || isDangerous(pos.add(0, 1, 0), reg, allowWater);
 }
 
-__forceinline bool canStandOn(const Vec3i& pos, C_BlockSource* reg, bool inWater = false){
+__forceinline bool canStandOn(const Vec3i& pos, BlockSource* reg, bool inWater = false){
 	auto block = reg->getBlock(pos);
 	auto standOn = block->toLegacy();
 	bool validWater = inWater && standOn->hasWater(reg, pos);
@@ -135,7 +135,7 @@ __forceinline bool canStandOn(const Vec3i& pos, C_BlockSource* reg, bool inWater
 		return false;
 	return fabsf(diff.x) > 0.85f && fabsf(diff.z) > 0.85f;
 }
-__forceinline bool isObstructed(const Vec3i& pos, C_BlockSource* reg, bool allowWater = false){
+__forceinline bool isObstructed(const Vec3i& pos, BlockSource* reg, bool allowWater = false){
 	auto block = reg->getBlock(pos);
 	auto obs1 = block->toLegacy();
 	if(obs1->material->isBlockingMotion)
@@ -149,11 +149,11 @@ __forceinline bool isObstructed(const Vec3i& pos, C_BlockSource* reg, bool allow
 
 	return isDangerous(pos, reg, allowWater);
 }
-__forceinline bool isObstructedPlayer(const Vec3i& pos, C_BlockSource* reg, bool allowWater = false){
+__forceinline bool isObstructedPlayer(const Vec3i& pos, BlockSource* reg, bool allowWater = false){
 	return isObstructed(pos, reg, allowWater) || isObstructed(pos.add(0, 1, 0), reg);
 }
 
-std::vector<Edge> findEdges(std::unordered_map<unsigned __int64, Node>& allNodes, const Node& startNode, C_BlockSource* reg, NodeRef startNodeRef){
+std::vector<Edge> findEdges(std::unordered_map<unsigned __int64, Node>& allNodes, const Node& startNode, BlockSource* reg, NodeRef startNodeRef){
 	std::vector<Edge> edges;
 	auto startBlock = reg->getBlock(startNode.pos)->toLegacy();
 	bool isInWater = startBlock->hasWater(reg, startNode.pos);

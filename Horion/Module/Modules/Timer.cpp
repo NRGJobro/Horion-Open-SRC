@@ -11,10 +11,10 @@ const char* Timer::getModuleName() {
 	return ("Timer");
 }
 
-void Timer::onTick(C_GameMode* gm) {
-	g_Data.getClientInstance()->minecraft->setTimerSpeed(timer);
+void Timer::onTick(GameMode* gm) {
+	Game.getClientInstance()->minecraft->setTimerSpeed(timer);
 }
 
 void Timer::onDisable() {
-	g_Data.getClientInstance()->minecraft->setTimerSpeed(20.f);
+	Game.getClientInstance()->minecraft->setTimerSpeed(20.f);
 }

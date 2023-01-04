@@ -119,15 +119,15 @@ public:
 	void disable();
 	void onLoadConfig(void* conf);
 	void onSaveConfig(void* conf);
-	void onTick(C_GameMode* gameMode);
-	void onAttack(C_Entity* attackedEnt);
-	void onWorldTick(C_GameMode* gameMode);
+	void onTick(GameMode* gameMode);
+	void onAttack(Entity* attackedEnt);
+	void onWorldTick(GameMode* gameMode);
 	void onKeyUpdate(int key, bool isDown);
-	void onPreRender(C_MinecraftUIRenderContext* renderCtx);
-	void onPostRender(C_MinecraftUIRenderContext* renderCtx);
+	void onPreRender(MinecraftUIRenderContext* renderCtx);
+	void onPostRender(MinecraftUIRenderContext* renderCtx);
 	void onLevelRender();
-	void onMove(C_MoveInputHandler* handler);
-	void onSendPacket(C_Packet*);
+	void onMove(MoveInputHandler* handler);
+	void onSendPacket(Packet*);
 
 	std::shared_lock<std::shared_mutex> lockModuleList() { return std::shared_lock(moduleListMutex); }
 	std::unique_lock<std::shared_mutex> lockModuleListExclusive() { return std::unique_lock(moduleListMutex); }

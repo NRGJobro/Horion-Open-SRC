@@ -14,6 +14,6 @@ public:
 
 	// Inherited via IModule
 	virtual const char* getModuleName() override;
-	virtual void onTick(C_GameMode* gm) override;
-	virtual void onSendPacket(C_Packet* p) override;
+	virtual void onTick(GameMode* gm) override;
+	virtual void onSendPacket(Packet* p) override;
 };

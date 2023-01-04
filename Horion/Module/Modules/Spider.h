@@ -13,5 +13,5 @@ public:
 
 	// Inherited via IModule
 	virtual const char* getModuleName() override;
-	virtual void onMove(C_MoveInputHandler* input) override;
+	virtual void onMove(MoveInputHandler* input) override;
 };

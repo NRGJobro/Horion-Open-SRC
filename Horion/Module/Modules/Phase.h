@@ -8,6 +8,6 @@ public:
 	~Phase();
 
 	virtual const char* getModuleName() override;
-	virtual void onTick(C_GameMode* gm) override;
+	virtual void onTick(GameMode* gm) override;
 	virtual void onDisable() override;
 };

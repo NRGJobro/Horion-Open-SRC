@@ -15,7 +15,7 @@ IMCCommand::~IMCCommand() {
 void IMCCommand::clientMessageF(const char* fmt, ...) {
 	va_list arg;
 	va_start(arg, fmt);
-	g_Data.getGuiData()->displayClientMessageVA(fmt, arg);
+	Game.getGuiData()->displayClientMessageVA(fmt, arg);
 	va_end(arg);
 }
 void IMCCommand::registerAlias(const char* str) {

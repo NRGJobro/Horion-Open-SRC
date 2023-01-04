@@ -16,11 +16,11 @@ const char* Glide::getModuleName() {
 		return ("Glide");
 }
 
-void Glide::onTick(C_GameMode* gm) {
+void Glide::onTick(GameMode* gm) {
 	glideModEffective = glideMod;
-	C_GameSettingsInput* input = g_Data.getClientInstance()->getGameSettingsInput();
+	GameSettingsInput* input = Game.getClientInstance()->getGameSettingsInput();
 
-	if (g_Data.canUseMoveKeys()) {
+	if (Game.canUseMoveKeys()) {
 		if (GameData::isKeyDown(*input->spaceBarKey))
 			glideModEffective += 0.2f;
 		if (GameData::isKeyDown(*input->sneakKey))

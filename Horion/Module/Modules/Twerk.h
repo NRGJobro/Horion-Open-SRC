@@ -13,5 +13,5 @@ private:
 	float delay = 1;
 	inline float& getDelay() { return delay; };
 	virtual const char* getModuleName() override;
-	void onTick(C_GameMode* gm);
+	void onTick(GameMode* gm);
 };

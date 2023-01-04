@@ -42,9 +42,9 @@ bool SayCommand::execute(std::vector<std::string>* args) {
 	}
 	C_TextPacket textPacket;
 	textPacket.message.setText(parse(os.str()));
-	textPacket.sourceName.setText(g_Data.getLocalPlayer()->getNameTag()->getText());
-	textPacket.xboxUserId = std::to_string(g_Data.getLocalPlayer()->getUserId());
-	g_Data.getClientInstance()->loopbackPacketSender->sendToServer(&textPacket);
+	textPacket.sourceName.setText(Game.getLocalPlayer()->getNameTag()->getText());
+	textPacket.xboxUserId = std::to_string(Game.getLocalPlayer()->getUserId());
+	Game.getClientInstance()->loopbackPacketSender->sendToServer(&textPacket);
 
 	clientMessageF("[%sHorion%s] %sSent Message", GOLD, WHITE, GREEN);
 	return true;

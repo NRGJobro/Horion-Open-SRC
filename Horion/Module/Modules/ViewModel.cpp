@@ -22,8 +22,8 @@ const char* ViewModel::getModuleName() {
 	return "ViewModel";
 }
 
-void ViewModel::onTick(C_GameMode* gm) {
-	if (g_Data.getLocalPlayer() == nullptr)
+void ViewModel::onTick(GameMode* gm) {
+	if (Game.getLocalPlayer() == nullptr)
 		return;
 
 	if (Reset) {

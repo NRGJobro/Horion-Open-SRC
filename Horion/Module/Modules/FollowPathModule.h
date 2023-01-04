@@ -19,10 +19,10 @@ public:
 	FollowPathModule();
 
 	const char *getModuleName() override;
-	void startSearch(Vec3i startNode, C_BlockSource* region, float searchTimeout, std::function<void(bool, JoePath)> callback);
-	void onTick(C_GameMode *mode) override;
+	void startSearch(Vec3i startNode, BlockSource* region, float searchTimeout, std::function<void(bool, JoePath)> callback);
+	void onTick(GameMode *mode) override;
 	void onEnable() override;
 	void onDisable() override;
 	void onLevelRender() override;
-	void onMove(C_MoveInputHandler *handler) override;
+	void onMove(MoveInputHandler *handler) override;
 };

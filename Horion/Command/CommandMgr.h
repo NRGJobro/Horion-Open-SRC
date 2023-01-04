@@ -31,10 +31,8 @@
 #include "Commands/NameSpoofCommand.h"
 #include "Commands/SetPrefixCommand.h"
 #include "Commands/NbtCommand.h"
-#include "Commands/ExecuteCommand.h"
 #include "Commands/WaypointCommand.h"
 #include"Commands/XpCommand.h"
-#include "Commands/ScriptCommand.h"
 #include "Commands/PathCommand.h"
 
 #ifdef _DEBUG

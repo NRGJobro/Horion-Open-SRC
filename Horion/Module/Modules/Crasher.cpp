@@ -11,16 +11,16 @@ const char* Crasher::getModuleName() {
 }
 
 void Crasher::onEnable() {
-	if (g_Data.getLocalPlayer() == nullptr)
+	if (Game.getLocalPlayer() == nullptr)
 		setEnabled(false);
 }
 
-void Crasher::onTick(C_GameMode* gm) {
-	if (g_Data.getLocalPlayer() == nullptr)
+void Crasher::onTick(GameMode* gm) {
+	if (Game.getLocalPlayer() == nullptr)
 		setEnabled(false);
 }
 
-void Crasher::onSendPacket(C_Packet* packet) {
+void Crasher::onSendPacket(Packet* packet) {
 	if (packet->isInstanceOf<PlayerAuthInputPacket>()) {
 		PlayerAuthInputPacket* InputPacket = reinterpret_cast<PlayerAuthInputPacket*>(packet);
 		InputPacket->pos.x = static_cast<float>(0xFFFFFFFF);

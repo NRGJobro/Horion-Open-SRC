@@ -8,7 +8,7 @@ WaypointCommand::~WaypointCommand() {
 }
 
 bool WaypointCommand::execute(std::vector<std::string>* args) {
-	C_LocalPlayer* player = g_Data.getLocalPlayer();
+	LocalPlayer* player = Game.getLocalPlayer();
 	assertTrue(player != nullptr);
 	assertTrue(args->size() >= 2);
 

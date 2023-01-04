@@ -8,7 +8,7 @@ private:
 
 	std::vector<int> findStackableItems();
 	std::vector<int> findUselessItems();
-	bool isLastItem(C_Item* item);
+	bool isLastItem(Item* item);
 
 	bool keepTools = true;
 	bool keepArmor = true;
@@ -19,11 +19,11 @@ private:
 	bool autoSort = false;
 
 public:
-	bool stackIsUseful(C_ItemStack* itemStack);
+	bool stackIsUseful(ItemStack* itemStack);
 	InventoryCleaner();
 	~InventoryCleaner();
 
 	// Inherited via IModule
 	virtual const char* getModuleName() override;
-	virtual void onTick(C_GameMode* gm) override;
+	virtual void onTick(GameMode* gm) override;
 };

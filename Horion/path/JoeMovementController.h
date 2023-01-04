@@ -1,8 +1,8 @@
 #pragma once
 
 #include "JoePath.h"
-#include "../../SDK/CEntity.h"
-#include "../../SDK/CMoveInputHandler.h"
+#include "../../SDK/Entity.h"
+#include "../../SDK/MoveInputHandler.h"
 
 class JoeMovementController {
 private:
@@ -23,7 +23,7 @@ public:
 
 	JoeMovementController(std::shared_ptr<JoePath> path);
 
-	void step(C_LocalPlayer* player, C_MoveInputHandler* movementHandler);
+	void step(LocalPlayer* player, MoveInputHandler* movementHandler);
 	bool isDone(){
 		return stateInfo.currentPathSegment >= currentPath->getNumSegments();
 	}

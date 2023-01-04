@@ -39,12 +39,12 @@ void recalculateScale() {
 	effectiveZoom = zoom * (size / 100.f);
 	cent = size / 2.f;
 	pxSize = pixelSize / 2.f * effectiveZoom;
-	topPad = g_Data.getGuiData()->heightGame / 2.f;
+	topPad = Game.getGuiData()->heightGame / 2.f;
 	
 }
 
-void renderEntity(C_Entity* currentEntity, bool isRegularEntity) {
-	C_LocalPlayer* player = g_Data.getLocalPlayer();
+void renderEntity(Entity* currentEntity, bool isRegularEntity) {
+	LocalPlayer* player = Game.getLocalPlayer();
 	if (currentEntity == nullptr)
 		return;
 
@@ -77,8 +77,8 @@ void renderEntity(C_Entity* currentEntity, bool isRegularEntity) {
 	}
 }
 
-void Radar::onPreRender(C_MinecraftUIRenderContext* renderCtx) {
-	C_LocalPlayer* player = g_Data.getLocalPlayer();
+void Radar::onPreRender(MinecraftUIRenderContext* renderCtx) {
+	LocalPlayer* player = Game.getLocalPlayer();
 
 	if (player == nullptr) return;
 
@@ -94,7 +94,7 @@ void Radar::onPreRender(C_MinecraftUIRenderContext* renderCtx) {
 
 	DrawUtils::fillRectangle(Vec4(0, topPad - cent, (float)size, topPad + cent), MC_Color(0, 0, 0), bgOpacity);
 
-	auto pPos = g_Data.getClientInstance()->levelRenderer->getOrigin();
+	auto pPos = Game.getClientInstance()->levelRenderer->getOrigin();
 	playerPos = pPos;
 
 	angle = (180.0f - player->yaw) + 180.0f;
@@ -213,7 +213,7 @@ void Radar::onPreRender(C_MinecraftUIRenderContext* renderCtx) {
 		}
 	}
 
-	g_Data.forEachEntity(renderEntity);
+	Game.forEachEntity(renderEntity);
 
 	const float pxSize = pixelSize * 0.75f * effectiveZoom;
 	DrawUtils::setColor(1, 1, 1, pxOpacity);

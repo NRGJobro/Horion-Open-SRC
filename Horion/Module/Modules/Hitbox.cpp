@@ -12,10 +12,10 @@ const char* Hitbox::getModuleName() {
 	return ("Hitbox");
 }
 
-void findTarget(C_Entity* currentEntity, bool isRegularEntitie) {
+void findTarget(Entity* currentEntity, bool isRegularEntitie) {
 	static auto hitboxMod = moduleMgr->getModule<Hitbox>();
 	
-	if (currentEntity == g_Data.getLocalPlayer())  // Skip Local player
+	if (currentEntity == Game.getLocalPlayer())  // Skip Local player
 		return;
 
 	if (currentEntity == 0)
@@ -27,7 +27,7 @@ void findTarget(C_Entity* currentEntity, bool isRegularEntitie) {
 	if (!Target::isValidTarget(currentEntity))
 		return;
 
-	float dist = (*currentEntity->getPos()).dist(*g_Data.getLocalPlayer()->getPos());
+	float dist = (*currentEntity->getPos()).dist(*Game.getLocalPlayer()->getPos());
 
 	if (dist < hitboxMod->range) {
 		currentEntity->width = hitboxMod->width;
@@ -36,6 +36,6 @@ void findTarget(C_Entity* currentEntity, bool isRegularEntitie) {
 	
 }
 
-void Hitbox::onTick(C_GameMode* gm) {
-	g_Data.forEachEntity(findTarget);
+void Hitbox::onTick(GameMode* gm) {
+	Game.forEachEntity(findTarget);
 }

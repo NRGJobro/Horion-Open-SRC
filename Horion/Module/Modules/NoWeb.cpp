@@ -10,6 +10,6 @@ const char* NoWeb::getModuleName() {
 	return ("NoWeb");
 }
 
-void NoWeb::onTick(C_GameMode* gm) {
+void NoWeb::onTick(GameMode* gm) {
 	gm->player->slowdownFactor = {0, 0, 0};
 }

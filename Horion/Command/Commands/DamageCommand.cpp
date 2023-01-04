@@ -10,7 +10,7 @@ DamageCommand::~DamageCommand() {
 }
 
 bool DamageCommand::execute(std::vector<std::string>* args) {
-	assertTrue(g_Data.getLocalPlayer() != nullptr);
+	assertTrue(Game.getLocalPlayer() != nullptr);
 	float amount = assertFloat(args->at(1));
 	if (amount < 1.f) {
 		clientMessageF("%sPlease put a number bigger than 0", RED);
@@ -20,10 +20,10 @@ bool DamageCommand::execute(std::vector<std::string>* args) {
 
 	if (noFallMod->isEnabled()) {
 		noFallMod->setEnabled(false);
-		g_Data.getLocalPlayer()->causeFallDamage(amount + 3.f);
+		Game.getLocalPlayer()->causeFallDamage(amount + 3.f);
 		noFallMod->setEnabled(true);
 	} else {
-		g_Data.getLocalPlayer()->causeFallDamage(amount + 3.f);
+		Game.getLocalPlayer()->causeFallDamage(amount + 3.f);
 	}
 	return true;
 }

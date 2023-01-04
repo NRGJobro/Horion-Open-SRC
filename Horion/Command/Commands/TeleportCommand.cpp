@@ -9,7 +9,7 @@ TeleportCommand::~TeleportCommand() {
 }
 
 bool TeleportCommand::execute(std::vector<std::string>* args) {
-	assertTrue(g_Data.getLocalPlayer() != nullptr);
+	assertTrue(Game.getLocalPlayer() != nullptr);
 	assertTrue(args->size() >= 4);
 
 	Vec3 pos;
@@ -17,7 +17,7 @@ bool TeleportCommand::execute(std::vector<std::string>* args) {
 	pos.y = assertFloat(args->at(2)) + 1;
 	pos.z = assertFloat(args->at(3));
 
-	g_Data.getLocalPlayer()->setPos(pos);
+	Game.getLocalPlayer()->setPos(pos);
 	clientMessageF("%sTeleported!", GREEN);
 	return true;
 }

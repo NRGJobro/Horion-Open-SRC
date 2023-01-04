@@ -12,16 +12,16 @@ const char* Nbt::getModuleName() {
 	return ("Nbt");
 }
 
-void Nbt::onTick(C_GameMode* gm) {
+void Nbt::onTick(GameMode* gm) {
 	if (!GameData::canUseMoveKeys()) {
 		return;
 	}
-	Level* level = g_Data.getLocalPlayer()->level;
+	Level* level = Game.getLocalPlayer()->level;
 	
 	if (GameData::isRightClickDown()) {  // && Utils::getClipboardText() != lastCopy) {
 		if (level->getEntity() != nullptr) {
 
-			if (!(g_Data.getRakNetInstance()->serverIp.getTextLength() < 1))
+			if (!(Game.getRakNetInstance()->serverIp.getTextLength() < 1))
 				return;
 			std::unique_ptr<CompoundTag> tag = std::make_unique<CompoundTag>();
 			level->getEntity()->save(tag.get());
@@ -32,8 +32,8 @@ void Nbt::onTick(C_GameMode* gm) {
 				return;
 			lastCopy = str;
 			Utils::setClipboardText(lastCopy);
-			g_Data.getGuiData()->displayClientMessageF("%s%s", GREEN, "CompoundTag copied:");
-			g_Data.getClientInstance()->getGuiData()->displayClientMessage(&str);
+			Game.getGuiData()->displayClientMessageF("%s%s", GREEN, "CompoundTag copied:");
+			Game.getClientInstance()->getGuiData()->displayClientMessage(&str);
 		}
 	}
 }

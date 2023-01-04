@@ -14,14 +14,14 @@ const char* Spammer::getModuleName() {
 	return ("Spammer");
 }
 
-void Spammer::onTick(C_GameMode* gm) {
+void Spammer::onTick(GameMode* gm) {
 	Odelay++;
 	if (Odelay > delay * 20) {
 		C_TextPacket textPacket;
 		textPacket.message.setText(bypass ? (message + " | " + Utils::randomString(length)) : message);
-		textPacket.sourceName.setText(g_Data.getLocalPlayer()->getNameTag()->getText());
-		textPacket.xboxUserId = std::to_string(g_Data.getLocalPlayer()->getUserId());
-		g_Data.getClientInstance()->loopbackPacketSender->sendToServer(&textPacket);
+		textPacket.sourceName.setText(Game.getLocalPlayer()->getNameTag()->getText());
+		textPacket.xboxUserId = std::to_string(Game.getLocalPlayer()->getUserId());
+		Game.getClientInstance()->loopbackPacketSender->sendToServer(&textPacket);
 		Odelay = 0;
 	}
 }

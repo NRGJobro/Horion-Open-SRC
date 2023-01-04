@@ -64,7 +64,7 @@ void JoeSegment::setValidPositions(const std::vector<Vec3i>& validPositions) {
 void JoeSegment::init() {
 	std::vector<Vec3i> positions = {start, end};
 
-	auto player = g_Data.getLocalPlayer();
+	auto player = Game.getLocalPlayer();
 	auto reg = player->region;
 
 	switch(segmentType){

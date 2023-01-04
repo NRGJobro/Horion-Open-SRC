@@ -15,10 +15,10 @@ const char* AutoClicker::getModuleName() {
 	return ("AutoClicker");
 }
 
-void AutoClicker::onTick(C_GameMode* gm) {
+void AutoClicker::onTick(GameMode* gm) {
 	if ((GameData::isLeftClickDown() || !hold) && GameData::canUseMoveKeys()) {
-		C_LocalPlayer* localPlayer = g_Data.getLocalPlayer();
-		Level* level = g_Data.getLocalPlayer()->level;
+		LocalPlayer* localPlayer = Game.getLocalPlayer();
+		Level* level = Game.getLocalPlayer()->level;
 		Odelay++;
 
 		if (Odelay >= delay) {
@@ -26,7 +26,7 @@ void AutoClicker::onTick(C_GameMode* gm) {
 			if (weapons && selectedItem->getAttackingDamageWithEnchants() < 1)
 				return;
 
-			g_Data.leftclickCount++;
+			Game.leftclickCount++;
 
 			localPlayer->swingArm();
 
@@ -45,10 +45,10 @@ void AutoClicker::onTick(C_GameMode* gm) {
 
 	if (rightclick) {
 		if ((GameData::isRightClickDown() || !hold) && GameData::canUseMoveKeys()) {
-			Level* level = g_Data.getLocalPlayer()->level;
+			Level* level = Game.getLocalPlayer()->level;
 			Odelay++;
 			if (Odelay >= delay) {
-				g_Data.rightclickCount++;
+				Game.rightclickCount++;
 				bool idk = true;
 				gm->buildBlock(new Vec3i(level->block), level->blockSide, idk);
 				Odelay = 0;

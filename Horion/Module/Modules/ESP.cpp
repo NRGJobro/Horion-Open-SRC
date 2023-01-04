@@ -17,10 +17,10 @@ const char* ESP::getModuleName() {
 
 static float rcolors[4];
 
-void doRenderStuff(C_Entity* ent, bool isRegularEntitie) {
+void doRenderStuff(Entity* ent, bool isRegularEntitie) {
 	static auto espMod = moduleMgr->getModule<ESP>();
 	
-	C_LocalPlayer* localPlayer = g_Data.getLocalPlayer();
+	LocalPlayer* localPlayer = Game.getLocalPlayer();
 	if (ent == localPlayer)
 		return;
 	if (ent->timeSinceDeath > 0)
@@ -56,8 +56,8 @@ void doRenderStuff(C_Entity* ent, bool isRegularEntitie) {
 	
 }
 
-void ESP::onPreRender(C_MinecraftUIRenderContext* renderCtx) {
-	C_LocalPlayer* localPlayer = g_Data.getLocalPlayer();
+void ESP::onPreRender(MinecraftUIRenderContext* renderCtx) {
+	LocalPlayer* localPlayer = Game.getLocalPlayer();
 
 	if (localPlayer != nullptr && GameData::canUseMoveKeys()) {
 		// Rainbow colors
@@ -72,6 +72,6 @@ void ESP::onPreRender(C_MinecraftUIRenderContext* renderCtx) {
 			Utils::ApplyRainbow(rcolors, 0.0015f);
 		}
 
-		g_Data.forEachEntity(doRenderStuff);
+		Game.forEachEntity(doRenderStuff);
 	}
 }

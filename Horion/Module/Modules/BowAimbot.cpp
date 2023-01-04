@@ -3,7 +3,7 @@
 #include "../../../Utils/Target.h"
 #include "../../DrawUtils.h"
 
-std::vector<C_Entity*> targetList;
+std::vector<Entity*> targetList;
 
 BowAimbot::BowAimbot() : IModule(0, Category::COMBAT, "Aimbot, but for bows.") {
 	registerBoolSetting("Silent", &silent, silent);
@@ -15,8 +15,8 @@ BowAimbot::~BowAimbot() {
 }
 
 struct CompareTargetEnArray {
-	bool operator()(C_Entity* lhs, C_Entity* rhs) {
-		C_LocalPlayer* localPlayer = g_Data.getLocalPlayer();
+	bool operator()(Entity* lhs, Entity* rhs) {
+		LocalPlayer* localPlayer = Game.getLocalPlayer();
 		return (*lhs->getPos()).dist(*localPlayer->getPos()) < (*rhs->getPos()).dist(*localPlayer->getPos());
 	}
 };
@@ -25,21 +25,21 @@ const char* BowAimbot::getModuleName() {
 	return ("BowAimbot");
 }
 
-void findTargets(C_Entity* currentEntity, bool isRegularEntitie) {
+void findTargets(Entity* currentEntity, bool isRegularEntitie) {
 	if (!Target::isValidTarget(currentEntity))
 		return;
 
-	float dist = (*currentEntity->getPos()).dist(*g_Data.getLocalPlayer()->getPos());
+	float dist = (*currentEntity->getPos()).dist(*Game.getLocalPlayer()->getPos());
 
 	if (dist < 130) {
 		targetList.push_back(currentEntity);
 	}
 }
 
-void BowAimbot::onPostRender(C_MinecraftUIRenderContext* renderCtx) {
+void BowAimbot::onPostRender(MinecraftUIRenderContext* renderCtx) {
 	targetList.clear();
 
-	C_LocalPlayer* localPlayer = g_Data.getLocalPlayer();
+	LocalPlayer* localPlayer = Game.getLocalPlayer();
 	if (localPlayer == nullptr)
 		return;
 
@@ -49,12 +49,12 @@ void BowAimbot::onPostRender(C_MinecraftUIRenderContext* renderCtx) {
 	if (!(GameData::isRightClickDown() && GameData::canUseMoveKeys())) // is aiming?
 		return;
 
-	g_Data.forEachEntity(findTargets);
+	Game.forEachEntity(findTargets);
 
 	if (!targetList.empty()) {
 		std::sort(targetList.begin(), targetList.end(), CompareTargetEnArray());
-		Vec3 origin = g_Data.getLocalPlayer()->eyePos0;  // TODO: sort list
-		C_Entity* entity = targetList[0];
+		Vec3 origin = Game.getLocalPlayer()->eyePos0;  // TODO: sort list
+		Entity* entity = targetList[0];
 		Vec3 pos = entity->aabb.centerPoint();
 		if (predict) {
 			Vec3 velocity = entity->getPos()->sub(*entity->getPosOld());
@@ -73,11 +73,11 @@ void BowAimbot::onPostRender(C_MinecraftUIRenderContext* renderCtx) {
 
 		if (silent) {
 			angle = Vec2(pitch, yaw);
-			C_MovePlayerPacket p(g_Data.getLocalPlayer(), *g_Data.getLocalPlayer()->getPos());
+			C_MovePlayerPacket p(Game.getLocalPlayer(), *Game.getLocalPlayer()->getPos());
 			p.pitch = angle.x;
 			p.yaw = angle.y;
 			p.headYaw = angle.y;
-			g_Data.getClientInstance()->loopbackPacketSender->sendToServer(&p);
+			Game.getClientInstance()->loopbackPacketSender->sendToServer(&p);
 		} else {
 			if (pitch < 89 && pitch > -89) {
 				Vec2 angles = Vec2(pitch, yaw);
@@ -92,7 +92,7 @@ void BowAimbot::onPostRender(C_MinecraftUIRenderContext* renderCtx) {
 	}
 }
 
-void BowAimbot::onSendPacket(C_Packet* packet) {
+void BowAimbot::onSendPacket(Packet* packet) {
 	if (packet->isInstanceOf<C_MovePlayerPacket>() && silent) {
 		if (!targetList.empty()) {
 			auto* movePacket = reinterpret_cast<C_MovePlayerPacket*>(packet);

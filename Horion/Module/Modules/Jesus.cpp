@@ -10,7 +10,7 @@ const char* Jesus::getModuleName() {
 	return "Jesus";
 }
 
-void Jesus::onTick(C_GameMode* gm) {
+void Jesus::onTick(GameMode* gm) {
 	if (gm->player->isSneaking()) return;
 
 	if (gm->player->hasEnteredWater()) {

@@ -14,8 +14,8 @@ public:
 	~Freelook(){};
 
 	virtual const char* getModuleName() override { return "Freelook"; }
-	void onEnable() override { oldPos = g_Data.getLocalPlayer()->viewAngles; }
-	void onDisable() override { g_Data.getLocalPlayer()->setRot(oldPos);
+	void onEnable() override { oldPos = Game.getLocalPlayer()->viewAngles; }
+	void onDisable() override { Game.getLocalPlayer()->setRot(oldPos);
 	}
 	bool callWhenDisabled() override {
 		return true;

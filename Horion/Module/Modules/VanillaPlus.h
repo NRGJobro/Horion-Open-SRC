@@ -13,5 +13,5 @@ public:
 	virtual const char* getModuleName() override;
 	virtual void onEnable() override;
 	virtual void onDisable() override;
-	virtual void onTick(C_GameMode*) override;
+	virtual void onTick(GameMode*) override;
 };

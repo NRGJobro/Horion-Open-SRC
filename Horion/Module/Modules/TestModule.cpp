@@ -49,16 +49,16 @@ bool TestModule::isFlashMode() {
 void TestModule::onEnable() {
 }
 
-void TestModule::onTick(C_GameMode* gm) {
+void TestModule::onTick(GameMode* gm) {
 }
 
-void TestModule::onMove(C_MoveInputHandler* hand){
+void TestModule::onMove(MoveInputHandler* hand){
 }
 
-void TestModule::onPostRender(C_MinecraftUIRenderContext* renderCtx) {
+void TestModule::onPostRender(MinecraftUIRenderContext* renderCtx) {
 }
 
-void TestModule::onSendPacket(C_Packet* p) {
+void TestModule::onSendPacket(Packet* p) {
 }
 
 void TestModule::onDisable() {

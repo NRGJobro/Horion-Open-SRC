@@ -11,46 +11,46 @@ TestCommand::~TestCommand() {
 }
 
 void listEnts() {
-	Level* level = g_Data.getLocalPlayer()->getlevel();
+	Level* level = Game.getLocalPlayer()->getlevel();
 	auto entity = level->getEntity();
 	if (entity != nullptr) {
 		auto id = entity->getEntityTypeId();
 		char* name = entity->getNameTag()->getText();
-		g_Data.getGuiData()->displayClientMessageF("---------------");
-		g_Data.getGuiData()->displayClientMessageF("Entity Name: %s", name);
-		g_Data.getGuiData()->displayClientMessageF("Entity ID: %lld", id);
-		g_Data.getGuiData()->displayClientMessageF("---------------");
+		Game.getGuiData()->displayClientMessageF("---------------");
+		Game.getGuiData()->displayClientMessageF("Entity Name: %s", name);
+		Game.getGuiData()->displayClientMessageF("Entity ID: %lld", id);
+		Game.getGuiData()->displayClientMessageF("---------------");
 	}
 }
 
 void itemId() {
-	C_LocalPlayer* player = g_Data.getLocalPlayer();
-	C_PlayerInventoryProxy* supplies = g_Data.getLocalPlayer()->getSupplies();
-	C_Inventory* inv = supplies->inventory;
+	LocalPlayer* player = Game.getLocalPlayer();
+	PlayerInventoryProxy* supplies = Game.getLocalPlayer()->getSupplies();
+	Inventory* inv = supplies->inventory;
 	auto n = supplies->selectedHotbarSlot;
-	C_ItemStack* stack = inv->getItemStack(n);
+	ItemStack* stack = inv->getItemStack(n);
 	if (stack->item != nullptr) {
 		auto id = stack->getItem()->itemId;
 		char* name = stack->getItem()->name.getText();
-		g_Data.getGuiData()->displayClientMessageF("---------------");
-		g_Data.getGuiData()->displayClientMessageF("Item Name: %s", name);
-		g_Data.getGuiData()->displayClientMessageF("Item ID: %lld", id);
-		g_Data.getGuiData()->displayClientMessageF("---------------");
+		Game.getGuiData()->displayClientMessageF("---------------");
+		Game.getGuiData()->displayClientMessageF("Item Name: %s", name);
+		Game.getGuiData()->displayClientMessageF("Item ID: %lld", id);
+		Game.getGuiData()->displayClientMessageF("---------------");
 	}
 }
 
 void showAimedBlockInfo() {
-	C_LocalPlayer* player = g_Data.getLocalPlayer();
-	Level* level = g_Data.getLocalPlayer()->getlevel();
-	C_Block* block = g_Data.getLocalPlayer()->region->getBlock(level->block);
+	LocalPlayer* player = Game.getLocalPlayer();
+	Level* level = Game.getLocalPlayer()->getlevel();
+	Block* block = Game.getLocalPlayer()->region->getBlock(level->block);
 	auto entity = level->getEntity();
 	if (block != nullptr && level != nullptr && entity == nullptr && block->blockLegacy->blockId != 7) {
 		char* name = block->toLegacy()->name.getText();
 		auto id = block->toLegacy()->blockId;
-		g_Data.getGuiData()->displayClientMessageF("---------------");
-		g_Data.getGuiData()->displayClientMessageF("Block Name: %s", name);
-		g_Data.getGuiData()->displayClientMessageF("Block ID: %lld", id);
-		g_Data.getGuiData()->displayClientMessageF("---------------");
+		Game.getGuiData()->displayClientMessageF("---------------");
+		Game.getGuiData()->displayClientMessageF("Block Name: %s", name);
+		Game.getGuiData()->displayClientMessageF("Block ID: %lld", id);
+		Game.getGuiData()->displayClientMessageF("---------------");
 	}
 }
 

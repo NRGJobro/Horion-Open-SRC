@@ -11,13 +11,13 @@ const char* StackableItem::getModuleName() {
 	return ("StackableItem");
 }
 
-void StackableItem::onTick(C_GameMode* gm) {
-	C_PlayerInventoryProxy* supplies = g_Data.getLocalPlayer()->getSupplies();
-	C_Inventory* a = supplies->inventory;
+void StackableItem::onTick(GameMode* gm) {
+	PlayerInventoryProxy* supplies = Game.getLocalPlayer()->getSupplies();
+	Inventory* a = supplies->inventory;
 	for (int i = 0; i < 36; i++) {
-		C_ItemStack* stack = a->getItemStack(i);
+		ItemStack* stack = a->getItemStack(i);
 		if (stack->item != NULL) {
-			C_Item* item = *stack->item;
+			Item* item = *stack->item;
 			item->setStackedByData(true);
 			item->setMaxStackSize(maxAmount);
 		}
