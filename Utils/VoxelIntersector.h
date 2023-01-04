@@ -17,5 +17,5 @@ namespace Voxel {
 	} Triangle3;
 
 	void getBoundingBox(AABB& aabbOut, const Triangle3& tri);
-	bool intersects(const vec3_t& voxel, const Triangle3& triangle);
+	bool intersects(const Vec3& voxel, const Triangle3& triangle);
 }

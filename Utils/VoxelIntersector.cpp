@@ -308,7 +308,7 @@ void Voxel::getBoundingBox(AABB& aabbOut, const Triangle3& t) {
 					 MIN3(t.v1.z, t.v2.z, t.v3.z)};
 }
 
-bool Voxel::intersects(const vec3_t& voxel, const Triangle3& triangle) {
+bool Voxel::intersects(const Vec3& voxel, const Triangle3& triangle) {
 	// i hope this gets optimized
 	Triangle3 triMutated = {
 		{triangle.v1.x - voxel.x - 0.5f, triangle.v1.y - voxel.y - 0.5f, triangle.v1.z - voxel.z - 0.5f}, 

@@ -1,8 +1,8 @@
 #include "JoeGoalXYZ.h"
-bool JoeGoalXYZ::isInGoal(vec3_ti pos) {
+bool JoeGoalXYZ::isInGoal(Vec3i pos) {
 	return pos == targetPos;
 }
-float JoeGoalXYZ::getHeuristicEstimation(vec3_ti pos) {
+float JoeGoalXYZ::getHeuristicEstimation(Vec3i pos) {
 	return JoeGoalXZ::heuristicEstimation(pos, targetPos) + JoeGoalY::heuristicEstimation(pos, (float)targetPos.y);
 }
-JoeGoalXYZ::JoeGoalXYZ(const vec3_ti& targetPos) : targetPos(targetPos) {}
+JoeGoalXYZ::JoeGoalXYZ(const Vec3i& targetPos) : targetPos(targetPos) {}

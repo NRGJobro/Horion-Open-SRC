@@ -90,7 +90,7 @@ void TabGui::renderLevel() {
 	float startYOffset = yOffset;
 	for (auto it = labelList.begin(); it != labelList.end(); ++it, i++) {
 		auto label = *it;
-		vec4_t rectPos = vec4_t(
+		Vec4 rectPos = Vec4(
 			xOffset - 0.5f,  // Off screen / Left border not visible
 			yOffset,
 			xOffset + maxLength + 4.5f,
@@ -135,7 +135,7 @@ void TabGui::renderLevel() {
 
 
 		std::string tempLabel(label.text);
-		DrawUtils::drawText(vec2_t(xOffset + 1.5f, yOffset + 0.5f), &tempLabel, label.enabled ? MC_Color() : color, textSize);
+		DrawUtils::drawText(Vec2(xOffset + 1.5f, yOffset + 0.5f), &tempLabel, label.enabled ? MC_Color() : color, textSize);
 
 		yOffset += textHeight;
 	}
@@ -143,7 +143,7 @@ void TabGui::renderLevel() {
 	// Draw selected item
 	{
 		selectedYOffset = startYOffset + textHeight * selected[renderedLevel].currentSelectedItemInterpol;
-		vec4_t selectedPos = vec4_t(
+		Vec4 selectedPos = Vec4(
 			xOffset - 0.5f,  // Off screen / Left border not visible
 			selectedYOffset,
 			xOffset + maxLength + 4.5f,

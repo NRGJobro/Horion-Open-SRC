@@ -18,11 +18,11 @@ const char* Breaker::getModuleName() {
 }
 
 void Breaker::onTick(C_GameMode* gm) {
-	vec3_t* pos = gm->player->getPos();
+	Vec3* pos = gm->player->getPos();
 	for (int x = (int)pos->x - range; x < pos->x + range; x++) {
 		for (int z = (int)pos->z - range; z < pos->z + range; z++) {
 			for (int y = (int)pos->y - range; y < pos->y + range; y++) {
-				vec3_ti blockPos = vec3_ti(x, y, z);
+				Vec3i blockPos = Vec3i(x, y, z);
 				bool destroy = false;
 				bool eat = false;
 				auto id = gm->player->region->getBlock(blockPos)->toLegacy()->blockId;

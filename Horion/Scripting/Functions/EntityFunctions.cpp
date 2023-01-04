@@ -30,11 +30,11 @@ JsValueRef CALLBACK EntityFunctions::getInterpolatedPosition(JsValueRef callee, 
 		ENTITY_INVALID;
 	}
 
-	vec3_t* start = ent->getPosOld();
-	vec3_t* end = ent->getPos();
+	Vec3* start = ent->getPosOld();
+	Vec3* end = ent->getPos();
 
 	auto t = DrawUtils::getLerpTime();
-	vec3_t lerped = start->lerp(end, t);
+	Vec3 lerped = start->lerp(end, t);
 
 	return scriptMgr.prepareVector3(lerped, reinterpret_cast<ContextObjects*>(callbackState));
 }
@@ -99,7 +99,7 @@ JsValueRef CALLBACK EntityFunctions::getSize(JsValueRef callee, bool isConstruct
 		ENTITY_INVALID;
 	}
 
-	return scriptMgr.prepareVector3(vec3_t(ent->width, ent->height, ent->width), reinterpret_cast<ContextObjects*>(callbackState));
+	return scriptMgr.prepareVector3(Vec3(ent->width, ent->height, ent->width), reinterpret_cast<ContextObjects*>(callbackState));
 }
 
 JsValueRef CALLBACK EntityFunctions::toString(JsValueRef callee, bool isConstructCall, JsValueRef* arguments, unsigned short argumentCount, void* callbackState) {
@@ -123,7 +123,7 @@ JsValueRef CALLBACK EntityFunctions::getViewAngles(JsValueRef callee, bool isCon
 		ENTITY_INVALID;
 	}
 
-	return scriptMgr.prepareVector3(vec3_t(ent->viewAngles, 0), reinterpret_cast<ContextObjects*>(callbackState));
+	return scriptMgr.prepareVector3(Vec3(ent->viewAngles, 0), reinterpret_cast<ContextObjects*>(callbackState));
 }
 
 JsValueRef CALLBACK EntityFunctions::getPitch(JsValueRef callee, bool isConstructCall, JsValueRef* arguments, unsigned short argumentCount, void* callbackState) {

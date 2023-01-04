@@ -113,7 +113,7 @@ std::string Utils::getRttiBaseClassName(void* ptr) {
 
 	return std::string("invalid");
 }
-size_t Utils::posToHash(const vec3_ti& pos) {
+size_t Utils::posToHash(const Vec3i& pos) {
 	return rotBy(pos.x, 0) | rotBy(pos.z, 24) | (static_cast<unsigned __int64>(pos.y) << 48u);
 }
 std::string Utils::getClipboardText() {

@@ -1,26 +1,26 @@
 #include "Vector2Functions.h"
 
-std::optional<vec2_t> Vector2Functions::getVec2FromValue(JsValueRef ref) {
+std::optional<Vec2> Vector2Functions::getVec2FromValue(JsValueRef ref) {
 	JsValueType type;
 	auto err = chakra.JsGetValueType_(ref, &type);
 	if (type != JsObject || err != JsNoError)
-		return std::optional<vec2_t>();
+		return std::optional<Vec2>();
 
 	bool hasExternalData = false;
 	err = chakra.JsHasExternalData_(ref, &hasExternalData);
 	if (!hasExternalData || err != JsNoError)
-		return std::optional<vec2_t>();
+		return std::optional<Vec2>();
 
 	JVector2* vecInfo;
 	err = chakra.JsGetExternalData_(ref, reinterpret_cast<void**>(&vecInfo));
 	if (vecInfo->dataType != Vector2DataType || err != JsNoError)
-		return std::optional<vec2_t>();
-	return std::optional<vec2_t>(vecInfo->vec);
+		return std::optional<Vec2>();
+	return std::optional<Vec2>(vecInfo->vec);
 }
 
-std::optional<vec2_t> Vector2Functions::getVec2FromArguments(JsValueRef* args, int argCount, int* nextArg) {
+std::optional<Vec2> Vector2Functions::getVec2FromArguments(JsValueRef* args, int argCount, int* nextArg) {
 	if (argCount <= 0)
-		return std::optional<vec2_t>();
+		return std::optional<Vec2>();
 
 	auto vec = Vector2Functions::getVec2FromValue(args[0]);
 
@@ -31,7 +31,7 @@ std::optional<vec2_t> Vector2Functions::getVec2FromArguments(JsValueRef* args, i
 	}
 
 	if (argCount < 2)
-		return std::optional<vec2_t>();
+		return std::optional<Vec2>();
 
 	bool isValid = true;
 	JsValueType type;
@@ -44,19 +44,19 @@ std::optional<vec2_t> Vector2Functions::getVec2FromArguments(JsValueRef* args, i
 	}
 
 	if (!isValid)
-		return std::optional<vec2_t>();
+		return std::optional<Vec2>();
 
 	double x, y;
 	int err = 0;
 	err |= (int)chakra.JsNumberToDouble_(args[0], &x);
 	err |= (int)chakra.JsNumberToDouble_(args[1], &y);
 	if ((JsErrorCode)err != JsNoError)
-		return std::optional<vec2_t>();
+		return std::optional<Vec2>();
 
 	if(nextArg)
 		*nextArg += 2;
 
-	return std::optional<vec2_t>(vec2_t((float)x, (float)y));
+	return std::optional<Vec2>(Vec2((float)x, (float)y));
 }
 
 JsValueRef CALLBACK Vector2Functions::isValid(JsValueRef callee, bool isConstructCall, JsValueRef* arguments, unsigned short argumentCount, void* callbackState) {
@@ -112,7 +112,7 @@ JsValueRef CALLBACK Vector2Functions::constructor(JsValueRef callee, bool isCons
 	chakra.JsNumberToDouble_(arguments[1], &x);
 	chakra.JsNumberToDouble_(arguments[2], &y);
 
-	return scriptMgr.prepareVector2(vec2_t((float)x, (float)y), reinterpret_cast<ContextObjects*>(callbackState));
+	return scriptMgr.prepareVector2(Vec2((float)x, (float)y), reinterpret_cast<ContextObjects*>(callbackState));
 }
 
 JsValueRef CALLBACK Vector2Functions::add(JsValueRef callee, bool isConstructCall, JsValueRef* arguments, unsigned short argumentCount, void* callbackState) {
@@ -149,7 +149,7 @@ JsValueRef CALLBACK Vector2Functions::add(JsValueRef callee, bool isConstructCal
 		} break;
 		case 2: {
 			// adding with 2 individual floats
-			vec2_t oVec;
+			Vec2 oVec;
 			for(int i = 0; i < 2; i++){
 				JsValueType type;
 				chakra.JsGetValueType_(arguments[1 + i], &type);
@@ -205,7 +205,7 @@ JsValueRef CALLBACK Vector2Functions::sub(JsValueRef callee, bool isConstructCal
 	} break;
 	case 2: {
 		// adding with 2 individual floats
-		vec2_t oVec;
+		Vec2 oVec;
 		for(int i = 0; i < 2; i++){
 			JsValueType type;
 			chakra.JsGetValueType_(arguments[1 + i], &type);
@@ -261,7 +261,7 @@ JsValueRef CALLBACK Vector2Functions::div(JsValueRef callee, bool isConstructCal
 	} break;
 	case 2: {
 		// adding with 2 individual floats
-		vec2_t oVec;
+		Vec2 oVec;
 		for (int i = 0; i < 2; i++) {
 			JsValueType type;
 			chakra.JsGetValueType_(arguments[1 + i], &type);
@@ -318,7 +318,7 @@ JsValueRef CALLBACK Vector2Functions::mul(JsValueRef callee, bool isConstructCal
 	} break;
 	case 2: {
 		// adding with 2 individual floats
-		vec2_t oVec;
+		Vec2 oVec;
 		for (int i = 0; i < 2; i++) {
 			JsValueType type;
 			chakra.JsGetValueType_(arguments[1 + i], &type);

@@ -7,6 +7,6 @@ private:
 public:
 	virtual ~JoeGoal();
 
-	virtual bool isInGoal(vec3_ti pos) = 0;
-	virtual float getHeuristicEstimation(vec3_ti pos) = 0;
+	virtual bool isInGoal(Vec3i pos) = 0;
+	virtual float getHeuristicEstimation(Vec3i pos) = 0;
 };

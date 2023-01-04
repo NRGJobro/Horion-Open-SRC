@@ -29,18 +29,18 @@ struct EntityInfo : ExternalDataStruct {
 };
 
 struct JVector3 : ExternalDataStruct {
-	vec3_t vec;
+	Vec3 vec;
 
-	JVector3(vec3_t set) {
+	JVector3(Vec3 set) {
 		this->dataType = Vector3DataType;
 		this->vec = set;
 	}
 };
 
 struct JVector2 : ExternalDataStruct {
-	vec2_t vec;
+	Vec2 vec;
 
-	JVector2(vec2_t set) {
+	JVector2(Vec2 set) {
 		this->dataType = Vector2DataType;
 		this->vec = set;
 	}
@@ -137,8 +137,8 @@ private:
 public:
 	void prepareContext(JsContextRef* ctx, ContextObjects* obj);
 	JsValueRef prepareEntity(__int64 runtimeId, ContextObjects* obj);
-	JsValueRef prepareVector3(vec3_t vec, ContextObjects* obj);
-	JsValueRef prepareVector2(vec2_t vec, ContextObjects* obj);
+	JsValueRef prepareVector3(Vec3 vec, ContextObjects* obj);
+	JsValueRef prepareVector2(Vec2 vec, ContextObjects* obj);
 	JsValueRef prepareModule(std::shared_ptr<IModule> mod, ContextObjects* objs);
 	JsValueRef prepareJsModule(std::shared_ptr<JavascriptModule> mod, ContextObjects* objs);
 	JsValueRef getLocalPlayer(ContextObjects* obs);

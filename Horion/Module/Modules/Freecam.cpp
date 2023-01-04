@@ -13,7 +13,7 @@ const char* Freecam::getModuleName() {
 
 void Freecam::onTick(C_GameMode* gm) {
 	gm->player->fallDistance = 0.f;
-	gm->player->velocity = vec3_t(0, 0, 0);
+	gm->player->velocity = Vec3(0, 0, 0);
 	gm->player->aabb.upper = gm->player->aabb.lower;
 }
 
@@ -28,11 +28,11 @@ void Freecam::onMove(C_MoveInputHandler* input) {
 	auto player = g_Data.getLocalPlayer();
 	if (player == nullptr) return;
 
-	vec2_t moveVec2d = {input->forwardMovement, -input->sideMovement};
+	Vec2 moveVec2d = {input->forwardMovement, -input->sideMovement};
 	bool pressed = moveVec2d.magnitude() > 0.01f;
 
 	float calcYaw = (player->yaw + 90) * (PI / 180);
-	vec3_t moveVec;
+	Vec3 moveVec;
 	float c = cos(calcYaw);
 	float s = sin(calcYaw);
 	moveVec2d = {moveVec2d.x * c - moveVec2d.y * s, moveVec2d.x * s + moveVec2d.y * c};

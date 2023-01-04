@@ -105,7 +105,7 @@ public:
 	ImageInfo TopRight;
 	ImageInfo BottomLeft;
 	ImageInfo BottomRight;
-	vec2_t UVScale;
+	Vec2 UVScale;
 	std::vector<ImageInfo> Left;
 	std::vector<ImageInfo> Top;
 	std::vector<ImageInfo> Right;
@@ -124,7 +124,7 @@ public:
 	virtual void drawDebugText(const float* pos, TextHolder* text, float* color, float alpha, unsigned int textAlignment, const float* textMeasureData, const void* caretMeasureData);
 	virtual __int64 drawText(C_Font* font, const float* pos, TextHolder* text, const float* color, float alpha, unsigned int textAlignment, const TextMeasureData* textMeasureData, const uintptr_t* caretMeasureData);
 	virtual void flushText(float timeSinceLastFlush);
-	virtual __int64 drawImage(C_TexturePtr* texturePtr, vec2_t& ImagePos, vec2_t& ImageDimension, __int64& a4, vec2_t& idk);
+	virtual __int64 drawImage(C_TexturePtr* texturePtr, Vec2& ImagePos, Vec2& ImageDimension, __int64& a4, Vec2& idk);
 	virtual void drawNineslice(C_TexturePtr* texturePtr, void* nineslice);
 	virtual __int64 flushImages(MC_Color& color, float alpha, __int64 hashedString);
 	virtual void beginSharedMeshBatch(uintptr_t ComponentRenderBatch);
@@ -134,16 +134,16 @@ public:
 	virtual void increaseStencilRef();
 	virtual void decreaseStencilRef();
 	virtual void resetStencilRef();
-	virtual void fillRectangleStencil(vec4_t position);
-	virtual void enableScissorTest(vec4_t position);
+	virtual void fillRectangleStencil(Vec4 position);
+	virtual void enableScissorTest(Vec4 position);
 	virtual void disableScissorTest();
-	virtual void setClippingRectangle(vec4_t position);
+	virtual void setClippingRectangle(Vec4 position);
 	virtual void setFullClippingRectangle();
 	virtual void saveCurrentClippingRectangle();
 	virtual void restoreSavedClippingRectangle();
 	virtual int getFullClippingRectangle();
 	virtual void updateCustom(uintptr_t a1);
-	virtual void renderCustom(uintptr_t a1, int a2, vec4_t position);
+	virtual void renderCustom(uintptr_t a1, int a2, Vec4 position);
 	virtual void cleanup();
 	virtual void removePersistentMeshes();
 	virtual C_TexturePtr* getTexture(C_TexturePtr* ptr, C_FilePath& path);

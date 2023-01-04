@@ -8,7 +8,7 @@ private:
 	bool onlyHand = false;
 	bool bypass = false;
 	bool shouldTP = false;
-	vec3_t tpPos;
+	Vec3 tpPos;
 
 public:
 	Teleport();

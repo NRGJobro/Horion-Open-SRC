@@ -41,7 +41,7 @@ JsValueRef CALLBACK DrawFunctions::drawLinestrip3d(JsValueRef callee, bool isCon
 		THROW(L"Array too big");
 	}
 
-	std::vector<vec3_t> pointList;
+	std::vector<Vec3> pointList;
 	pointList.reserve(arrayLength);
 	for(int i = 0; i < arrayLength; i++){
 		auto val = chakra.arrayGet(arr, i);
@@ -137,8 +137,8 @@ JsValueRef CALLBACK DrawFunctions::drawRectangle2d(JsValueRef callee, bool isCon
 		argIndex++;
 	}
 
-	vec2_t lower = {std::min(startOpt->x, endOpt->x), std::min(startOpt->y, endOpt->y)};
-	vec2_t upper = {std::max(startOpt->x, endOpt->x), std::max(startOpt->y, endOpt->y)};
+	Vec2 lower = {std::min(startOpt->x, endOpt->x), std::min(startOpt->y, endOpt->y)};
+	Vec2 upper = {std::max(startOpt->x, endOpt->x), std::max(startOpt->y, endOpt->y)};
 	DrawUtils::drawRectangle(lower, upper, (float)lineWidth);
 
 	return chakra.trueValue();
@@ -156,8 +156,8 @@ JsValueRef CALLBACK DrawFunctions::fillRectangle2d(JsValueRef callee, bool isCon
 		THROW(L"Invalid end vector!");
 	}
 
-	vec2_t lower = {std::min(startOpt->x, endOpt->x), std::min(startOpt->y, endOpt->y)};
-	vec2_t upper = {std::max(startOpt->x, endOpt->x), std::max(startOpt->y, endOpt->y)};
+	Vec2 lower = {std::min(startOpt->x, endOpt->x), std::min(startOpt->y, endOpt->y)};
+	Vec2 upper = {std::max(startOpt->x, endOpt->x), std::max(startOpt->y, endOpt->y)};
 	DrawUtils::fillRectangle(lower, upper);
 
 	return chakra.trueValue();

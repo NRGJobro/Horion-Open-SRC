@@ -23,14 +23,14 @@ void StorageESP::onPreRender(C_MinecraftUIRenderContext* renderCtx) {
 		float math = (float)fmax(0.3f, (float)fmin(1.f, 15));
 		DrawUtils::setColor(1.f, 1.f, 1.f, math);
 
-		vec3_t blockPos = chest.lower;
+		Vec3 blockPos = chest.lower;
 		if (blockPos.x < 0)
 			blockPos.x -= 1;
 		if (blockPos.z < 0)
 			blockPos.z -= 1;
 		storageID = g_Data.getLocalPlayer()->region->getBlock(blockPos)->toLegacy()->blockId;
 
-		auto mathVect = vec3_t(chest.upper.floor().add(vec3_t(1.f, 1.f, 1.f)).sub(chest.upper));
+		auto mathVect = Vec3(chest.upper.floor().add(Vec3(1.f, 1.f, 1.f)).sub(chest.upper));
 		mathVect.y = floor(mathVect.y);
 
 		if (storageID == 54) DrawUtils::setColor(1.f, 1.f, 1.f, math);                     // Normal Chest

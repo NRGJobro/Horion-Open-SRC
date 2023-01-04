@@ -34,7 +34,7 @@ PlayerAuthInputPacket::PlayerAuthInputPacket() {
 	memset(this, 0, sizeof(PlayerAuthInputPacket));  // Avoid overwriting vtable
 	vTable = PlayerAuthInputPacketVtable;
 }
-PlayerAuthInputPacket::PlayerAuthInputPacket(vec3_t pos, float pitch, float yaw, float yawUnused) {
+PlayerAuthInputPacket::PlayerAuthInputPacket(Vec3 pos, float pitch, float yaw, float yawUnused) {
 	static uintptr_t** PlayerAuthInputPacketVtable = 0x0;
 	if (PlayerAuthInputPacketVtable == 0x0) {
 		uintptr_t sigOffset = FindSignature("48 8D 0D ? ? ? ? 0F 57 C0 0F 11 00 C7 40 ? ? ? ? ? C7 40 ? ? ? ? ? 48 8D 05 ? ? ? ? 48 89 02 33 C0 48 89 42");
@@ -145,7 +145,7 @@ C_MovePlayerPacket::C_MovePlayerPacket() {
 	memset(this, 0, sizeof(C_MovePlayerPacket));  // Avoid overwriting vtable
 	vTable = movePlayerPacketVtable;
 }
-C_MovePlayerPacket::C_MovePlayerPacket(C_LocalPlayer* player, vec3_t pos) {
+C_MovePlayerPacket::C_MovePlayerPacket(C_LocalPlayer* player, Vec3 pos) {
 	static uintptr_t** movePlayerPacketVtable = 0x0;
 	if (movePlayerPacketVtable == 0x0) {
 		uintptr_t sigOffset = FindSignature("48 8D 05 ? ? ? ? 49 89 40 08 48 8B 47 30");
@@ -294,7 +294,7 @@ CommandRequestPacket::CommandRequestPacket(std::string cmd) {
 	this->payload.setText(cmd);
 }
 
-C_InteractPacket::C_InteractPacket(/*enum InteractPacket::Action, class ActorRuntimeID, vec3_t const&*/) {
+C_InteractPacket::C_InteractPacket(/*enum InteractPacket::Action, class ActorRuntimeID, Vec3 const&*/) {
 	static uintptr_t** interactPacketVtable = 0x0;
 	if (interactPacketVtable == 0x0) {
 		uintptr_t sigOffset = FindSignature("48 8D 15 ? ? ? ? C7 40 ? ? ? ? ? 33 C9 C7 40 ? ? ? ? ? 48 89 48 28 48 89 48 30 89 48 38 88 48 40 48 89 48 48 48 89 48 50");

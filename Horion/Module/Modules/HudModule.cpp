@@ -24,17 +24,17 @@ const char* HudModule::getModuleName() {
 	return ("HUD");
 }
 
-void HudModule::drawKeystroke(char key, const vec2_t& pos) {
+void HudModule::drawKeystroke(char key, const Vec2& pos) {
 	static auto ClientThemes = moduleMgr->getModule<ClientTheme>();
 	std::string keyString = Utils::getKeybindName(key);
 	C_GameSettingsInput* input = g_Data.getClientInstance()->getGameSettingsInput();
 	if (key == *input->forwardKey) {
-		vec4_t rectPos(
+		Vec4 rectPos(
 			pos.x,
 			pos.y,
 			pos.x + 20.f,
 			pos.y + 20.f);
-		vec2_t textPos(
+		Vec2 textPos(
 			(rectPos.x + (rectPos.z - rectPos.x) / 2) - (DrawUtils::getTextWidth(&keyString) / 2.f) + 0.2f,
 			rectPos.y + 10.f - DrawUtils::getFont(Fonts::SMOOTH)->getLineHeight() / 2.f);
 		if (ClientThemes->Theme.selected == 1) {
@@ -46,12 +46,12 @@ void HudModule::drawKeystroke(char key, const vec2_t& pos) {
 	}
 	if (key == *input->spaceBarKey) {
 		if (key == *input->spaceBarKey) keyString = "-";
-		vec4_t rectPos(
+		Vec4 rectPos(
 			pos.x,
 			pos.y,
 			pos.x + 64.f,
 			pos.y + 15.f);
-		vec2_t textPos(
+		Vec2 textPos(
 			(rectPos.x + (rectPos.z - rectPos.x) / 2) - (DrawUtils::getTextWidth(&keyString) / 2.f),
 			rectPos.y + 7.f - DrawUtils::getFont(Fonts::SMOOTH)->getLineHeight() / 2.f);
 
@@ -62,12 +62,12 @@ void HudModule::drawKeystroke(char key, const vec2_t& pos) {
 		}
 		DrawUtils::drawText(textPos, &keyString, MC_Color(255, 255, 255), 1.f, 1.f);
 	} else {
-		vec4_t rectPos(
+		Vec4 rectPos(
 			pos.x,
 			pos.y,
 			pos.x + ((key == *input->spaceBarKey) ? 64.f : 20.f),
 			pos.y + ((key == *input->spaceBarKey) ? 15.f : 20.f));
-		vec2_t textPos(
+		Vec2 textPos(
 			(rectPos.x + (rectPos.z - rectPos.x) / 2) - (DrawUtils::getTextWidth(&keyString) / 2.f),
 			rectPos.y + 10.f - DrawUtils::getFont(Fonts::SMOOTH)->getLineHeight() / 2.f);
 
@@ -80,11 +80,11 @@ void HudModule::drawKeystroke(char key, const vec2_t& pos) {
 	}
 }
 
-void HudModule::drawLeftMouseKeystroke(vec2_t pos) {
+void HudModule::drawLeftMouseKeystroke(Vec2 pos) {
 	static auto ClientThemes = moduleMgr->getModule<ClientTheme>();
 	std::string keyString;
 	keyString = "LMB";
-	vec4_t rectPos(
+	Vec4 rectPos(
 		pos.x,
 		pos.y + 2,
 		pos.x + 31.f,
@@ -94,17 +94,17 @@ void HudModule::drawLeftMouseKeystroke(vec2_t pos) {
 	} else {
 		DrawUtils::fillRectangle(rectPos, GameData::GameData::isLeftClickDown() ? MC_Color(85, 85, 85) : MC_Color(12, 12, 12), 1.f);
 	}
-	vec2_t textPos(
+	Vec2 textPos(
 		(rectPos.x + (rectPos.z - rectPos.x) / 2) - (DrawUtils::getTextWidth(&keyString) / 2.f),
 		rectPos.y + 10.f - DrawUtils::getFont(Fonts::SMOOTH)->getLineHeight() / 2.f);
 	DrawUtils::drawText(textPos, &keyString, MC_Color(255, 255, 255), 1.f, 1.f);
 }
 
-void HudModule::drawRightMouseKeystroke(vec2_t pos) {
+void HudModule::drawRightMouseKeystroke(Vec2 pos) {
 	static auto ClientThemes = moduleMgr->getModule<ClientTheme>();
 	std::string keyString;
 	keyString = "RMB";
-	vec4_t rectPos(
+	Vec4 rectPos(
 		pos.x,
 		pos.y + 2,
 		pos.x + 31.f,
@@ -114,7 +114,7 @@ void HudModule::drawRightMouseKeystroke(vec2_t pos) {
 	} else {
 		DrawUtils::fillRectangle(rectPos, GameData::GameData::isRightClickDown() ? MC_Color(85, 85, 85) : MC_Color(12, 12, 12), 1.f);
 	}
-	vec2_t textPos(
+	Vec2 textPos(
 		(rectPos.x + (rectPos.z - rectPos.x) / 2) - (DrawUtils::getTextWidth(&keyString) / 2.f),
 		rectPos.y + 10.f - DrawUtils::getFont(Fonts::SMOOTH)->getLineHeight() / 2.f);
 	DrawUtils::drawText(textPos, &keyString, MC_Color(255, 255, 255), 1.f, 1.f);
@@ -123,7 +123,7 @@ void HudModule::drawRightMouseKeystroke(vec2_t pos) {
 void HudModule::onPostRender(C_MinecraftUIRenderContext* renderCtx) {
 	static auto ClientThemes = moduleMgr->getModule<ClientTheme>();
 
-	vec2_t windowSize = g_Data.getClientInstance()->getGuiData()->windowSize;
+	Vec2 windowSize = g_Data.getClientInstance()->getGuiData()->windowSize;
 	float f = 10.f * scale;
 	std::string tempStr("Movement");
 	float len = DrawUtils::getTextWidth(&tempStr, scale) + 7.f;
@@ -133,8 +133,8 @@ void HudModule::onPostRender(C_MinecraftUIRenderContext* renderCtx) {
 	{  // FPS
 		if (!(g_Data.getLocalPlayer() == nullptr || !fps)) {
 			std::string fpsText = "FPS: " + std::to_string(g_Data.getFPS());
-			vec4_t rectPos = vec4_t(2.5f, startY + 5.f * scale, len, startY + 15.f * scale);
-			vec2_t textPos = vec2_t(rectPos.x + 1.5f, rectPos.y + 1.f);
+			Vec4 rectPos = Vec4(2.5f, startY + 5.f * scale, len, startY + 15.f * scale);
+			Vec2 textPos = Vec2(rectPos.x + 1.5f, rectPos.y + 1.f);
 			if (ClientThemes->Theme.selected == 1) {
 				DrawUtils::fillRectangle(rectPos, MC_Color(13, 29, 48), 1.f);
 			} else {
@@ -148,8 +148,8 @@ void HudModule::onPostRender(C_MinecraftUIRenderContext* renderCtx) {
 	{  // CPS
 		if (!(g_Data.getLocalPlayer() == nullptr || !cps)) {
 			std::string cpsText = "CPS: " + std::to_string(g_Data.getLeftCPS()) + " - " + std::to_string(g_Data.getRightCPS());
-			vec4_t rectPos = vec4_t(2.5f, startY + 5.f * scale, len, startY + 15.f * scale);
-			vec2_t textPos = vec2_t(rectPos.x + 1.5f, rectPos.y + 1.f);
+			Vec4 rectPos = Vec4(2.5f, startY + 5.f * scale, len, startY + 15.f * scale);
+			Vec2 textPos = Vec2(rectPos.x + 1.5f, rectPos.y + 1.f);
 			if (ClientThemes->Theme.selected == 1) {
 				DrawUtils::fillRectangle(rectPos, MC_Color(13, 29, 48), 1.f);
 			} else {
@@ -162,13 +162,13 @@ void HudModule::onPostRender(C_MinecraftUIRenderContext* renderCtx) {
 	}
 	{  // Coordinates
 		if (!(g_Data.getLocalPlayer() == nullptr || !coordinates)) {
-			vec3_t* pos = g_Data.getLocalPlayer()->getPos();
+			Vec3* pos = g_Data.getLocalPlayer()->getPos();
 
 			std::string coordsX = "X: " + std::to_string((int)floorf(pos->x));
 			std::string coordsY = "Y: " + std::to_string((int)floorf(pos->y));
 			std::string coordsZ = "Z: " + std::to_string((int)floorf(pos->z));
-			vec4_t rectPos = vec4_t(2.5f, startY + 5.f * scale, len, startY + 35.f * scale);
-			vec2_t textPos = vec2_t(rectPos.x + 1.5f, rectPos.y + 1.f);
+			Vec4 rectPos = Vec4(2.5f, startY + 5.f * scale, len, startY + 35.f * scale);
+			Vec2 textPos = Vec2(rectPos.x + 1.5f, rectPos.y + 1.f);
 			if (ClientThemes->Theme.selected == 1) {
 				DrawUtils::fillRectangle(rectPos, MC_Color(13, 29, 48), 1.f);
 			} else {
@@ -193,7 +193,7 @@ void HudModule::onPostRender(C_MinecraftUIRenderContext* renderCtx) {
 			for (int i = 0; i < 4; i++) {
 				C_ItemStack* stack = player->getArmor(i);
 				if (stack->isValid()) {
-					DrawUtils::drawItem(stack, vec2_t(x, y), opacity, scale, stack->isEnchanted());
+					DrawUtils::drawItem(stack, Vec2(x, y), opacity, scale, stack->isEnchanted());
 					x += scale * spacing;
 				}
 			}
@@ -201,19 +201,19 @@ void HudModule::onPostRender(C_MinecraftUIRenderContext* renderCtx) {
 			C_ItemStack* item = supplies->inventory->getItemStack(supplies->selectedHotbarSlot);
 			//x += scale * spacing;
 			if (item->isValid())
-				DrawUtils::drawItem(item, vec2_t(x, y), opacity, scale, item->isEnchanted());
+				DrawUtils::drawItem(item, Vec2(x, y), opacity, scale, item->isEnchanted());
 		}
 	}
 	{  // Keystrokes
 		if (!(g_Data.getLocalPlayer() == nullptr || !keystrokes || !GameData::canUseMoveKeys())) {
 			C_GameSettingsInput* input = g_Data.getClientInstance()->getGameSettingsInput();
-			HudModule::drawKeystroke(*input->forwardKey, vec2_t(32.f, windowSize.y - 84));
-			HudModule::drawKeystroke(*input->leftKey, vec2_t(10.f, windowSize.y - 62));
-			HudModule::drawKeystroke(*input->backKey, vec2_t(32.f, windowSize.y - 62));
-			HudModule::drawKeystroke(*input->rightKey, vec2_t(54.f, windowSize.y - 62));
-			HudModule::drawKeystroke(*input->spaceBarKey, vec2_t(10.f, windowSize.y - 40));
-			HudModule::drawLeftMouseKeystroke(vec2_t(10.f, windowSize.y - 25));
-			HudModule::drawRightMouseKeystroke(vec2_t(43.f, windowSize.y - 25));
+			HudModule::drawKeystroke(*input->forwardKey, Vec2(32.f, windowSize.y - 84));
+			HudModule::drawKeystroke(*input->leftKey, Vec2(10.f, windowSize.y - 62));
+			HudModule::drawKeystroke(*input->backKey, Vec2(32.f, windowSize.y - 62));
+			HudModule::drawKeystroke(*input->rightKey, Vec2(54.f, windowSize.y - 62));
+			HudModule::drawKeystroke(*input->spaceBarKey, Vec2(10.f, windowSize.y - 40));
+			HudModule::drawLeftMouseKeystroke(Vec2(10.f, windowSize.y - 25));
+			HudModule::drawRightMouseKeystroke(Vec2(43.f, windowSize.y - 25));
 		}
 	}
 }

@@ -6,8 +6,8 @@
 
 class Vector2Functions {
 public:
-	static std::optional<vec2_t> getVec2FromValue(JsValueRef);
-	static std::optional<vec2_t> getVec2FromArguments(JsValueRef*, int argCount, int* nextArg = nullptr);
+	static std::optional<Vec2> getVec2FromValue(JsValueRef);
+	static std::optional<Vec2> getVec2FromArguments(JsValueRef*, int argCount, int* nextArg = nullptr);
 
 	DECL_FUN(isValid);
 	DECL_FUN(getX);

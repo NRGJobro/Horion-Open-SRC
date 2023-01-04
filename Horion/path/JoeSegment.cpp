@@ -2,7 +2,7 @@
 
 #include "../DrawUtils.h"
 
-JoeSegment::JoeSegment(JoeSegmentType type, vec3_ti& start, vec3_ti& stop, float cost, bool allowSprint) : segmentType(type), start(start), end(stop), cost(cost), allowSprint(allowSprint) {
+JoeSegment::JoeSegment(JoeSegmentType type, Vec3i& start, Vec3i& stop, float cost, bool allowSprint) : segmentType(type), start(start), end(stop), cost(cost), allowSprint(allowSprint) {
 
 }
 void JoeSegment::draw() {
@@ -36,10 +36,10 @@ void JoeSegment::draw() {
 JoeSegmentType JoeSegment::getSegmentType() const {
 	return segmentType;
 }
-const vec3_ti& JoeSegment::getStart() const {
+const Vec3i& JoeSegment::getStart() const {
 	return start;
 }
-const vec3_ti& JoeSegment::getEnd() const {
+const Vec3i& JoeSegment::getEnd() const {
 	return end;
 }
 float JoeSegment::getCost() const {
@@ -51,18 +51,18 @@ bool JoeSegment::isAllowingSprint() const {
 void JoeSegment::setAllowSprint(bool allowSprint) {
 	JoeSegment::allowSprint = allowSprint;
 }
-bool JoeSegment::isInValidPosition(const vec3_ti& pos) const {
+bool JoeSegment::isInValidPosition(const Vec3i& pos) const {
 	for(const auto& validPos : validPositions){
 		if(pos == validPos)
 			return true;
 	}
 	return false;
 }
-void JoeSegment::setValidPositions(const std::vector<vec3_ti>& validPositions) {
+void JoeSegment::setValidPositions(const std::vector<Vec3i>& validPositions) {
 	JoeSegment::validPositions = validPositions;
 }
 void JoeSegment::init() {
-	std::vector<vec3_ti> positions = {start, end};
+	std::vector<Vec3i> positions = {start, end};
 
 	auto player = g_Data.getLocalPlayer();
 	auto reg = player->region;
@@ -86,10 +86,10 @@ void JoeSegment::init() {
 				break;
 			}
 
-			vec3_t tangentF = end.sub(start).toFloatVector();
+			Vec3 tangentF = end.sub(start).toFloatVector();
 			tangentF.y = 0;
 			tangentF = tangentF.normalize();
-			vec3_ti tangent((int)roundf(tangentF.x), 0, (int)roundf(tangentF.z));
+			Vec3i tangent((int)roundf(tangentF.x), 0, (int)roundf(tangentF.z));
 
 			positions.push_back(start.add(tangent));
 			positions.push_back(start.add(tangent).add(0, -1, 0));
@@ -119,10 +119,10 @@ void JoeSegment::init() {
 			positions.push_back(mod);
 		} break;
 		case JoeSegmentType::PARKOUR_JUMP_SINGLE: {
-			vec3_t tangentF = end.sub(start).toFloatVector();
+			Vec3 tangentF = end.sub(start).toFloatVector();
 			tangentF.y = 0;
 			tangentF = tangentF.normalize();
-			vec3_ti tangent((int)roundf(tangentF.x), 0, (int)roundf(tangentF.z));
+			Vec3i tangent((int)roundf(tangentF.x), 0, (int)roundf(tangentF.z));
 
 			positions.push_back(start.add(0, 1, 0));
 

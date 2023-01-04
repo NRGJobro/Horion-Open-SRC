@@ -50,7 +50,7 @@ void AutoClicker::onTick(C_GameMode* gm) {
 			if (Odelay >= delay) {
 				g_Data.rightclickCount++;
 				bool idk = true;
-				gm->buildBlock(new vec3_ti(level->block), level->blockSide, idk);
+				gm->buildBlock(new Vec3i(level->block), level->blockSide, idk);
 				Odelay = 0;
 			}
 		}

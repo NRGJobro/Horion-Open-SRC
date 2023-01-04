@@ -18,7 +18,7 @@ void JoeMovementController::step(C_LocalPlayer *player, C_MoveInputHandler *move
 
 	auto pPos = player->eyePos0;
 	pPos.y -= 1.62f;
-	vec3_ti playerNode((int)floorf(pPos.x), (int)roundf(pPos.y), (int)floorf(pPos.z));
+	Vec3i playerNode((int)floorf(pPos.x), (int)roundf(pPos.y), (int)floorf(pPos.z));
 
 	auto curSeg = currentPath->getSegment(stateInfo.currentPathSegment);
 
@@ -34,7 +34,7 @@ void JoeMovementController::step(C_LocalPlayer *player, C_MoveInputHandler *move
 	auto endBpos = curSeg.getEnd();
 	auto end = endBpos.toVec3t().add(0.5f, 0, 0.5f);
 
-	auto nextSegEnd = vec3_t();
+	auto nextSegEnd = Vec3();
 
 	bool hasNextSeg = stateInfo.currentPathSegment < currentPath->getNumSegments() - 1;
 	if(hasNextSeg)
@@ -43,7 +43,7 @@ void JoeMovementController::step(C_LocalPlayer *player, C_MoveInputHandler *move
 	auto walkTarget = end;
 	bool enableNextSegmentSmoothing = true;
 	float dComp = 0.5f;
-	vec3_t addedDiff{0, 0, 0};
+	Vec3 addedDiff{0, 0, 0};
 
 	// we should probably make seperate classes for each segment type at some point, but im just doing it here for now for faster prototyping
 	switch(curSeg.getSegmentType()){
@@ -186,7 +186,7 @@ void JoeMovementController::step(C_LocalPlayer *player, C_MoveInputHandler *move
 					walkTarget = start.add(tangent.mul(0.2f)); // center if we need to get up a block
 			}
 
-			vec3_t flow{};
+			Vec3 flow{};
 
 			auto block = player->region->getBlock(playerNode);
 			if(!block->toLegacy()->material->isLiquid){
@@ -222,8 +222,8 @@ void JoeMovementController::step(C_LocalPlayer *player, C_MoveInputHandler *move
 			walkTarget = start;
 		}
 
-		vec3_t diff3d = walkTarget.sub(pPosD);
-		vec2_t diff2d = {diff3d.x, diff3d.z};
+		Vec3 diff3d = walkTarget.sub(pPosD);
+		Vec2 diff2d = {diff3d.x, diff3d.z};
 		float diffMag = diff2d.magnitude();
 		if(enableNextSegmentSmoothing && hasNextSeg && diffMag < 0.2f && fabsf(end.y - pPosD.y) < (player->isInWater() ? 0.5f : 0.1f)){ // Start taking the next segment into account when we're very close to our destination
 			auto tangent = nextSegEnd.sub(end).normalize();
@@ -240,7 +240,7 @@ void JoeMovementController::step(C_LocalPlayer *player, C_MoveInputHandler *move
 		}
 
 		float yaw = player->yaw;
-		auto forward = vec2_t::fromAngle(yaw * RAD_DEG);
+		auto forward = Vec2::fromAngle(yaw * RAD_DEG);
 		auto right = forward.cross();
 
 		movementHandler->forwardMovement = forward.dot(diff2d);

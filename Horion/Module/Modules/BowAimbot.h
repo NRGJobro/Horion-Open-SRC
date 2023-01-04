@@ -7,7 +7,7 @@ private:
 	bool silent = true;
 	bool predict = false;
 	bool visualize = false;
-	vec2_t angle;
+	Vec2 angle;
 
 public:
 	BowAimbot();

@@ -6,8 +6,8 @@
 
 class Vector3Functions {
 public:
-	static std::optional<vec3_t> getVec3FromValue(JsValueRef);
-	static std::optional<vec3_t> getVec3FromArguments(JsValueRef*, int argCount, int* nextArg = nullptr);
+	static std::optional<Vec3> getVec3FromValue(JsValueRef);
+	static std::optional<Vec3> getVec3FromArguments(JsValueRef*, int argCount, int* nextArg = nullptr);
 
 	DECL_FUN(isValid);
 	DECL_FUN(getX);

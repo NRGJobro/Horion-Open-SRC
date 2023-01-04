@@ -5,7 +5,7 @@
 class Tessellator {
 private:
 	char pad_0000[0x128];
-	vec3_t transformOffset; // 0x128
+	Vec3 transformOffset; // 0x128
 
 public:
 	void addPostTransformOffset(int x, int y, int z) {
@@ -22,5 +22,5 @@ class Mesh;
 
 class BlockTessellator {
 public:
-	mce::Mesh* getMeshForBlockInWorld(Tessellator * t, C_Block * block, vec3_ti & pos);
+	mce::Mesh* getMeshForBlockInWorld(Tessellator * t, C_Block * block, Vec3i & pos);
 };

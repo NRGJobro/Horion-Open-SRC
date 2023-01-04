@@ -45,8 +45,8 @@ bool CfindEntity(C_Entity* curEnt, bool isRegularEntity) {
 }
 
 bool space = true;
-vec3_t _pos;
-bool CanPlaceC(vec3_ti* pos) {
+Vec3 _pos;
+bool CanPlaceC(Vec3i* pos) {
 	space = true;
 	_pos = pos->toVec3t();
 	g_Data.forEachEntity([](C_Entity* ent, bool b) {
@@ -58,12 +58,12 @@ bool CanPlaceC(vec3_ti* pos) {
 	return space;
 }
 
-void CrystalAura::CPlace(C_GameMode* gm, vec3_t* pos) {
+void CrystalAura::CPlace(C_GameMode* gm, Vec3* pos) {
 	if (!pEnhanced) {
 #pragma warning(push)
 #pragma warning(disable : 4244)
-		vec3_ti blockPos = vec3_ti(pos->x, pos->y, pos->z);
-		vec3_ti upperBlockPos = vec3_ti(pos->x, pos->y + 1, pos->z);
+		Vec3i blockPos = Vec3i(pos->x, pos->y, pos->z);
+		Vec3i upperBlockPos = Vec3i(pos->x, pos->y + 1, pos->z);
 #pragma warning(pop)
 		C_Block* block = gm->player->region->getBlock(blockPos);
 		C_Block* upperBlock = gm->player->region->getBlock(upperBlockPos);
@@ -71,13 +71,13 @@ void CrystalAura::CPlace(C_GameMode* gm, vec3_t* pos) {
 		gm->buildBlock(&blockPos, g_Data.getLocalPlayer()->level->blockSide, idk);
 		return;
 	}
-	vec3_ti bestPos;
+	Vec3i bestPos;
 	bool ValidPos = false;
 	for (int x = (int)pos->x - eRange; x < pos->x + eRange; x++) {
 		for (int z = (int)pos->z - eRange; z < pos->z + eRange; z++) {
 			for (int y = (int)pos->y - eRange; y < pos->y + eRange; y++) {
-				vec3_ti blockPos = vec3_ti(x, y, z);
-				vec3_ti upperBlockPos = vec3_ti(x, y + 1, z);
+				Vec3i blockPos = Vec3i(x, y, z);
+				Vec3i upperBlockPos = Vec3i(x, y + 1, z);
 				C_Block* block = gm->player->region->getBlock(blockPos);
 				C_Block* upperBlock = gm->player->region->getBlock(upperBlockPos);
 				if (block != nullptr) {

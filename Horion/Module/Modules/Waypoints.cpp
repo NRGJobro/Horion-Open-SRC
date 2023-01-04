@@ -24,7 +24,7 @@ void Waypoints::onPreRender(C_MinecraftUIRenderContext* renderCtx) {
 	localPlayer->getDimensionId(&currentDimension);
 
 	for (auto it = waypoints->begin(); it != waypoints->end(); it++) {
-		vec3_t pos = it->second.pos;
+		Vec3 pos = it->second.pos;
 		int wpDimension = it->second.dimension;
 		if (!interdimensional && currentDimension != wpDimension)
 			continue;
@@ -64,7 +64,7 @@ void Waypoints::onPreRender(C_MinecraftUIRenderContext* renderCtx) {
 
 		if (fadeOutAtDistance && dist > 15) {
 				
-			vec2_t angle = localPlayer->currentPos.CalcAngle(pos);
+			Vec2 angle = localPlayer->currentPos.CalcAngle(pos);
 			float diff = angle.sub(localPlayer->viewAngles).normAngles().magnitude();
 			if (dist > 30) {
 				float neededDiff = lerp(40, 15, std::min((dist - 30) / 300, 1.f));
@@ -81,14 +81,14 @@ void Waypoints::onPreRender(C_MinecraftUIRenderContext* renderCtx) {
 		if (alpha < 0.01f)
 			continue;
 
-		vec4_t rectPos;
+		Vec4 rectPos;
 
 		txt = Utils::sanitize(txt);
 
 		float textWidth = DrawUtils::getTextWidth(&txt, size) + 0.5f;
 		float textHeight = DrawUtils::getFont(Fonts::RUNE)->getLineHeight() * size;
 
-		vec2_t textPos = DrawUtils::worldToScreen(pos);
+		Vec2 textPos = DrawUtils::worldToScreen(pos);
 		if (textPos.x != -1) {
 			std::string coordText;
 			textPos.y -= textHeight;
@@ -146,7 +146,7 @@ void Waypoints::onLoadConfig(void* confVoid) {
 				return;
 
 			for (json::iterator it = value.begin(); it != value.end(); ++it) {
-				vec3_t _pos;
+				Vec3 _pos;
 				int dim = 0;
 				auto val = it.value();
 				if (!val.contains("pos")) 
@@ -154,7 +154,7 @@ void Waypoints::onLoadConfig(void* confVoid) {
 				auto pos = val.at("pos");
 				if (!pos.is_null() && pos.contains("x") && pos["x"].is_number_float() && pos.contains("y") && pos["y"].is_number_float() && pos.contains("z") && pos["z"].is_number_float()) {
 					try {
-						_pos = vec3_t(pos["x"].get<double>(), pos["y"].get<double>(), pos["z"].get<double>());
+						_pos = Vec3(pos["x"].get<double>(), pos["y"].get<double>(), pos["z"].get<double>());
 					} catch (std::exception e) {
 					}
 				} else {

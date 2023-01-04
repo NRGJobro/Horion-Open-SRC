@@ -227,7 +227,7 @@ static inline void ImSwap(T& a, T& b) {
 #define FindSignature(szSignature) Utils::FindSignatureModule("Minecraft.Windows.exe", szSignature)
 #endif
 
-struct vec3_ti;
+struct Vec3i;
 
 class Utils {
 public:
@@ -237,7 +237,7 @@ public:
 		return ((mut & 0x7FFFFFui64) | ((static_cast<unsigned int>(in) >> 8u) & 0x800000u) /*copy sign bit*/) << by;
 	}
 
-	static size_t posToHash(const vec3_ti& pos);
+	static size_t posToHash(const Vec3i& pos);
 
 	template <typename type>
 	static inline auto lerp(type a, type b, float t) -> type {

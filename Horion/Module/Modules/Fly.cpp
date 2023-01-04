@@ -23,7 +23,7 @@ const char *Fly::getModuleName() {
 void Fly::onEnable() {
 	switch (mode.selected) {
 	case 5:
-		g_Data.getLocalPlayer()->setPos((*g_Data.getLocalPlayer()->getPos()).add(vec3_t(0, 1, 0)));
+		g_Data.getLocalPlayer()->setPos((*g_Data.getLocalPlayer()->getPos()).add(Vec3(0, 1, 0)));
 		break;
 	}
 }
@@ -40,7 +40,7 @@ void Fly::onTick(C_GameMode *gm) {
 
 		gameTick++;
 
-		vec3_t pos = *g_Data.getLocalPlayer()->getPos();
+		Vec3 pos = *g_Data.getLocalPlayer()->getPos();
 		pos.y += 1.3f;
 		C_MovePlayerPacket a(g_Data.getLocalPlayer(), pos);
 		g_Data.getClientInstance()->loopbackPacketSender->sendToServer(&a);
@@ -48,7 +48,7 @@ void Fly::onTick(C_GameMode *gm) {
 		C_MovePlayerPacket a2(g_Data.getLocalPlayer(), pos);
 		g_Data.getClientInstance()->loopbackPacketSender->sendToServer(&a2);
 
-		vec3_t moveVec;
+		Vec3 moveVec;
 		moveVec.x = cos(calcYaw) * horizontalSpeed;
 		moveVec.z = sin(calcYaw) * horizontalSpeed;
 
@@ -62,18 +62,18 @@ void Fly::onTick(C_GameMode *gm) {
 			float x = -sin(yaw) * length;
 			float z = cos(yaw) * length;
 
-			gm->player->setPos(pos.add(vec3_t(x, 0.5f, z)));
+			gm->player->setPos(pos.add(Vec3(x, 0.5f, z)));
 		}
 	} break;
 	case 2:
-		gm->player->velocity = vec3_t(0, 0, 0);
+		gm->player->velocity = Vec3(0, 0, 0);
 		break;
 
 	case 3: {
 		float calcYaw = (gm->player->yaw + 90) * (PI / 180);
 		float calcPitch = (gm->player->pitch) * -(PI / 180);
 
-		vec3_t moveVec;
+		Vec3 moveVec;
 		moveVec.x = cos(calcYaw) * cos(calcPitch) * horizontalSpeed;
 		moveVec.y = sin(calcPitch) * horizontalSpeed;
 		moveVec.z = sin(calcYaw) * cos(calcPitch) * horizontalSpeed;
@@ -86,7 +86,7 @@ void Fly::onTick(C_GameMode *gm) {
 			float calcYaw = (gm->player->yaw + 90) * (PI / 180);
 			float calcPitch = (gm->player->pitch) * -(PI / 180);
 
-			vec3_t pos = *g_Data.getLocalPlayer()->getPos();
+			Vec3 pos = *g_Data.getLocalPlayer()->getPos();
 			C_MovePlayerPacket a(g_Data.getLocalPlayer(), pos);
 			g_Data.getClientInstance()->loopbackPacketSender->sendToServer(&a);
 			pos.y += 0.35f;
@@ -94,7 +94,7 @@ void Fly::onTick(C_GameMode *gm) {
 			g_Data.getClientInstance()->loopbackPacketSender->sendToServer(&a);
 
 			gm->player->velocity.y = 0.465f;
-			vec3_t moveVec;
+			Vec3 moveVec;
 			moveVec.x = cos(calcYaw) * cos(calcPitch) * horizontalSpeed;
 			moveVec.z = sin(calcYaw) * cos(calcPitch) * horizontalSpeed;
 
@@ -105,14 +105,14 @@ void Fly::onTick(C_GameMode *gm) {
 			float teleportZ = sin(calcYaw) * cos(calcPitch) * 0.00000005f;
 
 			pos = *gm->player->getPos();
-			g_Data.getLocalPlayer()->setPos(vec3_t(pos.x + teleportX, pos.y - 0.15f, pos.z + teleportZ));
+			g_Data.getLocalPlayer()->setPos(Vec3(pos.x + teleportX, pos.y - 0.15f, pos.z + teleportZ));
 
 			gm->player->velocity.y -= 0.15f;
 			gameTick = 0;
 		}
 	}
 	case 5:
-		gm->player->velocity = vec3_t(0, 0, 0);
+		gm->player->velocity = Vec3(0, 0, 0);
 	}
 }
 
@@ -126,7 +126,7 @@ void Fly::onDisable() {
 			g_Data.getLocalPlayer()->canFly = false;
 		break;
 	case 1:
-		g_Data.getLocalPlayer()->velocity = vec3_t(0, 0, 0);
+		g_Data.getLocalPlayer()->velocity = Vec3(0, 0, 0);
 	}
 }
 
@@ -137,10 +137,10 @@ void Fly::onMove(C_MoveInputHandler *input) {
 
 	switch (mode.selected) {
 	case 5: {
-		vec3_t *localPlayerPos = localPlayer->getPos();
+		Vec3 *localPlayerPos = localPlayer->getPos();
 
 		float yaw = localPlayer->yaw;
-		vec2_t moveVec2d = {input->forwardMovement, -input->sideMovement};
+		Vec2 moveVec2d = {input->forwardMovement, -input->sideMovement};
 		bool pressed = moveVec2d.magnitude() > 0.01f;
 
 		if (input->isJumping) {
@@ -169,7 +169,7 @@ void Fly::onMove(C_MoveInputHandler *input) {
 			yaw += 180.f;
 		if (pressed) {
 			float calcYaw = (yaw + 90.f) * (PI / 180.f);
-			vec3_t moveVec;
+			Vec3 moveVec;
 			moveVec.x = cos(calcYaw) * horizontalSpeed;
 			moveVec.y = localPlayer->velocity.y;
 			moveVec.z = sin(calcYaw) * horizontalSpeed;

@@ -20,9 +20,9 @@ private:
 public:
 	bool facesPlayerFront; // 0x108
 
-	void getForwardVector(vec3_t*);
-	void getEulerAngles(vec3_t*);
-	void getPlayerRotation(vec2_t*);
+	void getForwardVector(Vec3*);
+	void getEulerAngles(Vec3*);
+	void getPlayerRotation(Vec2*);
 	void setOrientation(float pitch, float yaw, float roll);
 	void setOrientationDeg(float pitch, float yaw, float roll) {
 		setOrientation((-yaw - 180) * RAD_DEG, -pitch * RAD_DEG, roll * RAD_DEG);

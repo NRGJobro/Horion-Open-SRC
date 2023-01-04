@@ -4,12 +4,12 @@
 
 class JoeGoalXZ : public JoeGoal{
 private:
-	vec3_ti targetPos;
+	Vec3i targetPos;
 public:
-	JoeGoalXZ(const vec3_ti& targetPos);
+	JoeGoalXZ(const Vec3i& targetPos);
 
-	bool isInGoal(vec3_ti pos) override;
-	float getHeuristicEstimation(vec3_ti pos) override;
+	bool isInGoal(Vec3i pos) override;
+	float getHeuristicEstimation(Vec3i pos) override;
 
-	static float heuristicEstimation(vec3_ti node, vec3_ti target);
+	static float heuristicEstimation(Vec3i node, Vec3i target);
 };

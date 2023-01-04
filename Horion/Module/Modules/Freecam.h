@@ -4,8 +4,8 @@
 
 class Freecam : public IModule {
 private:
-	vec3_t oldPos;
-	vec3_t oldOffset = {};
+	Vec3 oldPos;
+	Vec3 oldOffset = {};
 	float speed = 0.325f;
 public:
 	Freecam();

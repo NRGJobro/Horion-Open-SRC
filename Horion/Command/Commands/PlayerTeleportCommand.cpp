@@ -18,7 +18,7 @@ bool PlayerTeleportCommand::execute(std::vector<std::string>* args) {
 
 	C_EntityList* entList = g_Data.getEntityList();
 	size_t listSize = entList->getListSize();
-	vec3_t pos;
+	Vec3 pos;
 
 	if (listSize > 5000) {
 		return true;

@@ -1,7 +1,7 @@
 #include "CGameMode.h"
 #include "../Memory/GameData.h"
 
-void C_GameMode::survivalDestroyBlockHack(vec3_ti const &block, int face, bool &isDestroyedOut, bool isFirst) {
+void C_GameMode::survivalDestroyBlockHack(Vec3i const &block, int face, bool &isDestroyedOut, bool isFirst) {
 	auto p = this->player;
 	p->swing();
 	if (isFirst)
@@ -18,7 +18,7 @@ void C_GameMode::survivalDestroyBlockHack(vec3_ti const &block, int face, bool &
 
 	C_PlayerActionPacket action;
 	action.action = 18;
-	action.blockPosition = vec3_ti(block.x, block.y, block.z);
+	action.blockPosition = Vec3i(block.x, block.y, block.z);
 	action.face = face;
 	action.entityRuntimeId = p->entityRuntimeId;
 	g_Data.getClientInstance()->loopbackPacketSender->sendToServer(&action);

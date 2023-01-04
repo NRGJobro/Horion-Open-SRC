@@ -107,10 +107,10 @@ public:
 	BlockTessellator* blockTessellator;  // 0x02D8
 private:
 	char pad_0x02F0[0x568];  //0x02E0
-	vec3_t origin;           //0x0890
+	Vec3 origin;           //0x0890
 public:
-	vec3_t& getOrigin() {
-		return *(vec3_t*)((char*)this + (0x798));
+	Vec3& getOrigin() {
+		return *(Vec3*)((char*)this + (0x798));
 	}
 
 	__int64 getLevelRendererPlayer() {
@@ -203,7 +203,7 @@ public:
 			float widthReal;   //0x0018
 			float heightReal;  //0x001C
 		};
-		vec2_t windowSizeReal;  //0x0018
+		Vec2 windowSizeReal;  //0x0018
 	};
 
 	float widthReal2;   //0x0020
@@ -213,7 +213,7 @@ public:
 			float widthGame;   //0x0028
 			float heightGame;  //0x002C
 		};
-		vec2_t windowSize;  //0x0028
+		Vec2 windowSize;  //0x0028
 	};
 
 	void displayClientMessageVA(const char* fmt, va_list lis, bool sendToInjector = true);
@@ -736,7 +736,7 @@ private:
 	virtual __int64 clearInProgressBAI(void);
 	virtual __int64 tickBuildAction(void);
 	virtual __int64 getSoundEngine(void) const;
-	virtual __int64 play(std::string const&, vec3_t const&, float, float);
+	virtual __int64 play(std::string const&, Vec3 const&, float, float);
 	virtual __int64 playUI(std::string const&, float, float);
 	virtual __int64 muteAudio(void);
 	virtual __int64 unMuteAudio(void);
@@ -851,15 +851,15 @@ public:
 		return reinterpret_cast<glmatrixf*>(_this + 0x2F0);
 	};
 
-	vec2_t* getMousePos() {
+	Vec2* getMousePos() {
 		uintptr_t _this = reinterpret_cast<uintptr_t>(this);
-		return reinterpret_cast<vec2_t*>(_this + 0x458);
+		return reinterpret_cast<Vec2*>(_this + 0x458);
 	}
 
-	vec2_t getFov() {
+	Vec2 getFov() {
 		uintptr_t _this = reinterpret_cast<uintptr_t>(this);
-		//vec2_t fov(fovX, fovY);
-		vec2_t fov;
+		//Vec2 fov(fovX, fovY);
+		Vec2 fov;
 		fov.x = *reinterpret_cast<float*>(_this + 0x678);
 		fov.y = *reinterpret_cast<float*>(_this + 0x68C);
 		return fov;

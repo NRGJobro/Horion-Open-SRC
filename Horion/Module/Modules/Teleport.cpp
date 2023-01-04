@@ -21,9 +21,9 @@ void Teleport::onTick(C_GameMode* gm) {
 	if (GameData::isRightClickDown() && !hasClicked) {
 		hasClicked = true;
 
-		vec3_ti block = g_Data.getLocalPlayer()->getlevel()->block;
-		if (block == vec3_ti(0, 0, 0)) return;
-		vec3_t pos = block.toFloatVector();
+		Vec3i block = g_Data.getLocalPlayer()->getlevel()->block;
+		if (block == Vec3i(0, 0, 0)) return;
+		Vec3 pos = block.toFloatVector();
 		pos.x += 0.5f;
 		pos.z += 0.5f;
 
@@ -42,13 +42,13 @@ void Teleport::onTick(C_GameMode* gm) {
 			/*int dist = (int)gm->player->getPos()->dist(tpPos);
 			int i = (int)dist / 5;
 			for (int n = 0; n < i; n++) {
-				vec3_t offs = tpPos.sub(*gm->player->getPos()).div(i).mul(n);
+				Vec3 offs = tpPos.sub(*gm->player->getPos()).div(i).mul(n);
 				C_MovePlayerPacket p = C_MovePlayerPacket(g_Data.getLocalPlayer(), gm->player->getPos()->add(offs));
 				g_Data.getClientInstance()->loopbackPacketSender->sendToServer(&p);
 			}
 			gm->player->setPos(tpPos);*/
 			float dist = gm->player->getPos()->dist(tpPos);
-			g_Data.getLocalPlayer()->lerpTo(tpPos, vec2_t(1, 1), (int)fmax((int)dist * 0.1, 1));
+			g_Data.getLocalPlayer()->lerpTo(tpPos, Vec2(1, 1), (int)fmax((int)dist * 0.1, 1));
 		} else
 			gm->player->setPos(tpPos);
 		shouldTP = false;

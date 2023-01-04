@@ -28,7 +28,7 @@ public:
 	virtual __int64 setItemWithForceBalance(int, const C_ItemStack&, bool);
 	virtual __int64 removeItem(int, int);
 	virtual __int64 removeAllItems();
-	virtual __int64 dropContents(C_BlockSource&, const vec3_t&, bool);
+	virtual __int64 dropContents(C_BlockSource&, const Vec3&, bool);
 	virtual __int64 getContainerSize();
 	virtual __int64 getMaxStackSize();
 	virtual __int64 startOpen(C_Player&);
@@ -113,7 +113,7 @@ private:
 
 public:
 	virtual __int64 getCallbackInterval(void);
-	virtual void setAssociatedBlockPos(vec3_ti const&);
+	virtual void setAssociatedBlockPos(Vec3i const&);
 	virtual void setAssociatedEntityUniqueID(__int64);
 	virtual void setSuspendInput(bool);
 	virtual __int64 onRender(void);

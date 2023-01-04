@@ -10,7 +10,7 @@
 #include "../../Memory/GameData.h"
 #include <set>
 
-JoePathFinder::JoePathFinder(vec3_ti start, C_BlockSource* reg, std::shared_ptr<JoeGoal> goal) : startPos(start), region(reg), goal(goal) {
+JoePathFinder::JoePathFinder(Vec3i start, C_BlockSource* reg, std::shared_ptr<JoeGoal> goal) : startPos(start), region(reg), goal(goal) {
 }
 
 struct NodeRef {
@@ -23,7 +23,7 @@ struct NodeRef {
 };
 
 struct Node {
-	vec3_ti pos;
+	Vec3i pos;
 	float fScore; // heuristic
 	float gScore; // total cost
 	struct {
@@ -33,7 +33,7 @@ struct Node {
 	bool isClosed;
 	bool isInOpenSet;
 
-	Node(const vec3_ti& pos, float fScore, float gScore) : pos(pos), fScore(fScore), gScore(gScore), isClosed(false), isInOpenSet(false) {}
+	Node(const Vec3i& pos, float fScore, float gScore) : pos(pos), fScore(fScore), gScore(gScore), isClosed(false), isInOpenSet(false) {}
 };
 
 struct Edge {
@@ -48,11 +48,11 @@ __forceinline unsigned __int64 rotBy(int in, unsigned int by){
 	return ((mut & 0x7FFFFFui64) | ((static_cast<unsigned int>(in) >> 8u) & 0x800000u)/*copy sign bit*/) << by;
 }
 
-__forceinline unsigned __int64 posToHash(const vec3_ti& pos){
+__forceinline unsigned __int64 posToHash(const Vec3i& pos){
 	return rotBy(pos.x, 0) | rotBy(pos.z, 24) | (static_cast<unsigned __int64>(pos.y) << 48u);
 }
 
-NodeRef findNode(std::unordered_map<unsigned __int64, Node>& allNodes, vec3_ti& pos){
+NodeRef findNode(std::unordered_map<unsigned __int64, Node>& allNodes, Vec3i& pos){
 	auto posHash = posToHash(pos);
 	auto res = allNodes.find(posHash);
 	if(res != allNodes.end()){
@@ -63,7 +63,7 @@ NodeRef findNode(std::unordered_map<unsigned __int64, Node>& allNodes, vec3_ti& 
 	return NodeRef(posHash);
 }
 
-__forceinline bool isDangerous(const vec3_ti& pos, C_BlockSource* reg, bool allowWater){
+__forceinline bool isDangerous(const Vec3i& pos, C_BlockSource* reg, bool allowWater){
 	auto obs1 = reg->getBlock(pos)->toLegacy();
 	if(obs1->material->isSuperHot)
 		return true;
@@ -96,11 +96,11 @@ __forceinline bool isDangerous(const vec3_ti& pos, C_BlockSource* reg, bool allo
 	}
 	return false;
 }
-__forceinline bool isDangerousPlayer(const vec3_ti& pos, C_BlockSource* reg, bool allowWater = false){
+__forceinline bool isDangerousPlayer(const Vec3i& pos, C_BlockSource* reg, bool allowWater = false){
 	return isDangerous(pos, reg, allowWater) || isDangerous(pos.add(0, 1, 0), reg, allowWater);
 }
 
-__forceinline bool canStandOn(const vec3_ti& pos, C_BlockSource* reg, bool inWater = false){
+__forceinline bool canStandOn(const Vec3i& pos, C_BlockSource* reg, bool inWater = false){
 	auto block = reg->getBlock(pos);
 	auto standOn = block->toLegacy();
 	bool validWater = inWater && standOn->hasWater(reg, pos);
@@ -135,7 +135,7 @@ __forceinline bool canStandOn(const vec3_ti& pos, C_BlockSource* reg, bool inWat
 		return false;
 	return fabsf(diff.x) > 0.85f && fabsf(diff.z) > 0.85f;
 }
-__forceinline bool isObstructed(const vec3_ti& pos, C_BlockSource* reg, bool allowWater = false){
+__forceinline bool isObstructed(const Vec3i& pos, C_BlockSource* reg, bool allowWater = false){
 	auto block = reg->getBlock(pos);
 	auto obs1 = block->toLegacy();
 	if(obs1->material->isBlockingMotion)
@@ -149,7 +149,7 @@ __forceinline bool isObstructed(const vec3_ti& pos, C_BlockSource* reg, bool all
 
 	return isDangerous(pos, reg, allowWater);
 }
-__forceinline bool isObstructedPlayer(const vec3_ti& pos, C_BlockSource* reg, bool allowWater = false){
+__forceinline bool isObstructedPlayer(const Vec3i& pos, C_BlockSource* reg, bool allowWater = false){
 	return isObstructed(pos, reg, allowWater) || isObstructed(pos.add(0, 1, 0), reg);
 }
 
@@ -188,7 +188,7 @@ std::vector<Edge> findEdges(std::unordered_map<unsigned __int64, Node>& allNodes
 				continue;
 			bool isDiagonal = x != 0 && z != 0;
 
-			vec3_ti newPos = startNode.pos.add(x,0, z);
+			Vec3i newPos = startNode.pos.add(x,0, z);
 
 			// lower block obstructed
 			if(isObstructed(newPos, reg, true)){
@@ -367,7 +367,7 @@ std::vector<Edge> findEdges(std::unordered_map<unsigned __int64, Node>& allNodes
 				// check if the block is a flowing block
 				auto block = reg->getBlock(newPos)->toLegacy();
 				if (block->material->isLiquid) {
-					vec3_t flow{};
+					Vec3 flow{};
 					block->liquidGetFlow(&flow, reg, &newPos);
 					if(!flow.iszero()){
 						auto tangent = newPos.sub(startNode.pos).toVec3t();

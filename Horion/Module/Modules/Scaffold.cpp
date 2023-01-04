@@ -14,31 +14,31 @@ const char* Scaffold::getModuleName() {
 	return "Scaffold";
 }
 
-bool Scaffold::tryScaffold(vec3_t blockBelow) {
+bool Scaffold::tryScaffold(Vec3 blockBelow) {
 	blockBelow = blockBelow.floor();
 
-	C_Block* block = g_Data.getLocalPlayer()->region->getBlock(vec3_ti(blockBelow));
+	C_Block* block = g_Data.getLocalPlayer()->region->getBlock(Vec3i(blockBelow));
 	C_BlockLegacy* blockLegacy = (block->blockLegacy);
 	if (blockLegacy->material->isReplaceable) {
-		vec3_ti blok(blockBelow);
+		Vec3i blok(blockBelow);
 
 		// Find neighbour
-		static std::vector<vec3_ti*> checklist;
+		static std::vector<Vec3i*> checklist;
 		if (checklist.empty()) {
-			checklist.push_back(new vec3_ti(0, -1, 0));
-			checklist.push_back(new vec3_ti(0, 1, 0));
+			checklist.push_back(new Vec3i(0, -1, 0));
+			checklist.push_back(new Vec3i(0, 1, 0));
 
-			checklist.push_back(new vec3_ti(0, 0, -1));
-			checklist.push_back(new vec3_ti(0, 0, 1));
+			checklist.push_back(new Vec3i(0, 0, -1));
+			checklist.push_back(new Vec3i(0, 0, 1));
 
-			checklist.push_back(new vec3_ti(-1, 0, 0));
-			checklist.push_back(new vec3_ti(1, 0, 0));
+			checklist.push_back(new Vec3i(-1, 0, 0));
+			checklist.push_back(new Vec3i(1, 0, 0));
 		}
 
 		bool foundCandidate = false;
 		int i = 0;
 		for (auto current : checklist) {
-			vec3_ti calc = blok.sub(*current);
+			Vec3i calc = blok.sub(*current);
 			bool Y = ((g_Data.getLocalPlayer()->region->getBlock(calc)->blockLegacy))->material->isReplaceable;
 			if (!((g_Data.getLocalPlayer()->region->getBlock(calc)->blockLegacy))->material->isReplaceable) {
 				// Found a solid block to click
@@ -91,18 +91,18 @@ void Scaffold::onTick(C_GameMode* gm) {
 
 	// Adjustment by velocity
 	float speed = g_Data.getLocalPlayer()->velocity.magnitudexz();
-	vec3_t vel = g_Data.getLocalPlayer()->velocity;
+	Vec3 vel = g_Data.getLocalPlayer()->velocity;
 	vel = vel.normalize();  // Only use values from 0 - 1
 
 
 
 
 	if (staircaseMode) {
-		vec3_t blockBelow = g_Data.getLocalPlayer()->eyePos0;  // Block 1 block below the player
+		Vec3 blockBelow = g_Data.getLocalPlayer()->eyePos0;  // Block 1 block below the player
 		blockBelow.y -= g_Data.getLocalPlayer()->height;
 		blockBelow.y -= 1.5f;
 
-		vec3_t blockBelowBelow = g_Data.getLocalPlayer()->eyePos0;  // Block 2 blocks below the player
+		Vec3 blockBelowBelow = g_Data.getLocalPlayer()->eyePos0;  // Block 2 blocks below the player
 		blockBelowBelow.y -= g_Data.getLocalPlayer()->height;
 		blockBelowBelow.y -= 2.0f;
 
@@ -125,7 +125,7 @@ void Scaffold::onTick(C_GameMode* gm) {
 			}
 		}
 	} else {
-		vec3_t blockBelow = g_Data.getLocalPlayer()->eyePos0;  // Block below the player
+		Vec3 blockBelow = g_Data.getLocalPlayer()->eyePos0;  // Block below the player
 		blockBelow.y -= g_Data.getLocalPlayer()->height;
 		blockBelow.y -= 0.5f;
 

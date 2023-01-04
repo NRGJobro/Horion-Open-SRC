@@ -1,26 +1,26 @@
 #include "Vector3Functions.h"
 
-std::optional<vec3_t> Vector3Functions::getVec3FromValue(JsValueRef ref) {
+std::optional<Vec3> Vector3Functions::getVec3FromValue(JsValueRef ref) {
 	JsValueType type;
 	auto err = chakra.JsGetValueType_(ref, &type);
 	if (type != JsObject || err != JsNoError)
-		return std::optional<vec3_t>();
+		return std::optional<Vec3>();
 
 	bool hasExternalData = false;
 	err = chakra.JsHasExternalData_(ref, &hasExternalData);
 	if (!hasExternalData || err != JsNoError)
-		return std::optional<vec3_t>();
+		return std::optional<Vec3>();
 
 	JVector3* vecInfo;
 	err = chakra.JsGetExternalData_(ref, reinterpret_cast<void**>(&vecInfo));
 	if (vecInfo->dataType != Vector3DataType || err != JsNoError)
-		return std::optional<vec3_t>();
-	return std::optional<vec3_t>(vecInfo->vec);
+		return std::optional<Vec3>();
+	return std::optional<Vec3>(vecInfo->vec);
 }
 
-std::optional<vec3_t> Vector3Functions::getVec3FromArguments(JsValueRef* args, int argCount, int* nextArg) {
+std::optional<Vec3> Vector3Functions::getVec3FromArguments(JsValueRef* args, int argCount, int* nextArg) {
 	if (argCount <= 0)
-		return std::optional<vec3_t>();
+		return std::optional<Vec3>();
 
 	auto vec = Vector3Functions::getVec3FromValue(args[0]);
 
@@ -31,7 +31,7 @@ std::optional<vec3_t> Vector3Functions::getVec3FromArguments(JsValueRef* args, i
 	}
 
 	if (argCount < 3)
-		return std::optional<vec3_t>();
+		return std::optional<Vec3>();
 
 	bool isValid = true;
 	JsValueType type;
@@ -44,7 +44,7 @@ std::optional<vec3_t> Vector3Functions::getVec3FromArguments(JsValueRef* args, i
 	}
 
 	if (!isValid)
-		return std::optional<vec3_t>();
+		return std::optional<Vec3>();
 
 	double x, y, z;
 	int err = 0;
@@ -52,12 +52,12 @@ std::optional<vec3_t> Vector3Functions::getVec3FromArguments(JsValueRef* args, i
 	err |= (int)chakra.JsNumberToDouble_(args[1], &y);
 	err |= (int)chakra.JsNumberToDouble_(args[2], &z);
 	if ((JsErrorCode)err != JsNoError)
-		return std::optional<vec3_t>();
+		return std::optional<Vec3>();
 
 	if(nextArg)
 		*nextArg += 3;
 
-	return std::optional<vec3_t>(vec3_t(x, y, z));
+	return std::optional<Vec3>(Vec3(x, y, z));
 }
 
 JsValueRef CALLBACK Vector3Functions::isValid(JsValueRef callee, bool isConstructCall, JsValueRef* arguments, unsigned short argumentCount, void* callbackState) {
@@ -124,7 +124,7 @@ JsValueRef CALLBACK Vector3Functions::constructor(JsValueRef callee, bool isCons
 	chakra.JsNumberToDouble_(arguments[2], &y);
 	chakra.JsNumberToDouble_(arguments[3], &z);
 
-	return scriptMgr.prepareVector3(vec3_t((float)x, (float)y, (float)z), reinterpret_cast<ContextObjects*>(callbackState));
+	return scriptMgr.prepareVector3(Vec3((float)x, (float)y, (float)z), reinterpret_cast<ContextObjects*>(callbackState));
 }
 
 JsValueRef CALLBACK Vector3Functions::add(JsValueRef callee, bool isConstructCall, JsValueRef* arguments, unsigned short argumentCount, void* callbackState) {
@@ -161,7 +161,7 @@ JsValueRef CALLBACK Vector3Functions::add(JsValueRef callee, bool isConstructCal
 		} break;
 		case 3: {
 			// adding with 3 individual floats
-			vec3_t oVec;
+			Vec3 oVec;
 			for(int i = 0; i < 3; i++){
 				JsValueType type;
 				chakra.JsGetValueType_(arguments[1 + i], &type);
@@ -217,7 +217,7 @@ JsValueRef CALLBACK Vector3Functions::sub(JsValueRef callee, bool isConstructCal
 	} break;
 	case 3: {
 		// adding with 3 individual floats
-		vec3_t oVec;
+		Vec3 oVec;
 		for(int i = 0; i < 3; i++){
 			JsValueType type;
 			chakra.JsGetValueType_(arguments[1 + i], &type);
@@ -273,7 +273,7 @@ JsValueRef CALLBACK Vector3Functions::div(JsValueRef callee, bool isConstructCal
 	} break;
 	case 3: {
 		// adding with 3 individual floats
-		vec3_t oVec;
+		Vec3 oVec;
 		for (int i = 0; i < 3; i++) {
 			JsValueType type;
 			chakra.JsGetValueType_(arguments[1 + i], &type);
@@ -329,7 +329,7 @@ JsValueRef CALLBACK Vector3Functions::mul(JsValueRef callee, bool isConstructCal
 	} break;
 	case 3: {
 		// adding with 3 individual floats
-		vec3_t oVec;
+		Vec3 oVec;
 		for (int i = 0; i < 3; i++) {
 			JsValueType type;
 			chakra.JsGetValueType_(arguments[1 + i], &type);

@@ -20,8 +20,8 @@ struct ClickWindow {
 		size.x = 30;
 		size.y = 30;
 	}
-	vec2_t pos;
-	vec2_t size;
+	Vec2 pos;
+	Vec2 size;
 	bool isExtended = true;
 	bool isInAnimation = false;
 	float animation = 0.1;

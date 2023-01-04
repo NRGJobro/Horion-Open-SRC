@@ -33,7 +33,7 @@ bool WaypointCommand::execute(std::vector<std::string>* args) {
 	}
 
 	if (opt == "add") {
-		vec3_t pos = player->currentPos.floor().add(0.5, 0, 0.5);
+		Vec3 pos = player->currentPos.floor().add(0.5, 0, 0.5);
 		if (args->size() == 6) {
 			pos.x = assertFloat(args->at(3));
 			pos.y = assertFloat(args->at(4));

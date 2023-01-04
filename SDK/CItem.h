@@ -144,13 +144,13 @@ public:
 	virtual __int64 buildIdAux(short, CompoundTag const *);                                                                                // 77
 	virtual bool canUseOnSimTick(void);                                                                                                    // 78
 	virtual __int64 use(C_ItemStack &, C_Player &);                                                                                        // 79
-	virtual __int64 dispense(C_BlockSource &, __int64, int, vec3_t const &, unsigned char);                                                // 80
+	virtual __int64 dispense(C_BlockSource &, __int64, int, Vec3 const &, unsigned char);                                                // 80
 	virtual __int64 useTimeDepleted(C_ItemStack &, Level *, C_Player *);                                                          // 81
 	virtual __int64 releaseUsing(C_ItemStack &, C_Player *, int);                                                                          // 82
 	virtual __int64 getDestroySpeed(C_ItemStack const &, C_Block const &);                                                                 // 83
 	virtual __int64 hurtActor(C_ItemStack &, C_Entity &, C_Entity &);                                                                      // 84
 	virtual __int64 hitActor(C_ItemStack &, C_Entity &, C_Entity &);                                                                       // 85
-	virtual __int64 hitBlock(C_ItemStack &, C_Block const &, vec3_ti const &, C_Entity &);                                                 // 86
+	virtual __int64 hitBlock(C_ItemStack &, C_Block const &, Vec3i const &, C_Entity &);                                                 // 86
 	virtual __int64 mineBlock(C_ItemStack &, C_Block const &, int, int, int, C_Entity *);                                                  // 87
 	virtual __int64 mineBlock(C_ItemStack &, C_Block const &, int, int, int, C_Entity *) const;                                            // 88
 	virtual __int64 buildDescriptionName(C_ItemStack const &);                                                                             // 89
@@ -188,9 +188,9 @@ public:
 	virtual __int64 getFurnaceBurnIntervalMultipler(C_ItemStack const &);                                                                  // 121
 	virtual __int64 getFurnaceXPmultiplier(C_ItemStack const &);                                                                           // 122
 	virtual __int64 getAuxValuesDescription(void);                                                                                         // 123
-	virtual __int64 _checkUseOnPermissions(C_Entity &, C_ItemStack &, unsigned char const &, vec3_ti const &);                             // 124
-	virtual __int64 _calculatePlacePos(C_ItemStack &, C_Entity &, unsigned char &, vec3_ti &);                                             // 125
-	virtual __int64 _useOn(C_ItemStack &, C_Entity &, vec3_ti, unsigned char, float, float, float);                                        // 126
+	virtual __int64 _checkUseOnPermissions(C_Entity &, C_ItemStack &, unsigned char const &, Vec3i const &);                             // 124
+	virtual __int64 _calculatePlacePos(C_ItemStack &, C_Entity &, unsigned char &, Vec3i &);                                             // 125
+	virtual __int64 _useOn(C_ItemStack &, C_Entity &, Vec3i, unsigned char, float, float, float);                                        // 126
 	virtual __int64 getArmorKnockbackResistance(void);                                                                                     // 127
 
 public:

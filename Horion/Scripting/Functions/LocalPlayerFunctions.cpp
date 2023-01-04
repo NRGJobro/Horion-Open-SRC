@@ -61,7 +61,7 @@ JsValueRef CALLBACK LocalPlayerFunctions::setViewAngles(JsValueRef callee, bool 
 		THROW(L"Invalid vector!");
 	}
 
-	vec2_t temp = vec2_t(vecOpt.value().x, vecOpt.value().y).sub(ent->viewAngles);
+	Vec2 temp = Vec2(vecOpt.value().x, vecOpt.value().y).sub(ent->viewAngles);
 	reinterpret_cast<C_LocalPlayer*>(ent)->applyTurnDelta(&temp);
 	return chakra.trueValue();
 }
@@ -146,7 +146,7 @@ JsValueRef CALLBACK LocalPlayerFunctions::breakBlock(JsValueRef callee, bool isC
 		THROW(L"Invalid vector!");
 	}
 
-	vec3_ti pos = vecOpt.value();
+	Vec3i pos = vecOpt.value();
 
 	g_Data.getCGameMode()->destroyBlock(&pos, 1);
 	return chakra.trueValue();
@@ -165,7 +165,7 @@ JsValueRef CALLBACK LocalPlayerFunctions::placeBlock(JsValueRef callee, bool isC
 		THROW(L"Invalid vector!");
 	}
 
-	vec3_ti pos = vecOpt.value();
+	Vec3i pos = vecOpt.value();
 	bool idk = true;
 	g_Data.getCGameMode()->buildBlock(&pos, 1, idk);
 	return chakra.trueValue();
@@ -184,7 +184,7 @@ JsValueRef CALLBACK LocalPlayerFunctions::breakBlockRelativeToPlr(JsValueRef cal
 		THROW(L"Invalid vector!");
 	}
 
-	vec3_ti pos = vecOpt.value().add(*plr->getPos());
+	Vec3i pos = vecOpt.value().add(*plr->getPos());
 
 	g_Data.getCGameMode()->destroyBlock(&pos, 1);
 	return chakra.trueValue();
@@ -203,7 +203,7 @@ JsValueRef CALLBACK LocalPlayerFunctions::placeBlockRelativeToPlr(JsValueRef cal
 		THROW(L"Invalid vector!");
 	}
 
-	vec3_ti pos = vecOpt.value().add(*plr->getPos());
+	Vec3i pos = vecOpt.value().add(*plr->getPos());
 	bool idk = true;
 	g_Data.getCGameMode()->buildBlock(&pos, 1, idk);
 	return chakra.trueValue();

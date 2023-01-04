@@ -439,8 +439,8 @@ __int64 Hooks::RenderText(__int64 a1, C_MinecraftUIRenderContext* renderCtx) {
 				// Draw BIG epic horion watermark
 				/*{
 					std::string text = "H O R I O N";
-					vec2_t textPos = vec2_t(wid.x / 2.f - DrawUtils::getTextWidth(&text, 8.f) / 2.f, wid.y / 9.5f);
-					vec4_t rectPos = vec4_t(textPos.x - 55.f, textPos.y - 15.f, textPos.x + DrawUtils::getTextWidth(&text, 8.f) + 55.f, textPos.y + 75.f);
+					Vec2 textPos = Vec2(wid.x / 2.f - DrawUtils::getTextWidth(&text, 8.f) / 2.f, wid.y / 9.5f);
+					Vec4 rectPos = Vec4(textPos.x - 55.f, textPos.y - 15.f, textPos.x + DrawUtils::getTextWidth(&text, 8.f) + 55.f, textPos.y + 75.f);
 					DrawUtils::fillRectangle(rectPos, MC_Color(13, 29, 48, 1), 1.f);
 					DrawUtils::drawRectangle(rectPos, rcolors, 1.f, 2.f);
 					DrawUtils::drawText(textPos, &text, MC_Color(255, 255, 255, 1), 8.f);
@@ -448,7 +448,7 @@ __int64 Hooks::RenderText(__int64 a1, C_MinecraftUIRenderContext* renderCtx) {
 
 				// Draw Custom Geo Button
 				if (g_Data.allowWIPFeatures() && g_Data.isInjectorConnectionActive()) {
-					if (HImGui.Button("Load Script Folder", vec2_t(wid.x * (0.765f - 0.5f), wid.y * 0.92f), true)) {
+					if (HImGui.Button("Load Script Folder", Vec2(wid.x * (0.765f - 0.5f), wid.y * 0.92f), true)) {
 						HorionDataPacket packet;
 						packet.cmd = CMD_FOLDERCHOOSER;
 						auto tmp = std::shared_ptr<unsigned char[]>(new unsigned char[300]);
@@ -484,7 +484,7 @@ __int64 Hooks::RenderText(__int64 a1, C_MinecraftUIRenderContext* renderCtx) {
 
 						g_Data.sendPacketToInjector(packet);
 					}
-					if (HImGui.Button("Custom Geometry", vec2_t(wid.x * 0.765f, wid.y * 0.92f), true)) {
+					if (HImGui.Button("Custom Geometry", Vec2(wid.x * 0.765f, wid.y * 0.92f), true)) {
 						HorionDataPacket packet;
 						packet.cmd = CMD_FILECHOOSER;
 						auto tmp = std::shared_ptr<unsigned char[]>(new unsigned char[300]);
@@ -515,7 +515,7 @@ __int64 Hooks::RenderText(__int64 a1, C_MinecraftUIRenderContext* renderCtx) {
 
 						g_Data.sendPacketToInjector(packet);
 					}
-					if (HImGui.Button("Custom Texture", vec2_t(wid.x * 0.5f, wid.y * 0.92f), true)) {
+					if (HImGui.Button("Custom Texture", Vec2(wid.x * 0.5f, wid.y * 0.92f), true)) {
 						HorionDataPacket packet;
 						packet.cmd = CMD_FILECHOOSER;
 						auto tmp = std::shared_ptr<unsigned char[]>(new unsigned char[500]);
@@ -579,9 +579,9 @@ __int64 Hooks::RenderText(__int64 a1, C_MinecraftUIRenderContext* renderCtx) {
 					static constexpr bool isOnRightSide = true;
 
 					float yOffset = 0;  // Offset of next Text
-					vec2_t windowSize = g_Data.getClientInstance()->getGuiData()->windowSize;
-					vec2_t windowSizeReal = g_Data.getClientInstance()->getGuiData()->windowSizeReal;
-					vec2_t mousePos = *g_Data.getClientInstance()->getMousePos();
+					Vec2 windowSize = g_Data.getClientInstance()->getGuiData()->windowSize;
+					Vec2 windowSizeReal = g_Data.getClientInstance()->getGuiData()->windowSizeReal;
+					Vec2 mousePos = *g_Data.getClientInstance()->getMousePos();
 
 					// Convert mousePos to visual Pos
 					{
@@ -608,7 +608,7 @@ __int64 Hooks::RenderText(__int64 a1, C_MinecraftUIRenderContext* renderCtx) {
 
 						float nameLength = DrawUtils::getTextWidth(&name, nameTextSize);
 						float fullTextLength = nameLength + DrawUtils::getTextWidth(&version, versionTextSize);
-						vec4_t rect = vec4_t(
+						Vec4 rect = Vec4(
 							windowSize.x - margin - fullTextLength - borderPadding * 2,
 							windowSize.y - margin - textHeight,
 							windowSize.x - margin + borderPadding,
@@ -620,8 +620,8 @@ __int64 Hooks::RenderText(__int64 a1, C_MinecraftUIRenderContext* renderCtx) {
 						} else {
 							DrawUtils::fillRectangle(rect, MC_Color(12, 12, 12), 1.f);
 						}
-						DrawUtils::drawText(vec2_t(rect.x + borderPadding, rect.y), &name, MC_Color(rcolors), nameTextSize);
-						DrawUtils::drawText(vec2_t(rect.x + borderPadding + nameLength, rect.w - 7), &version, MC_Color(rcolors), versionTextSize);
+						DrawUtils::drawText(Vec2(rect.x + borderPadding, rect.y), &name, MC_Color(rcolors), nameTextSize);
+						DrawUtils::drawText(Vec2(rect.x + borderPadding + nameLength, rect.w - 7), &version, MC_Color(rcolors), versionTextSize);
 					}
 
 					// Draw ArrayList
@@ -639,7 +639,7 @@ __int64 Hooks::RenderText(__int64 a1, C_MinecraftUIRenderContext* renderCtx) {
 							bool enabled;
 							int keybind;
 							float textWidth;
-							vec2_t* pos;
+							Vec2* pos;
 							bool shouldRender = true;
 
 							IModuleContainer(std::shared_ptr<IModule> mod) {
@@ -657,7 +657,7 @@ __int64 Hooks::RenderText(__int64 a1, C_MinecraftUIRenderContext* renderCtx) {
 									moduleName = text;
 								}
 
-								if (!this->enabled && *this->pos == vec2_t(0.f, 0.f))
+								if (!this->enabled && *this->pos == Vec2(0.f, 0.f))
 									this->shouldRender = false;
 								this->textWidth = DrawUtils::getTextWidth(&moduleName, hudModule->scale);
 							}
@@ -723,15 +723,15 @@ __int64 Hooks::RenderText(__int64 a1, C_MinecraftUIRenderContext* renderCtx) {
 								it->pos->y = 0.f;
 							}
 
-							vec2_t textPos = vec2_t(
+							Vec2 textPos = Vec2(
 								xOffset + textPadding,
 								yOffset + textPadding);
-							vec4_t rectPos = vec4_t(
+							Vec4 rectPos = Vec4(
 								xOffset - 2,
 								yOffset,
 								isOnRightSide ? windowSize.x : textWidth + (textPadding * 2),
 								yOffset + textPadding * 2 + textHeight);
-							vec4_t leftRect = vec4_t(
+							Vec4 leftRect = Vec4(
 								xOffset - 2,
 								yOffset,
 								xOffset - 1,
@@ -754,7 +754,7 @@ __int64 Hooks::RenderText(__int64 a1, C_MinecraftUIRenderContext* renderCtx) {
 							}
 							DrawUtils::fillRectangle(leftRect, MC_Color(currColor), 1.f);
 							if (!GameData::canUseMoveKeys() && rectPos.contains(&mousePos) && hudModule->clickToggle) {
-								vec4_t selectedRect = rectPos;
+								Vec4 selectedRect = rectPos;
 								selectedRect.x = leftRect.z;
 								if (leftMouseDown) {
 									DrawUtils::fillRectangle(selectedRect, MC_Color(0.8f, 0.8f, 0.8f), 0.8f);
@@ -809,10 +809,10 @@ __int64 Hooks::RenderText(__int64 a1, C_MinecraftUIRenderContext* renderCtx) {
 
 				float titleWidth = DrawUtils::getTextWidth(&box->title, titleTextSize);
 				float msgWidth = DrawUtils::getTextWidth(&box->message, messageTextSize);
-				vec2_t centerPos(wid.x / 2.f, wid.y / 9.f);
-				vec2_t textPos = vec2_t(wid.x / 2.f - titleWidth / 2.f, wid.y / 9.f);
-				vec2_t msgPos = vec2_t(wid.x / 2.f - msgWidth / 2.f, textPos.y + titleTextHeight + paddingVert);
-				vec4_t rectPos = vec4_t(
+				Vec2 centerPos(wid.x / 2.f, wid.y / 9.f);
+				Vec2 textPos = Vec2(wid.x / 2.f - titleWidth / 2.f, wid.y / 9.f);
+				Vec2 msgPos = Vec2(wid.x / 2.f - msgWidth / 2.f, textPos.y + titleTextHeight + paddingVert);
+				Vec4 rectPos = Vec4(
 					centerPos.x - paddingHoriz - std::max(titleWidth, msgWidth) / 2,
 					centerPos.y - paddingVert,
 					centerPos.x + paddingHoriz + std::max(titleWidth, msgWidth) / 2,
@@ -876,8 +876,8 @@ float Hooks::Dimension_getTimeOfDay(__int64 _this, int a2, float a3) {
 	return oGetTimeOfDay(_this, a2, a3);
 }
 
-float Hooks::Dimension_getSunIntensity(__int64 a1, float a2, vec3_t* a3, float a4) {
-	static auto oGetSunIntensity = g_Hooks.Dimension_getSunIntensityHook->GetFastcall<float, __int64, float, vec3_t*, float>();
+float Hooks::Dimension_getSunIntensity(__int64 a1, float a2, Vec3* a3, float a4) {
+	static auto oGetSunIntensity = g_Hooks.Dimension_getSunIntensityHook->GetFastcall<float, __int64, float, Vec3*, float>();
 
 	static auto nightMod = moduleMgr->getModule<NightMode>();
 	if (nightMod->isEnabled()) {
@@ -895,8 +895,8 @@ void Hooks::ChestBlockActor_tick(C_ChestBlockActor* _this, void* a) {
 		GameData::addChestToList(_this);
 }
 
-void Hooks::Actor_lerpMotion(C_Entity* _this, vec3_t motVec) {
-	static auto oLerp = g_Hooks.Actor_lerpMotionHook->GetFastcall<void, C_Entity*, vec3_t>();
+void Hooks::Actor_lerpMotion(C_Entity* _this, Vec3 motVec) {
+	static auto oLerp = g_Hooks.Actor_lerpMotionHook->GetFastcall<void, C_Entity*, Vec3>();
 
 	if (g_Data.getLocalPlayer() != _this)
 		return oLerp(_this, motVec);
@@ -1102,14 +1102,14 @@ void Hooks::MultiLevelPlayer_tick(C_EntityList* _this) {
 	GameData::EntityList_tick(_this);
 }
 
-void Hooks::GameMode_startDestroyBlock(C_GameMode* _this, vec3_ti* a2, uint8_t face, void* a4, void* a5) {
-	static auto oFunc = g_Hooks.GameMode_startDestroyBlockHook->GetFastcall<void, C_GameMode*, vec3_ti*, uint8_t, void*, void*>();
+void Hooks::GameMode_startDestroyBlock(C_GameMode* _this, Vec3i* a2, uint8_t face, void* a4, void* a5) {
+	static auto oFunc = g_Hooks.GameMode_startDestroyBlockHook->GetFastcall<void, C_GameMode*, Vec3i*, uint8_t, void*, void*>();
 
 	static auto nukerModule = moduleMgr->getModule<Nuker>();
 	static auto instaBreakModule = moduleMgr->getModule<InstaBreak>();
 
 	if (nukerModule->isEnabled()) {
-		vec3_ti tempPos;
+		Vec3i tempPos;
 
 		int range = nukerModule->getNukerRadius();
 		const bool isVeinMiner = nukerModule->isVeinMiner();
@@ -1698,7 +1698,7 @@ void Hooks::LocalPlayer__updateFromCamera(__int64 a1, C_Camera* camera) {
 	auto func = g_Hooks.LocalPlayer__updateFromCameraHook->GetFastcall<__int64, __int64, C_Camera*>();
 	/* auto noHurtcamMod = moduleMgr->getModule<NoHurtcam>();
 	if (noHurtcamMod->isEnabled() && g_Data.isInGame() && g_Data.getLocalPlayer()->isAlive()) {
-		vec2_t rot;
+		Vec2 rot;
 		camera->getPlayerRotation(&rot);
 		if (camera->facesPlayerFront) {
 			rot.x *= -1;  // rotate back
@@ -1720,8 +1720,8 @@ bool Hooks::Mob__isImmobile(C_Entity* ent) {
 	return func(ent);
 }
 
-void Hooks::Actor__setRot(C_Entity* _this, vec2_t& angle) {
-	auto func = g_Hooks.Actor__setRotHook->GetFastcall<void, C_Entity*, vec2_t&>();
+void Hooks::Actor__setRot(C_Entity* _this, Vec2& angle) {
+	auto func = g_Hooks.Actor__setRotHook->GetFastcall<void, C_Entity*, Vec2&>();
 	auto killauraMod = moduleMgr->getModule<Killaura>();
 	auto freelookMod = moduleMgr->getModule<Freelook>();
 	if (killauraMod->isEnabled() && !killauraMod->targetListEmpty && killauraMod->rotations && _this == g_Data.getLocalPlayer()) {

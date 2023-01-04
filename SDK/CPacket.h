@@ -23,7 +23,7 @@ private:
 	char pad_[0x28];  //0x8
 public:
 	int sound;           //0x28
-	vec3_t pos;          //0x2C
+	Vec3 pos;          //0x2C
 	int extraData = -1;  //0x38
 private:
 	int unknown = 0;  //0x3C
@@ -42,9 +42,9 @@ public:
 	//uint64_t entityRuntimeId; //0x0020
 	float pitch;  //0x0028
 	float yaw;
-	vec3_t pos;       //0x0030
+	Vec3 pos;       //0x0030
 	float yawUnused;  //0x0038
-	vec3_t velocity;
+	Vec3 velocity;
 	float InputAD;  // 1 for A, -1 for D, multiply by sqrt(2)/2 if mixed with InputWS
 	float InputWS;  // 1 for W, -1 for S, multiply by sqrt(2)/2 if mixed with InputAD
 	uint8_t epicpad[12];
@@ -56,7 +56,7 @@ public:
 
 public:
 	PlayerAuthInputPacket();
-	PlayerAuthInputPacket(vec3_t pos, float pitch, float yaw, float yawUnused);
+	PlayerAuthInputPacket(Vec3 pos, float pitch, float yaw, float yawUnused);
 };
 
 /*class C_ActorFallPacket : public C_Packet {
@@ -73,7 +73,7 @@ class C_PlayerActionPacket : public C_Packet {
 public:
 	C_PlayerActionPacket();
 	char pad_0x8[0x28];       //0x8
-	vec3_ti blockPosition;    // 0x28
+	Vec3i blockPosition;    // 0x28
 	int face;                 // 0x34
 	int action;               // 0x38
 	__int64 entityRuntimeId;  // 0x40
@@ -146,7 +146,7 @@ public:
 
 class C_InteractPacket : public C_Packet {
 public:
-	C_InteractPacket(/**enum InteractPacket::Action, class ActorRuntimeID, vec3_t const&*/);
+	C_InteractPacket(/**enum InteractPacket::Action, class ActorRuntimeID, Vec3 const&*/);
 private:
 	char padding[0x28];
 public:
@@ -231,14 +231,14 @@ public:
 __declspec(align(8)) class C_MovePlayerPacket : public C_Packet {
 public:
 	C_MovePlayerPacket();
-	C_MovePlayerPacket(C_LocalPlayer* player, vec3_t pos);
+	C_MovePlayerPacket(C_LocalPlayer* player, Vec3 pos);
 
 	//uintptr_t** vTable;		// 0x0
 private:
 	char filler[0x28];  // 0x8
 public:
 	__int64 entityRuntimeID;  //0x28
-	vec3_t Position;          //0x30
+	Vec3 Position;          //0x30
 	float pitch;              //0x3c
 	float yaw;                //0x40
 	float headYaw;            //0x44

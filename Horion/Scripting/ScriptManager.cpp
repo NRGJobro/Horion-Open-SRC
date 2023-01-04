@@ -239,7 +239,7 @@ void ScriptManager::prepareContext(JsContextRef* ctx, ContextObjects* obj) {
 	prepareInventoryFunctions(obj->inventoryObject, obj);
 }
 
-JsValueRef ScriptManager::prepareVector3(vec3_t vec, ContextObjects* objs) {
+JsValueRef ScriptManager::prepareVector3(Vec3 vec, ContextObjects* objs) {
 	JsValueRef obj;
 	JVector3* data = new JVector3(vec);
 	auto err = chakra.JsCreateExternalObject_(
@@ -260,7 +260,7 @@ JsValueRef ScriptManager::prepareVector3(vec3_t vec, ContextObjects* objs) {
 	return obj;
 }
 
-JsValueRef ScriptManager::prepareVector2(vec2_t vec, ContextObjects* objs) {
+JsValueRef ScriptManager::prepareVector2(Vec2 vec, ContextObjects* objs) {
 	JsValueRef obj;
 	JVector2* data = new JVector2(vec);
 	auto err = chakra.JsCreateExternalObject_(

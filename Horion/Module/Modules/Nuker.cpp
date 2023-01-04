@@ -15,7 +15,7 @@ const char* Nuker::getModuleName() {
 
 void Nuker::onTick(C_GameMode* gm) {
 	if (!autodestroy) return;
-	vec3_ti tempPos = *gm->player->getPos();
+	Vec3i tempPos = *gm->player->getPos();
 	for (int x = -nukerRadius; x < nukerRadius; x++) {
 		for (int y = -nukerRadius; y < nukerRadius; y++) {
 			for (int z = -nukerRadius; z < nukerRadius; z++) {

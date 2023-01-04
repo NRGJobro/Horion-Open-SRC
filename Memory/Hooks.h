@@ -89,15 +89,15 @@ private:
 	static __int64 RenderText(__int64 a1, C_MinecraftUIRenderContext* renderCtx);
 	static float* Dimension_getFogColor(__int64, float* color, __int64 brightness, float a4);
 	static float Dimension_getTimeOfDay(__int64, int a2, float a3);
-	static float Dimension_getSunIntensity(__int64, float a2, vec3_t* a3, float a4);
+	static float Dimension_getSunIntensity(__int64, float a2, Vec3* a3, float a4);
 	static void ChestBlockActor_tick(C_ChestBlockActor*, void* a);
-	static void Actor_lerpMotion(C_Entity* _this, vec3_t);
+	static void Actor_lerpMotion(C_Entity* _this, Vec3);
 	static int AppPlatform_getGameEdition(__int64 _this);
 	static void PleaseAutoComplete(__int64 _this, __int64 a2, TextHolder* text, int a4);
 	static void LoopbackPacketSender_sendToServer(C_LoopbackPacketSender* a, C_Packet* packet);
 	static float LevelRendererPlayer_getFov(__int64 _this, float a2, bool a3);
 	static void MultiLevelPlayer_tick(C_EntityList* entityList);
-	static void GameMode_startDestroyBlock(C_GameMode* _this, vec3_ti* a2, uint8_t face, void* a4, void* a5);
+	static void GameMode_startDestroyBlock(C_GameMode* _this, Vec3i* a2, uint8_t face, void* a4, void* a5);
 	static void HIDController_keyMouse(C_HIDController* _this, void* a2, void* a3);
 	static int BlockLegacy_getRenderLayer(C_BlockLegacy* a1);
 	static __int8* BlockLegacy_getLightEmission(C_BlockLegacy* _this, __int8* a2);
@@ -127,7 +127,7 @@ private:
 	static __int64 Cube__compile(__int64 a1, __int64 a2);
 	static void LocalPlayer__updateFromCamera(__int64 a1, C_Camera* a2);
 	static bool Mob__isImmobile(C_Entity*);
-	static void Actor__setRot(C_Entity* _this, vec2_t& angle);
+	static void Actor__setRot(C_Entity* _this, Vec2& angle);
 	static void test(void* _this);
 	static bool playerCallBack(C_Player* lp, __int64 a2, __int64 a3);
 	static void InventoryTransactionManager__addAction(C_InventoryTransactionManager*, C_InventoryAction&);

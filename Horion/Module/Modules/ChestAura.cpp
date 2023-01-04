@@ -16,11 +16,11 @@ void ChestAura::onTick(C_GameMode* gm) {
 	if (g_Data.getLocalPlayer()->getSupplies()->inventory->isFull())
 		return;
 
-	vec3_t* pos = gm->player->getPos();
+	Vec3* pos = gm->player->getPos();
 	for (int x = (int)pos->x - range; x < pos->x + range; x++) {
 		for (int z = (int)pos->z - range; z < pos->z + range; z++) {
 			for (int y = (int)pos->y - range; y < pos->y + range; y++) {
-				vec3_ti pos = vec3_ti(x, y, z);
+				Vec3i pos = Vec3i(x, y, z);
 				C_Block* block = gm->player->region->getBlock(pos);
 				if (block != nullptr && g_Data.canUseMoveKeys()) {
 					auto id = gm->player->region->getBlock(pos)->toLegacy()->blockId;
