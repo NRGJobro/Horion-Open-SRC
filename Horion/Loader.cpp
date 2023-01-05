@@ -34,7 +34,7 @@ DWORD WINAPI keyThread(LPVOID lpParam) {
 	HIDController** hidController = Game.getHIDController();
 
 	while (isRunning) {
-		if ((GameData::isKeyDown('L') && GameData::isKeyDown(VK_CONTROL)) || GameData::shouldTerminate()) {  // Press L to uninject
+		if ((GameData::isKeyDown('L') && GameData::isKeyDown(VK_CONTROL)) || GameData::isKeyDown(VK_END) || GameData::shouldTerminate()) {  // Press L to uninject
 			isRunning = false;
 			break;
 		}
