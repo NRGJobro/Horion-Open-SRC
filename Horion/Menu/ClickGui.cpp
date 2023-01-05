@@ -36,11 +36,11 @@ static constexpr float textHeight = textSize * 9.0f;
 static constexpr float categoryMargin = 0.5f;
 static constexpr float paddingRight = 13.5f;
 static constexpr float crossSize = textHeight / 2.f;
-static constexpr float crossWidth = 0.2f;
+static constexpr float crossWidth = 0.25f;
 static constexpr float backgroundAlpha = 1;
 
 static const MC_Color whiteColor = MC_Color(255,255,255);
-static const MC_Color moduleColor = MC_Color(0x12, 0x12, 0x12); // background
+static const MC_Color moduleColor = MC_Color(18, 18, 18); // background
 static const MC_Color selectedModuleColor = moduleColor.lerp(whiteColor, 0.08f);  // 30, 110, 200
 static const MC_Color enabledModuleColor = moduleColor.lerp(whiteColor, 0.04f);  
 static const MC_Color brightModuleBlendColor = moduleColor.lerp(whiteColor, 0.2f); // tooltip border & category divider

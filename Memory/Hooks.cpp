@@ -212,11 +212,11 @@ void Hooks::Init() {
 		g_Hooks.InventoryTransactionManager__addActionHook = std::make_unique<FuncHook>(addAction, Hooks::InventoryTransactionManager__addAction);
 #endif
 
-		void* localPlayerUpdateFromCam = reinterpret_cast<void*>(FindSignature("48 89 5C 24 10 57 48 81 EC ?? ?? ?? ?? 48 8B 05 ?? ?? ?? ?? 48 33 C4 48 89 84 24 ?? ?? ?? ?? 80"));//Broken
-		g_Hooks.LocalPlayer__updateFromCameraHook = std::make_unique<FuncHook>(localPlayerUpdateFromCam, Hooks::LocalPlayer__updateFromCamera);
+		//void* localPlayerUpdateFromCam = reinterpret_cast<void*>(FindSignature("48 8b c4 53 48 81 ec ? ? ? ? 0f 29 70 ? 0f 29 78 ? 48 8b 05 ? ? ? ? 48 33 c4 48 89 84 24 ? ? ? ? 4d 8b d0"));
+		//g_Hooks.LocalPlayer__updateFromCameraHook = std::make_unique<FuncHook>(localPlayerUpdateFromCam, Hooks::LocalPlayer__updateFromCamera);
 
-		//void* renderNameTags = reinterpret_cast<void*>(FindSignature("4C 8B DC 49 89 5B ? 55 56 57 41 54 41 55 41 56 41 57 48 81 EC ? ? ? ? 41 0F 29 73 ? 41 0F 29 7B ? 45 0F 29 43 ? 48 8B 05"));//Broken
-		//g_Hooks.LevelRendererPlayer__renderNameTagsHook = std::make_unique<FuncHook>(renderNameTags, Hooks::LevelRendererPlayer__renderNameTags);
+		void* renderNameTags = reinterpret_cast<void*>(FindSignature("48 8b c4 48 89 58 ? 55 56 57 41 54 41 55 41 56 41 57 48 8d a8 ? ? ? ? 48 81 ec ? ? ? ? 0f 29 70 ? 0f 29 78 ? 44 0f 29 40 ? 48 8b 05 ? ? ? ? 48 33 c4 48 89 85 ? ? ? ? 49 8b f1"));//Broken
+		g_Hooks.LevelRendererPlayer__renderNameTagsHook = std::make_unique<FuncHook>(renderNameTags, Hooks::LevelRendererPlayer__renderNameTags);
 		
 		static constexpr auto counterStart = __COUNTER__ + 1;
 		#define lambda_counter (__COUNTER__ - counterStart)
@@ -1190,16 +1190,7 @@ float Hooks::GetGamma(uintptr_t* a1) {
 			obtainedSettings++;
 		} else if (!strcmp(settingname->getText(), "gfx_field_of_view")) {
 			float* FieldOfView = (float*)((uintptr_t)list[i] + 24);
-			if (zoomMod->isEnabled())
-				zoomMod->OGFov = *FieldOfView;
-			// Zoom calc
-			{
-				static auto zoomModule = moduleMgr->getModule<Zoom>();
-				if (zoomModule->isEnabled()) zoomModule->target = zoomModule->strength;
-				zoomModule->modifier = zoomModule->target - ((zoomModule->target - zoomModule->modifier) * 0.8f);
-				if (abs(zoomModule->modifier - zoomModule->target) < 0.1f && !zoomModule->isEnabled())
-					zoomModule->zooming = false;
-			}
+			
 			obtainedSettings++;
 		}
 		if (obtainedSettings == 3) break;
@@ -1447,7 +1438,7 @@ __int64 Hooks::GameMode_attack(GameMode* _this, Entity* ent) {
 }
 void Hooks::LocalPlayer__updateFromCamera(__int64 a1, Camera* camera) {
 	auto func = g_Hooks.LocalPlayer__updateFromCameraHook->GetFastcall<__int64, __int64, Camera*>();
-	/* auto noHurtcamMod = moduleMgr->getModule<NoHurtcam>();
+	auto noHurtcamMod = moduleMgr->getModule<NoHurtcam>();
 	if (noHurtcamMod->isEnabled() && Game.isInGame() && Game.getLocalPlayer()->isAlive()) {
 		Vec2 rot;
 		camera->getPlayerRotation(&rot);
@@ -1458,7 +1449,6 @@ void Hooks::LocalPlayer__updateFromCamera(__int64 a1, Camera* camera) {
 		}
 		camera->setOrientationDeg(rot.x, rot.y, 0);
 	}
-	*/
 	func(a1, camera);
 }
 bool Hooks::Mob__isImmobile(Entity* ent) {
