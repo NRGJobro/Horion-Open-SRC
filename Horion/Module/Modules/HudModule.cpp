@@ -127,7 +127,7 @@ void HudModule::onPostRender(MinecraftUIRenderContext* renderCtx) {
 	float f = 10.f * scale;
 	std::string tempStr("Movement");
 	float len = DrawUtils::getTextWidth(&tempStr, scale) + 7.f;
-	float startY = tabgui ? 6 * f : 0.f;
+	float startY = tabgui ? 7 * f : 0.f;
 	{  // FPS
 		if (!(Game.getLocalPlayer() == nullptr || !fps)) {
 			std::string fpsText = "FPS: " + std::to_string(Game.getFPS());
