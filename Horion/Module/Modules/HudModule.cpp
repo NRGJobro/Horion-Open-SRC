@@ -28,22 +28,6 @@ void HudModule::drawKeystroke(char key, const Vec2& pos) {
 	static auto ClientThemes = moduleMgr->getModule<ClientTheme>();
 	std::string keyString = Utils::getKeybindName(key);
 	GameSettingsInput* input = Game.getClientInstance()->getGameSettingsInput();
-	if (key == *input->forwardKey) {
-		Vec4 rectPos(
-			pos.x,
-			pos.y,
-			pos.x + 20.f,
-			pos.y + 20.f);
-		Vec2 textPos(
-			(rectPos.x + (rectPos.z - rectPos.x) / 2) - (DrawUtils::getTextWidth(&keyString) / 2.f) + 0.2f,
-			rectPos.y + 10.f - DrawUtils::getFont(Fonts::SMOOTH)->getLineHeight() / 2.f);
-		if (ClientThemes->Theme.selected == 1) {
-			DrawUtils::fillRectangle(rectPos, GameData::isKeyDown(key) ? MC_Color(28, 50, 77) : MC_Color(13, 29, 48), 1.f);
-		} else {
-			DrawUtils::fillRectangle(rectPos, GameData::isKeyDown(key) ? MC_Color(85, 85, 85) : MC_Color(12, 12, 12), 1.f);
-		}
-		DrawUtils::drawText(textPos, &keyString, MC_Color(255, 255, 255), 1.f, 1.f);
-	}
 	if (key == *input->spaceBarKey) {
 		if (key == *input->spaceBarKey) keyString = "-";
 		Vec4 rectPos(
