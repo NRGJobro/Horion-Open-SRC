@@ -32,8 +32,25 @@ bool Target::isValidTarget(Entity* ent) {
 	if (antibot->isEntityIdCheckEnabled() && entityTypeId <= 130 && entityTypeId != 63)
 		return false;
 
-	if (entityTypeId == 63) {
+	if (ent->isPlayer()) {
 		if (teams->isColorCheckEnabled()) {
+			std::string targetName = ent->getNameTag()->getText();
+			std::string localName = localPlayer->getNameTag()->getText();
+
+			if (targetName.size() > 2 && localName.size() > 2) {
+				targetName = std::string(targetName, 0, targetName.find('\n'));
+				localName = std::string(localName, 0, localName.find('\n'));
+
+				std::string colorTargetName = std::regex_replace(targetName, std::regex(u8"§r"), "");
+				std::string colorLocalName = std::regex_replace(localName, std::regex(u8"§r"), "");
+				char colorTarget = colorTargetName[colorTargetName.find(u8"§") + 2];
+				char colorLocal = colorLocalName[colorLocalName.find(u8"§") + 2];
+
+				if (colorLocal == colorTarget)
+					return false;
+			}
+			
+			/*
 			auto targetName = ent->getNameTag();
 			auto localName = localPlayer->getNameTag();
 			if (targetName->getTextLength() > 2 && localName->getTextLength() > 2) {
@@ -42,6 +59,7 @@ bool Target::isValidTarget(Entity* ent) {
 				if (colorTargetName.at(0) == colorLocalName.at(0)) 
 					return false;
 			}
+			*/
 		}
 		if (teams->isAlliedCheckEnabled()) {
 			if (localPlayer->isAlliedTo(ent)) return false;
