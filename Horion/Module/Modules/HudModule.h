@@ -25,6 +25,5 @@ public:
 	virtual const char* getModuleName() override;
 	virtual void onPostRender(MinecraftUIRenderContext* renderCtx) override;
 	static void drawKeystroke(char key, const Vec2& pos);
-	static void drawLeftMouseKeystroke(Vec2 pos);
-	static void drawRightMouseKeystroke(Vec2 pos);
+	static void drawMouseKeystroke(Vec2 pos, std::string keyString);
 };
