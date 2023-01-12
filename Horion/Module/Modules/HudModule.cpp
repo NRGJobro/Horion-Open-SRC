@@ -79,6 +79,7 @@ void HudModule::onPostRender(MinecraftUIRenderContext* renderCtx) {
 	std::string tempStr("Movement");
 	float len = DrawUtils::getTextWidth(&tempStr, scale) + 7.f;
 	float startY = tabgui ? 7 * f : 0.f;
+	
 	{  // FPS
 		if (!(Game.getLocalPlayer() == nullptr || !fps)) {
 			std::string fpsText = "FPS: " + std::to_string(Game.getFPS());
@@ -94,6 +95,7 @@ void HudModule::onPostRender(MinecraftUIRenderContext* renderCtx) {
 			startY += f;
 		}
 	}
+	
 	{  // CPS
 		if (!(Game.getLocalPlayer() == nullptr || !cps)) {
 			std::string cpsText = "CPS: " + std::to_string(Game.getLeftCPS()) + " - " + std::to_string(Game.getRightCPS());
@@ -109,27 +111,24 @@ void HudModule::onPostRender(MinecraftUIRenderContext* renderCtx) {
 			startY += f;
 		}
 	}
+	
 	{  // Coordinates
 		if (!(Game.getLocalPlayer() == nullptr || !coordinates)) {
 			Vec3* pos = Game.getLocalPlayer()->getPos();
-
-			std::string coordsX = "X: " + std::to_string((int)floorf(pos->x));
-			std::string coordsY = "Y: " + std::to_string((int)floorf(pos->y));
-			std::string coordsZ = "Z: " + std::to_string((int)floorf(pos->z));
+			std::string coords = std::string("X: ") + std::to_string((int)floorf(pos->x)) + std::string("\nY: ") + std::to_string((int)floorf(pos->y)) + std::string("\nZ: ") + std::to_string((int)floorf(pos->z));
+			
 			Vec4 rectPos = Vec4(2.5f, startY + 5.f * scale, len, startY + 35.f * scale);
 			Vec2 textPos = Vec2(rectPos.x + 1.5f, rectPos.y + 1.f);
-			if (ClientThemes->Theme.selected == 1) {
+			
+			if (ClientThemes->Theme.selected == 1) 
 				DrawUtils::fillRectangle(rectPos, MC_Color(13, 29, 48), 1.f);
-			} else {
+			else
 				DrawUtils::fillRectangle(rectPos, MC_Color(12, 12, 12), 1.f);
-			}
-			DrawUtils::drawText(textPos, &coordsX, MC_Color(200, 200, 200), scale);
-			textPos.y += f;
-			DrawUtils::drawText(textPos, &coordsY, MC_Color(200, 200, 200), scale);
-			textPos.y += f;
-			DrawUtils::drawText(textPos, &coordsZ, MC_Color(200, 200, 200), scale);
+			
+			DrawUtils::drawText(textPos, &coords, MC_Color(200, 200, 200), scale);
 		}
 	}
+	
 	{  // ArmorHUD
 		
 		if (!(Game.getLocalPlayer() == nullptr || !displayArmor || !GameData::canUseMoveKeys())) {
@@ -153,6 +152,7 @@ void HudModule::onPostRender(MinecraftUIRenderContext* renderCtx) {
 				DrawUtils::drawItem(item, Vec2(x, y), opacity, scale, item->isEnchanted());
 		}
 	}
+	
 	{  // Keystrokes
 		if (!(Game.getLocalPlayer() == nullptr || !keystrokes || !GameData::canUseMoveKeys())) {
 			GameSettingsInput* input = Game.getClientInstance()->getGameSettingsInput();
