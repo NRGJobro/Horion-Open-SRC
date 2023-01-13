@@ -2,6 +2,8 @@
 
 #include <Windows.h>
 
+#include "../../Utils/ClientColors.h"
+
 struct SelectedItemInformation {
 	int selectedItemId = 0;
 	float currentSelectedItemInterpol = 0;
@@ -43,9 +45,9 @@ struct LabelContainer {
 std::vector<LabelContainer> labelList;
 
 void TabGui::renderLabel(const char* text, std::shared_ptr<IModule> mod) {
-	//size_t strlength = strlen(text) + 1;
-	//char* alloc = new char[strlength];
-	//strcpy_s(alloc, strlength, text);
+	// size_t strlength = strlen(text) + 1;
+	// char* alloc = new char[strlength];
+	// strcpy_s(alloc, strlength, text);
 	LabelContainer yikes;
 	yikes.text = text;
 	if (mod != 0) {
@@ -57,7 +59,6 @@ void TabGui::renderLabel(const char* text, std::shared_ptr<IModule> mod) {
 }
 
 void TabGui::renderLevel() {
-	static auto ClientThemes = moduleMgr->getModule<ClientTheme>();
 	auto hudModule = moduleMgr->getModule<HudModule>();
 
 	// Parameters
@@ -100,11 +101,7 @@ void TabGui::renderLevel() {
 		if (selected[renderedLevel].selectedItemId == i && level >= renderedLevel) {  // We are selected
 			if (renderedLevel == level) {                                             // Are we actually in the menu we are drawing right now?
 				// We are selected in the current menu
-				if (ClientThemes->Theme.selected == 1) {
-				DrawUtils::fillRectangle(rectPos, MC_Color(13, 29, 48), 1.f);
-			} else {
-				DrawUtils::fillRectangle(rectPos, MC_Color(12, 12, 12), 1.f);
-		}
+				DrawUtils::fillRectangle(rectPos, ClientColors::tabGuiBackground, 1.f);
 				static bool lastVal = toggleCurrentSelection;
 
 				if (toggleCurrentSelection) {
@@ -118,20 +115,12 @@ void TabGui::renderLevel() {
 					label.mod->setEnabled(false);
 				lastVal = toggleCurrentSelection;
 			} else {  // selected, but not what the user is interacting with
-				if (ClientThemes->Theme.selected == 1) {
-					DrawUtils::fillRectangle(rectPos, MC_Color(13, 29, 48), 1.f);
-				} else
-					DrawUtils::fillRectangle(rectPos, MC_Color(12, 12, 12), 1.f);
-
+				DrawUtils::fillRectangle(rectPos, ClientColors::tabGuiBackground, 1.f);
 			}
 			// selectedYOffset = yOffset;
 		} else {  // We are not selected
-			if (ClientThemes->Theme.selected == 1) {
-				DrawUtils::fillRectangle(rectPos, MC_Color(13, 29, 48), 1.f);
-			} else
-				DrawUtils::fillRectangle(rectPos, MC_Color(12, 12, 12), 1.f);
+			DrawUtils::fillRectangle(rectPos, label.enabled ? ClientColors::tabGuiEnabledItemColor : ClientColors::tabGuiBackground, 1.f);
 		}
-
 
 		std::string tempLabel(label.text);
 		DrawUtils::drawText(Vec2(xOffset + 1.5f, yOffset + 0.5f), &tempLabel, label.enabled ? MC_Color() : color, textSize);
@@ -155,20 +144,17 @@ void TabGui::renderLevel() {
 			selected[renderedLevel].rollback();
 		} else
 			selected[renderedLevel].rollin();
-		if (ClientThemes->Theme.selected == 1) {
-			DrawUtils::fillRectangle(selectedPos, MC_Color(28, 107, 201), alphaVal);
-		} else {
-			DrawUtils::fillRectangle(selectedPos, MC_Color(85, 85, 85), alphaVal);
-		}
+
+		DrawUtils::fillRectangle(selectedPos, ClientColors::tabGuiSelectedItemColor, alphaVal);
 	}
-	//DrawUtils::fillRectangle(rectPos, MC_Color(13, 29, 48), 1.f);
-		// Cleanup
-		DrawUtils::flush();
-		labelList.clear();
-		xOffset += maxLength + 4.5f;
-		yOffset = selectedYOffset;
-		renderedLevel++;
-	};
+
+	//  Cleanup
+	DrawUtils::flush();
+	labelList.clear();
+	xOffset += maxLength + 4.5f;
+	yOffset = selectedYOffset;
+	renderedLevel++;
+};
 void TabGui::render() {
 	if (!moduleMgr->isInitialized())
 		return;
@@ -191,7 +177,7 @@ void TabGui::render() {
 	// Render all modules
 	if (level >= 0) {
 		auto lock = moduleMgr->lockModuleList();
-		
+
 		std::vector<std::shared_ptr<IModule>>* modules = moduleMgr->getModuleList();
 		for (std::vector<std::shared_ptr<IModule>>::iterator it = modules->begin(); it != modules->end(); ++it) {
 			auto mod = *it;
@@ -199,7 +185,7 @@ void TabGui::render() {
 				auto name = mod->getModuleName();
 				renderLabel(name, mod);
 			}
-		}	
+		}
 
 		renderLevel();
 	}

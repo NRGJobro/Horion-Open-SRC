@@ -10,6 +10,7 @@
 
 #include "../SDK/Tag.h"
 #include "../Horion/Menu/TabGui.h"
+#include "../Utils/ClientColors.h"
 
 Hooks g_Hooks;
 bool isTicked = false;
@@ -449,7 +450,6 @@ __int64 Hooks::RenderText(__int64 a1, MinecraftUIRenderContext* renderCtx) {
 				shouldRenderTabGui = hudModule->tabgui && hudModule->isEnabled();
 				shouldRenderArrayList = hudModule->arraylist && hudModule->isEnabled();
 				shouldRenderWatermark = hudModule->watermark && hudModule->isEnabled();
-				static auto ClientThemes = moduleMgr->getModule<ClientTheme>();
 
 				if (clickGuiModule->isEnabled()) {
 					ClickGui::render();
@@ -502,11 +502,7 @@ __int64 Hooks::RenderText(__int64 a1, MinecraftUIRenderContext* renderCtx) {
 							windowSize.y - margin);
 
 						DrawUtils::drawRectangle(rect, MC_Color(rcolors), 1.f, 2.f);
-						if (ClientThemes->Theme.selected == 1) {
-							DrawUtils::fillRectangle(rect, MC_Color(13, 29, 48), 1.f);
-						} else {
-							DrawUtils::fillRectangle(rect, MC_Color(12, 12, 12), 1.f);
-						}
+						DrawUtils::fillRectangle(rect, ClientColors::watermarkBackgroundColor, 1.f);
 						DrawUtils::drawText(Vec2(rect.x + borderPadding, rect.y), &name, MC_Color(rcolors), nameTextSize);
 						DrawUtils::drawText(Vec2(rect.x + borderPadding + nameLength, rect.w - 7), &version, MC_Color(rcolors), versionTextSize);
 					}
@@ -634,11 +630,7 @@ __int64 Hooks::RenderText(__int64 a1, MinecraftUIRenderContext* renderCtx) {
 							currColor[0] += 1.f / a * c;
 							Utils::ColorConvertHSVtoRGB(currColor[0], currColor[1], currColor[2], currColor[0], currColor[1], currColor[2]);
 
-							if (ClientThemes->Theme.selected == 1) {
-								DrawUtils::fillRectangle(rectPos, MC_Color(13, 29, 48), 1.f);
-							} else {
-								DrawUtils::fillRectangle(rectPos, MC_Color(12, 12, 12), 1.f);
-							}
+							DrawUtils::fillRectangle(rectPos, ClientColors::arraylistBackgroundColor, 1.f);
 							DrawUtils::fillRectangle(leftRect, MC_Color(currColor), 1.f);
 							if (!GameData::canUseMoveKeys() && rectPos.contains(&mousePos) && hudModule->clickToggle) {
 								Vec4 selectedRect = rectPos;

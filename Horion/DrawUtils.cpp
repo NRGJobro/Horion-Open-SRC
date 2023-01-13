@@ -3,6 +3,7 @@
 #include "Module/ModuleManager.h"
 #include <Windows.h>
 #include "../Utils/Logger.h"
+#include "../Utils/ClientColors.h"
 
 struct MaterialPtr {
 	char padding[0x138];
@@ -376,47 +377,40 @@ void DrawUtils::drawNameTags(Entity* ent, float textSize, bool drawHealth, bool 
 		Vec4 subRectPos = rectPos;
 		subRectPos.y = subRectPos.w - 1.f * textSize;
 		static auto nametagsMod = moduleMgr->getModule<NameTags>();
-		static auto ClientThemes = moduleMgr->getModule<ClientTheme>();
-		if (ClientThemes->Theme.selected == 1) {
-			fillRectangle(rectPos, MC_Color(13, 29, 48), nametagsMod->opacity);
-			if (nametagsMod->underline) {
-				fillRectangle(subRectPos, MC_Color(30, 110, 20), 0.9f);
-			} else {
-				fillRectangle(rectPos, MC_Color(12, 12, 12), nametagsMod->opacity);
-				if (nametagsMod->underline) {
-					fillRectangle(subRectPos, MC_Color(85, 85, 85), 0.9f);
+		fillRectangle(rectPos, ClientColors::nametagsBackgroundColor, nametagsMod->opacity);
+		if (nametagsMod->underline) {
+			fillRectangle(subRectPos, ClientColors::nametagsUnderlineColor, 0.9f);
+		}
+		drawText(textPos, &text, MC_Color(255, 255, 255), textSize);
+
+		static auto nameTagsMod = moduleMgr->getModule<NameTags>();
+
+		if (ent->getEntityTypeId() == 63 && nameTagsMod->displayArmor) {  // is player, show armor
+			auto* player = reinterpret_cast<Player*>(ent);
+			float scale = textSize * 0.6f;
+			float spacing = scale + 15.f;
+			float x = rectPos.x + 1.f * textSize;
+			float y = rectPos.y - 20.f * scale;
+			// armor
+			for (int i = 0; i < 4; i++) {
+				ItemStack* stack = player->getArmor(i);
+				if (stack->item != nullptr) {
+					DrawUtils::drawItem(stack, Vec2(x, y), 1.f, scale, stack->isEnchanted());
+					x += scale * spacing;
 				}
-				drawText(textPos, &text, MC_Color(255, 255, 255), textSize);
-
-				static auto nameTagsMod = moduleMgr->getModule<NameTags>();
-
-				if (ent->getEntityTypeId() == 63 && nameTagsMod->displayArmor) {  // is player, show armor
-					auto* player = reinterpret_cast<Player*>(ent);
-					float scale = textSize * 0.6f;
-					float spacing = scale + 15.f;
-					float x = rectPos.x + 1.f * textSize;
-					float y = rectPos.y - 20.f * scale;
-					// armor
-					for (int i = 0; i < 4; i++) {
-						ItemStack* stack = player->getArmor(i);
-						if (stack->item != nullptr) {
-							DrawUtils::drawItem(stack, Vec2(x, y), 1.f, scale, stack->isEnchanted());
-							x += scale * spacing;
-						}
-					}
-					// item
-					{
-						ItemStack* stack = player->getSelectedItem();
-						if (stack->item != nullptr) {
-							DrawUtils::drawItem(stack, Vec2(rectPos.z - 1.f - 15.f * scale, y), 1.f, scale, stack->isEnchanted());
-						}
-					}
+			}
+			// item
+			{
+				ItemStack* stack = player->getSelectedItem();
+				if (stack->item != nullptr) {
+					DrawUtils::drawItem(stack, Vec2(rectPos.z - 1.f - 15.f * scale, y), 1.f, scale, stack->isEnchanted());
 				}
 			}
 		}
 	}
 }
-	void DrawUtils::drawEntityBox(Entity* ent, float lineWidth) {
+
+void DrawUtils::drawEntityBox(Entity* ent, float lineWidth) {
 	Vec3 end = ent->eyePos0;
 	AABB render(end, ent->width, ent->height, end.y - ent->aabb.lower.y);
 	render.upper.y += 0.1f;

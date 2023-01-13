@@ -386,6 +386,7 @@
     <ClCompile Include="SDK\MatrixStack.cpp" />
     <ClCompile Include="SDK\Tag.cpp" />
     <ClCompile Include="SDK\Tessellator.cpp" />
+    <ClCompile Include="Utils\ClientColors.cpp" />
     <ClCompile Include="Utils\Logger.cpp" />
     <ClCompile Include="Utils\SkinUtil.cpp" />
     <ClCompile Include="Utils\Target.cpp" />
@@ -587,6 +588,7 @@
     <ClInclude Include="SDK\TextHolder.h" />
     <ClInclude Include="SDK\Weather.h" />
     <ClInclude Include="Utils\ChakraHelper.h" />
+    <ClInclude Include="Utils\ClientColors.h" />
     <ClInclude Include="Utils\DllHelper.h" />
     <ClInclude Include="Utils\HMath.h" />
     <ClInclude Include="Utils\Json.hpp" />

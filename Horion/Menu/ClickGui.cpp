@@ -5,6 +5,7 @@
 #include "../../Utils/Logger.h"
 #include <Windows.h>
 #include "../../Utils/Json.hpp"
+#include "../../Utils/ClientColors.h"
 
 bool isLeftClickDown = false;
 bool isRightClickDown = false;
@@ -117,17 +118,8 @@ void ClickGui::renderTooltip(std::string* text) {
 		currentTooltipPos.y - 2.f,
 		currentTooltipPos.x + (textPaddingX * 2) + textWidth + 2.f,
 		currentTooltipPos.y + textHeight + 2.f);
-	static auto ClientThemes = moduleMgr->getModule<ClientTheme>();
-	if (ClientThemes->Theme.selected == 1) {
-		DrawUtils::fillRectangle(rectPos, MC_Color(15, 30, 50), 1.0f);
-	} else {
-		DrawUtils::fillRectangle(rectPos, moduleColor, 1.0f);
-	}
-	if (ClientThemes->Theme.selected == 1) {
-		DrawUtils::drawRectangle(rectPos, MC_Color(30, 110, 200), 1.f, 0.5f);
-	} else {
-		DrawUtils::drawRectangle(rectPos, brightModuleBlendColor, 1.f, 0.5f);
-	}
+	DrawUtils::fillRectangle(rectPos, ClientColors::clickGuiTooltipFillColor, 1.0f);
+	DrawUtils::drawRectangle(rectPos, ClientColors::clickGuiTooltipOutlineColor, 1.f, 0.5f);
 	DrawUtils::drawText(textPos, text, whiteColor, textSize);
 }
 
@@ -254,13 +246,8 @@ void ClickGui::renderCategory(Category category) {
 
 			// Background
 			if (allowRender) {
-				static auto ClientThemes = moduleMgr->getModule<ClientTheme>();
 				if (!ourWindow->isInAnimation && !isDragging && rectPos.contains(&mousePos)) {  // Is the Mouse hovering above us?
-					if (ClientThemes->Theme.selected == 1) {
-						DrawUtils::fillRectangle(rectPos, MC_Color(30, 110, 200), backgroundAlpha);
-					} else {
-						DrawUtils::fillRectangle(rectPos, selectedModuleColor, backgroundAlpha);
-					}
+					DrawUtils::fillRectangle(rectPos, ClientColors::clickGuiHoveredModuleColor, backgroundAlpha);
 					std::string tooltip = mod->getTooltip();
 					static auto clickGuiMod = moduleMgr->getModule<ClickGuiMod>();
 					if (clickGuiMod->showTooltips && !tooltip.empty())
@@ -270,10 +257,7 @@ void ClickGui::renderCategory(Category category) {
 						shouldToggleLeftClick = false;
 					}
 				} else {
-					if (ClientThemes->Theme.selected == 1) {
-						DrawUtils::fillRectangle(rectPos, MC_Color(15, 30, 50), backgroundAlpha);
-					} else
-						DrawUtils::fillRectangle(rectPos, mod->isEnabled() ? enabledModuleColor : moduleColor, backgroundAlpha);
+					DrawUtils::fillRectangle(rectPos, mod->isEnabled() ? ClientColors::clickGuiEnabledModuleColor : ClientColors::clickGuiModuleColor, backgroundAlpha);
 				
 				}
 			}
@@ -325,12 +309,7 @@ void ClickGui::renderCategory(Category category) {
 							case ValueType::BOOL_T: {
 								rectPos.w = currentYOffset + textHeight + (textPaddingY * 2);
 								// Background of bool setting
-								static auto ClientThemes = moduleMgr->getModule<ClientTheme>();
-								if (ClientThemes->Theme.selected == 1) {
-									DrawUtils::fillRectangle(rectPos, MC_Color(15, 30, 50), backgroundAlpha);
-								} else {
-									DrawUtils::fillRectangle(rectPos, moduleColor, backgroundAlpha);
-								}
+								DrawUtils::fillRectangle(rectPos, ClientColors::clickGuiModuleColor, backgroundAlpha);
 								Vec4 selectableSurface = Vec4(
 									textPos.x + textPaddingX,
 									textPos.y + textPaddingY,
@@ -383,7 +362,6 @@ void ClickGui::renderCategory(Category category) {
 								break;
 							}
 							case ValueType::ENUM_T: {
-								static auto ClientThemes = moduleMgr->getModule<ClientTheme>();
 								// Text and background
 								{
 									char name[0x22];
@@ -398,21 +376,13 @@ void ClickGui::renderCategory(Category category) {
 									// Background of enum setting
 									
 									if (rectPos.contains(&mousePos)) {
-										if (ClientThemes->Theme.selected == 1) {
-											DrawUtils::fillRectangle(rectPos, MC_Color(30, 110, 200), backgroundAlpha);
-										} else {
-											DrawUtils::fillRectangle(rectPos, selectedModuleColor, backgroundAlpha);
-										}
+										DrawUtils::fillRectangle(rectPos, ClientColors::clickGuiHoveredModuleColor, backgroundAlpha);
 										if (shouldToggleRightClick && !ourWindow->isInAnimation) {
 											shouldToggleRightClick = false;
 											setting->minValue->_bool = !setting->minValue->_bool;
 										}
 									}else 
-										if (ClientThemes->Theme.selected == 1) {
-										DrawUtils::fillRectangle(rectPos, MC_Color(15, 30, 50), backgroundAlpha);
-									} else {
-										DrawUtils::fillRectangle(rectPos, moduleColor, backgroundAlpha);
-									}
+										DrawUtils::fillRectangle(rectPos, ClientColors::clickGuiModuleColor, backgroundAlpha);
 									
 									DrawUtils::drawText(textPos, &elTexto, whiteColor, textSize);
 									GuiUtils::drawCrossLine(Vec2(
@@ -451,38 +421,12 @@ void ClickGui::renderCategory(Category category) {
 											xEnd,
 											rectPos.w);
 										MC_Color col;
-										if (ClientThemes->Theme.selected == 1) {
-											if (setting->value->_int == e || (selectableSurface.contains(&mousePos) && !ourWindow->isInAnimation)) {
-												if (isEven)
-													col = MC_Color(30, 110, 200);
-												else
-													col = MC_Color(30, 110, 200);
-											} else {
-												if (isEven)
-													col = MC_Color(15, 30, 50);
-												else
-													col = MC_Color(15, 30, 50);
-											}
-										} else {
-											if (setting->value->_int == e || (selectableSurface.contains(&mousePos) && !ourWindow->isInAnimation)) {
-												if (isEven)
-													col = selectedSettingColor1;
-												else
-													col = selectedSettingColor2;
-											} else {
-												if (isEven)
-													col = SettingColor1;
-												else
-													col = SettingColor2;
-											}
-										}
+										if (setting->value->_int == e || (selectableSurface.contains(&mousePos) && !ourWindow->isInAnimation)) 
+											col = ClientColors::clickGuiHoveredModuleColor;
+										else
+											col = ClientColors::clickGuiModuleColor;
 										// Background of individual enum
-										static auto ClientThemes = moduleMgr->getModule<ClientTheme>();
-										if (ClientThemes->Theme.selected == 1) {
-											DrawUtils::fillRectangle(rectPos, MC_Color(15, 30, 50), backgroundAlpha);
-										} else {
-											DrawUtils::fillRectangle(rectPos, moduleColor, backgroundAlpha);
-										}
+										DrawUtils::fillRectangle(rectPos, ClientColors::clickGuiModuleColor, backgroundAlpha);
 										DrawUtils::fillRectangle(selectableSurface, col, backgroundAlpha);
 										DrawUtils::drawText(textPos, &elTexto, whiteColor);
 										// logic
@@ -510,12 +454,7 @@ void ClickGui::renderCategory(Category category) {
 									DrawUtils::drawText(textPos, &elTexto, whiteColor, textSize);
 									currentYOffset += textPaddingY + textHeight;
 									rectPos.w = currentYOffset;
-									static auto ClientThemes = moduleMgr->getModule<ClientTheme>();
-									if (ClientThemes->Theme.selected == 1) {
-										DrawUtils::fillRectangle(rectPos, MC_Color(15, 30, 50), backgroundAlpha);
-									} else {
-										DrawUtils::fillRectangle(rectPos, moduleColor, backgroundAlpha);
-									}
+									DrawUtils::fillRectangle(rectPos, ClientColors::clickGuiModuleColor, backgroundAlpha);
 								}
 
 								if ((currentYOffset - ourWindow->pos.y) > cutoffHeight) {
@@ -536,13 +475,8 @@ void ClickGui::renderCategory(Category category) {
 										rectPos.w += textHeight + (textPaddingY * 2);
 										// Background
 										const bool areWeFocused = rect.contains(&mousePos);
-
-										static auto ClientThemes = moduleMgr->getModule<ClientTheme>();
-										if (ClientThemes->Theme.selected == 1) {
-											DrawUtils::fillRectangle(rectPos, MC_Color(15, 30, 50), backgroundAlpha);
-										} else {
-											DrawUtils::fillRectangle(rectPos, moduleColor, backgroundAlpha);
-										}                                                                  // Background
+										
+										DrawUtils::fillRectangle(rectPos, ClientColors::clickGuiModuleColor, backgroundAlpha);  // Background
 										DrawUtils::drawRectangle(rect, whiteColor, 1.f, backgroundAlpha);  // Slider background
 
 										const float minValue = setting->minValue->_float;
@@ -571,11 +505,7 @@ void ClickGui::renderCategory(Category category) {
 										// Draw Progress
 										{
 											rect.z = rect.x + value;
-											if (ClientThemes->Theme.selected == 1) {
-												DrawUtils::fillRectangle(rect, MC_Color(28, 107, 201), (areWeFocused || setting->isDragging) ? 1.f : 0.8f);
-											} else {
-												DrawUtils::fillRectangle(rect, MC_Color(85, 85, 85), (areWeFocused || setting->isDragging) ? 1.f : 0.8f);
-											}
+											DrawUtils::fillRectangle(rect, ClientColors::clickGuiHoveredModuleColor, (areWeFocused || setting->isDragging) ? 1.f : 0.8f);
 										}
 
 										// Drag Logic
@@ -620,12 +550,7 @@ void ClickGui::renderCategory(Category category) {
 									DrawUtils::drawText(textPos, &elTexto, whiteColor, textSize);
 									currentYOffset += textPaddingY + textHeight;
 									rectPos.w = currentYOffset;
-									static auto ClientThemes = moduleMgr->getModule<ClientTheme>();
-									if (ClientThemes->Theme.selected == 1) {
-										DrawUtils::fillRectangle(rectPos, MC_Color(15, 30, 50), backgroundAlpha);
-									} else {
-										DrawUtils::fillRectangle(rectPos, moduleColor, backgroundAlpha);
-									}
+									DrawUtils::fillRectangle(rectPos, ClientColors::clickGuiModuleColor, backgroundAlpha);
 								}
 								if ((currentYOffset - ourWindow->pos.y) > (Game.getGuiData()->heightGame * 0.75)) {
 									overflowing = true;
@@ -645,13 +570,7 @@ void ClickGui::renderCategory(Category category) {
 										rectPos.w += textHeight + (textPaddingY * 2);
 										// Background
 										const bool areWeFocused = rect.contains(&mousePos);
-
-										static auto ClientThemes = moduleMgr->getModule<ClientTheme>();
-										if (ClientThemes->Theme.selected == 1) {
-											DrawUtils::fillRectangle(rectPos, MC_Color(15, 30, 50), backgroundAlpha);
-										} else {
-											DrawUtils::fillRectangle(rectPos, moduleColor, backgroundAlpha);
-										}                                                                  // Background
+										DrawUtils::fillRectangle(rectPos, ClientColors::clickGuiModuleColor, backgroundAlpha);
 										DrawUtils::drawRectangle(rect, whiteColor, 1.f, backgroundAlpha);  // Slider background
 
 										const float minValue = (float)setting->minValue->_int;
@@ -680,11 +599,7 @@ void ClickGui::renderCategory(Category category) {
 										// Draw Progress
 										{
 											rect.z = rect.x + value;
-											if (ClientThemes->Theme.selected == 1) {
-												DrawUtils::fillRectangle(rect, MC_Color(28, 107, 201), (areWeFocused || setting->isDragging) ? 1.f : 0.8f);
-											} else {
-												DrawUtils::fillRectangle(rect, MC_Color(85, 85, 85), (areWeFocused || setting->isDragging) ? 1.f : 0.8f);
-											}
+											DrawUtils::fillRectangle(rect, ClientColors::clickGuiHoveredModuleColor, (areWeFocused || setting->isDragging) ? 1.f : 0.8f);
 										}
 
 										// Drag Logic
@@ -809,23 +724,11 @@ void ClickGui::renderCategory(Category category) {
 			// Draw Text
 			std::string textStr = categoryName;
 			DrawUtils::drawText(textPos, &textStr, whiteColor, textSize);
-			static auto ClientThemes = moduleMgr->getModule<ClientTheme>();
-			if (ClientThemes->Theme.selected == 1) {
-				DrawUtils::fillRectangle(rectPos, MC_Color(15, 30, 50), 1.f);
-			} else {
-				DrawUtils::fillRectangle(rectPos, moduleColor, 1.f);
-			}
-			if (ClientThemes->Theme.selected == 1) {
-				DrawUtils::fillRectangle(Vec4(rectPos.x, rectPos.w - 1, rectPos.z, rectPos.w), MC_Color(30, 110, 200), 1 - ourWindow->animation);
-			} else {
-				DrawUtils::fillRectangle(Vec4(rectPos.x, rectPos.w - 1, rectPos.z, rectPos.w), brightModuleBlendColor, 1 - ourWindow->animation);
-
-			}
+			DrawUtils::fillRectangle(rectPos, ClientColors::clickGuiModuleTabsBackgroundColor, 1.f);
+			DrawUtils::fillRectangle(Vec4(rectPos.x, rectPos.w - 1, rectPos.z, rectPos.w), ClientColors::clickGuiModuleTabsOutlineColor, 1 - ourWindow->animation);
+			
 			// Draw Dash
-			GuiUtils::drawCrossLine(Vec2(
-										currentXOffset + windowSize->x + paddingRight - (crossSize / 2) - 1.f,
-										categoryHeaderYOffset + textPaddingY + (textHeight / 2)),
-									whiteColor, crossWidth, crossSize, !ourWindow->isExtended);
+			GuiUtils::drawCrossLine(Vec2(currentXOffset + windowSize->x + paddingRight - (crossSize / 2) - 1.f, categoryHeaderYOffset + textPaddingY + (textHeight / 2)), whiteColor, crossWidth, crossSize, !ourWindow->isExtended);
 		}
 	}
 
@@ -857,14 +760,7 @@ void ClickGui::render() {
 		timesRendered++;
 
 	// Fill Background
-	{
-		DrawUtils::fillRectangle(Vec4(
-									 0,
-									 0,
-									 Game.getClientInstance()->getGuiData()->widthGame,
-									 Game.getClientInstance()->getGuiData()->heightGame),
-								 MC_Color(12, 12, 12), 0.2f);
-	}
+	DrawUtils::fillRectangle(Vec4(0, 0, Game.getClientInstance()->getGuiData()->widthGame, Game.getClientInstance()->getGuiData()->heightGame), MC_Color(12, 12, 12), 0.2f);
 
 	// Render all categorys
 	renderCategory(Category::COMBAT);
