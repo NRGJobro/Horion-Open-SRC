@@ -5,7 +5,7 @@
 
 class NoFall : public IModule {
 public:
-	SettingEnum mode;
+	SettingEnum mode = SettingEnum(this);
 
 	NoFall();
 	~NoFall();

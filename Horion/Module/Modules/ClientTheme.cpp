@@ -2,10 +2,8 @@
 
 #include "../../../Utils/ClientColors.h"
 ClientTheme::ClientTheme() : IModule(0, Category::CLIENT, "Go for a retro style or streamline.") {
+	Theme.addEntry(EnumEntry("Dark", 0)).addEntry(EnumEntry("Legacy", 1));
 	registerEnumSetting("Client Theme", &Theme, 0);
-	Theme = SettingEnum(this)
-				.addEntry(EnumEntry("Dark", 0))
-				.addEntry(EnumEntry("Legacy", 1));
 }
 
 ClientTheme::~ClientTheme() {

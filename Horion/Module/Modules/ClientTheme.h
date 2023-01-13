@@ -3,7 +3,7 @@
 
 class ClientTheme : public IModule {
 public:
-	SettingEnum Theme;
+	SettingEnum Theme = SettingEnum(this);
 	ClientTheme();
 	~ClientTheme();
 

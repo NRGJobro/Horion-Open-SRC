@@ -3,7 +3,7 @@
 
 class FontChanger : public IModule {
 public:
-	SettingEnum Fonts;
+	SettingEnum Fonts = SettingEnum(this);
 	FontChanger();
 	~FontChanger();
 

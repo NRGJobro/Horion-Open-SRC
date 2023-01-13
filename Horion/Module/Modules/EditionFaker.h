@@ -4,7 +4,7 @@
 
 class EditionFaker : public IModule {
 public:
-	SettingEnum edition;
+	SettingEnum edition = SettingEnum(this);
 	
 	EditionFaker();
 	~EditionFaker();

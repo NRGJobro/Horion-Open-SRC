@@ -24,11 +24,7 @@ using json = nlohmann::json;
 
 
 TestModule::TestModule() : IModule(0, Category::MISC, "For testing purposes only!") {
-	enum1 = SettingEnum(this)
-		.addEntry(EnumEntry("1", 1))
-		.addEntry(EnumEntry("2", 2))
-		.addEntry(EnumEntry("3", 3));
-	
+	enum1.addEntry(EnumEntry("1", 1)).addEntry(EnumEntry("2", 2)).addEntry(EnumEntry("3", 3));
 	registerFloatSetting("float1", &float1, 0, -10, 10);
 	registerIntSetting("int1", &int1, 0, -10, 10);
 	registerEnumSetting("Enum1", &enum1, 0);

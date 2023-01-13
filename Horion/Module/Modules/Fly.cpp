@@ -1,13 +1,12 @@
 #include "Fly.h"
 
 Fly::Fly() : IModule('F', Category::MOVEMENT, "Fly to the sky") {
-	mode = (*new SettingEnum(this))
-			   .addEntry(EnumEntry("Creative", 0))
-			   .addEntry(EnumEntry("CubeGlide", 1))
-			   .addEntry(EnumEntry("AirStuck", 2))
-			   .addEntry(EnumEntry("Jetpack", 3))
-			   .addEntry(EnumEntry("Jetpack2", 4))
-			   .addEntry(EnumEntry("Motion", 5));
+	mode.addEntry(EnumEntry("Creative", 0))
+	.addEntry(EnumEntry("CubeGlide", 1))
+	.addEntry(EnumEntry("AirStuck", 2))
+	.addEntry(EnumEntry("Jetpack", 3))
+	.addEntry(EnumEntry("Jetpack2", 4))
+	.addEntry(EnumEntry("Motion", 5));
 	registerEnumSetting("Mode", &mode, 0);
 	registerFloatSetting("Horizontal Speed", &this->horizontalSpeed, this->horizontalSpeed, 0.1f, 10.f);
 	registerFloatSetting("Vertical Speed", &this->verticalSpeed, this->verticalSpeed, 0.1f, 10.f);

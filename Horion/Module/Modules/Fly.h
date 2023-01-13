@@ -13,7 +13,7 @@ public:
 	Fly();
 	~Fly();
 
-	SettingEnum mode;
+	SettingEnum mode = SettingEnum(this);
 
 	// Inherited via IModule
 	virtual void onEnable() override;
