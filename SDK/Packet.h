@@ -7,6 +7,9 @@
 class Packet {
 public:
 	uintptr_t** vTable;  //0x0000
+private:
+	char pad_0x8[0x28];
+public:
 	TextHolder* getName();
 	template <class T>
 	bool isInstanceOf() {
@@ -19,8 +22,6 @@ public:
 };
 
 class LevelSoundEventPacket : public Packet {
-private:
-	char pad_[0x28];  //0x8
 public:
 	int sound;           //0x28
 	Vec3 pos;          //0x2C
@@ -36,9 +37,6 @@ public:
 
 class PlayerAuthInputPacket : public Packet {
 public:
-	uint64_t VTable;  //0x0000
-	uint64_t num4294967298;
-	char padThingy[32];
 	//uint64_t entityRuntimeId; //0x0020
 	float pitch;  //0x0028
 	float yaw;
@@ -47,32 +45,21 @@ public:
 	Vec3 velocity;
 	float InputAD;  // 1 for A, -1 for D, multiply by sqrt(2)/2 if mixed with InputWS
 	float InputWS;  // 1 for W, -1 for S, multiply by sqrt(2)/2 if mixed with InputAD
-	uint8_t epicpad[12];
+private:
+	uint8_t padshit[12];
+public:
 	uint32_t inputKeys;
-	int zero;
-	int one;
-	int two;
-	int counter;
+	char padding[0x256];
 
 public:
 	PlayerAuthInputPacket();
 	PlayerAuthInputPacket(Vec3 pos, float pitch, float yaw, float yawUnused);
 };
 
-/*class C_ActorFallPacket : public Packet {
-private:
-	char pad_0x8[0x28];  //0x8
-public:
-	C_ActorFallPacket();
-	__int64 runtimeId;  // 0x28
-	float fallDistance;
-	bool isInVoid;
-};*/
-
 class PlayerActionPacket : public Packet {
 public:
 	PlayerActionPacket();
-	char pad_0x8[0x28];       //0x8
+	
 	Vec3i blockPosition;    // 0x28
 	int face;                 // 0x34
 	int action;               // 0x38
@@ -92,11 +79,7 @@ public:
 class C_AnimatePacket : public Packet {
 public:
 	C_AnimatePacket();
-
-private:
-	char padding[0x28];
-
-public:
+	
 	int64_t entityId;
 	int64_t action;
 	float unknown;
@@ -105,6 +88,7 @@ public:
 class C_NPCRequestPacket : public Packet {
 public:
 	C_NPCRequestPacket();
+	
 	long entityRuntimeId;  //Test
 	__int64 Unknown0;      //Test
 	std::string Unknown1;  //Test
@@ -114,9 +98,7 @@ public:
 class PlayerSkinPacket : public Packet {
 public:
 	PlayerSkinPacket();
-private:
-	char padding[0x28];
-public:
+	
 	__int64 UUID;
 	__int64 skin;  //meant to be skin class
 	std::string skinName;
@@ -126,6 +108,7 @@ public:
 class NetworkLatencyPacket : public Packet {
 public:
 	NetworkLatencyPacket();
+	
 	unsigned long timeStamp;  //Test
 	bool sendBack;            //Test
 	int pad[0x100];           //0x0
@@ -133,22 +116,33 @@ public:
 
 class CommandRequestPacket : public Packet {
 public:
-	uint64_t VTable;  //0x0000
-	int two;
-	int one;
-	uint64_t zeroes[4];
-	TextHolder payload;
-	uint64_t thingy[6];
-
 	CommandRequestPacket();
 	CommandRequestPacket(std::string cmd);
+	
+	enum class Origin {
+		PLAYER = 0,
+		COMMAND_BLOCK = 1,
+		MINECART_COMMAND_BLOCK = 2,
+		DEV_CONSOLE = 3,
+		AUTOMATION_PLAYER = 4,
+		CLIENT_AUTOMATION = 5,
+		DEDICATED_SERVER = 6,
+		ENTITY = 7,
+		VIRTUAL = 8,
+		GAME_ARGUMENT = 9,
+		INTERNAL = 10
+	};
+
+	TextHolder command;
+	Origin origin = Origin::PLAYER;
+	bool isExternal = 0;
+	char shit[0x256];
 };
 
 class C_InteractPacket : public Packet {
 public:
 	C_InteractPacket(/**enum InteractPacket::Action, class ActorRuntimeID, Vec3 const&*/);
-private:
-	char padding[0x28];
+	
 public:
 	int action;
 	long target;
@@ -156,36 +150,28 @@ public:
 
 class ActorEventPacket : public Packet {
 public:
-	uint64_t VTable;           //0x0000
-	int two;                   //0x0008
-	int one;                   //0x000C
-	char pad_0xC[0x20];        //0x0010
+	ActorEventPacket();
+	ActorEventPacket(uint64_t entityRuntimeId, char eventId, int16_t itemId);
+	
 	uint64_t entityRuntimeId;  //0x0030
 	char eventId;              //0x0038
 	char pad_0x39[0x5];        //0x0039
 	int16_t itemId;            //0x003E
-	//ActorEventPacket();
-	ActorEventPacket(uint64_t entityRuntimeId, char eventId, int16_t itemId);
 };
 
 class C_MobEquipmentPacket : public Packet {
 public:
 	C_MobEquipmentPacket();
 	C_MobEquipmentPacket(__int64 entityRuntimeId, ItemStack& item, int hotbarSlot, int inventorySlot);
-
-private:
-	char pad_0x8[0x28];  //0x0
-public:
-	__int64 entityRuntimeId;  //0x28
-	ItemStack item;         //0x30
-	int inventorySlot;        // 0xB8 DONT USE FOR PACKET SENDING
-	int hotbarSlot;           // 0xBC DONT USE FOR PACKET SENDING
-	char windowId;            //0xC0  DONT USE FOR PACKET SENDING
-	char windowId1;           //0xC1  DONT USE FOR PACKET SENDING
-	char inventorySlot1;      //0xC2
-	char hotbarSlot1;         //0xC3
-	char windowId2;           //0xC4 ALL OF THIS IS PROBABLY BROKEN, DONT USE
-private:
+	
+	__int64 actorRuntimeId;  // 0x28
+	ItemDescriptor item;     // 0x30
+	int inventorySlot0;      // 0xC0
+	int selectedSlot0;       // 0xC4
+	uint8_t containerId;     // 0xC9
+	uint8_t inventorySlot;   // 0xC9
+	uint8_t selectedSlot;    // 0xC9
+	uint8_t containerId0;    // 0xC9
 	char unknown1;
 };
 
@@ -195,10 +181,7 @@ public:
 	InventoryTransactionPacket(ComplexInventoryTransaction* transac) : InventoryTransactionPacket() {
 		this->complexTransaction = transac;
 	}
-
-private:
-	char pad_0x8[0x28];  //0x8
-public:
+	
 	int unknown = 0;                                    //0x28
 	__int64* unknownStart = 0;                          //0x30
 	__int64* unknownEnd = 0;                            //0x38
@@ -211,7 +194,6 @@ class C_TextPacket : public Packet {
 public:
 	C_TextPacket();
 
-	unsigned char gap0[0x28];
 	unsigned __int8 messageType;  // 0x28
 
 	unsigned char gap[7];
@@ -232,11 +214,7 @@ __declspec(align(8)) class C_MovePlayerPacket : public Packet {
 public:
 	C_MovePlayerPacket();
 	C_MovePlayerPacket(LocalPlayer* player, Vec3 pos);
-
-	//uintptr_t** vTable;		// 0x0
-private:
-	char filler[0x28];  // 0x8
-public:
+	
 	__int64 entityRuntimeID;  //0x28
 	Vec3 Position;          //0x30
 	float pitch;              //0x3c

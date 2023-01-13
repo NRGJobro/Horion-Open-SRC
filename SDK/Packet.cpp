@@ -51,34 +51,9 @@ PlayerAuthInputPacket::PlayerAuthInputPacket(Vec3 pos, float pitch, float yaw, f
 	this->pitch = pitch;
 	this->yaw = yaw;
 	this->yawUnused = yawUnused;
-	this->num4294967298 = 4294967298;
-	this->zero = 0;
-	this->one = 1;
-	this->two = 2;
-	this->counter = 0;
 	this->InputAD = 0.f;
 	this->InputWS = 0.f;
-	for (int i = 0; i < 32; i++) {
-		this->padThingy[i] = 0;
-	}
-	for (int i = 0; i < 12; i++) {
-		this->epicpad[i] = 0;
-	}
 }
-/*C_ActorFallPacket::C_ActorFallPacket() {
-	static uintptr_t** ActorFallPacketVtable = 0x0;
-	if (ActorFallPacketVtable == 0x0) {
-		uintptr_t sigOffset = FindSignature("48 8D ? ? ? ? ? 48 89 ? E7 48 89 45 0F F3 0F 11 75 ?");
-		int offset = *reinterpret_cast<int*>(sigOffset + 3);
-		ActorFallPacketVtable = reinterpret_cast<uintptr_t**>(sigOffset + offset +  7);
-#ifdef _DEBUG
-		if (ActorFallPacketVtable == 0x0 || sigOffset == 0x0)
-			__debugbreak();
-#endif
-	}
-	memset(this, 0, sizeof(C_ActorFallPacket));  // Avoid overwriting vtable
-	vTable = ActorFallPacketVtable;
-}*/
 C_MobEquipmentPacket::C_MobEquipmentPacket() {
 	static uintptr_t** MobEquipmentPacketVtable = 0x0;
 	if (MobEquipmentPacketVtable == 0x0) {
@@ -276,6 +251,21 @@ NetworkLatencyPacket::NetworkLatencyPacket() {
 	vTable = networkLatencyPacketVtable;
 }
 
+CommandRequestPacket::CommandRequestPacket() {
+	static uintptr_t** commandRequestPacketVtable = 0x0;
+	if (commandRequestPacketVtable == 0x0) {
+		uintptr_t sigOffset = FindSignature("48 8D 0D ?? ?? ?? ?? 0F 11 00 C7 40 ?? ?? ?? ?? ?? C7 40 ?? ?? ?? ?? ?? 48 8D 05 ?? ?? ?? ?? 48 89 02 33 C0 48 89 42 28 48 89 42 30 89 42 38 48 89 42 40 48 89 42 50 88 42 60");
+		int offset = *reinterpret_cast<int*>(sigOffset + 3);
+		commandRequestPacketVtable = reinterpret_cast<uintptr_t**>(sigOffset + offset + /*length of instruction*/ 7);
+#ifdef _DEBUG
+		if (commandRequestPacketVtable == 0x0 || sigOffset == 0x0)
+			__debugbreak();
+#endif
+	}
+	memset(this, 0, sizeof(CommandRequestPacket));  // Avoid overwriting vtable
+	vTable = commandRequestPacketVtable;
+}
+
 CommandRequestPacket::CommandRequestPacket(std::string cmd) {
 	static uintptr_t** commandRequestPacketVtable = 0x0;
 	if (commandRequestPacketVtable == 0x0) {
@@ -289,9 +279,8 @@ CommandRequestPacket::CommandRequestPacket(std::string cmd) {
 	}
 	memset(this, 0, sizeof(CommandRequestPacket));  // Avoid overwriting vtable
 	vTable = commandRequestPacketVtable;
-	this->two = 2;
-	this->one = 1;
-	this->payload.setText(cmd);
+	this->origin = Origin::PLAYER;
+	this->isExternal = 0;
 }
 
 C_InteractPacket::C_InteractPacket(/*enum InteractPacket::Action, class ActorRuntimeID, Vec3 const&*/) {
@@ -309,6 +298,21 @@ C_InteractPacket::C_InteractPacket(/*enum InteractPacket::Action, class ActorRun
 	vTable = interactPacketVtable;
 }
 
+ActorEventPacket::ActorEventPacket() {
+	static uintptr_t** actorEvenPacketVtable = 0x0;
+	if (actorEvenPacketVtable == 0x0) {
+		uintptr_t sigOffset = FindSignature("48 8D 0D ? ? ? ? 48 89 4D ? 48 89 45 ? C6 45 ? ? 44 89 7D");
+		int offset = *reinterpret_cast<int*>(sigOffset + 3);
+		actorEvenPacketVtable = reinterpret_cast<uintptr_t**>(sigOffset + offset + /*length of instruction*/ 7);
+#ifdef _DEBUG
+		if (actorEvenPacketVtable == 0x0 || sigOffset == 0x0)
+			__debugbreak();
+#endif
+	}
+	memset(this, 0, sizeof(ActorEventPacket));  // Avoid overwriting vtable
+	vTable = actorEvenPacketVtable;
+}
+
 ActorEventPacket::ActorEventPacket(uint64_t entityRuntimeId, char eventId, int16_t itemId) {
 	static uintptr_t** actorEvenPacketVtable = 0x0;
 	if (actorEvenPacketVtable == 0x0) {
@@ -322,8 +326,6 @@ ActorEventPacket::ActorEventPacket(uint64_t entityRuntimeId, char eventId, int16
 	}
 	memset(this, 0, sizeof(ActorEventPacket));  // Avoid overwriting vtable
 	vTable = actorEvenPacketVtable;
-	this->two = 2;
-	this->one = 1;
 	this->entityRuntimeId = entityRuntimeId;
 	this->eventId = eventId;
 	this->itemId = itemId;

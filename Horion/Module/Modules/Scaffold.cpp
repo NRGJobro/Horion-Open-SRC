@@ -49,10 +49,20 @@ bool Scaffold::tryScaffold(Vec3 blockBelow) {
 			i++;
 		}
 		if (foundCandidate) {
+			PlayerInventoryProxy* supplies = Game.getLocalPlayer()->getSupplies();
+			int p = supplies->selectedHotbarSlot;
 			if (spoof) findBlock();
 			bool idk = true;
+			__int64 id = *Game.getLocalPlayer()->getUniqueId();
 			Game.getGameMode()->buildBlock(&blok, i, idk);
-
+			if (spoof) {
+				C_MobEquipmentPacket a;
+				a.actorRuntimeId = id;
+				a.inventorySlot = p;
+				a.selectedSlot = p;
+				Game.getClientInstance()->loopbackPacketSender->sendToServer(&a);
+				supplies->selectedHotbarSlot = p;
+			}
 			return true;
 		}
 	}
@@ -67,14 +77,16 @@ bool Scaffold::findBlock() {
 		ItemStack* stack = inv->getItemStack(n);
 		if (stack->item != nullptr) {
 			if ((*stack->item)->isBlock() && (*stack->item)->itemId != 0) {
-				C_MobEquipmentPacket a(id, *stack, n, n);
+				C_MobEquipmentPacket a;
+				a.actorRuntimeId = id;
+				a.inventorySlot = n;
+				a.selectedSlot = n;
 				Game.getClientInstance()->loopbackPacketSender->sendToServer(&a);
+				supplies->selectedHotbarSlot = n;
 				return true;
 			}
 		}
 	}
-	C_MobEquipmentPacket a(id, *Game.getLocalPlayer()->getSelectedItem(), supplies->selectedHotbarSlot, supplies->selectedHotbarSlot);
-	Game.getClientInstance()->loopbackPacketSender->sendToServer(&a);
 	return false;
 }
 
