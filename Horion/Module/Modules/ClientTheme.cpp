@@ -4,7 +4,7 @@
 ClientTheme::ClientTheme() : IModule(0, Category::CLIENT, "Go for a retro style or streamline.") {
 	registerEnumSetting("Client Theme", &Theme, 0);
 	Theme = SettingEnum(this)
-				.addEntry(EnumEntry("Current", 0))
+				.addEntry(EnumEntry("Dark", 0))
 				.addEntry(EnumEntry("Legacy", 1));
 }
 
