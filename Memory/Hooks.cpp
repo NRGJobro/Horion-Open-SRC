@@ -1061,13 +1061,13 @@ int Hooks::BlockLegacy_getRenderLayer(BlockLegacy* a1) {
 
 __int8* Hooks::BlockLegacy_getLightEmission(BlockLegacy* a1, __int8* a2) {
 	static auto oFunc = g_Hooks.BlockLegacy_getLightEmissionHook->GetFastcall<__int8*, BlockLegacy*, __int8*>();
-
 	static auto xrayMod = moduleMgr->getModule<Xray>();
-	if (xrayMod->isEnabled()) {
-		*a2 = 15;
-		return a2;
-	}
-	return oFunc(a1, a2);
+
+	if (!xrayMod || !xrayMod->isEnabled()) 
+		return oFunc(a1, a2);
+
+	*a2 = 15;
+	return a2;
 }
 
 __int64 Hooks::LevelRenderer_renderLevel(__int64 _this, __int64 a2, __int64 a3) {
@@ -1199,16 +1199,15 @@ float Hooks::GetGamma(uintptr_t* a1) {
 }
 
 bool Hooks::Actor_isInWater(Entity* _this) {
-	static auto oFunc = g_Hooks.Actor_isInWaterHook->GetFastcall<bool, Entity*>();
-
-	if (Game.getLocalPlayer() != _this)
-		return oFunc(_this);
-
-	static auto airSwimModule = moduleMgr->getModule<AirSwim>();
-	if (airSwimModule->isEnabled())
-		return true;
-
-	return oFunc(_this);
+    static auto oFunc = g_Hooks.Actor_isInWaterHook->GetFastcall<bool, Entity*>();
+    static auto airSwimModule = moduleMgr->getModule<AirSwim>();
+    
+    if (Game.getLocalPlayer() != _this)
+        return oFunc(_this);
+    else if (airSwimModule && airSwimModule->isEnabled())
+        return true;
+    else 
+        return oFunc(_this);
 }
 
 void Hooks::JumpPower(Entity* a1, float a2) {
@@ -1500,16 +1499,17 @@ void Hooks::LevelRendererPlayer__renderNameTags(__int64 a1, __int64 a2, TextHold
 	static auto func = g_Hooks.LevelRendererPlayer__renderNameTagsHook->GetFastcall<void, __int64, __int64, TextHolder*, __int64>();
 	static auto nameTagsMod = moduleMgr->getModule<NameTags>();
 
-	if (nameTagsMod->isEnabled() && nameTagsMod->nameTags.size() > 0) {
-		std::string text = Utils::sanitize(a3->getText());
-		std::size_t found = text.find('\n');
+	if (!nameTagsMod || !nameTagsMod->isEnabled())
+		return func(a1, a2, a3, a4);
 
-		if (found != std::string::npos)
-			text = text.substr(0, found);
+	std::string text = Utils::sanitize(a3->getText());
+	std::size_t found = text.find('\n');
 
-		if (nameTagsMod->nameTags.find(text) != nameTagsMod->nameTags.end())
-			return;
-	}
+	if (found != std::string::npos)
+		text = text.substr(0, found);
+
+	if (nameTagsMod->nameTags.find(text) != nameTagsMod->nameTags.end())
+		return;
 
 	return func(a1, a2, a3, a4);
 }

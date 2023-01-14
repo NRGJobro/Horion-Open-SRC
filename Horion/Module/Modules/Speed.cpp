@@ -4,30 +4,32 @@ Speed::Speed() : IModule(VK_NUMPAD2, Category::MOVEMENT, "Speed up!") {
 	registerFloatSetting("Speed", &speed, 1, 0.1f, 3.f);
 }
 
-Speed::~Speed() {
-}
+Speed::~Speed() {}
 
 const char* Speed::getModuleName() {
-	return ("Speed");  // 48 8D 15 ?? ?? ?? ?? 48 8B CB FF 90 ?? ?? ?? ?? 48 8B D8
+	return "Speed";
 }
 
 void Speed::onTick(GameMode* gm) {
-	LocalPlayer* localPlayer = Game.getLocalPlayer();
-
-	float* speedAdr = reinterpret_cast<float*>(Game.getLocalPlayer()->getSpeed() + 0x84);
-	*speedAdr = speed;
+	if (auto localPlayer = Game.getLocalPlayer(); localPlayer != nullptr) {
+		if (auto speedAdr = reinterpret_cast<float*>(localPlayer->getSpeed() + 0x84); speedAdr != nullptr) {
+			*speedAdr = speed;
+		}
+	}
 }
 
 void Speed::onEnable() {
-	if (Game.getLocalPlayer() == nullptr) {
-		setEnabled(false);
-		return;
+	if (auto localPlayer = Game.getLocalPlayer(); localPlayer != nullptr) {
+		origSpeed = *reinterpret_cast<float*>(localPlayer->getSpeed() + 0x84);
 	} else {
-		origSpeed = *reinterpret_cast<float*>(Game.getLocalPlayer()->getSpeed() + 0x84);
+		setEnabled(false);
 	}
 }
 
 void Speed::onDisable() {
-	if (Game.getLocalPlayer() != nullptr)
-		*reinterpret_cast<float*>(Game.getLocalPlayer()->getSpeed() + 0x84) = origSpeed;
+	if (auto localPlayer = Game.getLocalPlayer(); localPlayer != nullptr) {
+		if (auto speedAdr = reinterpret_cast<float*>(localPlayer->getSpeed() + 0x84); speedAdr != nullptr) {
+			*speedAdr = origSpeed;
+		}
+	}
 }
