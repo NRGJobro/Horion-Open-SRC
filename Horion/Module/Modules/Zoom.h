@@ -12,20 +12,21 @@ public:
 	};
 	~Zoom(){};
 
-	bool Zoom::isFlashMode() {
-		return true;
-	}
-	
-	void onLevelRender() {
-		if (Game.getLocalPlayer() != nullptr && Game.isInGame())
-			Game.getLocalPlayer()->setFieldOfViewModifier(1.f - strength);
-	}
-	
-	void onDisable() {
-		Game.getLocalPlayer()->setFieldOfViewModifier(1.0f);
-	}
-	
 	virtual const char* getModuleName() override {
 		return "Zoom";
+	}
+
+	void onLevelRender() override {
+		if (auto localPlayer = Game.getLocalPlayer())
+			localPlayer->setFieldOfViewModifier(1.f - strength);
+	}
+
+	void onDisable() override {
+		if (auto localPlayer = Game.getLocalPlayer())
+			localPlayer->setFieldOfViewModifier(1.0f);
+	}
+
+	bool isFlashMode() override {
+		return true;
 	}
 };
