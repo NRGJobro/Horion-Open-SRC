@@ -247,13 +247,12 @@ void Hooks::Init() {
 			return origFunc(_this, matrix, lerpT);
 		};
 		
-		std::shared_ptr<FuncHook> bobViewHook = std::make_shared<FuncHook>(levelRendererBobView, (decltype(&bobViewHookF.operator()))bobViewHookF);
+		using BobViewHookFunc = decltype(&bobViewHookF.operator());
+		auto bobViewHook = std::make_shared<FuncHook>(levelRendererBobView, static_cast<BobViewHookFunc>(bobViewHookF));
 
 		g_Hooks.lambdaHooks.push_back(bobViewHook);
 
 		#undef lambda_counter
-		
-		
 
 		logF("Hooks initialized");
 	}
@@ -312,25 +311,21 @@ void* Hooks::Player_tickWorld(Player* _this, __int64 unk) {
 void Hooks::ClientInstanceScreenModel_sendChatMessage(void* _this, TextHolder* text) {
 	static auto oSendMessage = g_Hooks.ClientInstanceScreenModel_sendChatMessageHook->GetFastcall<void, void*, TextHolder*>();
 
+	if (text->getTextLength() <= 0)
+		return oSendMessage(_this, text);
 
-	if (text->getTextLength() > 0) {
-		char* message = text->getText();
-
-		if (*message == cmdMgr->prefix) {
-			cmdMgr->execute(message);
-
-			return;
-		} else if (*message == '.') {
-			// maybe the user forgot his prefix, give him some helpful advice
-			static bool helpedUser = false;
-			if (!helpedUser) {
-				helpedUser = true;
-				Game.getClientInstance()->getGuiData()->displayClientMessageF("%sYour Horion prefix is: \"%s%c%s\"", RED, YELLOW, cmdMgr->prefix, RED);
-				Game.getClientInstance()->getGuiData()->displayClientMessageF("%sEnter \"%s%cprefix .%s\" to reset your prefix", RED, YELLOW, cmdMgr->prefix, RED);
-			}
-		}
+	auto message = text->getText();
+	if (*message == cmdMgr->prefix) {
+		cmdMgr->execute(message);
+		return;
+	} else if (*message == '.') {
+		static std::once_flag flag;
+		std::call_once(flag, [] {
+			Game.getClientInstance()->getGuiData()->displayClientMessageF("%sYour Horion prefix is: \"%s%c%s\"", RED, YELLOW, cmdMgr->prefix, RED);
+			Game.getClientInstance()->getGuiData()->displayClientMessageF("%sEnter \"%s%cprefix .%s\" to reset your prefix", RED, YELLOW, cmdMgr->prefix, RED);
+		});
 	}
-	oSendMessage(_this, text);
+	return oSendMessage(_this, text);
 }
 
 void Hooks::Actor_baseTick(Entity* ent) {
