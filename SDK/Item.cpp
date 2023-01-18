@@ -27,11 +27,9 @@ void ItemRenderer::renderGuiItemInChunk(BaseActorRenderContext *BaseActorRenderC
 
 ItemStack::ItemStack(const ItemStack &src) {
 	memset(this, 0x0, sizeof(ItemStack));
-	using ItemStackCopyConstructor_t = void(__fastcall *)(ItemStack &, ItemStack const &);//Sig is dead
-	//static ItemStackCopyConstructor_t ItemStackCopyConstructor = reinterpret_cast<ItemStackCopyConstructor_t>(FindSignature("48 89 5C 24 ? 55 56 57 41 54 41 55 41 56 41 57 48 83 EC 40 4C 8B F2 48 8B F1 48 89 4C 24 ? 33 ED 89 6C 24 20 48 8D"));
-	//ItemStackCopyConstructor(*this, src);
-	//if (ItemStackCopyConstructor == nullptr)
-	//	return;
+	using ItemStackCopyConstructor_t = void(__fastcall *)(ItemStack &, ItemStack const &);
+	static ItemStackCopyConstructor_t ItemStackCopyConstructor = reinterpret_cast<ItemStackCopyConstructor_t>(FindSignature("48 89 4c 24 ? 53 55 56 57 41 54 41 56 41 57 48 83 ec ? 48 8b ea"));
+	ItemStackCopyConstructor(*this, src);
 	this->setVtable();
 }
 
