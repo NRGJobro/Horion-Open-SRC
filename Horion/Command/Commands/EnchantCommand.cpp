@@ -2,41 +2,43 @@
 #include "../../../Utils/Utils.h"
 
 EnchantCommand::EnchantCommand() : IMCCommand("enchant", "Enchants items", "<enchantment> [level] <mode: auto / manual : 1/0>") {
-	enchantMap["protection"] = 0;
-	enchantMap["fire_protection"] = 1;
-	enchantMap["feather_falling"] = 2;
-	enchantMap["blast_protection"] = 3;
-	enchantMap["projectile_protection"] = 4;
-	enchantMap["thorns"] = 5;
-	enchantMap["respiration"] = 6;
-	enchantMap["depth_strider"] = 7;
-	enchantMap["aqua_affinity"] = 8;
-	enchantMap["frost_walker"] = 25;
-	enchantMap["sharpness"] = 9;
-	enchantMap["smite"] = 10;
-	enchantMap["bane_of_arthropods"] = 11;
-	enchantMap["knockback"] = 12;
-	enchantMap["fire_aspect"] = 13;
-	enchantMap["looting"] = 14;
-	enchantMap["channeling"] = 32;
-	enchantMap["impaling"] = 29;
-	enchantMap["loyalty"] = 31;
-	enchantMap["riptide"] = 30;
-	enchantMap["silktouch"] = 16;
-	enchantMap["fortune"] = 18;
-	enchantMap["unbreaking"] = 17;
-	enchantMap["efficiency"] = 15;
-	enchantMap["mending"] = 26;
-	enchantMap["power"] = 19;
-	enchantMap["punch"] = 20;
-	enchantMap["flame"] = 21;
-	enchantMap["infinity"] = 22;
-	enchantMap["multishot"] = 33;
-	enchantMap["quick_charge"] = 35;
-	enchantMap["piercing"] = 34;
-	enchantMap["luck_of_sea"] = 23;
-	enchantMap["lure"] = 24;
-	enchantMap["soul_speed"] = 36;
+	enchantMap = {
+		{"protection", 0},
+		{"fire_protection", 1},
+		{"feather_falling", 2},
+		{"blast_protection", 3},
+		{"projectile_protection", 4},
+		{"thorns", 5},
+		{"respiration", 6},
+		{"depth_strider", 7},
+		{"aqua_affinity", 8},
+		{"frost_walker", 25},
+		{"sharpness", 9},
+		{"smite", 10},
+		{"bane_of_arthropods", 11},
+		{"knockback", 12},
+		{"fire_aspect", 13},
+		{"looting", 14},
+		{"channeling", 32},
+		{"impaling", 29},
+		{"loyalty", 31},
+		{"riptide", 30},
+		{"silktouch", 16},
+		{"fortune", 18},
+		{"unbreaking", 17},
+		{"efficiency", 15},
+		{"mending", 26},
+		{"power", 19},
+		{"punch", 20},
+		{"flame", 21},
+		{"infinity", 22},
+		{"multishot", 33},
+		{"quick_charge", 35},
+		{"piercing", 34},
+		{"luck_of_sea", 23},
+		{"lure", 24},
+		{"soul_speed", 36}
+	};
 }
 
 EnchantCommand::~EnchantCommand() {
