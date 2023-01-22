@@ -22,7 +22,7 @@ DWORD WINAPI keyThread(LPVOID lpParam) {
 		throw std::exception("Clickmap not allocated");
 
 	bool* keyMapAddr = nullptr;
-	uintptr_t sigOffset = FindSignature("48 8D 0D ?? ?? ?? ?? 89 1C B9");
+	uintptr_t sigOffset = FindSignature("48 8D 0D ? ? ? ? 89 1C B9");
 	if (sigOffset != 0x0) {
 		int offset = *reinterpret_cast<int*>((sigOffset + 3));                                   // Get Offset from code
 		keyMapAddr = reinterpret_cast<bool*>(sigOffset + offset + /*length of instruction*/ 7);  // Offset is relative
@@ -87,7 +87,7 @@ DWORD WINAPI start(LPVOID lpParam) {
 
 	DWORD keyThreadId;
 	CreateThread(nullptr, NULL, (LPTHREAD_START_ROUTINE)keyThread, lpParam, NULL, &keyThreadId);  // Checking Keypresses
-	logF("KeyT: %i", keyThreadId);
+	logF("KeyThread: %i", keyThreadId);
 
 	cmdMgr->initCommands();
 	logF("Initialized command manager (1/3)");
