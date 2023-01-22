@@ -258,10 +258,11 @@ bool Hooks::playerCallBack(Player* lp, __int64 a2, __int64 a3) {
 	static auto oTick = g_Hooks.playerCallBack_Hook->GetFastcall<bool, Player*, __int64, __int64>();
 	//if (lp == Game.getLocalPlayer())
 		//moduleMgr->onPlayerTick(lp);
-		if (Game.getLocalPlayer() != nullptr && lp == Game.getLocalPlayer()) {
-			if (!Game.getLocalPlayer() || !Game.getLocalPlayer()->level || !*(&Game.getLocalPlayer()->region + 1))
-				g_Hooks.entityList.clear();
 
+		if (!Game.getLocalPlayer() || !Game.getLocalPlayer()->level || !*(&Game.getLocalPlayer()->region + 1) || !Game.isInGame())
+			g_Hooks.entityList.clear();
+		
+		if (Game.getLocalPlayer() != nullptr && lp == Game.getLocalPlayer()) {
 			std::vector<EntityListPointerHolder> validEntities;
 			for (const auto& ent : g_Hooks.entityList) {
 				auto entity = ent.ent;
@@ -269,8 +270,10 @@ bool Hooks::playerCallBack(Player* lp, __int64 a2, __int64 a3) {
 				VirtualQuery(ent.ent, &info, sizeof(MEMORY_BASIC_INFORMATION));
 				if (info.State & MEM_FREE) continue;
 				if (info.State & MEM_RESERVE) continue;
+				
+				if (entity == nullptr) continue;
 
-				if (entity->isAlive() && entity != nullptr && (__int64)entity != 0xFFFFFFFFFFFFFCD7 && ent.ent != nullptr && *(__int64*)ent.ent != 0xFFFFFFFFFFFFFCD7 && *(__int64*)ent.ent > 0x6FF000000000 && *(__int64*)ent.ent < 0x800000000000 && *((int64_t*)ent.ent + 1) < 0x6FF000000000 && *(__int64*)ent.ent <= Utils::getBase() + 0x10000000)
+				if (entity != nullptr && (__int64)entity != 0xFFFFFFFFFFFFFCD7 && ent.ent != nullptr && *(__int64*)ent.ent != 0xFFFFFFFFFFFFFCD7 && *(__int64*)ent.ent > 0x6FF000000000 && *(__int64*)ent.ent < 0x800000000000 && *((int64_t*)ent.ent + 1) < 0x6FF000000000 && *(__int64*)ent.ent <= Utils::getBase() + 0x10000000 && entity->isAlive())
 					validEntities.push_back(ent);
 			}
 			g_Hooks.entityList.clear();

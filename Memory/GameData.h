@@ -169,6 +169,8 @@ public:
 	TextHolder* getFakeName() { return fakeName; };
 	inline __int64 getLastUpdateTime() { return lastUpdate; };
 	void forEachEntity(std::function<void(Entity*, bool)>);
+	void forEachPlayer(std::function<void(Entity*, bool)>);
+	void forEachMob(std::function<void(Entity*, bool)>);
 	int getFPS() { return fps; };
 	int getLeftCPS() { return cpsLeft; };
 	int getRightCPS() { return cpsRight; };

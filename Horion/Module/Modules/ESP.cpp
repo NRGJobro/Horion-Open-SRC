@@ -23,8 +23,6 @@ void doRenderStuff(Entity* ent, bool isRegularEntitie) {
 	LocalPlayer* localPlayer = Game.getLocalPlayer();
 	if (ent == localPlayer)
 		return;
-	if (ent->timeSinceDeath > 0)
-		return;
 	static auto noFriendsModule = moduleMgr->getModule<NoFriends>();
 	if (!noFriendsModule->isEnabled() && FriendList::findPlayer(ent->getNameTag()->getText())) {
 		DrawUtils::setColor(0.1f, 0.9f, 0.1f, 1.f);
@@ -37,6 +35,9 @@ void doRenderStuff(Entity* ent, bool isRegularEntitie) {
 		if (ent->getNameTag()->getTextLength() <= 1 && ent->getEntityTypeId() == 63)
 			return;
 
+		if (ent->getEntityTypeId() == 64)  //Item
+			return;
+		
 		if (ent->isInvisible())
 			return;
 

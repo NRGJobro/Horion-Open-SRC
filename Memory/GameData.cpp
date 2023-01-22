@@ -150,37 +150,23 @@ void GameData::setRakNetInstance(RakNetInstance* raknet) {
 }
 
 void GameData::forEachEntity(std::function<void(Entity*, bool)> callback) {
-	/*//Player EntityList
-	EntityList* entityList = (EntityList*)Game.getLocalPlayer()->level;
-	uintptr_t start = ((uintptr_t)entityList + 0x70);
-	uintptr_t stop = ((uintptr_t)entityList + 0x78);
-	start = *(uintptr_t*)start;
-	stop = *(uintptr_t*)stop;
-	//logF("size: %i", (stop - start) / sizeof(uintptr_t*));
-	while (start < stop) {
-		Entity* ent = *(Entity**)start;
-		if (ent != nullptr)
-			callback(ent, false);
-		start += 8;
+	if (this->localPlayer && this->localPlayer->level) {
+		for (const auto& ent : g_Hooks.entityList) if (ent.ent != nullptr && ent.ent->isPlayer()) callback(ent.ent, false); //Only get players from this list
+		for (const auto& ent : Game.getLocalPlayer()->level->getMiscEntityList())
+			if (ent != nullptr && ent->getEntityTypeId() >= 1 && ent->getEntityTypeId() <= 999999999 && !ent->isPlayer()) callback(ent, false); //get everythign else from this
 	}
-	// New EntityList
-	{
-		// MultiplayerLevel::directTickEntities
-		__int64 region = reinterpret_cast<__int64>(Game.getLocalPlayer()->region);
-		__int64* entityIdMap = *(__int64**)(*(__int64*)(region + 0x20) + 0x138i64);
-		for (__int64* i = (__int64*)*entityIdMap; i != entityIdMap; i = (__int64*)*i) {
-			__int64 actor = i[3];
-			// !isRemoved() && !isGlobal()
-			if (actor && !*(char*)(actor + 993) && !*(char*)(actor + 994)) {
-				Entity* ent = reinterpret_cast<Entity*>(actor);
-				callback(ent, false);
-			}
-		}
-	}*/
+}
 
-	if (localPlayer && localPlayer->level) {
-		for (const auto& ent : g_Hooks.entityList)
-			if (ent.ent != nullptr) callback(ent.ent, false);
+void GameData::forEachPlayer(std::function<void(Entity*, bool)> callback) {
+	if (this->localPlayer && this->localPlayer->level) {
+		for (const auto& ent : g_Hooks.entityList) if (ent.ent != nullptr && ent.ent->isPlayer()) callback(ent.ent, false); //get all players
+	}
+}
+
+void GameData::forEachMob(std::function<void(Entity*, bool)> callback) {
+	if (this->localPlayer && this->localPlayer->level) {
+		for (const auto& ent : Game.getLocalPlayer()->level->getMiscEntityList())
+			if (ent != nullptr && ent->getEntityTypeId() >= 1 && ent->getEntityTypeId() <= 999999999 && !ent->isPlayer()) callback(ent, false); //get all entities that are not players
 	}
 }
 
