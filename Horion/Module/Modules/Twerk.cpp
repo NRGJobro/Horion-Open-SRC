@@ -13,17 +13,8 @@ const char* Twerk::getModuleName() {
 
 void Twerk::onTick(GameMode* gm) {
 	Odelay++;
-	if (Odelay > delay * 20) {
-		GameSettingsInput* input = Game.getClientInstance()->getGameSettingsInput();
-		if (gm->player->isSneaking()) {
-			isSneaking = false;
-		} 
-		else {
-			if (!gm->player->isSneaking()) {
-				isSneaking = true;
-			}
-		}
-		Game.getClientInstance()->getMoveTurnInput()->isSneakDown = isSneaking;
+	if (Odelay > delay * *Game.getClientInstance()->minecraft->timer) {
+		Game.getClientInstance()->getMoveTurnInput()->isSneakDown = !Game.getClientInstance()->getMoveTurnInput()->isSneakDown;
 		Odelay = 0;
 	}
 }
