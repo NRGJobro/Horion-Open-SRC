@@ -30,4 +30,8 @@ public:
 	__int64 clearMovementState() {
 		return Utils::CallVFunc<4, __int64>(this);
 	};
+
+	bool isPressed() {
+		return forward || backward || left || right;
+	};
 };

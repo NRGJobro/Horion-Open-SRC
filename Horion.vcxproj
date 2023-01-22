@@ -468,6 +468,7 @@
     <ClInclude Include="Horion\Module\Modules\ESP.h" />
     <!--    <ClInclude Include="Horion\Module\Modules\FastEat.h" /> -->
     <ClInclude Include="Horion\Module\Modules\FastLadder.h" />
+    <ClInclude Include="Horion\Module\Modules\FastStop.h" />
     <ClInclude Include="Horion\Module\Modules\Fly.h" />
     <ClInclude Include="Horion\Module\Modules\FollowPathModule.h" />
     <ClInclude Include="Horion\Module\Modules\FontChanger.h" />
