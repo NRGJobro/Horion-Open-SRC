@@ -218,7 +218,20 @@ uintptr_t Utils::getOffsetFromSignature(const char* szSignature, int offset) {
 		uintptr_t sigOffset = FindSignature(szSignature);
 		if (sigOffset != 0x0) {
 			int finalOffset = *reinterpret_cast<int*>((sigOffset + offset));                                  // Get Offset from code
-			signatureOffset = sigOffset - getBase() + finalOffset + /*length of instruction*/ 7;  // Offset is relative
+			signatureOffset = sigOffset - getBase() + finalOffset + /*length of instruction*/ 7;
+			return signatureOffset;
+		}
+	}
+	return 0u;
+}
+
+uintptr_t** Utils::getVtableFromSignature(const char* szSignature, int offset) {
+	static uintptr_t** signatureOffset = 0x0;
+	if (signatureOffset == 0x0) {
+		uintptr_t sigOffset = FindSignature(szSignature);
+		if (sigOffset != 0x0) {
+			int finalOffset = *reinterpret_cast<int*>((sigOffset + offset));                      // Get Offset from code
+			signatureOffset = reinterpret_cast<uintptr_t**>(sigOffset + finalOffset + /*length of instruction*/ 7);
 			return signatureOffset;
 		}
 	}
