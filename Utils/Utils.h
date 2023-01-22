@@ -447,6 +447,11 @@ public:
 	
 	static uintptr_t** getVtableFromSignature(const char* szSignature, int offset);
 
+	template <typename T>
+	static T readPointer(std::uintptr_t ptrAddress, std::initializer_list<std::uintptr_t> Offsets) {
+		return Game.getSlimMem()->ReadPtr<T>(Game.getModule()->ptrBase + ptrAddress, Offsets);
+	};
+
 	static void GetCurrentSystemTime(tm& timeInfo);
 
 	static void ApplySystemTime(std::stringstream* ss);

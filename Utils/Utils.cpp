@@ -8,6 +8,7 @@
 #include <Windows.h>
 #include <Psapi.h>
 #include "HMath.h"
+#include "../Memory/GameData.h"
 
 void Utils::ApplySystemTime(std::stringstream* ss) {
 	using namespace std::chrono;
@@ -218,7 +219,7 @@ uintptr_t Utils::getOffsetFromSignature(const char* szSignature, int offset) {
 		uintptr_t sigOffset = FindSignature(szSignature);
 		if (sigOffset != 0x0) {
 			int finalOffset = *reinterpret_cast<int*>((sigOffset + offset));                                  // Get Offset from code
-			signatureOffset = sigOffset - getBase() + finalOffset + /*length of instruction*/ 7;
+			signatureOffset = sigOffset - Game.getModule()->ptrBase + finalOffset + /*length of instruction*/ 7;
 			return signatureOffset;
 		}
 	}

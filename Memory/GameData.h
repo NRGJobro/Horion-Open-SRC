@@ -60,7 +60,6 @@ private:
 private:
 	bool injectorConnectionActive = false;
 	const SlimUtils::SlimModule* gameModule = 0;
-	SlimUtils::SlimMem* slimMem;
 	bool shouldTerminateB = false;
 	bool shouldHideB = false;
 	bool isAllowingWIPFeatures = false;
@@ -71,6 +70,7 @@ private:
 public:
 	HIDController* hidController = nullptr;
 	std::queue<std::shared_ptr<InfoBoxData>> infoBoxQueue;
+	static SlimUtils::SlimMem* slimMem;
 	static bool keys[0x256];
 
 	static bool canUseMoveKeys();
