@@ -843,22 +843,17 @@ private:
 public:
 
 	glmatrixf* getRefDef() {
-		uintptr_t _this = reinterpret_cast<uintptr_t>(this);
-		//logF("refderf %llX", _this + 0x258);
-		return reinterpret_cast<glmatrixf*>(_this + 0x2F0);
+		return reinterpret_cast<glmatrixf*>((uintptr_t)(this) + 0x2F0);
 	};
 
 	Vec2* getMousePos() {
-		uintptr_t _this = reinterpret_cast<uintptr_t>(this);
-		return reinterpret_cast<Vec2*>(_this + 0x458);
+		return reinterpret_cast<Vec2*>((uintptr_t)(this) + 0x458);
 	}
 
 	Vec2 getFov() {
-		uintptr_t _this = reinterpret_cast<uintptr_t>(this);
-		//Vec2 fov(fovX, fovY);
 		Vec2 fov;
-		fov.x = *reinterpret_cast<float*>(_this + 0x678);
-		fov.y = *reinterpret_cast<float*>(_this + 0x68C);
+		fov.x = *reinterpret_cast<float*>((uintptr_t)(this) + 0x678);
+		fov.y = *reinterpret_cast<float*>((uintptr_t)(this) + 0x68C);
 		return fov;
 	}
 
@@ -879,14 +874,7 @@ public:
 	};
 
 	class LocalPlayer* getCILocalPlayer() {
-		if (this != nullptr) {
-			__int64 ptr = *reinterpret_cast<__int64*>(reinterpret_cast<__int64>(this) + 0xD0);
-			if (ptr > 0x1000000000 && ptr < 0xF00000000000) {
-				class LocalPlayer* res = *reinterpret_cast<LocalPlayer**>(ptr + 0x278);
-				if (reinterpret_cast<__int64>(res) < 0xF00000000000) return res;
-			}
-		}
-		return nullptr;
+		return Utils::CallVFunc<24, LocalPlayer*>(this);
 	}
 
 	inline GameSettingsInput* getGameSettingsInput() { return this->ptr->ptr->ptr->settingsInput; };
