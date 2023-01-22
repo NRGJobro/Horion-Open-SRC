@@ -353,6 +353,10 @@ struct Vec4 {
 			return false;
 		return true;
 	};
+
+	__forceinline Vec4 shrink(float amount) {
+		return Vec4(this->x + amount, this->y + amount, this->z - amount, this->w - amount);
+	}
 };
 
 struct glmatrixf {

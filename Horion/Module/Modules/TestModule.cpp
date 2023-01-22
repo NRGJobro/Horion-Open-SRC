@@ -19,6 +19,7 @@
 #include "../../path/JoeMovementController.h"
 #include "../../path/goals/JoeGoal.h"
 #include "../../path/goals/JoeGoalXZ.h"
+#include "../../ImmediateGui.h"
 
 using json = nlohmann::json;
 
@@ -51,6 +52,12 @@ void TestModule::onTick(GameMode* gm) {
 void TestModule::onMove(MoveInputHandler* hand){
 }
 
+void TestModule::onPreRender(MinecraftUIRenderContext* renderCtx) {
+	if (HorionGui.Button("Test Button", Vec2(100, 100), true)) { //Check if button is pressed. When it gets pressed it sends the message.
+		clientMessageF("Test Button Was Clicked");
+	}
+}
+
 void TestModule::onPostRender(MinecraftUIRenderContext* renderCtx) {
 }
 
@@ -65,5 +72,5 @@ void TestModule::onLevelRender() {
 
 void TestModule::onKey(int key, bool isDown, bool& cancel) {
 	//Cancel W key for testing to make sure this works
-	if (key == 'W' && isDown) cancel = true;
+	//if (key == 'W' && isDown) cancel = true;
 }

@@ -85,6 +85,11 @@ class MatrixStack;
 
 class DrawUtils {
 public:
+	static bool isLeftClickDown;
+	static bool isRightClickDown;
+	static bool shouldToggleLeftClick;
+	static bool shouldToggleRightClick;
+	
 	static void setCtx(MinecraftUIRenderContext* ctx, GuiData* guiData);
 	static void setGameRenderContext(__int64 ctx);
 	static void flush();
@@ -131,7 +136,7 @@ public:
 	static void drawItem(ItemStack* item, const Vec2& ItemPos, float opacity, float scale, bool isEnchanted);
 	static float getLerpTime();
 	static Vec3 getOrigin();
-
+	static void onMouseClickUpdate(int key, bool isDown);
 	static Vec2 worldToScreen(const Vec3& world);
 };
 

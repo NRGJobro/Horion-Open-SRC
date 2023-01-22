@@ -28,6 +28,11 @@ TexturePtr* texturePtr = nullptr;
 static MaterialPtr* uiMaterial = nullptr;
 static MaterialPtr* entityFlatStaticMaterial = nullptr;
 
+bool DrawUtils::isLeftClickDown = false;
+bool DrawUtils::isRightClickDown = false;
+bool DrawUtils::shouldToggleLeftClick = false;
+bool DrawUtils::shouldToggleRightClick = false;
+
 tess_vertex_t tess_vertex;
 meshHelper_renderImm_t meshHelper_renderImm;
 //mce__VertexFormat__disableHalfFloats_t mce__VertexFormat__disableHalfFloats;
@@ -605,4 +610,20 @@ void DrawUtils::drawLinestrip3d(const std::vector<Vec3>& points) {
 
 MC_Color MC_Color::lerp(const MC_Color& o, float t) const {
 	return MC_Color(Utils::lerp(r, o.r, t), Utils::lerp(g, o.g, t), Utils::lerp(b, o.b, t), Utils::lerp(a, o.a, t));
+}
+
+void DrawUtils::onMouseClickUpdate(int key, bool isDown) {
+	if (Game.isInGame())
+		switch (key) {
+		case 1:  // Left Click
+			isLeftClickDown = isDown;
+			if (isDown)
+				shouldToggleLeftClick = true;
+			break;
+		case 2:  // Right Click
+			isRightClickDown = isDown;
+			if (isDown)
+				shouldToggleRightClick = true;
+			break;
+		}
 }

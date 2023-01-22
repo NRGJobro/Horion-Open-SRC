@@ -36,39 +36,14 @@ public:
 	
 };
 
-
-struct KeyInfo {
-	bool isDown;     // Held down right now
-	bool isClicked;  // Did it go down this frame
-	bool nextIsDown;
-
-	void update() {
-		if (!isDown && nextIsDown)
-			isClicked = true;
-		isDown = nextIsDown;
-	}
-
-	bool trySteal() {
-		if (isClicked) {
-			isClicked = false;
-			return true;
-		}
-		return false;
-	}
-};
-
 class ImmediateGui {
 private:
 	Vec2 mousePos;
-	KeyInfo leftMb;
-	KeyInfo rightMb;
 	std::map<unsigned int, std::shared_ptr<ComponentInfo>> components;
 
 public:
-	void onMouseClickUpdate(int key, bool isDown);
 	void startFrame();
-	void endFrame();
 	bool Button(const char* label, Vec2 pos, bool centered = false);
 };
 
-extern ImmediateGui HImGui;
+extern ImmediateGui HorionGui;

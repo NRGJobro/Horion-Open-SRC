@@ -20,6 +20,7 @@ public:
 	virtual bool isFlashMode() override;
 	virtual void onEnable() override;
 	virtual void onTick(GameMode* gm) override;
+	virtual void onPreRender(MinecraftUIRenderContext* renderCtx) override;
 	virtual void onPostRender(MinecraftUIRenderContext* renderCtx) override;
 	virtual void onSendPacket(Packet* p) override;
 	virtual void onMove(MoveInputHandler* hand) override;

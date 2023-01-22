@@ -1,6 +1,6 @@
 #include "ImmediateGui.h"
 
-ImmediateGui HImGui;
+ImmediateGui HorionGui;
 
 ComponentInfo::ComponentInfo(int id) : id(id) {
 }
@@ -41,26 +41,16 @@ void ButtonInfo::draw(Vec2 mousePos, const char* label) {
 		textPos.x -= DrawUtils::getTextWidth(&str) / 2;
 		textPos.y -= DrawUtils::getFont(Fonts::SMOOTH)->getLineHeight() / 2;
 	}
-		
+	
 	DrawUtils::drawText(textPos, &str, MC_Color());
 	if (isInSelectableSurface(mousePos)) {  // Mouse hovering over us
+		if (DrawUtils::isLeftClickDown) surface = surface.shrink(0.8f);  // shrink the button when pressed
 		DrawUtils::fillRectangle(surface, MC_Color(85, 85, 85), 1);
 		canClickB = true;
 	} else {
 		DrawUtils::fillRectangle(surface, MC_Color(12, 12, 12), 1);
 		canClickB = false;
 	}		
-}
-
-void ImmediateGui::onMouseClickUpdate(int key, bool isDown) {
-	switch (key) {
-	case 1:  // Left Click
-		leftMb.nextIsDown = true;
-		break;
-	case 2:  // Right Click
-		rightMb.nextIsDown = true;
-		break;
-	}
 }
 
 void ImmediateGui::startFrame() {
@@ -70,20 +60,9 @@ void ImmediateGui::startFrame() {
 	mousePos = mousePos.div(windowSizeReal);
 	mousePos = mousePos.mul(windowSize);
 
-	leftMb.update();
-	rightMb.update();
-
-	if (Game.getClientInstance()->getMouseGrabbed()) {
-		leftMb.isClicked = false;
-		rightMb.isClicked = false;
-
-		mousePos = {-1000, 1000};
+	if (Game.canUseMoveKeys()) {
+		mousePos = {-1, -1};
 	}
-}
-
-void ImmediateGui::endFrame() {
-	leftMb.isClicked = false;
-	rightMb.isClicked = false;
 }
 
 bool ImmediateGui::Button(const char* label, Vec2 pos, bool centered) {
@@ -96,7 +75,8 @@ bool ImmediateGui::Button(const char* label, Vec2 pos, bool centered) {
 
 	button->updatePos(pos);
 	button->draw(mousePos, label);
-	if (button->canClick() && leftMb.trySteal()) {  // Click
+	if (button->canClick() && DrawUtils::shouldToggleLeftClick) {  // Click
+		DrawUtils::shouldToggleLeftClick = false;
 		return true;
 	}
 

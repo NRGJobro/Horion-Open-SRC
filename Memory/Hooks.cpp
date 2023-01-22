@@ -396,7 +396,7 @@ __int64 Hooks::RenderText(__int64 a1, MinecraftUIRenderContext* renderCtx) {
 		static auto hudModule = moduleMgr->getModule<HudModule>();
 		static auto clickGuiModule = moduleMgr->getModule<ClickGuiMod>();
 
-		HImGui.startFrame();
+		HorionGui.startFrame();
 
 		Game.frameCount++;
 
@@ -647,7 +647,6 @@ __int64 Hooks::RenderText(__int64 a1, MinecraftUIRenderContext* renderCtx) {
 		}
 
 		if (shouldPostRender) moduleMgr->onPostRender(renderCtx);
-		HImGui.endFrame();
 		DrawUtils::flush();
 
 		// Draw Info / Alert Boxes
@@ -695,8 +694,9 @@ __int64 Hooks::RenderText(__int64 a1, MinecraftUIRenderContext* renderCtx) {
 				DrawUtils::drawText(msgPos, &box->message, MC_Color(), messageTextSize, box->fadeVal);
 			}
 		}
+		DrawUtils::shouldToggleLeftClick = false;
+		DrawUtils::shouldToggleRightClick = false;
 		DrawUtils::flush();
-
 		return retval;
 	}
 }
@@ -1108,9 +1108,8 @@ void Hooks::ClickFunc(__int64 a1, char mouseButton, char isDown, __int16 mouseX,
 	//3 = middle click
 	//4 = scroll   (isDown: 120 (SCROLL UP) and -120 (SCROLL DOWN))
 
-	ClickGui::onMouseClickUpdate((int)mouseButton, isDown);
-	HImGui.onMouseClickUpdate((int)mouseButton, isDown);
-
+	DrawUtils::onMouseClickUpdate((int)mouseButton, isDown);
+	
 	if (isDown)
 		if (mouseButton == 1)
 			Game.leftclickCount++;

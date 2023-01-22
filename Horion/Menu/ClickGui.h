@@ -79,7 +79,6 @@ public:
 	static void init();
 	static void render();
 	static void onKeyUpdate(int key, bool isDown);
-	static void onMouseClickUpdate(int key, bool isDown);
 	static void onWheelScroll(bool direction); // true = up, false = down
 	static void onLoadConfig(void* confVoid);
 	static void onSaveConfig(void* confVoid);

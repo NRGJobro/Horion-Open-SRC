@@ -7,10 +7,6 @@
 #include "../../Utils/Json.hpp"
 #include "../../Utils/ClientColors.h"
 
-bool isLeftClickDown = false;
-bool isRightClickDown = false;
-bool shouldToggleLeftClick = false;  // If true, toggle the focused module
-bool shouldToggleRightClick = false;
 bool resetStartPos = true;
 bool initialised = false;
 int scrollingDirection = 0;
@@ -252,9 +248,9 @@ void ClickGui::renderCategory(Category category) {
 					static auto clickGuiMod = moduleMgr->getModule<ClickGuiMod>();
 					if (clickGuiMod->showTooltips && !tooltip.empty())
 						renderTooltip(&tooltip);
-					if (shouldToggleLeftClick && !ourWindow->isInAnimation) {  // Are we being clicked?
+					if (DrawUtils::shouldToggleLeftClick && !ourWindow->isInAnimation) {  // Are we being clicked?
 						mod->toggle();
-						shouldToggleLeftClick = false;
+						DrawUtils::shouldToggleLeftClick = false;
 					}
 				} else {
 					DrawUtils::fillRectangle(rectPos, mod->isEnabled() ? ClientColors::clickGuiEnabledModuleColor : ClientColors::clickGuiModuleColor, backgroundAlpha);
@@ -271,8 +267,8 @@ void ClickGui::renderCategory(Category category) {
 				std::vector<SettingEntry*>* settings = mod->getSettings();
 				if (settings->size() > 2 && allowRender) {
 					std::shared_ptr<ClickModule> clickMod = getClickModule(ourWindow, mod->getRawModuleName());
-					if (rectPos.contains(&mousePos) && shouldToggleRightClick && !ourWindow->isInAnimation) {
-						shouldToggleRightClick = false;
+					if (rectPos.contains(&mousePos) && DrawUtils::shouldToggleRightClick && !ourWindow->isInAnimation) {
+						DrawUtils::shouldToggleRightClick = false;
 						clickMod->isExtended = !clickMod->isExtended;
 					}
 
@@ -319,8 +315,8 @@ void ClickGui::renderCategory(Category category) {
 								bool isFocused = selectableSurface.contains(&mousePos);
 								// Logic
 								{
-									if (isFocused && shouldToggleLeftClick && !ourWindow->isInAnimation) {
-										shouldToggleLeftClick = false;
+									if (isFocused && DrawUtils::shouldToggleLeftClick && !ourWindow->isInAnimation) {
+										DrawUtils::shouldToggleLeftClick = false;
 										setting->value->_bool = !setting->value->_bool;
 									}
 								}
@@ -377,8 +373,8 @@ void ClickGui::renderCategory(Category category) {
 									
 									if (rectPos.contains(&mousePos)) {
 										DrawUtils::fillRectangle(rectPos, ClientColors::clickGuiHoveredModuleColor, backgroundAlpha);
-										if (shouldToggleRightClick && !ourWindow->isInAnimation) {
-											shouldToggleRightClick = false;
+										if (DrawUtils::shouldToggleRightClick && !ourWindow->isInAnimation) {
+											DrawUtils::shouldToggleRightClick = false;
 											setting->minValue->_bool = !setting->minValue->_bool;
 										}
 									}else 
@@ -431,8 +427,8 @@ void ClickGui::renderCategory(Category category) {
 										DrawUtils::drawText(textPos, &elTexto, whiteColor);
 										// logic
 										if (selectableSurface.contains(&mousePos) &&
-											shouldToggleLeftClick && !ourWindow->isInAnimation) {
-											shouldToggleLeftClick = false;
+											DrawUtils::shouldToggleLeftClick && !ourWindow->isInAnimation) {
+											DrawUtils::shouldToggleLeftClick = false;
 											setting->value->_int = e;
 										}
 										currentYOffset += textHeight + (textPaddingY * 2);
@@ -511,12 +507,12 @@ void ClickGui::renderCategory(Category category) {
 										// Drag Logic
 										{
 											if (setting->isDragging) {
-												if (isLeftClickDown && !isRightClickDown)
+												if (DrawUtils::isLeftClickDown && !DrawUtils::isRightClickDown)
 													value = mousePos.x - rect.x;
 												else
 													setting->isDragging = false;
-											} else if (areWeFocused && shouldToggleLeftClick && !ourWindow->isInAnimation) {
-												shouldToggleLeftClick = false;
+											} else if (areWeFocused && DrawUtils::shouldToggleLeftClick && !ourWindow->isInAnimation) {
+												DrawUtils::shouldToggleLeftClick = false;
 												setting->isDragging = true;
 											}
 										}
@@ -605,12 +601,12 @@ void ClickGui::renderCategory(Category category) {
 										// Drag Logic
 										{
 											if (setting->isDragging) {
-												if (isLeftClickDown && !isRightClickDown)
+												if (DrawUtils::isLeftClickDown && !DrawUtils::isRightClickDown)
 													value = mousePos.x - rect.x;
 												else
 													setting->isDragging = false;
-											} else if (areWeFocused && shouldToggleLeftClick && !ourWindow->isInAnimation) {
-												shouldToggleLeftClick = false;
+											} else if (areWeFocused && DrawUtils::shouldToggleLeftClick && !ourWindow->isInAnimation) {
+												DrawUtils::shouldToggleLeftClick = false;
 												setting->isDragging = true;
 											}
 										}
@@ -685,8 +681,8 @@ void ClickGui::renderCategory(Category category) {
 
 		// Extend Logic
 		{
-			if (rectPos.contains(&mousePos) && shouldToggleRightClick && !isDragging) {
-				shouldToggleRightClick = false;
+			if (rectPos.contains(&mousePos) && DrawUtils::shouldToggleRightClick && !isDragging) {
+				DrawUtils::shouldToggleRightClick = false;
 				ourWindow->isExtended = !ourWindow->isExtended;
 				if (ourWindow->isExtended && ourWindow->animation == 0)
 					ourWindow->animation = 0.002f;
@@ -704,17 +700,17 @@ void ClickGui::renderCategory(Category category) {
 		// Dragging Logic
 		{
 			if (isDragging && Utils::getCrcHash(categoryName) == draggedWindow) {  // WE are being dragged
-				if (isLeftClickDown) {                                      // Still dragging
+				if (DrawUtils::isLeftClickDown) {                                      // Still dragging
 					Vec2 diff = Vec2(mousePos).sub(dragStart);
 					ourWindow->pos = ourWindow->pos.add(diff);
 					dragStart = mousePos;
 				} else {  // Stopped dragging
 					isDragging = false;
 				}
-			} else if (rectPos.contains(&mousePos) && shouldToggleLeftClick) {
+			} else if (rectPos.contains(&mousePos) && DrawUtils::shouldToggleLeftClick) {
 				isDragging = true;
 				draggedWindow = Utils::getCrcHash(categoryName);
-				shouldToggleLeftClick = false;
+				DrawUtils::shouldToggleLeftClick = false;
 				dragStart = mousePos;
 			}
 		}
@@ -771,31 +767,14 @@ void ClickGui::render() {
 	renderCategory(Category::MISC);
 	renderCategory(Category::CLIENT);
 
-	shouldToggleLeftClick = false;
-	shouldToggleRightClick = false;
+	DrawUtils::shouldToggleLeftClick = false;
+	DrawUtils::shouldToggleRightClick = false;
 	resetStartPos = false;
 
 	DrawUtils::flush();
 }
 
 void ClickGui::init() { initialised = true; }
-
-void ClickGui::onMouseClickUpdate(int key, bool isDown) {
-	static auto clickGuiMod = moduleMgr->getModule<ClickGuiMod>();
-	if (clickGuiMod->isEnabled() && Game.isInGame())
-	switch (key) {
-	case 1:  // Left Click
-		isLeftClickDown = isDown;
-		if (isDown)
-			shouldToggleLeftClick = true;
-		break;
-	case 2:  // Right Click
-		isRightClickDown = isDown;
-		if (isDown)
-			shouldToggleRightClick = true;
-		break;
-	}
-}
 
 void ClickGui::onWheelScroll(bool direction) {
 	if (!direction) 
