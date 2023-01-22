@@ -27,10 +27,10 @@ void ChestStealer::chestScreenController_tick(ChestScreenController* c) {
 		if (!items.empty() && !Game.getLocalPlayer()->getSupplies()->inventory->isFull()) {
 			for (int i : items) {
 				if (delay > setDelay && setDelay > 0) {
-					c->handleAutoPlace(0x7FFFFFFF, "container_items", i);
+					c->handleAutoPlace("container_items", i);
 					delay = 0;
 				} else if (setDelay == 0)
-					c->handleAutoPlace(0x7FFFFFFF, "container_items", i);
+					c->handleAutoPlace("container_items", i);
 			}
 		} else c->tryExit();
 	}

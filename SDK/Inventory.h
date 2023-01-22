@@ -162,7 +162,7 @@ private:
 	virtual __int64 _sendFlyingItem(__int64 const&, std::string const&, int, std::string const&, int);
 
 public:
-	void handleAutoPlace(uintptr_t a1, std::string name, int slot);
+	void handleAutoPlace(std::string name, int slot);
 };
 
 class CraftingScreenController : public ContainerScreenController {
