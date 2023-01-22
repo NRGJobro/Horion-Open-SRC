@@ -85,7 +85,7 @@ void Hooks::Init() {
 
 				g_Hooks.GameMode_attackHook = std::make_unique<FuncHook>(gameModeVtable[14], Hooks::GameMode_attack);
 			}
-		} else logF("GameMode is null");
+		}
 
 		// PackAccessStrategy vtables for isTrusted
 		{

@@ -21,7 +21,7 @@ void GameData::retrieveClientInstance() {
 		if (sigOffset != 0x0) {
 			int offset = *reinterpret_cast<int*>((sigOffset + 3));                                                 // Get Offset from code
 			clientInstanceOffset = sigOffset - Game.gameModule->ptrBase + offset + /*length of instruction*/ 7;  // Offset is relative
-			logF("client: %llX", clientInstanceOffset);
+			logF("Client: %llX", clientInstanceOffset);
 		}
 	}
 	// clientInstanceOffset = 0x03CD5058;  // pointer scanned, can't find good signatures so it'll stay
@@ -211,12 +211,12 @@ void GameData::initGameData(const SlimUtils::SlimModule* gameModule, SlimUtils::
 	Game.hDllInst = hDllInst;
 	retrieveClientInstance();
 #ifdef _DEBUG
-	logF("base: %llX", Game.getModule()->ptrBase);
-	logF("clientInstance %llX", Game.clientInstance);
-	logF("localPlayer %llX", Game.getLocalPlayer());
+	logF("Base: %llX", Game.getModule()->ptrBase);
 	if (Game.clientInstance != nullptr) {
-		logF("minecraftGame: %llX", Game.clientInstance->minecraftGame);
-		logF("levelRenderer: %llX", Game.clientInstance->levelRenderer);
+		logF("ClientInstance: %llX", Game.clientInstance);
+		logF("LocalPlayer: %llX", Game.getLocalPlayer());
+		logF("MinecraftGame: %llX", Game.clientInstance->minecraftGame);
+		logF("LevelRenderer: %llX", Game.clientInstance->levelRenderer);
 	}
 
 #endif
