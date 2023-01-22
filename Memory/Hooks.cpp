@@ -11,6 +11,7 @@
 #include "../SDK/Tag.h"
 #include "../Horion/Menu/TabGui.h"
 #include "../Utils/ClientColors.h"
+#include "../Horion/Loader.h"
 
 Hooks g_Hooks;
 bool isTicked = false;
@@ -110,11 +111,11 @@ void Hooks::Init() {
 		void* _renderCtx = reinterpret_cast<void*>(FindSignature("48 8B ? 48 89 ? ? 55 56 57 41 ? 41 ? 41 ? 41 ? 48 8D ? ? ? ? ? 48 81 EC ? ? ? ? 0F 29 ? ? 0F 29 ? ? 48 8B ? ? ? ? ? 48 33 ? 48 89 ? ? ? ? ? 4C 8B ? 48 89 ? ? ? 4C 8B"));
 		g_Hooks.RenderTextHook = std::make_unique<FuncHook>(_renderCtx, Hooks::RenderText);
 
-		void* setupRender = reinterpret_cast<void*>(FindSignature("48 89 5C 24 10 57 48 81 EC ?? ?? ?? ?? 48 8B 05 ?? ?? ?? ?? 48 33 C4 48 89 84 24 ?? ?? ?? ?? 48 8B DA 48 8B F9 33 D2 41 B8"));
-		g_Hooks.UIScene_setupAndRenderHook = std::make_unique<FuncHook>(setupRender, Hooks::UIScene_setupAndRender);
-
 		void* render = reinterpret_cast<void*>(FindSignature("48 89 5C 24 18 57 48 81 EC ?? ?? ?? ?? 48 8B 05 ?? ?? ?? ?? 48 33 C4 48 89 84 24 ?? ?? ?? ?? 48 8B DA 48 8B F9 B9 10 ? ? ?"));
 		g_Hooks.UIScene_renderHook = std::make_unique<FuncHook>(render, Hooks::UIScene_render);
+
+		void* key = reinterpret_cast<void*>(FindSignature("48 89 5c 24 ? 57 48 83 ec ? 8b 05 ? ? ? ? 8b da"));
+		g_Hooks.KeyMapHook = std::make_unique<FuncHook>(key, Hooks::KeyMapHookCallback);
 
 		void* _sendChatMessage = reinterpret_cast<void*>(FindSignature("48 89 5C 24 ?? 55 56 57 41 54 41 55 41 56 41 57 48 8D AC 24 ?? ?? ?? ?? 48 81 EC ?? ?? ?? ?? 48 8B 05 ?? ?? ?? ?? 48 33 C4 48 89 85 ?? ?? ?? ?? 4C 8B EA 4C 8B F9 48 8B 49"));
 		g_Hooks.ClientInstanceScreenModel_sendChatMessageHook = std::make_unique<FuncHook>(_sendChatMessage, Hooks::ClientInstanceScreenModel_sendChatMessage);
@@ -341,11 +342,19 @@ void Hooks::Actor_baseTick(Entity* ent) {
 	return oFunc(ent);
 }
 
-__int64 Hooks::UIScene_setupAndRender(UIScene* uiscene, __int64 screencontext) {
-	static auto oSetup = g_Hooks.UIScene_setupAndRenderHook->GetFastcall<__int64, UIScene*, __int64>();
-	g_Hooks.shouldRender = false;
+void Hooks::KeyMapHookCallback(unsigned char key, bool isDown) {
+	static auto oFunc = g_Hooks.KeyMapHook->GetFastcall<void, unsigned char, bool>();
+	bool shouldCancel = false;
+	GameData::keys[key] = isDown;
 	
-	return oSetup(uiscene, screencontext);
+	if ((GameData::keys['L'] && key == VK_CONTROL) || key == VK_END || GameData::shouldTerminate()) Loader::isRunning = false; // Uninject
+	moduleMgr->onKey((int)key, isDown, shouldCancel);
+	moduleMgr->onKeyUpdate((int)key, (isDown && GameData::canUseMoveKeys()));
+	TabGui::onKeyUpdate((int)key, isDown);
+	ClickGui::onKeyUpdate((int)key, isDown);
+	
+	if (shouldCancel) return;
+	return oFunc(key, isDown);
 }
 
 __int64 Hooks::UIScene_render(UIScene* uiscene, __int64 screencontext) {

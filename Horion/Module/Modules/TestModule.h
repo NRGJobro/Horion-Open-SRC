@@ -24,5 +24,6 @@ public:
 	virtual void onSendPacket(Packet* p) override;
 	virtual void onMove(MoveInputHandler* hand) override;
 	virtual void onDisable() override;
+	virtual void onKey(int key, bool isDown, bool& cancel) override;
 	void onLevelRender() override;
 };

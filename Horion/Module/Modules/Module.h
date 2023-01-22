@@ -125,6 +125,7 @@ public:
 	virtual void onWorldTick(GameMode*);
 	virtual void onTick(GameMode*);
 	virtual void onKeyUpdate(int key, bool isDown);
+	virtual void onKey(int key, bool isDown, bool& shouldCancel);
 	virtual void onEnable();
 	virtual void onDisable();
 	virtual void onAttack(Entity*);

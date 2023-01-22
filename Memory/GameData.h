@@ -71,6 +71,7 @@ private:
 public:
 	HIDController* hidController = nullptr;
 	std::queue<std::shared_ptr<InfoBoxData>> infoBoxQueue;
+	static bool keys[0x256];
 
 	static bool canUseMoveKeys();
 	static bool isKeyDown(int key);

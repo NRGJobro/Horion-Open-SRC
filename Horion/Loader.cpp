@@ -2,7 +2,7 @@
 
 SlimUtils::SlimMem mem;
 const SlimUtils::SlimModule* gameModule;
-bool isRunning = true;
+bool Loader::isRunning = true;
 
 #if defined _M_X64
 #pragma comment(lib, "MinHook.x64.lib")
@@ -10,50 +10,8 @@ bool isRunning = true;
 #pragma comment(lib, "MinHook.x86.lib")
 #endif
 
-DWORD WINAPI keyThread(LPVOID lpParam) {
-	logF("Key thread started");
-
-	bool* keyMap = static_cast<bool*>(malloc(0xFF * 4 + 0x4));
-	if (keyMap == nullptr)
-		throw std::exception("Keymap not allocated");
-
-	auto clickMap = reinterpret_cast<uintptr_t>(malloc(5));
-	if (clickMap == 0)
-		throw std::exception("Clickmap not allocated");
-
-	bool* keyMapAddr = nullptr;
-	uintptr_t sigOffset = FindSignature("48 8D 0D ? ? ? ? 89 1C B9");
-	if (sigOffset != 0x0) {
-		int offset = *reinterpret_cast<int*>((sigOffset + 3));                                   // Get Offset from code
-		keyMapAddr = reinterpret_cast<bool*>(sigOffset + offset + /*length of instruction*/ 7);  // Offset is relative
-	} else {
-		logF("!!!KeyMap not located!!!");
-		throw std::exception("Keymap not located");
-	}
-
-	HIDController** hidController = Game.getHIDController();
-
-	while (isRunning) {
-		if ((GameData::isKeyDown('L') && GameData::isKeyDown(VK_CONTROL)) || GameData::isKeyDown(VK_END) || GameData::shouldTerminate()) {  // Press L to uninject
-			isRunning = false;
-			break;
-		}
-
-		for (uintptr_t i = 0; i < 0xFF; i++) {
-			bool* newKey = keyMapAddr + (4 * i);
-			bool newKeyPressed = (*newKey) && GameData::canUseMoveKeys();  // Disable Keybinds when in chat or inventory
-			bool* oldKey = keyMap + (4 * i);
-			if (newKeyPressed != *oldKey) {
-				moduleMgr->onKeyUpdate((int)i, newKeyPressed);
-			}
-			if (*newKey != *oldKey) {  // Skip Chat or inventory checks
-				TabGui::onKeyUpdate((int)i, *newKey);
-				ClickGui::onKeyUpdate((int)i, *newKey);
-			}
-		}
-
-		memcpy_s(keyMap, 0xFF * 4, keyMapAddr, 0xFF * 4);
-
+DWORD WINAPI ejectThread(LPVOID lpParam) {
+	while (Loader::isRunning) {
 		Sleep(2);
 	}
 	logF("Stopping Threads...");
@@ -82,12 +40,11 @@ DWORD WINAPI start(LPVOID lpParam) {
 	MH_Initialize();
 	GameData::initGameData(gameModule, &mem, (HMODULE)lpParam);
 	Target::init(Game.getPtrLocalPlayer());
-
 	Hooks::Init();
 
-	DWORD keyThreadId;
-	CreateThread(nullptr, NULL, (LPTHREAD_START_ROUTINE)keyThread, lpParam, NULL, &keyThreadId);  // Checking Keypresses
-	logF("KeyThread: %i", keyThreadId);
+	DWORD ejectThreadId;
+	CreateThread(nullptr, NULL, (LPTHREAD_START_ROUTINE)ejectThread, lpParam, NULL, &ejectThreadId);  // Checking Keypresses
+	logF("EjectThread: %i", ejectThreadId);
 
 	cmdMgr->initCommands();
 	logF("Initialized command manager (1/3)");
@@ -103,7 +60,7 @@ DWORD WINAPI start(LPVOID lpParam) {
 	logF("Hooks enabled");
 
 	std::thread countThread([] {
-		while (isRunning) {
+		while (Loader::isRunning) {
 			Sleep(1000);
 			Game.fps = Game.frameCount / 3;
 			Game.frameCount = 0;
@@ -129,7 +86,7 @@ BOOL __stdcall DllMain(HMODULE hModule,
 		DisableThreadLibraryCalls(hModule);
 	} break;
 	case DLL_PROCESS_DETACH:
-		isRunning = false;
+		Loader::isRunning = false;
 
 		configMgr->saveConfig();
 		moduleMgr->disable();

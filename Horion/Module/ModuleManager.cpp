@@ -199,6 +199,17 @@ void ModuleManager::onKeyUpdate(int key, bool isDown) {
 	}
 }
 
+void ModuleManager::onKey(int key, bool isDown, bool& shouldCancel) {
+	if (!isInitialized())
+		return;
+	auto mutex = lockModuleList();
+
+	for (auto& mod : moduleList) {
+		if (mod->isEnabled() || mod->callWhenDisabled())
+			mod->onKey(key, isDown, shouldCancel);
+	}
+}
+
 void ModuleManager::onPreRender(MinecraftUIRenderContext* renderCtx) {
 	if (!isInitialized())
 		return;

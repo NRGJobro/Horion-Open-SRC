@@ -84,7 +84,6 @@ private:
 	static void Actor_baseTick(Entity* _this);
 	static void* Player_tickWorld(Player* _this, __int64);
 	static void ClientInstanceScreenModel_sendChatMessage(void* _this, TextHolder* text);
-	static __int64 UIScene_setupAndRender(UIScene* uiscene, __int64 screencontext);
 	static __int64 UIScene_render(UIScene* uiscene, __int64 screencontext);
 	static __int64 RenderText(__int64 a1, MinecraftUIRenderContext* renderCtx);
 	static float* Dimension_getFogColor(__int64, float* color, __int64 brightness, float a4);
@@ -129,13 +128,13 @@ private:
 	static bool playerCallBack(Player* lp, __int64 a2, __int64 a3);
 	static void InventoryTransactionManager__addAction(InventoryTransactionManager*, InventoryAction&);
 	static void LevelRendererPlayer__renderNameTags(__int64 a1, __int64 a2, TextHolder* name, __int64 a4);
+	static void KeyMapHookCallback(unsigned char key, bool isDown);
 
 	std::unique_ptr<FuncHook> Actor_rotationHook;
 	std::unique_ptr<FuncHook> setPosHook;
 	std::unique_ptr<FuncHook> Actor_baseTickHook;
 	std::unique_ptr<FuncHook> Player_tickWorldHook;
 	std::unique_ptr<FuncHook> ClientInstanceScreenModel_sendChatMessageHook;
-	std::unique_ptr<FuncHook> UIScene_setupAndRenderHook;
 	std::unique_ptr<FuncHook> UIScene_renderHook;
 	std::unique_ptr<FuncHook> RenderTextHook;
 	std::unique_ptr<FuncHook> Dimension_getFogColorHook;
@@ -188,6 +187,7 @@ private:
 	std::unique_ptr<FuncHook> FishingHook___fishHookEventHook;
 	std::unique_ptr<FuncHook> InventoryTransactionManager__addActionHook;
 	std::unique_ptr<FuncHook> LevelRendererPlayer__renderNameTagsHook;
+	std::unique_ptr<FuncHook> KeyMapHook;
 };
 
 extern Hooks g_Hooks;

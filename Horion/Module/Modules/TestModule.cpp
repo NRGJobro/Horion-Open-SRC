@@ -62,3 +62,8 @@ void TestModule::onDisable() {
 
 void TestModule::onLevelRender() {
 }
+
+void TestModule::onKey(int key, bool isDown, bool& cancel) {
+	//Cancel W key for testing to make sure this works
+	if (key == 'W' && isDown) cancel = true;
+}

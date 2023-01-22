@@ -9,6 +9,7 @@
 #include "Hooks.h"
 
 GameData Game;
+bool GameData::keys[0x256];
 
 size_t AABBHasher::operator()(const AABB& i) const {
 	return Utils::posToHash(i.lower);
@@ -42,15 +43,9 @@ bool GameData::canUseMoveKeys() {
 }
 
 bool GameData::isKeyDown(int key) {
-	static uintptr_t keyMapOffset = 0x0;
-	if (keyMapOffset == 0x0) {
-		keyMapOffset = GetOffsetFromSig("48 8D 0D ? ? ? ? 89 1C B9", 3);
-		logF("KeyMap: %llX", keyMapOffset + Game.gameModule->ptrBase);
-	}
-	// All keys are mapped as bools, though aligned as ints (4 byte)
-	// key0 00 00 00 key1 00 00 00 key2 00 00 00 ...
-	return *reinterpret_cast<bool*>(Game.gameModule->ptrBase + keyMapOffset + ((uintptr_t)key * 0x4));
+	return keys[(int)key];
 }
+
 bool GameData::isKeyPressed(int key) {
 	if (isKeyDown(key)) {
 		while (isKeyDown(key))

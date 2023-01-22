@@ -207,6 +207,9 @@ void IModule::onKeyUpdate(int key, bool isDown) {
 	}
 }
 
+void IModule::onKey(int key, bool isDown, bool& shouldCancel) {
+}
+
 void IModule::onEnable() {
 }
 

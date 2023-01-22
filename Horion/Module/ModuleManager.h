@@ -123,6 +123,7 @@ public:
 	void onAttack(Entity* attackedEnt);
 	void onWorldTick(GameMode* gameMode);
 	void onKeyUpdate(int key, bool isDown);
+	void onKey(int key, bool isDown, bool& shouldCancel);
 	void onPreRender(MinecraftUIRenderContext* renderCtx);
 	void onPostRender(MinecraftUIRenderContext* renderCtx);
 	void onLevelRender();
