@@ -11,8 +11,6 @@ void Target::init(LocalPlayer** cl) {
 }
 
 bool Target::isValidTarget(Entity* ent) {
-	if (ent == nullptr)
-		return false;
 
 	auto localPlayer = Game.getLocalPlayer();
 
@@ -24,6 +22,8 @@ bool Target::isValidTarget(Entity* ent) {
 	static auto teams = moduleMgr->getModule<Teams>();
 	static auto noFriends = moduleMgr->getModule<NoFriends>();
 
+	if (!Game.isInGame())
+		return false;
 	if (!ent->isAlive())
 		return false;
 
@@ -49,14 +49,14 @@ bool Target::isValidTarget(Entity* ent) {
 				if (colorLocal == colorTarget)
 					return false;
 			}
-			
+
 			/*
 			auto targetName = ent->getNameTag();
 			auto localName = localPlayer->getNameTag();
 			if (targetName->getTextLength() > 2 && localName->getTextLength() > 2) {
 				auto colorTargetName = std::regex_replace(targetName->getText(), std::regex("\\§r"), "");
 				auto colorLocalName = std::regex_replace(localName->getText(), std::regex("\\§r"), "");
-				if (colorTargetName.at(0) == colorLocalName.at(0)) 
+				if (colorTargetName.at(0) == colorLocalName.at(0))
 					return false;
 			}
 			*/
@@ -73,7 +73,7 @@ bool Target::isValidTarget(Entity* ent) {
 	if (!noFriends->isEnabled() && FriendList::findPlayer(ent->getNameTag()->getText()))
 		return false;
 
-	if (antibot->isInvisibleCheckEnabled() && ent->isInvisible() )
+	if (antibot->isInvisibleCheckEnabled() && ent->isInvisible())
 		return false;
 
 	if (antibot->isOtherCheckEnabled() && (ent->isSilent() || ent->isImmobile() || ent->getNameTag()->getTextLength() < 1 || std::string(ent->getNameTag()->getText()).find(std::string("\n")) != std::string::npos))
@@ -89,6 +89,7 @@ bool Target::isValidTarget(Entity* ent) {
 	if (antibot->isExtraCheckEnabled() && !ent->canShowNameTag())
 		return false;
 
+	return (ent != nullptr);
 	return true;
 }
 
