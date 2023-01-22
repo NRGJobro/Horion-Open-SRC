@@ -44,12 +44,8 @@ bool GameData::canUseMoveKeys() {
 bool GameData::isKeyDown(int key) {
 	static uintptr_t keyMapOffset = 0x0;
 	if (keyMapOffset == 0x0) {
-		uintptr_t sigOffset = FindSignature("48 8D 0D ? ? ? ? 89 1C B9");
-		if (sigOffset != 0x0) {
-			int offset = *reinterpret_cast<int*>((sigOffset + 3));                                         // Get Offset from code
-			keyMapOffset = sigOffset - Game.gameModule->ptrBase + offset + /*length of instruction*/ 7;  // Offset is relative
-			logF("KeyMap: %llX", keyMapOffset + Game.gameModule->ptrBase);
-		}
+		keyMapOffset = GetOffsetFromSig("48 8D 0D ? ? ? ? 89 1C B9", 3);
+		logF("KeyMap: %llX", keyMapOffset + Game.gameModule->ptrBase);
 	}
 	// All keys are mapped as bools, though aligned as ints (4 byte)
 	// key0 00 00 00 key1 00 00 00 key2 00 00 00 ...

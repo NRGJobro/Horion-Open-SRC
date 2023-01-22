@@ -223,8 +223,10 @@ static inline void ImSwap(T& a, T& b) {
 
 #ifdef JM_XORSTR_HPP
 #define FindSignature(szSignature) Utils::FindSignatureModule("Minecraft.Windows.exe", xorstr_(szSignature))
+#define GetOffsetFromSig(szSignature, offset) Utils::getOffsetFromSignature(xorstr_(szSignature), offset)
 #else
 #define FindSignature(szSignature) Utils::FindSignatureModule("Minecraft.Windows.exe", szSignature)
+#define GetOffsetFromSig(szSignature, offset) Utils::getOffsetFromSignature(szSignature, offset)
 #endif
 
 struct Vec3i;
@@ -438,6 +440,8 @@ public:
 	}
 
 	static uintptr_t FindSignatureModule(const char* szModule, const char* szSignature);
+
+	static uintptr_t getOffsetFromSignature(const char* szSignature, int offset);
 
 	static void GetCurrentSystemTime(tm& timeInfo);
 
