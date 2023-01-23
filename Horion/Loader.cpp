@@ -12,11 +12,16 @@ bool Loader::isRunning = true;
 
 DWORD WINAPI ejectThread(LPVOID lpParam) {
 	while (Loader::isRunning) {
-		Sleep(10);
+		if ((GameData::isKeyDown(VK_CONTROL) && GameData::isKeyDown('L')) || GameData::isKeyDown(VK_END) || GameData::shouldTerminate()) {
+			Loader::isRunning = false;  // Uninject
+			break;
+		}
+
+		Sleep(20);
 	}
 	logF("Stopping Threads...");
 	GameData::terminate();
-	Sleep(300);  // Give the threads a bit of time to exit
+	Sleep(50);  // Give the threads a bit of time to exit
 
 	FreeLibraryAndExitThread(static_cast<HMODULE>(lpParam), 1);  // Uninject
 }

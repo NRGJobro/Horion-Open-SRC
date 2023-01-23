@@ -352,7 +352,6 @@ void Hooks::KeyMapHookCallback(unsigned char key, bool isDown) {
 	static auto oFunc = g_Hooks.KeyMapHook->GetFastcall<void, unsigned char, bool>();
 	bool shouldCancel = false;
 	GameData::keys[key] = isDown;
-	if ((GameData::isKeyDown(VK_CONTROL) && GameData::isKeyDown('L')) || GameData::isKeyDown(VK_END) || GameData::shouldTerminate()) Loader::isRunning = false;  // Uninject
 	
 	moduleMgr->onKey((int)key, isDown, shouldCancel);
 	moduleMgr->onKeyUpdate((int)key, (isDown && GameData::canUseMoveKeys()));
@@ -365,18 +364,23 @@ void Hooks::KeyMapHookCallback(unsigned char key, bool isDown) {
 
 __int64 Hooks::UIScene_render(UIScene* uiscene, __int64 screencontext) {
 	static auto oRender = g_Hooks.UIScene_renderHook->GetFastcall<__int64, UIScene*, __int64>();
+	static auto hudModule = moduleMgr->getModule<HudModule>();
 
 	g_Hooks.shouldRender = false;
 
 	TextHolder alloc{};
 	uiscene->getScreenName(&alloc);
 
-	if (alloc.getTextLength() < 100) {
-		strcpy_s(g_Hooks.currentScreenName, alloc.getText());
+	if (!g_Hooks.shouldRender) {
+		g_Hooks.shouldRender = (strcmp(alloc.getText(), "debug_screen") == 0);
+		if (!g_Hooks.shouldRender) if (alloc.getTextLength() < 100) strcpy_s(g_Hooks.currentScreenName, alloc.getText());
 	}
 	
+	alloc.alignedTextLength = 0;
+	
 	if (!g_Hooks.shouldRender) {
-		g_Hooks.shouldRender = (strcmp(alloc.getText(), "start_screen") == 0 || strcmp(alloc.getText(), "hud_screen") == 0);
+		if (hudModule && !hudModule->alwaysShow)
+			g_Hooks.shouldRender = (strcmp(alloc.getText(), "start_screen") == 0 || strcmp(alloc.getText(), "hud_screen") == 0);
 	}
 	alloc.alignedTextLength = 0;
 
