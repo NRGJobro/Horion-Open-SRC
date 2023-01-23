@@ -56,23 +56,23 @@ public:
 
 	// Credits to hacker hansen for this
 	std::vector<Entity *> getMiscEntityList() {
-		using entityList_t = __int64 *(__fastcall *)(Level *, void *);
-		// Using getBase so there's a much smaller and barely noticeable delay when we call this function for the first time
-		static entityList_t func = reinterpret_cast<entityList_t>(Utils::getBase() + 0x2451510);  // 48 89 5c 24 ? 56 57 41 56 48 83 ec ? 48 8b 05 ? ? ? ? 48 33 c4 48 89 44 24 ? 48 8b f2 4c 8b f1 48 89 54 24 ? 33 c9
-		if (func != 0) {
-			char *alloc = new char[0x18];  // Allocate memory for the list
-			__int64 *listStart = func(this, alloc);
-			int listSize = ((*reinterpret_cast<__int64 *>(reinterpret_cast<__int64>(listStart) + 0x8)) - (*listStart)) / 0x8;
+		using entityList_t = std::int64_t *(__fastcall *)(Level *, void *);
+		static entityList_t func = reinterpret_cast<entityList_t>(Utils::getBase() + 0x2451510);
+		if (func != nullptr) {
+			std::unique_ptr<char[]> alloc = std::make_unique<char[]>(0x18);
+			std::int64_t *listStart = func(this, alloc.get());
+			std::size_t listSize = ((*reinterpret_cast<std::int64_t *>(reinterpret_cast<std::int64_t>(listStart) + 0x8)) - (*listStart)) / 0x8;
 			Entity **entityList = reinterpret_cast<Entity **>(*listStart);
 			std::vector<Entity *> res;
+			res.reserve(listSize);
 			if (listSize > 0 && listSize < 5000) {
-				for (int i = 0; i < listSize; i++) {
+				for (std::size_t i = 0; i < listSize; i++) {
 					res.push_back(entityList[i]);
 				}
 			}
-			delete[] alloc;
 			return res;
 		}
+		return {};
 	}
 };
 

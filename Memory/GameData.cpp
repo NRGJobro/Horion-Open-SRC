@@ -186,6 +186,7 @@ void GameData::initGameData(const SlimUtils::SlimModule* gameModule, SlimUtils::
 	Game.slimMem = slimMem;
 	Game.hDllInst = hDllInst;
 	retrieveClientInstance();
+
 #ifdef _DEBUG
 	logF("Base: %llX", Game.getModule()->ptrBase);
 	if (Game.clientInstance != nullptr) {
@@ -194,16 +195,15 @@ void GameData::initGameData(const SlimUtils::SlimModule* gameModule, SlimUtils::
 		logF("MinecraftGame: %llX", Game.clientInstance->minecraftGame);
 		logF("LevelRenderer: %llX", Game.clientInstance->levelRenderer);
 	}
-
 #endif
 }
+
 void GameData::log(const char* fmt, ...) {
-	auto lock = std::lock_guard<std::mutex>(Game.textPrintLock);
 	va_list arg;
 	va_start(arg, fmt);
 	char message[300];
-	vsprintf_s(message, 300, fmt, arg);
-	std::string msg(message);
-	Game.textPrintList.push_back(msg);
+	vsprintf_s(message, fmt, arg);
 	va_end(arg);
+	std::unique_lock<std::mutex> lock(Game.textPrintLock);
+	Game.textPrintList.emplace_back(message);
 }
