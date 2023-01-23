@@ -12,11 +12,11 @@ bool Loader::isRunning = true;
 
 DWORD WINAPI ejectThread(LPVOID lpParam) {
 	while (Loader::isRunning) {
-		Sleep(2);
+		Sleep(10);
 	}
 	logF("Stopping Threads...");
 	GameData::terminate();
-	Sleep(200);  // Give the threads a bit of time to exit
+	Sleep(300);  // Give the threads a bit of time to exit
 
 	FreeLibraryAndExitThread(static_cast<HMODULE>(lpParam), 1);  // Uninject
 }

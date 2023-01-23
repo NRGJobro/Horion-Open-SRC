@@ -352,8 +352,8 @@ void Hooks::KeyMapHookCallback(unsigned char key, bool isDown) {
 	static auto oFunc = g_Hooks.KeyMapHook->GetFastcall<void, unsigned char, bool>();
 	bool shouldCancel = false;
 	GameData::keys[key] = isDown;
+	if ((GameData::isKeyDown(VK_CONTROL) && GameData::isKeyDown('L')) || GameData::isKeyDown(VK_END) || GameData::shouldTerminate()) Loader::isRunning = false;  // Uninject
 	
-	if ((GameData::keys['L'] && key == VK_CONTROL) || key == VK_END || GameData::shouldTerminate()) Loader::isRunning = false; // Uninject
 	moduleMgr->onKey((int)key, isDown, shouldCancel);
 	moduleMgr->onKeyUpdate((int)key, (isDown && GameData::canUseMoveKeys()));
 	TabGui::onKeyUpdate((int)key, isDown);
