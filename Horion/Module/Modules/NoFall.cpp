@@ -42,7 +42,7 @@ void NoFall::onTick(GameMode* gm) {
 		}
 		case 2:{
 			localPlayer->velocity.y = 0.f;
-			localPlayer->setPos((*localPlayer->getPos()).add(0, 0.2, 0));
+			localPlayer->setPos((*localPlayer->getPos()).add(0, (float)0.2, 0.f));
 			break;
 		}
 		case 3:{

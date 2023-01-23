@@ -359,7 +359,7 @@ void DrawUtils::drawImage(std::string filePath, Vec2& imagePos, Vec2& ImageDimen
 	if (texturePtr != nullptr) {
 		renderCtx->drawImage(texturePtr, imagePos, ImageDimension, yot, idk);
 		MC_Color col(1.f, 1.f, 1.f);
-		renderCtx->flushImages(col, flushImageAddr, (__int64)&hashedString);
+		renderCtx->flushImages(col, (float)flushImageAddr, (__int64)&hashedString);
 	}
 }
 
@@ -551,12 +551,12 @@ inline void DrawUtils::tess__begin(Tessellator* tess, int vertexFormat, int numV
 	static tess_begin_t tess_begin = reinterpret_cast<tess_begin_t>(FindSignature("48 89 5C 24 ?? 55 48 83 EC ?? 80 B9 ?? ?? ?? ?? 00 45"));
 	tess_begin(tess, vertexFormat, numVerticesReserved);
 }
-void DrawUtils::setGameRenderContext(__int64 ctx) {
+void DrawUtils::setGameRenderContext(std::int64_t ctx) {
 	game3dContext = ctx;
 	if (Game.getClientInstance()->levelRenderer != nullptr)
 		origin = Game.getClientInstance()->levelRenderer->getOrigin();
 
-	if(ctx){
+	if (ctx) {
 		LARGE_INTEGER EndingTime, ElapsedMicroseconds;
 		LARGE_INTEGER Frequency;
 		QueryPerformanceFrequency(&Frequency);
@@ -565,16 +565,12 @@ void DrawUtils::setGameRenderContext(__int64 ctx) {
 
 		ElapsedMicroseconds.QuadPart *= 1000000;
 		int ticksPerSecond = 20;
-		if(Game.getClientInstance()->minecraft)
+		if (Game.getClientInstance()->minecraft)
 			ticksPerSecond = (int)*Game.getClientInstance()->minecraft->timer;
-		if(ticksPerSecond < 1)
-			ticksPerSecond = 1;
+		ticksPerSecond = std::max(ticksPerSecond, 1);
 		ElapsedMicroseconds.QuadPart /= Frequency.QuadPart / ticksPerSecond;
 		lerpT = (ElapsedMicroseconds.QuadPart / 1000000.f);
-		if (lerpT > 1)
-			lerpT = 1;
-		else if (lerpT < 0)
-			lerpT = 0;
+		lerpT = std::clamp(lerpT, 0.0f, 1.0f);
 	}
 }
 float DrawUtils::getLerpTime() {
