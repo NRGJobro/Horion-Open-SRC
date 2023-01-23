@@ -24,7 +24,7 @@ struct ClickWindow {
 	Vec2 size;
 	bool isExtended = true;
 	bool isInAnimation = false;
-	float animation = 0.1;
+	float animation = 0.1f;
 	const char* name;
 	std::map<unsigned int, std::shared_ptr<ClickModule>> moduleMap;
 
