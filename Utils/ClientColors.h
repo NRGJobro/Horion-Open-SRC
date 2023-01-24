@@ -106,5 +106,11 @@ public:
 	static void setArraylistBackgroundColor(MC_Color color) {
 		arraylistBackgroundColor = color;
 	}
+
+	//MenuBackground
+	static MC_Color menuBackgroundColor;
+	static void setMenuBackgroundColor(MC_Color color) {
+		menuBackgroundColor = color;
+	}
 	
 };

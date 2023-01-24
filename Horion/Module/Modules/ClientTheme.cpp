@@ -44,6 +44,8 @@ void ClientTheme::onPreRender(MinecraftUIRenderContext* renderCtx) {
 		ClientColors::setWatermarkBackgroundColor(MC_Color(12, 12, 12));
 		// Arraylist
 		ClientColors::setArraylistBackgroundColor(MC_Color(12, 12, 12));
+		// Menu
+		ClientColors::setMenuBackgroundColor(MC_Color(12, 12, 12));
 		break;
 	}
 	case 1: {
@@ -75,6 +77,8 @@ void ClientTheme::onPreRender(MinecraftUIRenderContext* renderCtx) {
 		ClientColors::setWatermarkBackgroundColor(MC_Color(13, 29, 48));
 		// Arraylist
 		ClientColors::setArraylistBackgroundColor(MC_Color(13, 29, 48));
+		// Menu
+		ClientColors::setMenuBackgroundColor(MC_Color(13, 29, 48));
 		break;
 	}
 	}

@@ -74,6 +74,7 @@ bool GameData::shouldTerminate() {
 
 void GameData::terminate() {
 	Game.getClientInstance()->minecraft->setTimerSpeed(20.f);
+	g_Hooks.entityList.clear();
 	Game.shouldTerminateB = true;
 }
 

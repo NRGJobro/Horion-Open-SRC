@@ -36,3 +36,6 @@ MC_Color ClientColors::watermarkBackgroundColor = MC_Color(12, 12, 12);
 
 //Arraylist
 MC_Color ClientColors::arraylistBackgroundColor = MC_Color(12, 12, 12);
+
+// Arraylist
+MC_Color ClientColors::menuBackgroundColor = MC_Color(12, 12, 12);

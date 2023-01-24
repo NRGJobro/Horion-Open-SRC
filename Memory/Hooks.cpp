@@ -366,7 +366,7 @@ __int64 Hooks::UIScene_render(UIScene* uiscene, __int64 screencontext) {
 	static auto oRender = g_Hooks.UIScene_renderHook->GetFastcall<__int64, UIScene*, __int64>();
 	static auto hudModule = moduleMgr->getModule<HudModule>();
 
-	//g_Hooks.shouldRender = false;
+	g_Hooks.shouldRender = false;
 
 	TextHolder alloc{};
 	uiscene->getScreenName(&alloc);
@@ -438,7 +438,7 @@ __int64 Hooks::RenderText(__int64 a1, MinecraftUIRenderContext* renderCtx) {
 					std::string text = "H O R I O N";
 					Vec2 textPos = Vec2(wid.x / 2.f - DrawUtils::getTextWidth(&text, 8.f) / 2.f, wid.y / 9.5f);
 					Vec4 rectPos = Vec4(textPos.x - 55.f, textPos.y - 15.f, textPos.x + DrawUtils::getTextWidth(&text, 8.f) + 55.f, textPos.y + 75.f);
-					DrawUtils::fillRectangle(rectPos, MC_Color(13, 29, 48, 1), 1.f);
+					DrawUtils::fillRectangle(rectPos, ClientColors::menuBackgroundColor, 1.f);
 					DrawUtils::drawRectangle(rectPos, rcolors, 1.f, 2.f);
 					DrawUtils::drawText(textPos, &text, MC_Color(255, 255, 255, 1), 8.f);
 				}
