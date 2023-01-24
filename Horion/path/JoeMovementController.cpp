@@ -22,10 +22,9 @@ void JoeMovementController::step(LocalPlayer *player, MoveInputHandler *movement
 
 	auto curSeg = currentPath->getSegment(stateInfo.currentPathSegment);
 
-	if(!curSeg.isInValidPosition(playerNode)){
+	if (!curSeg.isInValidPosition(playerNode) && curSeg.getSegmentType() != PARKOUR_JUMP_SINGLE) {
 		logF("invalid position %i %i %i, %i %i %i", curSeg.getSegmentType(), stateInfo.currentPathSegment, stateInfo.currentPathSegment > 0 ? currentPath->getSegment(stateInfo.currentPathSegment - 1).getSegmentType() : 0, playerNode.x, playerNode.y, playerNode.z);
-		stateInfo.currentPathSegment = (int)currentPath->getNumSegments();
-		stateInfo.recoverToStartPos = false;
+		stateInfo.recoverToStartPos = true;
 		return;
 	}
 
@@ -107,14 +106,14 @@ void JoeMovementController::step(LocalPlayer *player, MoveInputHandler *movement
 		goto WALK;
 	} break;
 	case PARKOUR_JUMP_SINGLE: {
-		if(player->isSprinting())
-			player->setSprinting(false);
+		curSeg.setAllowSprint(true);
+		player->setSprinting(true);
 		if(player->onGround){
 			if(fabsf(pPos.y - end.y) < 0.1f && pPos.dist(end) < 0.5f){// Check for end condition
 				stateInfo.nextSegment();
 				break;
 			}
-			if(player->getTicksUsingItem() > 0 && fabsf(pPos.y - start.y) < 0.1f && pPos.dist(end) > 0.85f){
+			if(player->getTicksUsingItem() > 0){
 				walkTarget = start;
 				goto WALK;
 			}
@@ -139,6 +138,7 @@ void JoeMovementController::step(LocalPlayer *player, MoveInputHandler *movement
 				maxJumpDist = 0.7f;
 			if(posToJumpTarg < maxJumpDist && posToJumpTarg > 0 && player->velocity.dot(tangent) > 0.07f){
 				// jump
+				player->setSprinting(true);
 				movementHandler->isJumping = 1;
 				goto WALK;
 			}
