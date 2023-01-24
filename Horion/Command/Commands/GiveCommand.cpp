@@ -8,17 +8,19 @@ GiveCommand::GiveCommand() : IMCCommand("give", "spawn items", "<itemName> <coun
 
 GiveCommand::~GiveCommand() {
 }
-
+bool isValidNBT(std::string &tag) {
+	return tag.size() > 1 && tag.front() == MojangsonToken::COMPOUND_START.getSymbol() && tag.back() == MojangsonToken::COMPOUND_END.getSymbol();
+}
 bool GiveCommand::execute(std::vector<std::string> *args) {
 	assertTrue(args->size() > 2);
 
 	int itemId = 0;
 	uint32_t fullCount = static_cast<uint32_t>(assertInt(args->at(2)));
 	unsigned int stackCount = fullCount / 64;  // Get the amount of stacks we have.
-	char count = fullCount % 64;               // Get the amount we have left.
-	char itemData = 0;
+	unsigned int count = fullCount % 64;
+	unsigned int itemData = 0;
 	if (args->size() > 3) {
-		itemData = static_cast<char>(assertInt(args->at(3)));
+		itemData = assertInt(args->at(3));
 	}
 
 	try {
@@ -69,16 +71,9 @@ bool GiveCommand::execute(std::vector<std::string> *args) {
 	Inventory *inv = Game.getLocalPlayer()->getSupplies()->inventory;
 	ItemStack *item = Game.getLocalPlayer()->getSelectedItem();
 	if (args->size() > 4) {
-		std::string tag;
-		tag = Utils::getClipboardText();
-		if (args->size() > 4) {
-			Game.getLocalPlayer()->getTransactionManager()->addInventoryAction(InventoryAction(0, nullptr, nullptr, item, nullptr, 1, 507, 99999));
-		}
-
-		if (tag.size() > 1 && tag.front() == MojangsonToken::COMPOUND_START.getSymbol() && tag.back() == MojangsonToken::COMPOUND_END.getSymbol()) {
-			if (args->size() > 4) {
-				item->setUserData(std::move(Mojangson::parseTag(tag)));
-			}
+		std::string tag = Utils::getClipboardText();
+		if (isValidNBT(tag)) {
+			item->setUserData(std::move(Mojangson::parseTag(tag)));
 		} else {
 			clientMessageF("%sInvalid NBT tag!", RED);
 			return true;
