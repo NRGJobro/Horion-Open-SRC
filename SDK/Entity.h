@@ -76,115 +76,116 @@ struct MobEffectInstance;
 
 #pragma pack(push, 4)
 class Entity {
-public:
-	uint64_t ptrToEntityList;  //0x0008
+	uint64_t ptrToEntityList;  // 0x8
 private:
-	char pad_0010[296];  //0x0010
+	char pad_0x10[0x128];  // 0x10
+public:
 public:
 	union {
 		struct {
-			float pitch;  //0x0138
-			float yaw;    //0x013C
+			float pitch;  // 0x138
+			float yaw;    // 0x13C
 		};
 		Vec2 viewAngles;
 	};
 	union {
 		struct {
-			float pitch2;  //0x0138
-			float yaw2;    //0x013C
+			float pitch2;  // 0x140
+			float yaw2;    // 0x144
 		};
 		Vec2 viewAngles2;
 	};
 
 private:
-	char pad_0148[16];  //0x0148
+	char pad_0x148[0x10];  // 0x148
 public:
-	Vec3 eyePos0;  //0x0158
+	Vec3 eyePos0;  // 0x158
 private:
-	char pad_0164[112];  //0x0164
+	char pad_0x164[0x70];  // 0x164
 public:
-	float fallDistance;  //0x01D4
-	bool onGround;       //0x01D8
+	float fallDistance;         // 0x1D4
+	bool onGround;              // 0x1D8
+	bool onGround2;             // 0x1D9
+	bool walkingIntoSomething;  // 0x1DA
+	bool actuallyOnGround;      // 0x1DB
+	bool touchingSomething;     // 0x1DC
 private:
-	char pad_01D9[95];  //0x01D9
+	char pad_0x1DD[0x5B];  // 0x1DD
 public:
-	float stepHeight;  //0x0238
+	float stepHeight;  // 0x238
 private:
-	char pad_023C[16];  //0x023C
+	char pad_0x23C[0x4];  // 0x23C
 public:
-	Vec3 slowdownFactor;  //0x024C
+	float travelDistanceGroundOld;  // 0x240
+	float travelDistanceGround;     // 0x244
+	float travelDistance;           // 0x248
+	Vec3 slowdownFactor;            // 0x24C
+	float unk;                      // 0x258
+	bool IsInWater;                 // 0x25C
+	bool didEnterWaterBool;         // 0x25D
+	bool hasEnterWaterBool;         // 0x25E
+	bool isSwimming;                // 0x25F
 private:
-	char pad_0258[5];  //0x0258
+	char pad_0x260[0x48];  // 0x260
 public:
-	bool didEnterWaterBool;  //0x025D
+	int32_t ticksAlive;  // 0x2A8
 private:
-	char pad_025E[1];  //0x025E
+	char pad_0x2AC[0xAC];  // 0x2AC
 public:
-	bool hasEnteredWaterBool;  //0x025F
+	class BlockSource *region;     // 0x358
+	class Dimension *dimension;      // 0x360
+	class Level *level;  // 0x368
 private:
-	char pad_0260[72];  //0x0260
+	char pad_0x370[0x148];  // 0x370
 public:
-	int32_t ticksAlive;  //0x02A8
+	AABB aabb;        // 0x4B8
+	float width;      // 0x4D0
+	float height;     // 0x4D4
+	Vec3 currentPos;  // 0x4D8
+	Vec3 oldPos;      // 0x4E4
+	Vec3 velocity;    // 0x4F0
+	Vec3 velocity2;   // 0x4FC
 private:
-	char pad_02AC[172];  //0x02AC
+	char pad_0x508[0x48];  // 0x508
 public:
-	class BlockSource *region;  //0x0358
+	uint64_t entityRuntimeId;  // 0x550
 private:
-	char pad_0360[8];  //0x0360
+	char pad_0x558[0x1D0];  // 0x558
 public:
-	Level *level;  //0x0368
+	float bodyYaw;                    // 0x728
+	float oldBodyYaw;                 // 0x72C
+	float yawUnused1;                 // 0x730
+	float yawUnused2;                 // 0x734
+	int32_t damageTime;               // 0x738
+	int32_t damageAnimationDuration;  // 0x73C
 private:
-	char pad_0370[328];  //0x0370
+	char pad_0x740[0x88];  // 0x740
 public:
-	AABB aabb;          //0x04B8
-	float width;        //0x04D0
-	float height;       //0x04D4
-	Vec3 currentPos;  //0x04D8
-	Vec3 oldPos;      //0x04E4
-	Vec3 velocity;    //0x04F0
-	Vec3 velocity2;   //0x04FC
+	int32_t timeSinceDeath;  // 0x7C8
 private:
-	char pad_0508[80];  //0x0508
+	char pad_0x7CC[0xF4];  // 0x7CC
 public:
-	int64_t entityRuntimeId;  //0x0558
+	class TextHolder playerName;  // 0x8C0
 private:
-	char pad_0560[0x1C8];  //0x0560
+	char pad_0x8E0[0x80];  // 0x8E0
 public:
-	float bodyYaw;                    //0x0728
-	float oldBodyYaw;                 //0xtoolazytoupdatethesecommentsxd
-	float yawUnused1;                 //0x0748
-	float yawUnused2;                 //0x074C
-	int32_t damageTime;               //0x0750
-	int32_t damageAnimationDuration;  //0x0754
+	bool isFlying;  // 0x960
 private:
-	char pad_0758[136];  //0x0758
+	char pad_0x961[0xB];  // 0x961
 public:
-	int32_t timeSinceDeath;  //0x07E0
+	bool canFly;  // 0x96C
 private:
-	char pad_07E4[244];  //0x07E4
+	char pad_0x96D[0x68B];  // 0x96D
 public:
-	class TextHolder playerName;  //0x08D8
+	int32_t ticksUsingItem;  // 0xFF8
 private:
-	char pad_08F8[140];  //0x08F8
+	char pad_0xFFC[0xCC4];  // 0xFFC
 public:
-	bool canFly;  //0x0984
+	float glidingTicks;  // 0x1CC0
 private:
-	char pad_0985[1667];  //0x0985
+	char pad_0x1CC4[0xB8];  // 0x1CC4
 public:
-	int32_t ticksUsingItem;  //0x1008
-private:
-	char pad_100C[20];  //0x100C
-public:
-	int16_t itemData;  //0x1020
-	int16_t itemId;    //0x1022
-private:
-	char pad_1024[508];  //0x1024
-public:
-	class InventoryTransactionManager transac;  //0x1220
-private:
-	char pad_1280[2828];  //0x1280
-public:
-	int32_t gamemode;  //0x1D8C
+	int gamemode;  // 0x1D7C
 
 	virtual __int64 getLastHurtByMob(void);                                                 // 0
 	virtual __int64 setLastHurtByMob(Entity *);                                           // 1
