@@ -101,42 +101,30 @@ bool GiveCommand::giveItem(uint8_t count, int itemId, uint8_t itemData, std::str
 	ItemStack *itemStack = nullptr;
 	auto transactionManager = Game.getLocalPlayer()->getTransactionManager();
 
-	std::unique_ptr<void *> ItemPtr = std::make_unique<void *>();
-	Item ***cStack = ItemRegistry::getItemFromId(ItemPtr.get(), itemId);
+	void *ItemPtr;
+	Item ***cStack = ItemRegistry::getItemFromId(&ItemPtr, itemId);
 	if (cStack == nullptr || *cStack == nullptr || **cStack == nullptr) {
 		clientMessageF("%sInvalid item ID!", RED);
 		return false;
 	}
 	itemStack = new ItemStack(***cStack, count, itemData);
 
-	if (itemStack != nullptr) {
-		itemStack->count = count;
-	}
-
 	int slot = inv->getFirstEmptySlot();
 
 	if (tag.size() > 1 && tag.front() == MojangsonToken::COMPOUND_START.getSymbol() && tag.back() == MojangsonToken::COMPOUND_END.getSymbol()) {
-		//itemStack->setUserData(std::move(Mojangson::parseTag(tag)));
 		itemStack->fromTag(*Mojangson::parseTag(tag));
 	}
 
 	ItemDescriptor *desc = new ItemDescriptor((*itemStack->item)->itemId, itemData);
 
-	// If we add the second action, Only one stack will come through for some reason.
-	// Otherwise all stacks will come through but will be buggy till dropped or
-	// till the world is saved then reloaded.
-
 	InventoryAction *firstAction = new InventoryAction(slot, desc, nullptr, itemStack, nullptr, count, 507, 99999);
-	//InventoryAction *secondAction = new InventoryAction(slot, nullptr, desc, nullptr, itemStack, count);
 
 	transactionManager->addInventoryAction(*firstAction);
-	//transactionManager->addInventoryAction(*secondAction);
-
-	delete firstAction;
-	//delete secondAction;
-	delete desc;
 
 	inv->addItemToFirstEmptySlot(itemStack);
+
+	delete desc;
+	delete firstAction;
 	return true;
 }
 
@@ -145,42 +133,30 @@ bool GiveCommand::giveItem(uint8_t count, TextHolder &text, uint8_t itemData, st
 	ItemStack *itemStack = nullptr;
 	auto transactionManager = Game.getLocalPlayer()->getTransactionManager();
 
-	std::unique_ptr<void *> ItemPtr = std::make_unique<void *>();
-	std::unique_ptr<void *> buffer = std::make_unique<void *>();
-	Item ***cStack = ItemRegistry::lookUpByName(ItemPtr.get(), buffer.get(), text);
+	void *ItemPtr;
+	void *buffer;
+	Item ***cStack = ItemRegistry::lookUpByName(&ItemPtr, &buffer, text);
 	if (*cStack == nullptr) {
 		clientMessageF("%sInvalid item name!", RED);
 		return false;
 	}
 	itemStack = new ItemStack(***cStack, count, itemData);
 
-	if (itemStack != nullptr) {
-		itemStack->count = count;
-	}
-
 	int slot = inv->getFirstEmptySlot();
 
 	if (tag.size() > 1 && tag.front() == MojangsonToken::COMPOUND_START.getSymbol() && tag.back() == MojangsonToken::COMPOUND_END.getSymbol()) {
-		//itemStack->setUserData(std::move(Mojangson::parseTag(tag)));
 		itemStack->fromTag(*Mojangson::parseTag(tag));
 	}
 
 	ItemDescriptor *desc = new ItemDescriptor((*itemStack->item)->itemId, itemData);
 
-	// If we add the second action, Only one stack will come through for some reason.
-	// Otherwise all stacks will come through but will be buggy till dropped or
-	// till the world is saved then reloaded.
-
 	InventoryAction *firstAction = new InventoryAction(slot, desc, nullptr, itemStack, nullptr, count, 507, 99999);
-	//InventoryAction *secondAction = new InventoryAction(slot, nullptr, desc, nullptr, itemStack, count);
 
 	transactionManager->addInventoryAction(*firstAction);
-	//transactionManager->addInventoryAction(*secondAction);
-
-	delete firstAction;
-	//delete secondAction;
-	delete desc;
 
 	inv->addItemToFirstEmptySlot(itemStack);
+
+	delete desc;
+	delete firstAction;
 	return true;
 }
