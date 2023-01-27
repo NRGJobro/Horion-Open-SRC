@@ -90,51 +90,52 @@ void GameData::updateGameData(GameMode* gameMode) {
 	retrieveClientInstance();
 	Game.localPlayer = Game.getLocalPlayer();
 
-	if (Game.localPlayer != nullptr && gameMode->player == Game.localPlayer) {  // GameMode::tick might also be run on the local server
+	if (Game.localPlayer != nullptr && gameMode->player == Game.localPlayer) {
 		Game.gameMode = gameMode;
 		QueryPerformanceCounter(reinterpret_cast<LARGE_INTEGER*>(&Game.lastUpdate));
 
 		if (Game.localPlayer != nullptr) {
 			GuiData* guiData = Game.clientInstance->getGuiData();
-
 			if (guiData != nullptr) {
-				{
-					auto vecLock = Logger::GetTextToPrintLock();
-					auto* stringPrintVector = Logger::GetTextToPrint();
-#ifdef _DEBUG
-					int numPrinted = 0;
-					std::vector<TextForPrint>::iterator it;
-					for (it = stringPrintVector->begin(); it != stringPrintVector->end(); ++it) {
-						numPrinted++;
-						if (numPrinted > 20) {
-							break;
-						}
-
-						guiData->displayClientMessageNoSendF("%s%s%s%s", GOLD, it->time, RESET, it->text);
-					}
-					stringPrintVector->erase(stringPrintVector->begin(), it);
-#else
-					stringPrintVector->clear();
-#endif
-				}
-				{
-					auto lock = std::lock_guard<std::mutex>(Game.textPrintLock);
-
-					auto& stringPrintVector = Game.textPrintList;
-					int numPrinted = 0;
-					std::vector<std::string>::iterator it;
-					for (it = stringPrintVector.begin(); it != stringPrintVector.end(); ++it) {
-						numPrinted++;
-						if (numPrinted > 20) {
-							break;
-						}
-
-						guiData->displayClientMessageNoSendF(it->c_str());
-					}
-					stringPrintVector.erase(stringPrintVector.begin(), it);
-				}
+				displayMessages(guiData);
 			}
 		}
+	}
+}
+
+void GameData::displayMessages(GuiData* guiData) {
+	auto vecLock = Logger::GetTextToPrintLock();
+	auto* stringPrintVector = Logger::GetTextToPrint();
+#ifdef _DEBUG
+	int numPrinted = 0;
+	std::vector<TextForPrint>::iterator it;
+	for (it = stringPrintVector->begin(); it != stringPrintVector->end(); ++it) {
+		numPrinted++;
+		if (numPrinted > 20) {
+			break;
+		}
+
+		guiData->displayClientMessageNoSendF("%s%s%s%s", GOLD, it->time, RESET, it->text);
+	}
+	stringPrintVector->erase(stringPrintVector->begin(), it);
+#else
+	stringPrintVector->clear();
+#endif
+	{
+		auto lock = std::lock_guard<std::mutex>(Game.textPrintLock);
+
+		auto& stringPrintVector = Game.textPrintList;
+		int numPrinted = 0;
+		std::vector<std::string>::iterator it;
+		for (it = stringPrintVector.begin(); it != stringPrintVector.end(); ++it) {
+			numPrinted++;
+			if (numPrinted > 20) {
+				break;
+			}
+
+			guiData->displayClientMessageNoSendF(it->c_str());
+		}
+		stringPrintVector.erase(stringPrintVector.begin(), it);
 	}
 }
 

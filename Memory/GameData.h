@@ -89,6 +89,7 @@ public:
 	static void EntityList_tick(EntityList* list);
 	static void setHIDController(HIDController* Hid);
 	static void setRakNetInstance(RakNetInstance* raknet);
+	static void displayMessages(GuiData* guiData);
 	static void log(const char* fmt, ...);
 	float fov = 0.f;
 	int fps = 0;
