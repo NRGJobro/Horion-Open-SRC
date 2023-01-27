@@ -8,10 +8,10 @@
 #include <glm/mat4x4.hpp>         // mat4
 #include <glm/trigonometric.hpp>  // radians
 
-#include "../SDK/Tag.h"
-#include "../Horion/Menu/TabGui.h"
-#include "../Utils/ClientColors.h"
 #include "../Horion/Loader.h"
+#include "../Horion/Menu/TabGui.h"
+#include "../SDK/Tag.h"
+#include "../Utils/ClientColors.h"
 
 Hooks g_Hooks;
 bool isTicked = false;
@@ -162,11 +162,16 @@ void Hooks::Init() {
 
 	// Vtables
 	{
+	
+	//The reason im using a sig is because injecting on the menu causes LocalPlayer to be null so i cant get the vtable from just doing Game.getLocalPlayer(). Same with Gamemode bc i get that from local player.
+	
 		// LocalPlayer::vtable
-		if (Game.getLocalPlayer() != nullptr) {
-			uintptr_t** localPlayerVtable = reinterpret_cast<uintptr_t**>(*(uintptr_t*)Game.getLocalPlayer());
-			if (localPlayerVtable == 0x0)
-				logF("LocalPlayer Vtable not working!!!");
+		{
+			uintptr_t LocalPlayer_sigOffset = FindSignature("48 8d 05 ? ? ? ? 48 89 01 48 8b 89 ? ? ? ? 48 8b 01 ff 90 ? ? ? ? 48 8b 10");
+			int offset = *reinterpret_cast<int*>(LocalPlayer_sigOffset + 3);
+			uintptr_t** localPlayerVtable = reinterpret_cast<uintptr_t**>(LocalPlayer_sigOffset + offset + /*length of instruction*/ 7);
+			if (localPlayerVtable == 0x0 || LocalPlayer_sigOffset == 0x0)
+				logF("LocalPlayer signature not working!!!");
 			else {
 				g_Hooks.Actor_startSwimmingHook = std::make_unique<FuncHook>(localPlayerVtable[201], Hooks::Actor_startSwimming);
 
@@ -190,7 +195,23 @@ void Hooks::Init() {
 
 				//g_Hooks.Actor__isInvisibleHook = std::make_unique<FuncHook>(localPlayerVtable[59], Hooks::Actor__isInvisible);
 			}
-		} else logF("LocalPlayer is null");
+		}
+
+		// GameMode::vtable
+		{
+			uintptr_t GameMode_sigOffset = FindSignature("48 8d 05 ? ? ? ? 48 8b d9 48 89 01 8b fa 48 8b 89 ? ? ? ? 48 85 c9 74 ? 48 8b 01 ba ? ? ? ? ff 10 48 8b 8b");
+			int offset = *reinterpret_cast<int*>(GameMode_sigOffset + 3);
+			uintptr_t** gameModeVtable = reinterpret_cast<uintptr_t**>(GameMode_sigOffset + offset + /*length of instruction*/ 7);
+			if (gameModeVtable == 0x0 || GameMode_sigOffset == 0x0)
+				logF("GameMode signature not working!!!");
+			else {
+				g_Hooks.GameMode_startDestroyBlockHook = std::make_unique<FuncHook>(gameModeVtable[1], Hooks::GameMode_startDestroyBlock);
+
+				g_Hooks.GameMode_getPickRangeHook = std::make_unique<FuncHook>(gameModeVtable[10], Hooks::GameMode_getPickRange);
+
+				g_Hooks.GameMode_attackHook = std::make_unique<FuncHook>(gameModeVtable[14], Hooks::GameMode_attack);
+			}
+		}
 		
 		// LoopbackPacketSender::vtable
 		if (Game.getClientInstance()->loopbackPacketSender != nullptr) {
@@ -212,20 +233,6 @@ void Hooks::Init() {
 			}
 		} else logF("MoveTurnInput is null");
 
-		// GameMode::vtable
-		if (Game.getGameMode() != nullptr) {
-			uintptr_t** gameModeVtable = reinterpret_cast<uintptr_t**>(*(uintptr_t*)Game.getGameMode());
-			if (gameModeVtable == 0x0)
-				logF("gameModeVtable signature not working!!!");
-			else {
-				g_Hooks.GameMode_startDestroyBlockHook = std::make_unique<FuncHook>(gameModeVtable[1], Hooks::GameMode_startDestroyBlock);
-
-				g_Hooks.GameMode_getPickRangeHook = std::make_unique<FuncHook>(gameModeVtable[10], Hooks::GameMode_getPickRange);
-
-				g_Hooks.GameMode_attackHook = std::make_unique<FuncHook>(gameModeVtable[14], Hooks::GameMode_attack);
-			}
-		}
-
 		// PackAccessStrategy vtables for isTrusted
 		{
 			uintptr_t** directoryPackVtable = GetVtableFromSig("48 8d 05 ? ? ? ? 49 89 06 49 8d 76 ? 45 33 e4", 3);
@@ -243,7 +250,7 @@ void Hooks::Init() {
 		logF("Vtables initialized");
 	}
 
-// clang-format on
+	// clang-format on
 }
 
 void Hooks::Restore() {
@@ -258,29 +265,29 @@ void Hooks::Enable() {
 
 bool Hooks::playerCallBack(Player* lp, __int64 a2, __int64 a3) {
 	static auto oTick = g_Hooks.playerCallBack_Hook->GetFastcall<bool, Player*, __int64, __int64>();
-	//if (lp == Game.getLocalPlayer())
-		//moduleMgr->onPlayerTick(lp);
+	// if (lp == Game.getLocalPlayer())
+	// moduleMgr->onPlayerTick(lp);
 
-		if (!Game.getLocalPlayer() || !Game.getLocalPlayer()->level || !*(&Game.getLocalPlayer()->region + 1) || !Game.isInGame())
-			g_Hooks.entityList.clear();
-		
-		if (Game.getLocalPlayer() != nullptr && lp == Game.getLocalPlayer()) {
-			std::vector<EntityListPointerHolder> validEntities;
-			for (const auto& ent : g_Hooks.entityList) {
-				auto entity = ent.ent;
-				MEMORY_BASIC_INFORMATION info;
-				VirtualQuery(ent.ent, &info, sizeof(MEMORY_BASIC_INFORMATION));
-				if (info.State & MEM_FREE) continue;
-				if (info.State & MEM_RESERVE) continue;
-				
-				if (entity == nullptr) continue;
+	if (!Game.getLocalPlayer() || !Game.getLocalPlayer()->level || !*(&Game.getLocalPlayer()->region + 1) || !Game.isInGame())
+		g_Hooks.entityList.clear();
 
-				if (entity != nullptr && (__int64)entity != 0xFFFFFFFFFFFFFCD7 && ent.ent != nullptr && *(__int64*)ent.ent != 0xFFFFFFFFFFFFFCD7 && *(__int64*)ent.ent > 0x6FF000000000 && *(__int64*)ent.ent < 0x800000000000 && *((int64_t*)ent.ent + 1) < 0x6FF000000000 && *(__int64*)ent.ent <= (__int64)(Utils::getBase() + 0x10000000) && entity->isAlive())
-					validEntities.push_back(ent);
-			}
-			g_Hooks.entityList.clear();
-			g_Hooks.entityList = validEntities;
+	if (Game.getLocalPlayer() != nullptr && lp == Game.getLocalPlayer()) {
+		std::vector<EntityListPointerHolder> validEntities;
+		for (const auto& ent : g_Hooks.entityList) {
+			auto entity = ent.ent;
+			MEMORY_BASIC_INFORMATION info;
+			VirtualQuery(ent.ent, &info, sizeof(MEMORY_BASIC_INFORMATION));
+			if (info.State & MEM_FREE) continue;
+			if (info.State & MEM_RESERVE) continue;
+
+			if (entity == nullptr) continue;
+
+			if (entity != nullptr && (__int64)entity != 0xFFFFFFFFFFFFFCD7 && ent.ent != nullptr && *(__int64*)ent.ent != 0xFFFFFFFFFFFFFCD7 && *(__int64*)ent.ent > 0x6FF000000000 && *(__int64*)ent.ent < 0x800000000000 && *((int64_t*)ent.ent + 1) < 0x6FF000000000 && *(__int64*)ent.ent <= (__int64)(Utils::getBase() + 0x10000000) && entity->isAlive())
+				validEntities.push_back(ent);
 		}
+		g_Hooks.entityList.clear();
+		g_Hooks.entityList = validEntities;
+	}
 	return oTick(lp, a2, a3);
 }
 
@@ -352,12 +359,12 @@ void Hooks::KeyMapHookCallback(unsigned char key, bool isDown) {
 	static auto oFunc = g_Hooks.KeyMapHook->GetFastcall<void, unsigned char, bool>();
 	bool shouldCancel = false;
 	GameData::keys[key] = isDown;
-	
+
 	moduleMgr->onKey((int)key, isDown, shouldCancel);
 	moduleMgr->onKeyUpdate((int)key, (isDown && GameData::canUseMoveKeys()));
 	TabGui::onKeyUpdate((int)key, isDown);
 	ClickGui::onKeyUpdate((int)key, isDown);
-	
+
 	if (shouldCancel) return;
 	return oFunc(key, isDown);
 }
@@ -373,11 +380,12 @@ __int64 Hooks::UIScene_render(UIScene* uiscene, __int64 screencontext) {
 
 	if (!g_Hooks.shouldRender) {
 		g_Hooks.shouldRender = (strcmp(alloc.getText(), "debug_screen") == 0);
-		if (!g_Hooks.shouldRender) if (alloc.getTextLength() < 100) strcpy_s(g_Hooks.currentScreenName, alloc.getText());
+		if (!g_Hooks.shouldRender)
+			if (alloc.getTextLength() < 100) strcpy_s(g_Hooks.currentScreenName, alloc.getText());
 	}
-	
+
 	alloc.alignedTextLength = 0;
-	
+
 	if (!g_Hooks.shouldRender) {
 		if (hudModule && !hudModule->alwaysShow)
 			g_Hooks.shouldRender = (!strcmp(g_Hooks.currentScreenName, "hud_screen") || !strcmp(g_Hooks.currentScreenName, "start_screen"));
@@ -916,7 +924,7 @@ void Hooks::LoopbackPacketSender_sendToServer(LoopbackPacketSender* a, Packet* p
 			if (blinkMod->isEnabled()) {
 				if (packet->isInstanceOf<C_MovePlayerPacket>()) {
 					C_MovePlayerPacket* meme = reinterpret_cast<C_MovePlayerPacket*>(packet);
-					meme->onGround = true;                                                            //Don't take Fall Damages when turned off
+					meme->onGround = true;                                                            // Don't take Fall Damages when turned off
 					blinkMod->getMovePlayerPacketHolder()->push_back(new C_MovePlayerPacket(*meme));  // Saving the packets
 				} else {
 					blinkMod->getPlayerAuthInputPacketHolder()->push_back(new PlayerAuthInputPacket(*reinterpret_cast<PlayerAuthInputPacket*>(packet)));
@@ -949,7 +957,7 @@ void Hooks::LoopbackPacketSender_sendToServer(LoopbackPacketSender* a, Packet* p
 		auto* pp = reinterpret_cast<PlayerActionPacket*>(packet);
 
 		if (pp->action == 12 && pp->entityRuntimeId == Game.getLocalPlayer()->entityRuntimeId)
-			return;  //dont send uncrouch
+			return;  // dont send uncrouch
 	}
 
 	moduleMgr->onSendPacket(packet);
@@ -959,7 +967,7 @@ void Hooks::LoopbackPacketSender_sendToServer(LoopbackPacketSender* a, Packet* p
 		auto text = reinterpret_cast<TextHolder*>(reinterpret_cast<__int64>(packet) + 0x30);
 		auto bet = reinterpret_cast<unsigned char*>(reinterpret_cast<__int64>(packet) + 0x50);
 		logF("emote %llX %s %i", *varInt, text->getText(), *bet);
-	} fix emote crashing*/ 
+	} fix emote crashing*/
 
 	oFunc(a, packet);
 }
@@ -1059,7 +1067,7 @@ __int8* Hooks::BlockLegacy_getLightEmission(BlockLegacy* a1, __int8* a2) {
 	static auto oFunc = g_Hooks.BlockLegacy_getLightEmissionHook->GetFastcall<__int8*, BlockLegacy*, __int8*>();
 	static auto xrayMod = moduleMgr->getModule<Xray>();
 
-	if (!xrayMod || !xrayMod->isEnabled()) 
+	if (!xrayMod || !xrayMod->isEnabled())
 		return oFunc(a1, a2);
 
 	*a2 = 15;
@@ -1104,15 +1112,15 @@ void Hooks::ClickFunc(__int64 a1, char mouseButton, char isDown, __int16 mouseX,
 	static auto oFunc = g_Hooks.ClickFuncHook->GetFastcall<void, __int64, char, char, __int16, __int16, __int16, __int16, char>();
 	static auto clickGuiModule = moduleMgr->getModule<ClickGuiMod>();
 
-	//MouseButtons
-	//0 = mouse move
-	//1 = left click
-	//2 = right click
-	//3 = middle click
-	//4 = scroll   (isDown: 120 (SCROLL UP) and -120 (SCROLL DOWN))
+	// MouseButtons
+	// 0 = mouse move
+	// 1 = left click
+	// 2 = right click
+	// 3 = middle click
+	// 4 = scroll   (isDown: 120 (SCROLL UP) and -120 (SCROLL DOWN))
 
 	DrawUtils::onMouseClickUpdate((int)mouseButton, isDown);
-	
+
 	if (isDown)
 		if (mouseButton == 1)
 			Game.leftclickCount++;
@@ -1152,6 +1160,7 @@ float Hooks::GetGamma(uintptr_t* a1) {
 	static auto xrayMod = moduleMgr->getModule<Xray>();
 	static auto nametagmod = moduleMgr->getModule<NameTags>();
 	static auto zoomMod = moduleMgr->getModule<Zoom>();
+	static auto viewMod = moduleMgr->getModule<ViewModel>();
 
 	uintptr_t** list = (uintptr_t**)a1;
 
@@ -1175,9 +1184,10 @@ float Hooks::GetGamma(uintptr_t* a1) {
 			bool* ingamePlayerName = (bool*)((uintptr_t)list[i] + 16);
 			nametagmod->ingameNametagSetting = ingamePlayerName;
 			obtainedSettings++;
-		} else if (!strcmp(settingname->getText(), "gfx_field_of_view")) {
-			float* FieldOfView = (float*)((uintptr_t)list[i] + 24);
-			
+		} else if (!strcmp(settingname->getText(), "gfx_viewbobbing")) {
+			bool* viewbobbing = (bool*)((uintptr_t)list[i] + 16);
+			if (viewMod->isEnabled())
+				*viewbobbing = true;
 			obtainedSettings++;
 		}
 		if (obtainedSettings == 3) break;
@@ -1194,15 +1204,15 @@ float Hooks::GetGamma(uintptr_t* a1) {
 }
 
 bool Hooks::Actor_isInWater(Entity* _this) {
-    static auto oFunc = g_Hooks.Actor_isInWaterHook->GetFastcall<bool, Entity*>();
-    static auto airSwimModule = moduleMgr->getModule<AirSwim>();
-    
-    if (Game.getLocalPlayer() != _this)
-        return oFunc(_this);
-    else if (airSwimModule && airSwimModule->isEnabled())
-        return true;
-    else 
-        return oFunc(_this);
+	static auto oFunc = g_Hooks.Actor_isInWaterHook->GetFastcall<bool, Entity*>();
+	static auto airSwimModule = moduleMgr->getModule<AirSwim>();
+
+	if (Game.getLocalPlayer() != _this)
+		return oFunc(_this);
+	else if (airSwimModule && airSwimModule->isEnabled())
+		return true;
+	else
+		return oFunc(_this);
 }
 
 void Hooks::JumpPower(Entity* a1, float a2) {
@@ -1214,7 +1224,6 @@ void Hooks::JumpPower(Entity* a1, float a2) {
 	}
 	oFunc(a1, a2);
 }
-
 
 void Hooks::Actor_ascendLadder(Entity* _this) {
 	static auto oFunc = g_Hooks.Actor_ascendLadderHook->GetFastcall<void, Entity*>();
@@ -1230,7 +1239,7 @@ void Hooks::Actor_ascendLadder(Entity* _this) {
 void Hooks::Actor_swing(Entity* _this) {
 	static auto oFunc = g_Hooks.Actor_swingHook->GetFastcall<void, Entity*>();
 	static auto noSwingMod = moduleMgr->getModule<NoSwing>();
-	if(!noSwingMod->isEnabled()) return oFunc(_this);
+	if (!noSwingMod->isEnabled()) return oFunc(_this);
 }
 
 void Hooks::Actor_startSwimming(Entity* _this) {
@@ -1357,9 +1366,9 @@ __int64 Hooks::ConnectionRequest_create(__int64 _this, __int64 privateKeyManager
 		delete newSkinResourcePatch;
 		return res;
 	} else {*/
-		TextHolder* fakeName = Game.getFakeName();
-		__int64 res = oFunc(_this, privateKeyManager, a3, selfSignedId, serverAddress, clientRandomId, skinId, skinData, capeData, coolSkinStuff, deviceId, inputMode, uiProfile, guiScale, languageCode, sendEduModeParams, tenantId, unused, platformUserId, fakeName != nullptr ? fakeName : thirdPartyName, fakeName != nullptr ? true : thirdPartyNameOnly, platformOnlineId, platformOfflineId, capeId);
-		return res;
+	TextHolder* fakeName = Game.getFakeName();
+	__int64 res = oFunc(_this, privateKeyManager, a3, selfSignedId, serverAddress, clientRandomId, skinId, skinData, capeData, coolSkinStuff, deviceId, inputMode, uiProfile, guiScale, languageCode, sendEduModeParams, tenantId, unused, platformUserId, fakeName != nullptr ? fakeName : thirdPartyName, fakeName != nullptr ? true : thirdPartyNameOnly, platformOnlineId, platformOfflineId, capeId);
+	return res;
 }
 
 void Hooks::InventoryTransactionManager_addAction(InventoryTransactionManager* a1, InventoryAction* a2) {
@@ -1391,8 +1400,8 @@ bool Hooks::ReturnTrue(__int64 _this) {
 __int64 Hooks::SkinRepository___loadSkinPack(__int64 _this, __int64 pack, __int64 a3) {
 	static auto func = g_Hooks.SkinRepository___loadSkinPackHook->GetFastcall<__int64, __int64, __int64, __int64>();
 
-	//auto res = (*(unsigned __int8 (**)(void))(**(__int64**)(pack + 8) + 48i64))();
-	//logF("SkinRepository___loadSkinPack: origin %i, is Trusted: %i", *(int*)((*(__int64*)pack) + 888i64), res);
+	// auto res = (*(unsigned __int8 (**)(void))(**(__int64**)(pack + 8) + 48i64))();
+	// logF("SkinRepository___loadSkinPack: origin %i, is Trusted: %i", *(int*)((*(__int64*)pack) + 888i64), res);
 	*(int*)((*(__int64*)pack) + 888i64) = 2;  // Set pack origin to "2"
 
 	return func(_this, pack, a3);
