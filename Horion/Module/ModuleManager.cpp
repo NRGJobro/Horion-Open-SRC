@@ -268,6 +268,16 @@ void ModuleManager::onMove(MoveInputHandler* hand) {
 			it->onMove(hand);
 	}
 }
+
+void ModuleManager::onPlayerTick(Player* player) {
+	if (!isInitialized())
+		return;
+	auto lock = lockModuleList();
+	for (auto& it : moduleList) {
+		if (it->isEnabled() || it->callWhenDisabled())
+			it->onPlayerTick(player);
+	}
+}
 void ModuleManager::onLevelRender() {
 	if (!isInitialized())
 		return;

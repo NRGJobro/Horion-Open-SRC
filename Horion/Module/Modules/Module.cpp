@@ -358,6 +358,8 @@ bool IModule::callWhenDisabled() {
 }
 void IModule::onMove(MoveInputHandler*) {
 }
+void IModule::onPlayerTick(Player* player) {
+}
 void IModule::onLevelRender() {
 }
 void IModule::clientMessageF(const char* fmt, ...) {

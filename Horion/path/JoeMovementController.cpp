@@ -106,8 +106,6 @@ void JoeMovementController::step(LocalPlayer *player, MoveInputHandler *movement
 		goto WALK;
 	} break;
 	case PARKOUR_JUMP_SINGLE: {
-		curSeg.setAllowSprint(true);
-		player->setSprinting(true);
 		if(player->onGround){
 			if(fabsf(pPos.y - end.y) < 0.1f && pPos.dist(end) < 0.5f){// Check for end condition
 				stateInfo.nextSegment();
@@ -138,8 +136,10 @@ void JoeMovementController::step(LocalPlayer *player, MoveInputHandler *movement
 				maxJumpDist = 0.7f;
 			if(posToJumpTarg < maxJumpDist && posToJumpTarg > 0 && player->velocity.dot(tangent) > 0.07f){
 				// jump
+				curSeg.setAllowSprint(true);
 				player->setSprinting(true);
 				movementHandler->isJumping = 1;
+				player->setSprinting(true);
 				goto WALK;
 			}
 			goto WALK;

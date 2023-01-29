@@ -165,8 +165,27 @@ void Hooks::Init() {
 
 	// Vtables
 	{
-	
-	//The reason im using a sig is because injecting on the menu causes LocalPlayer to be null so i cant get the vtable from just doing Game.getLocalPlayer(). Same with Gamemode bc i get that from local player.
+		// LoopbackPacketSender::vtable
+		if (Game.getClientInstance()->loopbackPacketSender != nullptr) {
+			uintptr_t** packetSenderVtable = reinterpret_cast<uintptr_t**>(*(uintptr_t*)Game.getClientInstance()->loopbackPacketSender);
+			if (packetSenderVtable == nullptr)
+				logF("LoopbackPacketSenderVtable is invalid");
+			else {
+				g_Hooks.LoopbackPacketSender_sendToServerHook = std::make_unique<FuncHook>(packetSenderVtable[2], Hooks::LoopbackPacketSender_sendToServer);
+			}
+		} else logF("LoopbackPacketSender is null");
+
+		// MoveInputHandler::vtable
+		if (Game.getClientInstance()->getMoveTurnInput() != nullptr) {
+			uintptr_t** moveInputVtable = reinterpret_cast<uintptr_t**>(*(uintptr_t*)Game.getClientInstance()->getMoveTurnInput());
+			if (moveInputVtable == 0x0)
+				logF("MoveInputHandler signature not working!!!");
+			else {
+				g_Hooks.MoveInputHandler_tickHook = std::make_unique<FuncHook>(moveInputVtable[1], Hooks::MoveInputHandler_tick);
+			}
+		} else logF("MoveTurnInput is null");
+
+		//The reason im using a sig is because injecting on the menu causes LocalPlayer to be null so i cant get the vtable from just doing Game.getLocalPlayer(). Same with Gamemode bc i get that from local player.
 	
 		// LocalPlayer::vtable
 		{
@@ -211,26 +230,6 @@ void Hooks::Init() {
 				g_Hooks.GameMode_attackHook = std::make_unique<FuncHook>(gameModeVtable[14], Hooks::GameMode_attack);
 			}
 		}
-		
-		// LoopbackPacketSender::vtable
-		if (Game.getClientInstance()->loopbackPacketSender != nullptr) {
-			uintptr_t** packetSenderVtable = reinterpret_cast<uintptr_t**>(*(uintptr_t*)Game.getClientInstance()->loopbackPacketSender);
-			if (packetSenderVtable == nullptr)
-				logF("LoopbackPacketSenderVtable is invalid");
-			else {
-				g_Hooks.LoopbackPacketSender_sendToServerHook = std::make_unique<FuncHook>(packetSenderVtable[2], Hooks::LoopbackPacketSender_sendToServer);
-			}
-		} else logF("LoopbackPacketSender is null");
-
-		// MoveInputHandler::vtable
-		if (Game.getClientInstance()->getMoveTurnInput() != nullptr) {
-			uintptr_t** moveInputVtable = reinterpret_cast<uintptr_t**>(*(uintptr_t*)Game.getClientInstance()->getMoveTurnInput());
-			if (moveInputVtable == 0x0)
-				logF("MoveInputHandler signature not working!!!");
-			else {
-				g_Hooks.MoveInputHandler_tickHook = std::make_unique<FuncHook>(moveInputVtable[1], Hooks::MoveInputHandler_tick);
-			}
-		} else logF("MoveTurnInput is null");
 
 		// PackAccessStrategy vtables for isTrusted
 		{
@@ -264,8 +263,8 @@ void Hooks::Enable() {
 
 bool Hooks::playerCallBack(Player* lp, __int64 a2, __int64 a3) {
 	static auto oTick = g_Hooks.playerCallBack_Hook->GetFastcall<bool, Player*, __int64, __int64>();
-	// if (lp == Game.getLocalPlayer())
-	// moduleMgr->onPlayerTick(lp);
+	if (moduleMgr != nullptr && lp != nullptr && Game.getLocalPlayer() != nullptr && lp == Game.getLocalPlayer())
+		moduleMgr->onPlayerTick(lp);
 
 	if (!Game.getLocalPlayer() || !Game.getLocalPlayer()->level || !*(&Game.getLocalPlayer()->region + 1) || !Game.isInGame())
 		g_Hooks.entityList.clear();

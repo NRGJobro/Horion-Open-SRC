@@ -578,7 +578,7 @@ public:
 	float getBlocksPerSecond();
 
 	int getTicksUsingItem() {
-		return this->ticksUsingItem;
+		return *reinterpret_cast<int *>(this + 0xFF8);
 	}
 
 	bool isSneaking() {
