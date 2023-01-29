@@ -1465,11 +1465,11 @@ void Hooks::Actor__setRot(Entity* _this, Vec2& angle) {
 
 void Hooks::test(Weather* _this, float idk) {
 	auto func = g_Hooks.testHook->GetFastcall<void, Weather*, float>();
-	static auto testModTEst = moduleMgr->getModule<TestModule>();
+	//static auto testModTEst = moduleMgr->getModule<TestModule>();
 
-	if (testModTEst->isEnabled()) {
-		func(_this, idk = 1000);
-	}
+	//if (testModTEst->isEnabled()) {
+	//	func(_this, idk = 1000);
+	//}
 	
 	func(_this, idk);
 }

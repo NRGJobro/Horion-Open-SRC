@@ -100,14 +100,10 @@ void Scaffold::onTick(GameMode* gm) {
 	if ((selectedItem == nullptr || selectedItem->count == 0 || selectedItem->item == nullptr || !selectedItem->getItem()->isBlock()) && !spoof)  // Block in hand?
 		return;
 
-
 	// Adjustment by velocity
 	float speed = Game.getLocalPlayer()->velocity.magnitudexz();
 	Vec3 vel = Game.getLocalPlayer()->velocity;
 	vel = vel.normalize();  // Only use values from 0 - 1
-
-
-
 
 	if (staircaseMode) {
 		Vec3 blockBelow = Game.getLocalPlayer()->eyePos0;  // Block 1 block below the player
