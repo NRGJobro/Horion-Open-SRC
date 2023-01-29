@@ -215,15 +215,17 @@ void Scaffold::onPostRender(MinecraftUIRenderContext* ctx) {
 			tryClutchScaffold(blockBelow);
 			if (hive) tryClutchScaffold(nextBlock);
 		} else {
-			if (!tryScaffold(blockBelow) && !hive) {
-				if (speed > 0.05f) {  // Are we actually walking?
-					blockBelow.z -= vel.z * 0.4f;
-					if (!tryScaffold(blockBelow)) {
-						blockBelow.x -= vel.x * 0.4f;
-						if (!tryScaffold(blockBelow) && player->isSprinting()) {
-							blockBelow.z += vel.z;
-							blockBelow.x += vel.x;
-							tryScaffold(blockBelow);
+			if (!hive) {
+				if (!tryScaffold(blockBelow)) {
+					if (speed > 0.05f) {  // Are we actually walking?
+						blockBelow.z -= vel.z * 0.4f;
+						if (!tryScaffold(blockBelow)) {
+							blockBelow.x -= vel.x * 0.4f;
+							if (!tryScaffold(blockBelow) && player->isSprinting()) {
+								blockBelow.z += vel.z;
+								blockBelow.x += vel.x;
+								tryScaffold(blockBelow);
+							}
 						}
 					}
 				}

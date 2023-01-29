@@ -61,6 +61,22 @@ public:
 
 	void moveItem(int from, int to);
 	void swapSlots(int from, int to);
+
+	bool isInContainerScreen() {
+		switch (*reinterpret_cast<int*>(this + 0x20)) {
+		case 3: {
+			return false;
+		} break;
+		case 4: {
+			return true;
+		} break;
+		}
+		return false;
+	}
+
+	class TextHolder getPlayerName() {
+		return *reinterpret_cast<class TextHolder*>(reinterpret_cast<__int64>(this) + 0x319);
+	}
 };
 
 class Container {
@@ -81,7 +97,7 @@ public:
 	Inventory* inventory;  //0x00B0
 
 	class Container* getContainer() {
-		return reinterpret_cast<Container*>((uintptr_t)(this) + 0xC0);
+		return reinterpret_cast<Container*>((uintptr_t)(this) + 0xD0);
 	}
 };
 
