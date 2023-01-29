@@ -4,6 +4,14 @@
 //#define PERFORMANCE_TEST
 #endif
 
+#include <d3d11.h>
+#include <d3dcompiler.h>
+#include <dxgi.h>
+#include <intrin.h>
+
+#include <thread>
+#include <unordered_map>
+
 #include "../Horion/Command/CommandMgr.h"
 #include "../Horion/Config/ConfigManager.h"
 #include "../Horion/DrawUtils.h"
@@ -17,23 +25,14 @@
 #include "../SDK/MinecraftUIRenderContext.h"
 #include "../SDK/MoveInputHandler.h"
 #include "../SDK/RakNetInstance.h"
-#include "../SDK/UIScene.h"
 #include "../SDK/TextHolder.h"
+#include "../SDK/UIScene.h"
+#include "../Utils/Logger.h"
 #include "../Utils/SkinUtil.h"
 #include "../Utils/TextFormat.h"
 #include "../resource.h"
 #include "GameData.h"
 #include "MinHook.h"
-
-#include <d3d11.h>
-#include <d3dcompiler.h>
-#include <dxgi.h>
-#include <intrin.h>
-
-#include <thread>
-#include <unordered_map>
-
-#include "../Utils/Logger.h"
 
 class VMTHook;
 class FuncHook;
@@ -89,7 +88,7 @@ private:
 	static float* Dimension_getFogColor(__int64, float* color, __int64 brightness, float a4);
 	static float Dimension_getTimeOfDay(__int64, int a2, float a3);
 	static float Dimension_getSunIntensity(__int64, float a2, Vec3* a3, float a4);
-	static void ChestBlockActor_tick(ChestBlockActor*, void* a);
+	static void ChestBlockActor_tick(ChestBlockActor*, BlockSource* source);
 	static void Actor_lerpMotion(Entity* _this, Vec3);
 	static int AppPlatform_getGameEdition(__int64 _this);
 	static void PleaseAutoComplete(__int64 _this, __int64 a2, TextHolder* text, int a4);
@@ -124,11 +123,12 @@ private:
 	static void LocalPlayer__updateFromCamera(__int64 a1, Camera* a2);
 	static bool Mob__isImmobile(Entity*);
 	static void Actor__setRot(Entity* _this, Vec2& angle);
-	static void test(void* _this);
+	static void test(Entity* this_, Vec2& test, int ball);
 	static bool playerCallBack(Player* lp, __int64 a2, __int64 a3);
 	static void InventoryTransactionManager__addAction(InventoryTransactionManager*, InventoryAction&);
 	static void LevelRendererPlayer__renderNameTags(__int64 a1, __int64 a2, TextHolder* name, __int64 a4);
 	static void KeyMapHookCallback(unsigned char key, bool isDown);
+	static float getDestroySpeed(Player* _this, Block& block);
 
 	std::unique_ptr<FuncHook> Actor_rotationHook;
 	std::unique_ptr<FuncHook> setPosHook;
@@ -169,7 +169,7 @@ private:
 	std::unique_ptr<FuncHook> GameMode_getPickRangeHook;
 	std::unique_ptr<FuncHook> GameMode_attackHook;
 	std::unique_ptr<FuncHook> ConnectionRequest_createHook;
-	std::unique_ptr<FuncHook> InventoryTransactionManager_addActionHook;	
+	std::unique_ptr<FuncHook> InventoryTransactionManager_addActionHook;
 	std::unique_ptr<FuncHook> DirectoryPackAccessStrategy__isTrustedHook;
 	std::unique_ptr<FuncHook> ZipPackAccessStrategy__isTrustedHook;
 	std::unique_ptr<FuncHook> SkinRepository___checkSignatureFileInPack;
@@ -188,6 +188,7 @@ private:
 	std::unique_ptr<FuncHook> InventoryTransactionManager__addActionHook;
 	std::unique_ptr<FuncHook> LevelRendererPlayer__renderNameTagsHook;
 	std::unique_ptr<FuncHook> KeyMapHook;
+	std::unique_ptr<FuncHook> testyHook;
 };
 
 extern Hooks g_Hooks;

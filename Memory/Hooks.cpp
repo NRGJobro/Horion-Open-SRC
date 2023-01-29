@@ -42,8 +42,8 @@ void Hooks::Init() {
 		void* fogColorFunc = reinterpret_cast<void*>(FindSignature("41 0F 10 08 48 8B C2 0F"));
 		g_Hooks.Dimension_getFogColorHook = std::make_unique<FuncHook>(fogColorFunc, Hooks::Dimension_getFogColor);
 
-		/*void* testy = reinterpret_cast<void*>(FindSignature("48 8B 05 61 DF CD 02 48 85 C0 75 07"));
-		g_Hooks.testyHook = std::make_unique<FuncHook>(testy, Hooks::testy);*/
+		//void* testy = reinterpret_cast<void*>(FindSignature("48 89 5c 24 ? 57 48 83 ec ? 48 8b 05 ? ? ? ? 48 33 c4 48 89 44 24 ? 48 8b f9 ff 15 ? ? ? ? 8b d8 8b 47 ? 90 3b d8"));
+		//g_Hooks.testyHook = std::make_unique<FuncHook>(testy, Hooks::test);
 		
 		void* timeOfDay = reinterpret_cast<void*>(FindSignature("44 8B C2 B8 ? ? ? ? F7 EA"));
 		g_Hooks.Dimension_getTimeOfDayHook = std::make_unique<FuncHook>(timeOfDay, Hooks::Dimension_getTimeOfDay);
@@ -119,8 +119,11 @@ void Hooks::Init() {
 		//void* localPlayerUpdateFromCam = reinterpret_cast<void*>(FindSignature("48 8b c4 53 48 81 ec ? ? ? ? 0f 29 70 ? 0f 29 78 ? 48 8b 05 ? ? ? ? 48 33 c4 48 89 84 24 ? ? ? ? 4d 8b d0"));
 		//g_Hooks.LocalPlayer__updateFromCameraHook = std::make_unique<FuncHook>(localPlayerUpdateFromCam, Hooks::LocalPlayer__updateFromCamera);
 
-		void* renderNameTags = reinterpret_cast<void*>(FindSignature("48 8b c4 48 89 58 ? 55 56 57 41 54 41 55 41 56 41 57 48 8d a8 ? ? ? ? 48 81 ec ? ? ? ? 0f 29 70 ? 0f 29 78 ? 44 0f 29 40 ? 48 8b 05 ? ? ? ? 48 33 c4 48 89 85 ? ? ? ? 49 8b f1"));//Broken
+		void* renderNameTags = reinterpret_cast<void*>(FindSignature("48 8b c4 48 89 58 ? 55 56 57 41 54 41 55 41 56 41 57 48 8d a8 ? ? ? ? 48 81 ec ? ? ? ? 0f 29 70 ? 0f 29 78 ? 44 0f 29 40 ? 48 8b 05 ? ? ? ? 48 33 c4 48 89 85 ? ? ? ? 49 8b f1"));
 		g_Hooks.LevelRendererPlayer__renderNameTagsHook = std::make_unique<FuncHook>(renderNameTags, Hooks::LevelRendererPlayer__renderNameTags);
+		
+		void* destroySpeed = reinterpret_cast<void*>(FindSignature("48 89 5c 24 ? 48 89 74 24 ? 57 48 83 ec ? 48 8b fa 0f 29 74 24 ? 48 8b 91"));
+		g_Hooks.getDestroySpeedHook = std::make_unique<FuncHook>(destroySpeed, Hooks::getDestroySpeed);
 		
 		static constexpr auto counterStart = __COUNTER__ + 1;
 		#define lambda_counter (__COUNTER__ - counterStart)
@@ -167,10 +170,8 @@ void Hooks::Init() {
 	
 		// LocalPlayer::vtable
 		{
-			uintptr_t LocalPlayer_sigOffset = FindSignature("48 8d 05 ? ? ? ? 48 89 01 48 8b 89 ? ? ? ? 48 8b 01 ff 90 ? ? ? ? 48 8b 10");
-			int offset = *reinterpret_cast<int*>(LocalPlayer_sigOffset + 3);
-			uintptr_t** localPlayerVtable = reinterpret_cast<uintptr_t**>(LocalPlayer_sigOffset + offset + /*length of instruction*/ 7);
-			if (localPlayerVtable == 0x0 || LocalPlayer_sigOffset == 0x0)
+			uintptr_t** localPlayerVtable = GetVtableFromSig("48 8d 05 ? ? ? ? 48 89 01 48 8b 89 ? ? ? ? 48 8b 01 ff 90 ? ? ? ? 48 8b 10", 3);
+			if (localPlayerVtable == 0x0)
 				logF("LocalPlayer signature not working!!!");
 			else {
 				g_Hooks.Actor_startSwimmingHook = std::make_unique<FuncHook>(localPlayerVtable[201], Hooks::Actor_startSwimming);
@@ -199,10 +200,8 @@ void Hooks::Init() {
 
 		// GameMode::vtable
 		{
-			uintptr_t GameMode_sigOffset = FindSignature("48 8d 05 ? ? ? ? 48 8b d9 48 89 01 8b fa 48 8b 89 ? ? ? ? 48 85 c9 74 ? 48 8b 01 ba ? ? ? ? ff 10 48 8b 8b");
-			int offset = *reinterpret_cast<int*>(GameMode_sigOffset + 3);
-			uintptr_t** gameModeVtable = reinterpret_cast<uintptr_t**>(GameMode_sigOffset + offset + /*length of instruction*/ 7);
-			if (gameModeVtable == 0x0 || GameMode_sigOffset == 0x0)
+			uintptr_t** gameModeVtable = GetVtableFromSig("48 8d 05 ? ? ? ? 48 8b d9 48 89 01 8b fa 48 8b 89 ? ? ? ? 48 85 c9 74 ? 48 8b 01 ba ? ? ? ? ff 10 48 8b 8b", 3);
+			if (gameModeVtable == 0x0)
 				logF("GameMode signature not working!!!");
 			else {
 				g_Hooks.GameMode_startDestroyBlockHook = std::make_unique<FuncHook>(gameModeVtable[1], Hooks::GameMode_startDestroyBlock);
@@ -770,9 +769,9 @@ float Hooks::Dimension_getSunIntensity(__int64 a1, float a2, Vec3* a3, float a4)
 	return oGetSunIntensity(a1, a2, a3, a4);
 }
 
-void Hooks::ChestBlockActor_tick(ChestBlockActor* _this, void* a) {
-	static auto oTick = g_Hooks.ChestBlockActor_tickHook->GetFastcall<void, ChestBlockActor*, void*>();
-	oTick(_this, a);
+void Hooks::ChestBlockActor_tick(ChestBlockActor* _this, BlockSource* source) {
+	static auto oTick = g_Hooks.ChestBlockActor_tickHook->GetFastcall<void, ChestBlockActor*, BlockSource*>();
+	oTick(_this, source);
 	static auto* storageEspMod = moduleMgr->getModule<StorageESP>();
 	if (_this != nullptr && storageEspMod->isEnabled())
 		GameData::addChestToList(_this);
@@ -989,7 +988,6 @@ void Hooks::GameMode_startDestroyBlock(GameMode* _this, Vec3i* a2, uint8_t face,
 	static auto oFunc = g_Hooks.GameMode_startDestroyBlockHook->GetFastcall<void, GameMode*, Vec3i*, uint8_t, void*, void*>();
 
 	static auto nukerModule = moduleMgr->getModule<Nuker>();
-	static auto instaBreakModule = moduleMgr->getModule<InstaBreak>();
 
 	if (nukerModule->isEnabled()) {
 		Vec3i tempPos;
@@ -1020,10 +1018,6 @@ void Hooks::GameMode_startDestroyBlock(GameMode* _this, Vec3i* a2, uint8_t face,
 				}
 			}
 		}
-		return;
-	}
-	if (instaBreakModule->isEnabled()) {
-		_this->destroyBlock(a2, face);
 		return;
 	}
 
@@ -1469,9 +1463,13 @@ void Hooks::Actor__setRot(Entity* _this, Vec2& angle) {
 	func(_this, angle);
 }
 
-void Hooks::test(void* _this) {
-	auto func = g_Hooks.testHook->GetFastcall<void, void*>();
-	func(_this);
+void Hooks::test(Entity* this_, Vec2& test, int ball) {
+	auto func = g_Hooks.testHook->GetFastcall<void, Entity*, Vec2&, int>();
+	static auto testModTEst = moduleMgr->getModule<TestModule>();
+	if (testModTEst->isEnabled()) {
+		func(this_, test = Vec2(90, 90), ball = 1);
+	}
+	func(this_, test, ball);
 }
 
 void Hooks::InventoryTransactionManager__addAction(InventoryTransactionManager* _this, InventoryAction& action) {
@@ -1516,4 +1514,11 @@ void Hooks::LevelRendererPlayer__renderNameTags(__int64 a1, __int64 a2, TextHold
 		return;
 
 	return func(a1, a2, a3, a4);
+}
+
+float Hooks::getDestroySpeed(Player* _this, Block& block) {
+	static auto oFunc = g_Hooks.getDestroySpeedHook->GetFastcall<float, Player*, Block&>();
+	static auto instaBreakMod = moduleMgr->getModule<InstaBreak>();
+
+	return instaBreakMod->isEnabled() ? INFINITY : oFunc(_this, block);
 }
