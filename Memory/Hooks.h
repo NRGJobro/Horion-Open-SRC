@@ -85,9 +85,9 @@ private:
 	static void ClientInstanceScreenModel_sendChatMessage(void* _this, TextHolder* text);
 	static __int64 UIScene_render(UIScene* uiscene, __int64 screencontext);
 	static __int64 RenderText(__int64 a1, MinecraftUIRenderContext* renderCtx);
-	static float* Dimension_getFogColor(__int64, float* color, __int64 brightness, float a4);
-	static float Dimension_getTimeOfDay(__int64, int a2, float a3);
-	static float Dimension_getSunIntensity(__int64, float a2, Vec3* a3, float a4);
+	static float* Dimension_getFogColor(Dimension*, float* color, __int64 brightness, float a4);
+	static float Dimension_getTimeOfDay(Dimension*, int a2, float a3);
+	static float Dimension_getSunIntensity(Dimension*, float a2, Vec3* a3, float a4);
 	static void ChestBlockActor_tick(ChestBlockActor*, BlockSource* source);
 	static void Actor_lerpMotion(Entity* _this, Vec3);
 	static int AppPlatform_getGameEdition(__int64 _this);
@@ -123,7 +123,7 @@ private:
 	static void LocalPlayer__updateFromCamera(__int64 a1, Camera* a2);
 	static bool Mob__isImmobile(Entity*);
 	static void Actor__setRot(Entity* _this, Vec2& angle);
-	static void test(Entity* this_, Vec2& test, int ball);
+	static void test(Weather* _this, float fogLevel);
 	static bool playerCallBack(Player* lp, __int64 a2, __int64 a3);
 	static void InventoryTransactionManager__addAction(InventoryTransactionManager*, InventoryAction&);
 	static void LevelRendererPlayer__renderNameTags(__int64 a1, __int64 a2, TextHolder* name, __int64 a4);

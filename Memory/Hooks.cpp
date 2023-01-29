@@ -42,7 +42,7 @@ void Hooks::Init() {
 		void* fogColorFunc = reinterpret_cast<void*>(FindSignature("41 0F 10 08 48 8B C2 0F"));
 		g_Hooks.Dimension_getFogColorHook = std::make_unique<FuncHook>(fogColorFunc, Hooks::Dimension_getFogColor);
 
-		//void* testy = reinterpret_cast<void*>(FindSignature("48 89 5c 24 ? 57 48 83 ec ? 48 8b 05 ? ? ? ? 48 33 c4 48 89 44 24 ? 48 8b f9 ff 15 ? ? ? ? 8b d8 8b 47 ? 90 3b d8"));
+		//void* testy = reinterpret_cast<void*>(FindSignature("48 89 5c 24 ? 56 57 41 56 48 83 ec ? 48 8b 71 ? 48 8b d9"));
 		//g_Hooks.testyHook = std::make_unique<FuncHook>(testy, Hooks::test);
 		
 		void* timeOfDay = reinterpret_cast<void*>(FindSignature("44 8B C2 B8 ? ? ? ? F7 EA"));
@@ -711,8 +711,8 @@ __int64 Hooks::RenderText(__int64 a1, MinecraftUIRenderContext* renderCtx) {
 	}
 }
 
-float* Hooks::Dimension_getFogColor(__int64 _this, float* color, __int64 a3, float a4) {
-	static auto oGetFogColor = g_Hooks.Dimension_getFogColorHook->GetFastcall<float*, __int64, float*, __int64, float>();
+float* Hooks::Dimension_getFogColor(Dimension* _this, float* color, __int64 a3, float a4) {
+	static auto oGetFogColor = g_Hooks.Dimension_getFogColorHook->GetFastcall<float*, Dimension*, float*, __int64, float>();
 
 	static float rcolors[4];
 
@@ -747,8 +747,8 @@ float* Hooks::Dimension_getFogColor(__int64 _this, float* color, __int64 a3, flo
 	return oGetFogColor(_this, color, a3, a4);
 }
 
-float Hooks::Dimension_getTimeOfDay(__int64 _this, int a2, float a3) {
-	static auto oGetTimeOfDay = g_Hooks.Dimension_getTimeOfDayHook->GetFastcall<float, __int64, int, float>();
+float Hooks::Dimension_getTimeOfDay(Dimension* _this, int a2, float a3) {
+	static auto oGetTimeOfDay = g_Hooks.Dimension_getTimeOfDayHook->GetFastcall<float, Dimension*, int, float>();
 
 	static auto timeChange = moduleMgr->getModule<TimeChanger>();
 	if (timeChange->isEnabled()) {
@@ -758,8 +758,8 @@ float Hooks::Dimension_getTimeOfDay(__int64 _this, int a2, float a3) {
 	return oGetTimeOfDay(_this, a2, a3);
 }
 
-float Hooks::Dimension_getSunIntensity(__int64 a1, float a2, Vec3* a3, float a4) {
-	static auto oGetSunIntensity = g_Hooks.Dimension_getSunIntensityHook->GetFastcall<float, __int64, float, Vec3*, float>();
+float Hooks::Dimension_getSunIntensity(Dimension* a1, float a2, Vec3* a3, float a4) {
+	static auto oGetSunIntensity = g_Hooks.Dimension_getSunIntensityHook->GetFastcall<float, Dimension*, float, Vec3*, float>();
 
 	static auto nightMod = moduleMgr->getModule<NightMode>();
 	if (nightMod->isEnabled()) {
@@ -1463,13 +1463,15 @@ void Hooks::Actor__setRot(Entity* _this, Vec2& angle) {
 	func(_this, angle);
 }
 
-void Hooks::test(Entity* this_, Vec2& test, int ball) {
-	auto func = g_Hooks.testHook->GetFastcall<void, Entity*, Vec2&, int>();
+void Hooks::test(Weather* _this, float idk) {
+	auto func = g_Hooks.testHook->GetFastcall<void, Weather*, float>();
 	static auto testModTEst = moduleMgr->getModule<TestModule>();
+
 	if (testModTEst->isEnabled()) {
-		func(this_, test = Vec2(90, 90), ball = 1);
+		func(_this, idk = 1000);
 	}
-	func(this_, test, ball);
+	
+	func(_this, idk);
 }
 
 void Hooks::InventoryTransactionManager__addAction(InventoryTransactionManager* _this, InventoryAction& action) {
