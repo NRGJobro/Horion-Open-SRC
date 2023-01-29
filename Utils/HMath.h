@@ -2,7 +2,7 @@
 #define PI (3.1415927f)
 
 #include <math.h>
-
+#include <stdlib.h>
 static constexpr float DEG_RAD2 = PI / 360.0f;
 static constexpr float DEG_RAD = 180.0f / PI;
 static constexpr float RAD_DEG = PI / 180.f;
@@ -580,11 +580,16 @@ struct AABB {
 	}
 };
 
-/*
 inline int random(int start, int end) {
 	return rand() % (end - start + 1) + start;
 }
 inline float randomf(int start, int end) {
 	return (float)random(start, end);
 }
-*/
+
+inline float RandomFloat(float a, float b) {
+	float random = ((float)rand()) / (float)RAND_MAX;
+	float diff = b - a;
+	float r = random * diff;
+	return a + r;
+}
