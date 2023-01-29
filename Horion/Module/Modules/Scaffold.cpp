@@ -157,7 +157,7 @@ void Scaffold::onPostRender(MinecraftUIRenderContext* ctx) {
 
 	auto player = Game.getLocalPlayer();
 	auto selectedItem = player->getSelectedItem();
-	if ((selectedItem == nullptr || selectedItem->count == 0 || selectedItem->item == nullptr || !selectedItem->getItem()->isBlock()))  // Block in hand?
+	if ((selectedItem == nullptr || selectedItem->count == 0 || selectedItem->item == nullptr || !selectedItem->getItem()->isBlock()) && !autoSelect)  // Block in hand?
 		return;
 
 	// Adjustment by velocity
