@@ -1,14 +1,24 @@
 #pragma once
-#define PI (3.1415927f)
+constexpr auto PI = (3.1415927f);
 
 #include <math.h>
 #include <stdlib.h>
+#include <algorithm>
 static constexpr float DEG_RAD2 = PI / 360.0f;
 static constexpr float DEG_RAD = 180.0f / PI;
 static constexpr float RAD_DEG = PI / 180.f;
 
 inline float lerp(float a, float b, float t) {
 	return a + t * (b - a);
+}
+
+__forceinline double smoothLerp(double endPoint, double current, double speed) {
+	if (speed < 0.0) speed = 0.0;
+	else if (speed > 1.0) speed = 1.0;
+
+	double diff = std::max(endPoint, current) - std::min(endPoint, current);
+	double factor = diff * speed;
+	return current + (endPoint > current ? factor : -factor);
 }
 
 struct Vec2 {

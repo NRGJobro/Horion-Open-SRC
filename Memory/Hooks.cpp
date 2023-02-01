@@ -591,36 +591,20 @@ __int64 Hooks::RenderText(__int64 a1, MinecraftUIRenderContext* renderCtx) {
 							float textWidth = it->textWidth;
 
 							float xOffsetOri = windowSize.x - textWidth - (textPadding * 2);
-
 							float xOffset = windowSize.x - it->pos->x;
 
-							it->pos->x += smoothness;
+							// Smooth and sexy :yum:
+							it->pos->x = smoothLerp(it->enabled ? windowSize.x - xOffsetOri : -1.f, it->pos->x, 0.04);
 
-							if (xOffset < xOffsetOri) {
-								xOffset = xOffsetOri;
-							}
-							if (!it->enabled) {
-								xOffset += it->pos->y;
-								it->pos->y += smoothness;
-							}
 							if (xOffset >= windowSize.x && !it->enabled) {
 								it->pos->x = 0.f;
 								it->pos->y = 0.f;
 							}
 
-							Vec2 textPos = Vec2(
-								xOffset + textPadding,
-								yOffset + textPadding);
-							Vec4 rectPos = Vec4(
-								xOffset - 2,
-								yOffset,
-								isOnRightSide ? windowSize.x : textWidth + (textPadding * 2),
-								yOffset + textPadding * 2 + textHeight);
-							Vec4 leftRect = Vec4(
-								xOffset - 2,
-								yOffset,
-								xOffset - 1,
-								yOffset + textPadding * 2 + textHeight);
+							Vec2 textPos = Vec2(xOffset + textPadding, yOffset + textPadding);
+							Vec4 rectPos = Vec4(xOffset - 2, yOffset, isOnRightSide ? windowSize.x : textWidth + (textPadding * 2), yOffset + textPadding * 2 + textHeight);
+							Vec4 leftRect = Vec4(xOffset - 2, yOffset, xOffset - 1, yOffset + textPadding * 2 + textHeight);
+
 							c++;
 							b++;
 							if (b < 20)
@@ -646,7 +630,7 @@ __int64 Hooks::RenderText(__int64 a1, MinecraftUIRenderContext* renderCtx) {
 							}
 							DrawUtils::drawText(textPos, &textStr, MC_Color(currColor), textSize);
 
-							yOffset += textHeight + (textPadding * 2);
+							yOffset += ((10.0f * textSize) + (textPadding * 2)) * ((windowSize.x - xOffset) / (windowSize.x - xOffsetOri));
 						}
 						c = 0;
 						modContainerList.clear();
