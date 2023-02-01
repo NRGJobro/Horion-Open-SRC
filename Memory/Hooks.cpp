@@ -630,7 +630,7 @@ __int64 Hooks::RenderText(__int64 a1, MinecraftUIRenderContext* renderCtx) {
 							}
 							DrawUtils::drawText(textPos, &textStr, MC_Color(currColor), textSize);
 
-							yOffset += textHeight + (textPadding * 2);
+							yOffset += ((10.0f * textSize) + (textPadding * 2)) * ((windowSize.x - xOffset) / (windowSize.x - xOffsetOri));
 						}
 						c = 0;
 						modContainerList.clear();
