@@ -3,6 +3,7 @@ constexpr auto PI = (3.1415927f);
 
 #include <math.h>
 #include <stdlib.h>
+#include <algorithm>
 static constexpr float DEG_RAD2 = PI / 360.0f;
 static constexpr float DEG_RAD = 180.0f / PI;
 static constexpr float RAD_DEG = PI / 180.f;
