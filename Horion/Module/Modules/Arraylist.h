@@ -18,6 +18,6 @@ public:
 	~Arraylist();
 
 	// Inherited via IModule
-	virtual const char* getModuleName() override;
-	virtual void onPostRender(MinecraftUIRenderContext* renderCtx) override;
+	virtual const char* getModuleName();
+	virtual void onPostRender(MinecraftUIRenderContext* renderCtx);
 };
