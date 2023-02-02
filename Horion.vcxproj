@@ -280,6 +280,7 @@
     <ClCompile Include="Horion\Module\Modules\AntiBot.cpp" />
     <ClCompile Include="Horion\Module\Modules\AntiImmobile.cpp" />
     <ClCompile Include="Horion\Module\Modules\AntiVoid.cpp" />
+    <ClCompile Include="Horion\Module\Modules\Arraylist.cpp" />
     <ClCompile Include="Horion\Module\Modules\AutoArmor.cpp" />
     <ClCompile Include="Horion\Module\Modules\AutoClicker.cpp" />
     <ClCompile Include="Horion\Module\Modules\AutoGapple.cpp" />
@@ -445,6 +446,7 @@
     <ClInclude Include="Horion\Module\Modules\AntiBot.h" />
     <ClInclude Include="Horion\Module\Modules\AntiImmobile.h" />
     <ClInclude Include="Horion\Module\Modules\AntiVoid.h" />
+    <ClInclude Include="Horion\Module\Modules\Arraylist.h" />
     <ClInclude Include="Horion\Module\Modules\AutoArmor.h" />
     <ClInclude Include="Horion\Module\Modules\AutoClicker.h" />
     <ClInclude Include="Horion\Module\Modules\AutoGapple.h" />
@@ -590,6 +592,7 @@
     <ClInclude Include="SDK\Weather.h" />
     <ClInclude Include="Utils\ChakraHelper.h" />
     <ClInclude Include="Utils\ClientColors.h" />
+    <ClInclude Include="Utils\ColorUtil.h" />
     <ClInclude Include="Utils\DllHelper.h" />
     <ClInclude Include="Utils\HMath.h" />
     <ClInclude Include="Utils\Json.hpp" />

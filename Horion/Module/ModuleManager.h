@@ -39,6 +39,7 @@
 #include "Modules/AutoSprint.h"
 #include "Modules/AutoGapple.h"
 #include "Modules/ViewModel.h"
+#include "Modules/Arraylist.h"
 #include "Modules/Waypoints.h"
 #include "Modules/NoHurtcam.h"
 #include "Modules/NightMode.h"
