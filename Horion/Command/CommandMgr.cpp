@@ -61,39 +61,39 @@ std::vector<IMCCommand*>* CommandMgr::getCommandList() {
 }
 
 void CommandMgr::execute(char* message) {
-	if (message != nullptr) {
-		std::vector<std::string> args;
-		std::string msgStr = message + 1;
-		size_t pos = msgStr.find(" "), initialPos = 0;
-		while (pos != std::string::npos) {
-			args.push_back(msgStr.substr(initialPos, pos - initialPos));
-			initialPos = pos + 1;
+	if (message == nullptr) {
+		return;
+	}
 
-			pos = msgStr.find(" ", initialPos);
-		}
-		args.push_back(msgStr.substr(initialPos, std::min(pos, msgStr.size()) - initialPos + 1));
-		
-		std::string cmd = args[0];
-		std::transform(cmd.begin(), cmd.end(), cmd.begin(), ::tolower);
+	std::vector<std::string> args;
+	std::string msgStr = message + 1;
+	size_t pos = msgStr.find(" "), initialPos = 0;
+	while (pos != std::string::npos) {
+		args.push_back(msgStr.substr(initialPos, pos - initialPos));
+		initialPos = pos + 1;
+		pos = msgStr.find(" ", initialPos);
+	}
+	args.push_back(msgStr.substr(initialPos, std::min(pos, msgStr.size()) - initialPos + 1));
+	std::string cmd = args[0];
+	std::transform(cmd.begin(), cmd.end(), cmd.begin(), ::tolower);
 
-		for (auto it = commandList.begin(); it != commandList.end(); ++it) {
-			IMCCommand* c = *it;
-			auto* aliases = c->getAliasList();
-			for (auto it = aliases->begin(); it != aliases->end(); ++it) {
-				if (*it == cmd) {
-					try {
-						if (!c->execute(&args))
-							Game.getClientInstance()->getGuiData()->displayClientMessageF("%s%sUsage: %s%c%s %s", RED, BOLD, RESET, cmdMgr->prefix, c->getCommand(), c->getUsage(cmd.c_str()));
-					} catch (...) {
+	for (auto& c : commandList) {
+		auto aliases = c->getAliasList();
+		for (const auto& alias : *aliases) {
+			if (alias == cmd) {
+				try {
+					if (!c->execute(&args)) {
 						Game.getClientInstance()->getGuiData()->displayClientMessageF("%s%sUsage: %s%c%s %s", RED, BOLD, RESET, cmdMgr->prefix, c->getCommand(), c->getUsage(cmd.c_str()));
 					}
-					return;
+				} catch (...) {
+					Game.getClientInstance()->getGuiData()->displayClientMessageF("%s%sUsage: %s%c%s %s", RED, BOLD, RESET, cmdMgr->prefix, c->getCommand(), c->getUsage(cmd.c_str()));
 				}
+				return;
 			}
 		}
-
-		Game.getClientInstance()->getGuiData()->displayClientMessageF("[%sHorion%s] %sCommand '%s' could not be found!", GOLD, WHITE, RED, cmd.c_str());
 	}
+	// If the command doesn't exist, display an error message
+	Game.getClientInstance()->getGuiData()->displayClientMessageF("[%sHorion%s] %sCommand '%s' could not be found!", GOLD, WHITE, RED, cmd.c_str());
 }
 
 CommandMgr* cmdMgr = new CommandMgr(&Game);
