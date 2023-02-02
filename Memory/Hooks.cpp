@@ -392,6 +392,7 @@ __int64 Hooks::UIScene_render(UIScene* uiscene, __int64 screencontext) {
 	return oRender(uiscene, screencontext);
 }
 
+							#include "../Utils/ColorUtil.h"
 __int64 Hooks::RenderText(__int64 a1, MinecraftUIRenderContext* renderCtx) {
 	static auto oText = g_Hooks.RenderTextHook->GetFastcall<__int64, __int64, MinecraftUIRenderContext*>();
 
@@ -421,19 +422,7 @@ __int64 Hooks::RenderText(__int64 a1, MinecraftUIRenderContext* renderCtx) {
 		bool shouldRenderArrayList = true;
 		bool shouldRenderTabGui = true;
 		bool shouldRenderWatermark = true;
-
-		static float rcolors[4];          // Rainbow color array RGBA
-		static float disabledRcolors[4];  // Rainbow Colors, but for disabled modules
-		static float currColor[4];        // ArrayList colors
-
-		// Rainbow color updates
-		{
-			Utils::ApplyRainbow(rcolors);  // Increase Hue of rainbow color array
-			disabledRcolors[0] = std::min(1.f, rcolors[0] * 0.4f + 0.2f);
-			disabledRcolors[1] = std::min(1.f, rcolors[1] * 0.4f + 0.2f);
-			disabledRcolors[2] = std::min(1.f, rcolors[2] * 0.4f + 0.2f);
-			disabledRcolors[3] = 1;
-		}
+		MC_Color color = ColorUtil::getRainbowColor(3, 0.5f, 1, 1);
 
 		{
 			// Main Menu
@@ -445,7 +434,7 @@ __int64 Hooks::RenderText(__int64 a1, MinecraftUIRenderContext* renderCtx) {
 					Vec2 textPos = Vec2(wid.x / 2.f - DrawUtils::getTextWidth(&text, 8.f) / 2.f, wid.y / 9.5f);
 					Vec4 rectPos = Vec4(textPos.x - 55.f, textPos.y - 15.f, textPos.x + DrawUtils::getTextWidth(&text, 8.f) + 55.f, textPos.y + 75.f);
 					DrawUtils::fillRectangle(rectPos, ClientColors::menuBackgroundColor, 1.f);
-					DrawUtils::drawRectangle(rectPos, rcolors, 1.f, 2.f);
+					DrawUtils::drawRectangle(rectPos, color, 1.f, 2.f);
 					DrawUtils::drawText(textPos, &text, MC_Color(255, 255, 255, 1), 8.f);
 				}
 			} else {
@@ -464,20 +453,8 @@ __int64 Hooks::RenderText(__int64 a1, MinecraftUIRenderContext* renderCtx) {
 				if (shouldRenderTabGui) TabGui::render();
 
 				{
-					// Display ArrayList on the Right?
-					static constexpr bool isOnRightSide = true;
-
-					float yOffset = 0;  // Offset of next Text
 					Vec2 windowSize = Game.getClientInstance()->getGuiData()->windowSize;
-					Vec2 windowSizeReal = Game.getClientInstance()->getGuiData()->windowSizeReal;
-					Vec2 mousePos = *Game.getClientInstance()->getMousePos();
-
-					// Convert mousePos to visual Pos
-					{
-						mousePos = mousePos.div(windowSizeReal);
-						mousePos = mousePos.mul(windowSize);
-					}
-
+					
 					// Draw Horion logo
 					if (shouldRenderWatermark) {
 						constexpr float nameTextSize = 1.5f;
@@ -503,137 +480,10 @@ __int64 Hooks::RenderText(__int64 a1, MinecraftUIRenderContext* renderCtx) {
 							windowSize.x - margin + borderPadding,
 							windowSize.y - margin);
 
-						DrawUtils::drawRectangle(rect, MC_Color(rcolors), 1.f, 2.f);
+						DrawUtils::drawRectangle(rect, MC_Color(color), 1.f, 2.f);
 						DrawUtils::fillRectangle(rect, ClientColors::watermarkBackgroundColor, 1.f);
-						DrawUtils::drawText(Vec2(rect.x + borderPadding, rect.y), &name, MC_Color(rcolors), nameTextSize);
-						DrawUtils::drawText(Vec2(rect.x + borderPadding + nameLength, rect.w - 7), &version, MC_Color(rcolors), versionTextSize);
-					}
-
-					// Draw ArrayList
-					if (moduleMgr->isInitialized() && shouldRenderArrayList) {
-						// Parameters
-						float textSize = hudModule->scale;
-						float textPadding = 1.0f * textSize;
-						float textHeight = 10.0f * textSize;
-						float smoothness = 2;
-
-						struct IModuleContainer {
-							// Struct used to Sort IModules in a std::set
-							std::shared_ptr<IModule> backingModule;
-							std::string moduleName;
-							bool enabled;
-							int keybind;
-							float textWidth;
-							Vec2* pos;
-							bool shouldRender = true;
-
-							IModuleContainer(std::shared_ptr<IModule> mod) {
-								const char* moduleNameChr = mod->getModuleName();
-								this->enabled = mod->isEnabled();
-								this->keybind = mod->getKeybind();
-								this->backingModule = mod;
-								this->pos = mod->getPos();
-
-								if (keybind == 0x0)
-									moduleName = moduleNameChr;
-								else {
-									char text[50];
-									sprintf_s(text, 50, "%s%s", moduleNameChr, hudModule->keybinds ? std::string(" [" + std::string(Utils::getKeybindName(keybind)) + "]").c_str() : "");
-									moduleName = text;
-								}
-
-								if (!this->enabled && *this->pos == Vec2(0.f, 0.f))
-									this->shouldRender = false;
-								this->textWidth = DrawUtils::getTextWidth(&moduleName, hudModule->scale);
-							}
-
-							bool operator<(const IModuleContainer& other) const {
-								/*if (enabled) {
-							if (!other.enabled)  // We are enabled
-								return true;
-						} else if (other.enabled)  // They are enabled
-							return false;*/
-
-								if (this->textWidth == other.textWidth)
-									return moduleName < other.moduleName;
-								return this->textWidth > other.textWidth;
-							}
-						};
-
-						// Mouse click detector
-						static bool wasLeftMouseDown = GameData::isLeftClickDown();  // Last isDown value
-						bool leftMouseDown = GameData::isLeftClickDown();            // current isDown value
-
-						bool executeClick = leftMouseDown && leftMouseDown != wasLeftMouseDown;  // isDown == true AND (current state IS NOT last state)
-						wasLeftMouseDown = leftMouseDown;                                        // Set last isDown value
-
-						std::set<IModuleContainer> modContainerList;
-						// Fill modContainerList with Modules
-						{
-							auto lock = moduleMgr->lockModuleList();
-							std::vector<std::shared_ptr<IModule>>* moduleList = moduleMgr->getModuleList();
-							for (auto it : *moduleList) {
-								if (it.get() != hudModule)
-									modContainerList.emplace(IModuleContainer(it));
-							}
-						}
-
-						int a = 0;
-						int b = 0;
-						int c = 0;
-
-						// Loop through mods to display Labels
-						for (std::set<IModuleContainer>::iterator it = modContainerList.begin(); it != modContainerList.end(); ++it) {
-							if (!it->shouldRender)
-								continue;
-
-							std::string textStr = it->moduleName;
-							float textWidth = it->textWidth;
-
-							float xOffsetOri = windowSize.x - textWidth - (textPadding * 2);
-							float xOffset = windowSize.x - it->pos->x;
-
-							// Smooth and sexy :yum:
-							it->pos->x = smoothLerp(it->enabled ? windowSize.x - xOffsetOri : -1.f, it->pos->x, 0.04);
-
-							if (xOffset >= windowSize.x && !it->enabled) {
-								it->pos->x = 0.f;
-								it->pos->y = 0.f;
-							}
-
-							Vec2 textPos = Vec2(xOffset + textPadding, yOffset + textPadding);
-							Vec4 rectPos = Vec4(xOffset - 2, yOffset, isOnRightSide ? windowSize.x : textWidth + (textPadding * 2), yOffset + textPadding * 2 + textHeight);
-							Vec4 leftRect = Vec4(xOffset - 2, yOffset, xOffset - 1, yOffset + textPadding * 2 + textHeight);
-
-							c++;
-							b++;
-							if (b < 20)
-								a = moduleMgr->getEnabledModuleCount() * 2;
-							else
-								b = 0;
-							currColor[3] = rcolors[3];
-							Utils::ColorConvertRGBtoHSV(rcolors[0], rcolors[1], rcolors[2], currColor[0], currColor[1], currColor[2]);
-							currColor[0] += 1.f / a * c;
-							Utils::ColorConvertHSVtoRGB(currColor[0], currColor[1], currColor[2], currColor[0], currColor[1], currColor[2]);
-
-							DrawUtils::fillRectangle(rectPos, ClientColors::arraylistBackgroundColor, 1.f);
-							DrawUtils::fillRectangle(leftRect, MC_Color(currColor), 1.f);
-							if (!GameData::canUseMoveKeys() && rectPos.contains(&mousePos) && hudModule->clickToggle) {
-								Vec4 selectedRect = rectPos;
-								selectedRect.x = leftRect.z;
-								if (leftMouseDown) {
-									DrawUtils::fillRectangle(selectedRect, MC_Color(0.8f, 0.8f, 0.8f), 0.8f);
-									if (executeClick)
-										it->backingModule->toggle();
-								} else
-									DrawUtils::fillRectangle(selectedRect, MC_Color(0.8f, 0.8f, 0.8f, 0.8f), 0.3f);
-							}
-							DrawUtils::drawText(textPos, &textStr, MC_Color(currColor), textSize);
-
-							yOffset += ((10.0f * textSize) + (textPadding * 2)) * ((windowSize.x - xOffset) / (windowSize.x - xOffsetOri));
-						}
-						c = 0;
-						modContainerList.clear();
+						DrawUtils::drawText(Vec2(rect.x + borderPadding, rect.y), &name, MC_Color(color), nameTextSize);
+						DrawUtils::drawText(Vec2(rect.x + borderPadding + nameLength, rect.w - 7), &version, MC_Color(color), versionTextSize);
 					}
 				}
 			}
@@ -682,7 +532,7 @@ __int64 Hooks::RenderText(__int64 a1, MinecraftUIRenderContext* renderCtx) {
 					centerPos.x + paddingHoriz + std::max(titleWidth, msgWidth) / 2,
 					centerPos.y + paddingVert * 2 + titleTextHeight + messageHeight * lines);
 				DrawUtils::fillRectangle(rectPos, MC_Color(12, 12, 12), box->fadeVal);
-				DrawUtils::drawRectangle(rectPos, rcolors, box->fadeVal, 2.f);
+				DrawUtils::drawRectangle(rectPos, color, box->fadeVal, 2.f);
 				DrawUtils::drawText(textPos, &box->title, MC_Color(), titleTextSize, box->fadeVal);
 				DrawUtils::drawText(msgPos, &box->message, MC_Color(), messageTextSize, box->fadeVal);
 			}
@@ -696,9 +546,7 @@ __int64 Hooks::RenderText(__int64 a1, MinecraftUIRenderContext* renderCtx) {
 
 float* Hooks::Dimension_getFogColor(Dimension* _this, float* color, __int64 a3, float a4) {
 	static auto oGetFogColor = g_Hooks.Dimension_getFogColorHook->GetFastcall<float*, Dimension*, float*, __int64, float>();
-
-	static float rcolors[4];
-
+	MC_Color rColor = ColorUtil::getRainbowColor(3, 0.5f, 1, 1);
 	static auto nightMod = moduleMgr->getModule<NightMode>();
 	if (nightMod->isEnabled()) {
 		color[0] = 0.f;
@@ -710,22 +558,11 @@ float* Hooks::Dimension_getFogColor(Dimension* _this, float* color, __int64 a3, 
 
 	static auto rainbowSkyMod = moduleMgr->getModule<RainbowSky>();
 	if (rainbowSkyMod->isEnabled()) {
-		if (rcolors[3] < 1) {
-			rcolors[0] = 1;
-			rcolors[1] = 0.2f;
-			rcolors[2] = 0.2f;
-			rcolors[3] = 1;
-		}
-
-		Utils::ColorConvertRGBtoHSV(rcolors[0], rcolors[1], rcolors[2], rcolors[0], rcolors[1], rcolors[2]);  // perfect code, dont question this
-
-		rcolors[0] += 0.001f;
-		if (rcolors[0] >= 1)
-			rcolors[0] = 0;
-
-		Utils::ColorConvertHSVtoRGB(rcolors[0], rcolors[1], rcolors[2], rcolors[0], rcolors[1], rcolors[2]);
-
-		return rcolors;
+		color[0] = rColor.r;
+		color[1] = rColor.g;
+		color[2] = rColor.b;
+		color[3] = 1;
+		return color;
 	}
 	return oGetFogColor(_this, color, a3, a4);
 }

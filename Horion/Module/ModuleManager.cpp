@@ -51,6 +51,7 @@ void ModuleManager::initModules() {
 		// moduleList.emplace_back(new Jetpack());
 		moduleList.emplace_back(new ViewModel());
 		moduleList.emplace_back(new Waypoints());
+		moduleList.emplace_back(new Arraylist());
 		moduleList.emplace_back(new NoHurtcam());
 		moduleList.emplace_back(new AutoSneak());
 		// moduleList.emplace_back(new Godmode());
