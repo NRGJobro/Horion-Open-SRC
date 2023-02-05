@@ -57,13 +57,6 @@ struct IModuleContainer {
 void Arraylist::onPostRender(MinecraftUIRenderContext* renderCtx) {
 	static auto hudMod = moduleMgr->getModule<HudModule>();
 
-	// Parameters
-	float textSize = hudMod->scale;
-	float textPadding = 1.0f * textSize;
-	float textHeight = 10.0f * textSize;
-	int seperation = 50;  // Adjust this to change the seperation of the colors
-
-	float yOffset = 0;    // Offset of next Text
 	Vec2 windowSize = Game.getClientInstance()->getGuiData()->windowSize;
 	Vec2 windowSizeReal = Game.getClientInstance()->getGuiData()->windowSizeReal;
 	Vec2 mousePos = *Game.getClientInstance()->getMousePos();
@@ -92,51 +85,53 @@ void Arraylist::onPostRender(MinecraftUIRenderContext* renderCtx) {
 		}
 	}
 
+	// Parameters
+	float textSize = hudMod->scale;
+	float textPadding = 1.0f * textSize;
+	float textHeight = 10.0f * textSize;
+	int seperation = 50;  // Adjust this to change the seperation of the colors
 	int index = 0;
-	// Loop through mods to display Labels
-	for (std::set<IModuleContainer>::iterator it = modContainerList.begin(); it != modContainerList.end(); ++it) {
-		if (!it->shouldRender)
-			continue;
+	float yOffset = 0;
 
-		std::string textStr = it->moduleName;
-		float textWidth = it->textWidth;
+	for (auto it = modContainerList.begin(); it != modContainerList.end(); ++it) {
+		if (!it->shouldRender) continue;
 
-		MC_Color arrayColor = ColorUtil::getRainbowColor(cycleSpeed, saturation, 1, index * (seperation * 2));
+		auto& container = *it;
+		auto textStr = container.moduleName;
+		auto textWidth = container.textWidth;
 
-		float xOffsetOri = windowSize.x - textWidth - (textPadding * 2);
-		float xOffset = windowSize.x - it->pos->x;
+		auto arrayColor = ColorUtil::getRainbowColor(cycleSpeed, saturation, 1, index * (seperation * 2));
+		auto xOffsetOri = windowSize.x - textWidth - (textPadding * 2);
+		auto xOffset = windowSize.x - container.pos->x;
 
-		// Smooth and sexy :yum:
-		it->pos->x = smoothLerp(it->enabled ? windowSize.x - xOffsetOri : -1.f, it->pos->x, 0.04);
-
-		if (xOffset >= windowSize.x && !it->enabled) {
-			it->pos->x = 0.f;
-			it->pos->y = 0.f;
+		container.pos->x = smoothLerp(container.enabled ? windowSize.x - xOffsetOri : -1.f, container.pos->x, 0.04);
+		if (xOffset >= windowSize.x && !container.enabled) {
+			container.pos->x = 0.f;
+			container.pos->y = 0.f;
 		}
 
-		Vec2 textPos = Vec2(xOffset + textPadding, yOffset + textPadding);
-		Vec4 rectPos = Vec4(xOffset - 2, yOffset, windowSize.x, yOffset + textPadding * 2 + textHeight);
-		Vec4 sideRect = Vec4(xOffset - 2, yOffset, xOffset - 1, yOffset + textPadding * 2 + textHeight);
+		auto textPos = Vec2(xOffset + textPadding, yOffset + textPadding);
+		auto rectPos = Vec4(xOffset - 2, yOffset, windowSize.x, yOffset + textPadding * 2 + textHeight);
+		auto sideRect = Vec4(xOffset - 2, yOffset, xOffset - 1, yOffset + textPadding * 2 + textHeight);
 
 		if (alpha > 0) {
 			DrawUtils::fillRectangle(rectPos, ClientColors::arraylistBackgroundColor, alpha);
 			DrawUtils::fillRectangle(sideRect, arrayColor, 1.f);
 		}
 		if (!GameData::canUseMoveKeys() && rectPos.contains(&mousePos) && clickToggle) {
-			Vec4 selectedRect = rectPos;
+			auto selectedRect = rectPos;
 			selectedRect.x = sideRect.z;
 			if (leftMouseDown) {
 				DrawUtils::fillRectangle(selectedRect, MC_Color(0.8f, 0.8f, 0.8f), 0.8f);
-				if (executeClick)
-					it->backingModule->toggle();
-			} else
+				if (executeClick) container.backingModule->toggle();
+			} else {
 				DrawUtils::fillRectangle(selectedRect, MC_Color(0.8f, 0.8f, 0.8f, 0.8f), 0.3f);
+			}
 		}
-
 		DrawUtils::drawText(textPos, &textStr, arrayColor, textSize);
 
 		yOffset += ((10.0f * textSize) + (textPadding * 2)) * ((windowSize.x - xOffset) / (windowSize.x - xOffsetOri));
-		index++;
+		++index;
 	}
 	modContainerList.clear();
 }
