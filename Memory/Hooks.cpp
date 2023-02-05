@@ -12,6 +12,7 @@
 #include "../Horion/Menu/TabGui.h"
 #include "../SDK/Tag.h"
 #include "../Utils/ClientColors.h"
+#include "../Utils/ColorUtil.h"
 
 Hooks g_Hooks;
 bool isTicked = false;
@@ -63,9 +64,6 @@ void Hooks::Init() {
 		void* getLightEmission = reinterpret_cast<void*>(FindSignature("0F B6 81 ? ? ? ? 88 02 48 8B C2"));
 		g_Hooks.BlockLegacy_getLightEmissionHook = std::make_unique<FuncHook>(getLightEmission, Hooks::BlockLegacy_getLightEmission);
 
-		//void* ascendLadder = reinterpret_cast<void*>(FindSignature("C7 81 ? ? ? ? ? ? ? ? C3 CC CC CC CC CC C7 81 ? ? ? ? ? ? ? ? C3 CC CC CC CC CC C7 81"));
-		//g_Hooks.Actor_ascendLadderHook = std::make_unique<FuncHook>(ascendLadder, Hooks::Actor_ascendLadder);
-
 		void* getGameEdition = reinterpret_cast<void*>(FindSignature("8B 91 ?? ?? ?? ?? 85 D2 74 1C 83 EA 01"));
 		g_Hooks.AppPlatform_getGameEditionHook = std::make_unique<FuncHook>(getGameEdition, Hooks::AppPlatform_getGameEdition);
 
@@ -104,12 +102,6 @@ void Hooks::Init() {
 
 		void* _getSkinPack = reinterpret_cast<void*>(FindSignature("48 89 5C 24 ? 55 56 57 41 54 41 55 41 56 41 57 48 8D AC 24 ? ? ? ? B8 ? ? ? ? E8 ? ? ? ? 48 2B E0 48 8B 05 ? ? ? ? 48 33 C4 48 89 85 ? ? ? ? 4C 8B EA 48 8B F1"));
 		g_Hooks.SkinRepository___loadSkinPackHook = std::make_unique<FuncHook>(_getSkinPack, Hooks::SkinRepository___loadSkinPack);
-
-		//void* _toStyledString = reinterpret_cast<void*>(FindSignature("48 89 5C 24 ? 48 89 74 24 ? 57 48 81 EC ? ? ? ? 49 8B D8 48 8B F9"));
-		//g_Hooks.toStyledStringHook = std::make_unique<FuncHook>(_toStyledString, Hooks::toStyledString);
-
-		//void* InGamePlayScreen___renderLevel = reinterpret_cast<void*>(FindSignature("48 89 5C 24 20 55 56 57 41 54 41 55 41 56 41 57 48 8D AC 24 ?? ?? ?? ?? 48 81 EC ?? ?? ?? ?? 0F 29 B4 24 ?? ?? ?? ?? 48 8B 05 ?? ?? ?? ?? 48 33 C4 48 89 85 ?? ?? ?? ?? 49 8B D8 4C"));
-		//g_Hooks.InGamePlayScreen___renderLevelHook = std::make_unique<FuncHook>(InGamePlayScreen___renderLevel, Hooks::InGamePlayScreen___renderLevel);
 
 #ifdef TEST_DEBUG
 		void* addAction = reinterpret_cast<void*>(FindSignature("48 89 5C 24 ? 55 56 57 41 56 41 57 48 83 EC 30 45 0F B6 F8 4C 8B F2 48 8B F1 48 8B 01 48 8B 88 ? ? ? ? 48 85 C9"));
@@ -186,7 +178,6 @@ void Hooks::Init() {
 		} else logF("MoveTurnInput is null");
 
 		//The reason im using a sig is because injecting on the menu causes LocalPlayer to be null so i cant get the vtable from just doing Game.getLocalPlayer(). Same with Gamemode bc i get that from local player.
-	
 		// LocalPlayer::vtable
 		{
 			uintptr_t** localPlayerVtable = GetVtableFromSig("48 8d 05 ? ? ? ? 48 89 01 48 8b 89 ? ? ? ? 48 8b 01 ff 90 ? ? ? ? 48 8b 10", 3);
@@ -392,7 +383,6 @@ __int64 Hooks::UIScene_render(UIScene* uiscene, __int64 screencontext) {
 	return oRender(uiscene, screencontext);
 }
 
-							#include "../Utils/ColorUtil.h"
 __int64 Hooks::RenderText(__int64 a1, MinecraftUIRenderContext* renderCtx) {
 	static auto oText = g_Hooks.RenderTextHook->GetFastcall<__int64, __int64, MinecraftUIRenderContext*>();
 
@@ -731,14 +721,13 @@ void Hooks::LoopbackPacketSender_sendToServer(LoopbackPacketSender* a, Packet* p
 	static auto oFunc = g_Hooks.LoopbackPacketSender_sendToServerHook->GetFastcall<void, LoopbackPacketSender*, Packet*>();
 
 	static auto autoSneakMod = moduleMgr->getModule<AutoSneak>();
-	static auto freecamMod = moduleMgr->getModule<Freecam>();
 	static auto blinkMod = moduleMgr->getModule<Blink>();
 	static auto noPacketMod = moduleMgr->getModule<NoPacket>();
 
 	if (noPacketMod->isEnabled() && Game.isInGame())
 		return;
 
-	if (freecamMod->isEnabled() || blinkMod->isEnabled()) {
+	if (blinkMod->isEnabled()) {
 		if (packet->isInstanceOf<C_MovePlayerPacket>() || packet->isInstanceOf<PlayerAuthInputPacket>()) {
 			if (blinkMod->isEnabled()) {
 				if (packet->isInstanceOf<C_MovePlayerPacket>()) {
@@ -1249,6 +1238,8 @@ __int64 Hooks::GameMode_attack(GameMode* _this, Entity* ent) {
 
 void Hooks::LocalPlayer__updateFromCamera(__int64 a1, Camera* camera, __int64* a3, Entity* a4) {
 	auto func = g_Hooks.LocalPlayer__updateFromCameraHook->GetFastcall<__int64, __int64, Camera*, __int64*, Entity*>();
+	auto freecamMod = moduleMgr->getModule<Freecam>();
+	freecamMod->camera = camera;
 	//camera->nearClippingPlane = 0.000001;
 	//camera->farClippingPlane = -5;
 	func(a1, camera, a3, a4);
@@ -1256,8 +1247,10 @@ void Hooks::LocalPlayer__updateFromCamera(__int64 a1, Camera* camera, __int64* a
 
 bool Hooks::Mob__isImmobile(Entity* ent) {
 	auto func = g_Hooks.Mob__isImmobileHook->GetFastcall<bool, Entity*>();
-
+	static auto freecamMod = moduleMgr->getModule<Freecam>();
 	static auto antiImmobileMod = moduleMgr->getModule<AntiImmobile>();
+	if (freecamMod->isEnabled())
+		return true;
 	if (antiImmobileMod->isEnabled() && ent == Game.getLocalPlayer())
 		return false;
 
@@ -1266,13 +1259,16 @@ bool Hooks::Mob__isImmobile(Entity* ent) {
 
 void Hooks::Actor__setRot(Entity* _this, Vec2& angle) {
 	auto func = g_Hooks.Actor__setRotHook->GetFastcall<void, Entity*, Vec2&>();
-	auto killauraMod = moduleMgr->getModule<Killaura>();
-	auto freelookMod = moduleMgr->getModule<Freelook>();
-	if (killauraMod->isEnabled() && !killauraMod->targetListEmpty && killauraMod->rotations && _this == Game.getLocalPlayer()) {
-		func(_this, angle = killauraMod->angle);
-	}
-	if (freelookMod->isEnabled() && Game.getLocalPlayer() == _this) {
-		func(_this, angle = freelookMod->oldPos);
+	static auto killauraMod = moduleMgr->getModule<Killaura>();
+	static auto freelookMod = moduleMgr->getModule<Freelook>();
+	static auto freecamMod = moduleMgr->getModule<Freecam>();
+	if (_this == Game.getLocalPlayer()) {
+		if (freecamMod->isEnabled()) {
+			freecamMod->yaw = angle.y;
+			angle = {freecamMod->initialViewAngles.x, freecamMod->initialViewAngles.y};
+		}
+		if (killauraMod->isEnabled() && !killauraMod->targetListEmpty && killauraMod->rotations) angle = killauraMod->angle;
+		if (freelookMod->isEnabled()) angle = freelookMod->oldPos;
 	}
 	func(_this, angle);
 }

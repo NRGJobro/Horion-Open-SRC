@@ -4,11 +4,11 @@
 #define WIN32_LEAN_AND_MEAN
 #endif
 
-#include <fstream>
-#include <sstream>
 #include <algorithm>
 #include <ctime>
+#include <fstream>
 #include <random>
+#include <sstream>
 #include <vector>
 
 //#include "xorstr.h"
@@ -225,10 +225,14 @@ static inline void ImSwap(T& a, T& b) {
 #define FindSignature(szSignature) Utils::FindSignatureModule("Minecraft.Windows.exe", xorstr_(szSignature))
 #define GetOffsetFromSig(szSignature, offset) Utils::getOffsetFromSignature(xorstr_(szSignature), offset)
 #define GetVtableFromSig(szSignature, offset) Utils::getVtableFromSignature(xorstr_(szSignature), offset)
+#define PatchBytes(src, newBytes, size) Utils::patchBytes(src, newBytes, size)
+#define NopBytes(src, size) Utils::nopBytes(src, size)
 #else
 #define FindSignature(szSignature) Utils::FindSignatureModule("Minecraft.Windows.exe", szSignature)
 #define GetOffsetFromSig(szSignature, offset) Utils::getOffsetFromSignature(szSignature, offset)
 #define GetVtableFromSig(szSignature, offset) Utils::getVtableFromSignature(szSignature, offset)
+#define PatchBytes(src, newBytes, size) Utils::patchBytes(src, newBytes, size)
+#define NopBytes(src, size) Utils::nopBytes(src, size)
 #endif
 
 struct Vec3i;
@@ -488,4 +492,10 @@ public:
 	}
 
 	static std::string getRttiBaseClassName(void* ptr);
+
+	static void nopBytes(void* dst, unsigned int size);
+	
+	static void copyBytes(void* src, void* dst, unsigned int size);
+	
+	static void patchBytes(void* dst, void* src, unsigned int size);
 };

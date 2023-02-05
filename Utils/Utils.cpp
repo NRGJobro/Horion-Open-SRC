@@ -1,5 +1,4 @@
 #include "Utils.h"
-
 #include <iomanip>
 #include <chrono>
 #include <string>
@@ -8,7 +7,32 @@
 #include <Windows.h>
 #include <Psapi.h>
 #include "HMath.h"
-#include "../Memory/GameData.h"
+#include <sys\stat.h>
+#include <iostream>
+#include <direct.h>
+#include <conio.h>
+#include <sstream>
+#include <windows.h>
+#include <string.h>
+#include <stdio.h>
+#include <string>
+#include<TlHelp32.h>
+#include <tchar.h> 
+#include <vector>
+#include <thread>
+#include <wtsapi32.h>
+#include <psapi.h>
+#include <math.h>
+#include <algorithm> 
+#include <playsoundapi.h>
+#pragma comment(lib, "winmm.lib")
+#include <tchar.h>
+#include <urlmon.h>
+#include <windows.h>
+
+#include "../Memory/Hooks.h"
+#pragma comment(lib, "urlmon.lib")
+#pragma comment(lib, "wininet.lib")
 
 void Utils::ApplySystemTime(std::stringstream* ss) {
 	using namespace std::chrono;
@@ -237,4 +261,23 @@ uintptr_t** Utils::getVtableFromSignature(const char* szSignature, int offset) {
 		}
 	}
 	return 0u;
+}
+
+void Utils::nopBytes(void* dst, unsigned int size) {
+	DWORD oldprotect;
+	VirtualProtect(dst, size, PAGE_EXECUTE_READWRITE, &oldprotect);
+	memset(dst, 0x90, size);
+	VirtualProtect(dst, size, oldprotect, &oldprotect);
+}
+void Utils::copyBytes(void* src, void* dst, unsigned int size) {
+	DWORD oldprotect;
+	VirtualProtect(src, size, PAGE_EXECUTE_READWRITE, &oldprotect);
+	memcpy(dst, src, size);
+	VirtualProtect(src, size, oldprotect, &oldprotect);
+}
+void Utils::patchBytes(void* dst, void* src, unsigned int size) {
+	DWORD oldprotect;
+	VirtualProtect(dst, size, PAGE_EXECUTE_READWRITE, &oldprotect);
+	memcpy(dst, src, size);
+	VirtualProtect(dst, size, oldprotect, &oldprotect);
 }
