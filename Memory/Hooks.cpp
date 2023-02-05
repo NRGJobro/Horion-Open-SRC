@@ -116,8 +116,8 @@ void Hooks::Init() {
 		g_Hooks.InventoryTransactionManager__addActionHook = std::make_unique<FuncHook>(addAction, Hooks::InventoryTransactionManager__addAction);
 #endif
 
-		//void* localPlayerUpdateFromCam = reinterpret_cast<void*>(FindSignature("48 8b c4 53 48 81 ec ? ? ? ? 0f 29 70 ? 0f 29 78 ? 48 8b 05 ? ? ? ? 48 33 c4 48 89 84 24 ? ? ? ? 4d 8b d0"));
-		//g_Hooks.LocalPlayer__updateFromCameraHook = std::make_unique<FuncHook>(localPlayerUpdateFromCam, Hooks::LocalPlayer__updateFromCamera);
+		void* localPlayerUpdateFromCam = reinterpret_cast<void*>(FindSignature("48 8b c4 53 48 81 ec ? ? ? ? 0f 29 70 ? 0f 29 78 ? 48 8b 05 ? ? ? ? 48 33 c4 48 89 84 24 ? ? ? ? 4d 8b d0"));
+		g_Hooks.LocalPlayer__updateFromCameraHook = std::make_unique<FuncHook>(localPlayerUpdateFromCam, Hooks::LocalPlayer__updateFromCamera);
 
 		void* renderNameTags = reinterpret_cast<void*>(FindSignature("48 8b c4 48 89 58 ? 55 56 57 41 54 41 55 41 56 41 57 48 8d a8 ? ? ? ? 48 81 ec ? ? ? ? 0f 29 70 ? 0f 29 78 ? 44 0f 29 40 ? 48 8b 05 ? ? ? ? 48 33 c4 48 89 85 ? ? ? ? 49 8b f1"));
 		g_Hooks.LevelRendererPlayer__renderNameTagsHook = std::make_unique<FuncHook>(renderNameTags, Hooks::LevelRendererPlayer__renderNameTags);
@@ -1240,26 +1240,20 @@ __int64 Hooks::InGamePlayScreen___renderLevel(__int64 playScreen, __int64 a2, __
 	auto func = g_Hooks.InGamePlayScreen___renderLevelHook->GetFastcall<__int64, __int64, __int64, __int64>();
 	return func(playScreen, a2, a3);
 }
+
 __int64 Hooks::GameMode_attack(GameMode* _this, Entity* ent) {
 	auto func = g_Hooks.GameMode_attackHook->GetFastcall<__int64, GameMode*, Entity*>();
 	moduleMgr->onAttack(ent);
 	return func(_this, ent);
 }
-void Hooks::LocalPlayer__updateFromCamera(__int64 a1, Camera* camera) {
-	auto func = g_Hooks.LocalPlayer__updateFromCameraHook->GetFastcall<__int64, __int64, Camera*>();
-	auto noHurtcamMod = moduleMgr->getModule<NoHurtcam>();
-	if (noHurtcamMod->isEnabled() && Game.isInGame() && Game.getLocalPlayer()->isAlive()) {
-		Vec2 rot;
-		camera->getPlayerRotation(&rot);
-		if (camera->facesPlayerFront) {
-			rot.x *= -1;  // rotate back
-			rot.y += 180;
-			rot = rot.normAngles();
-		}
-		camera->setOrientationDeg(rot.x, rot.y, 0);
-	}
-	func(a1, camera);
+
+void Hooks::LocalPlayer__updateFromCamera(__int64 a1, Camera* camera, __int64* a3, Entity* a4) {
+	auto func = g_Hooks.LocalPlayer__updateFromCameraHook->GetFastcall<__int64, __int64, Camera*, __int64*, Entity*>();
+	//camera->nearClippingPlane = 0.000001;
+	//camera->farClippingPlane = -5;
+	func(a1, camera, a3, a4);
 }
+
 bool Hooks::Mob__isImmobile(Entity* ent) {
 	auto func = g_Hooks.Mob__isImmobileHook->GetFastcall<bool, Entity*>();
 

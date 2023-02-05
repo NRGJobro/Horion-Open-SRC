@@ -120,7 +120,7 @@ private:
 	static GamerTextHolder* toStyledString(__int64 strIn, GamerTextHolder* strOut);
 	static __int64 MinecraftGame_onAppSuspended(__int64 _this);
 	static __int64 InGamePlayScreen___renderLevel(__int64 playScreen, __int64 a2, __int64 a3);
-	static void LocalPlayer__updateFromCamera(__int64 a1, Camera* a2);
+	static void LocalPlayer__updateFromCamera(__int64 a1, Camera* camera, __int64* a3, Entity* a4);
 	static bool Mob__isImmobile(Entity*);
 	static void Actor__setRot(Entity* _this, Vec2& angle);
 	static void test(Weather* _this, float fogLevel);

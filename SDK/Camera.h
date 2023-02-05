@@ -1,28 +1,39 @@
 #pragma once
 
 #include "../Utils/HMath.h"
+#include <glm/ext/matrix_float4x4.hpp>
 
 class Camera {
 private:
-	char padding[0x78]; // 0x0
+	char pad_0000[0x30];  // 0x0000
 public:
-	bool renderPlayerModel; // 0x078
-	bool renderFirstPersonObjects; // 0x079 probably hand and item
+	Vec4 lookingAt;  // 0x0030
+	Vec3 cameraPos;  // 0x0040
 private:
-	char autoAlignPadding[2]; // 0x07A
-	char padding7C[0x18]; // 0x07C
+	char pad_004C[0xC];  // 0x004C
 public:
-	float fieldOfView; // 0x094
-	float nearClippingPlane; // 0x098 usually 0.025
-	float farClippingPlane; // 0x09C usually 2500
+	float uiScale;             // 0x0058
+	float fieldOfView;         // 0x005C
+	float nearClippingPlane;   // 0x0060
+	float farClippingPlane;    // 0x0064
+	glm::mat4 nausea;  // 0x0068
 private:
-	char paddingA0[0x68]; // 0x0A0
+	char pad_00A8[0x30];  // 0x00A8
 public:
-	bool facesPlayerFront; // 0x108
-
+	Vec4 lookingAt2;   // 0x00D8
+	Vec3 cameraPos2;  // 0x00E8
+private:
+	char pad_00F4[0xC];  // 0x00F4
+public:
+	float uiScale2;  // 0x0100
+private:
+	char pad_0104[0x4];  // 0x0104
+public:
+	float nearClippingPlane2;  // 0x0108
+	float farClippingPlane2;   // 0x010C
+	
 	void getForwardVector(Vec3*);
 	void getEulerAngles(Vec3*);
-	void getPlayerRotation(Vec2*);
 	void setOrientation(float pitch, float yaw, float roll);
 	void setOrientationDeg(float pitch, float yaw, float roll) {
 		setOrientation((-yaw - 180) * RAD_DEG, -pitch * RAD_DEG, roll * RAD_DEG);

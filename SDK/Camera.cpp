@@ -12,20 +12,6 @@ void Camera::setOrientation(float pitch, float yaw, float roll) {
 	static auto cam_setOrientation = reinterpret_cast<cam_setOrientation_t>(FindSignature("40 53 48 81 EC ?? ?? ?? ?? 0F 29 74 24 ?? 0F 57"));
 	cam_setOrientation(this, pitch, yaw, roll);
 }
-void Camera::getPlayerRotation(Vec2* angOut) {
-	Vec3 angles;
-	this->getEulerAngles(&angles);
-
-	float v4;
-	if ( this->facesPlayerFront )
-		v4 = -1.0;
-	else
-		v4 = 1.0;
-
-	angOut->y = (float)(angles.y * 57.295776) + *(float *)(reinterpret_cast<__int64>(this) + 272);
-	angOut->x = (float)((float)(angles.x * 57.295776) + *(float *)(reinterpret_cast<__int64>(this) + 268)) * v4;
-	angOut->normAngles();
-}
 void Camera::getForwardVector(Vec3* forward) {
 	Vec3 eulerAngles;
 	this->getEulerAngles(&eulerAngles);
@@ -42,5 +28,5 @@ Camera* CameraManager::getCameraOrDebugCamera() {
 	/*using camerManager_getCameraOrDebugCamera_t = Camera*(__fastcall*)(CameraManager*);
 	static auto camerManager_getCameraOrDebugCamera = reinterpret_cast<camerManager_getCameraOrDebugCamera_t>(FindSignature("40 53 48 83 EC ?? 48 8B 05 ?? ?? ?? ?? 48 33 C4 48 89 44 24 ?? 80 39 00 48 8B D9 74 ?? 48"));
 	return camerManager_getCameraOrDebugCamera(this);*/
-	return reinterpret_cast<Camera*>(reinterpret_cast<__int64>(this) + 0x40);
+	return reinterpret_cast<Camera*>(reinterpret_cast<__int64>(this) + 0x48);
 }
