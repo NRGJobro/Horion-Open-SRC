@@ -4,10 +4,7 @@
 #include <Windows.h>
 #include "../Utils/Logger.h"
 #include "../Utils/ClientColors.h"
-
-struct MaterialPtr {
-	char padding[0x138];
-};
+class MaterialPtr;
 
 using tess_vertex_t = void(__fastcall*)(Tessellator* _this, float v1, float v2, float v3);
 using meshHelper_renderImm_t = void(__fastcall*)(__int64, Tessellator* tesselator, MaterialPtr*);
@@ -87,13 +84,13 @@ void DrawUtils::setCtx(MinecraftUIRenderContext* ctx, GuiData* gui) {
 	if (Game.getClientInstance()->levelRenderer != nullptr)
 		origin = Game.getClientInstance()->levelRenderer->getOrigin();
 
-	if (uiMaterial == nullptr) {
-		// 2 Sigs, wanted one comes first
-		uintptr_t sigOffset = FindSignature("4C 8D 05 ?? ?? ?? ?? 48 8B D3 48 8B CF 48 8B 5C 24 ?? 0F 28 7C 24 ?? 44 0F 28 44 24 ?? 48");
-		int offset = *reinterpret_cast<int*>(sigOffset + 3);
-		uiMaterial = reinterpret_cast<MaterialPtr*>(sigOffset + offset + 7);
+	if (uiMaterial == nullptr) {//4C 8D 05 ?? ?? ?? ?? 48 8B D3 48 8B CF 48 8B 5C 24 ?? 0F 28 7C 24 ?? 44 0F 28 44 24 ?? 48
+		uiMaterial = new MaterialPtr("ui_fill_color");
 	}
-	if(entityFlatStaticMaterial == nullptr && Game.isInGame()) entityFlatStaticMaterial = reinterpret_cast<MaterialPtr*>(Game.getClientInstance()->itemInHandRenderer->entityLineMaterial.materialPtr);
+	if (entityFlatStaticMaterial == nullptr) {
+		//entityFlatStaticMaterial = reinterpret_cast<MaterialPtr*>(Game.getClientInstance()->itemInHandRenderer->entityLineMaterial.materialPtr);
+		entityFlatStaticMaterial = new MaterialPtr("selection_overlay");
+	}
 }
 
 void DrawUtils::setColor(float r, float g, float b, float a) {
@@ -149,7 +146,7 @@ float DrawUtils::getTextWidth(std::string* textStr, float textSize, Fonts font) 
 
 	Font* fontPtr = getFont(font);
 
-	float ret = renderCtx->getLineLength(fontPtr, &text, textSize);
+	float ret = renderCtx->getLineLength(fontPtr, &text, textSize, false);
 
 	return ret;
 }
@@ -345,22 +342,14 @@ void DrawUtils::drawBox(const Vec3& lower, const Vec3& upper, float lineWidth, b
 	}
 }
 
-void DrawUtils::drawImage(std::string filePath, Vec2& imagePos, Vec2& ImageDimension, Vec2& idk) {
-	if (texturePtr == nullptr) {
-		texturePtr = new TexturePtr();
-		FilePath file(filePath);
-		renderCtx->getTexture(texturePtr, file);
-	}
+void DrawUtils::drawImage(std::string filePath, Vec2 const& ImagePos, Vec2 const& ImageDimension, Vec2 const& uvPos, Vec2 const& uvSize) {
+	texturePtr = new TexturePtr();
+	renderCtx->getTexture(texturePtr, &ResourceLocation(filePath), false);
+	if (texturePtr != nullptr) renderCtx->drawImage(texturePtr, ImagePos, ImageDimension, uvPos, uvSize);
+}
 
-	__int64 yot = 0;
-	static unsigned __int64 hashedString = 0xA99285D21E94FC80;
-	static uintptr_t flushImageAddr = FindSignature("48 8B C4 55 56 57 41 54 41 55 41 56 41 57 ?? ?? ?? ?? ?? ?? ?? 48 ?? ?? ?? ?? ?? ?? 48 ?? ?? ?? ?? ?? ?? ?? 48 89 58 ?? 0F 29 70 ?? 0F 29 78 ?? 44 0F 29 40 ?? 48 8B 05 ?? ?? ?? ?? 48 33 C4 ?? ?? ?? ?? ?? ?? ?? 4D 8B E1 44 0F 28 C2 4C 8B F2 4C 8B F9");
-
-	if (texturePtr != nullptr) {
-		renderCtx->drawImage(texturePtr, imagePos, ImageDimension, yot, idk);
-		MC_Color col(1.f, 1.f, 1.f);
-		renderCtx->flushImages(col, (float)flushImageAddr, (__int64)&hashedString);
-	}
+void DrawUtils::flushImage(MC_Color flushColor, float opacity) {
+	renderCtx->flushImages(flushColor, opacity, HashedString(0xA99285D21E94FC80, "ui_flush"));
 }
 
 void DrawUtils::drawNameTags(Entity* ent, float textSize, bool drawHealth, bool useUnicodeFont) {
