@@ -16,9 +16,11 @@ public:
 
 class Block;
 
+namespace mce {
 class Mesh;
+}
 
 class BlockTessellator {
 public:
-	Mesh* getMeshForBlockInWorld(Tessellator * t, Block * block, Vec3i & pos);
+	mce::Mesh* getMeshForBlockInWorld(Tessellator * t, Block * block, Vec3i & pos);
 };

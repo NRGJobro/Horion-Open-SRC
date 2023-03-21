@@ -44,13 +44,13 @@ void GuiData::displayClientMessageNoSendF(const char *fmt, ...) {
 	va_end(arg);
 }
 
-MaterialPtr::MaterialPtr(const std::string &materialName) {
-	using materialPtrConst_t = void(__fastcall *)(MaterialPtr *, __int64, const HashedString &);
-	static materialPtrConst_t materialPtrConst = reinterpret_cast<materialPtrConst_t>(FindSignature("48 89 5c 24 ? 48 89 74 24 ? 48 89 4c 24 ? 57 48 83 ec ? 4c 8b ca"));
+mce::MaterialPtr::MaterialPtr(const std::string &materialName) {
+	using materialPtrConst_t = void(__fastcall *)(mce::MaterialPtr *, __int64, const HashedString &);
+	static materialPtrConst_t materialPtrConst = reinterpret_cast<materialPtrConst_t>(FindSignature("48 89 4C 24 ?? 57 48 83 EC ?? 48 C7 44 24 ?? FE FF FF FF 48 89 5C 24 ?? 48 89 74 24 ?? 4C 8B CA"));
 
 	static __int64 renderGroupBase = 0;
 	if (renderGroupBase == 0) {
-		auto sig = FindSignature("48 8d 0d ? ? ? ? ff 50 ? 48 8b d8 48 8b 50 ? 48 85 d2 0f 84 ? ? ? ? 8b 42 ? 85 c0 0f 84 ? ? ? ? 8d 48 ? f0 0f b1 4a ? 74 ? 85 c0 0f 84 ? ? ? ? eb ? 48 8b 03 48 8b 5b ? 48 89 44 24 ? 48 89 5c 24 ? 48 8d 54 24 ? 48 8d 0d ? ? ? ? e8 ? ? ? ? be") + 3;
+		auto sig = FindSignature("48 8D 15 ?? ?? ?? ?? 48 8D 4C 24 ?? E8 ?? ?? ?? ?? 48 8D 54 24 ?? 49 8D 8F") + 3;
 		auto off = *reinterpret_cast<int *>(sig);
 		renderGroupBase = sig + 4 + off;
 	}
@@ -59,12 +59,12 @@ MaterialPtr::MaterialPtr(const std::string &materialName) {
 	materialPtrConst(this, renderGroupBase, hashedStr);
 }
 
-void Mesh::renderMesh(__int64 screenContext, MaterialPtr *material, size_t numTextures, __int64 **textureArray) {
+void mce::Mesh::renderMesh(__int64 screenContext, mce::MaterialPtr *material, size_t numTextures, __int64 **textureArray) {
 	struct TextureData {
 		size_t numTextures;
 		__int64 **texturePtr;
 	} data;
-	using renderMesh_t = __int64 (*)(Mesh *, __int64, MaterialPtr *, TextureData *);
+	using renderMesh_t = __int64 (*)(mce::Mesh *, __int64, mce::MaterialPtr *, TextureData *);
 	static renderMesh_t renderMesh = reinterpret_cast<renderMesh_t>(FindSignature("40 53 55 56 57 41 54 41 55 41 56 41 57 48 81 EC ?? ?? ?? ?? 48 C7 44 24 ?? ?? ?? ?? ?? 48 8B 05 ?? ?? ?? ?? 48 33 C4 48 89 84 24 ?? ?? ?? ?? 49 8B F1 4D 8B E0 4C"));
 
 	data.numTextures = numTextures;

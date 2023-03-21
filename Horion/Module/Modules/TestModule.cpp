@@ -56,9 +56,6 @@ void TestModule::onPreRender(MinecraftUIRenderContext* renderCtx) {
 	if (HorionGui.Button("Test Button", Vec2(100, 100), true)) { //Check if button is pressed. When it gets pressed it sends the message.
 		clientMessageF("Test Button Was Clicked");
 	}
-
-	DrawUtils::drawImage("textures/ui/title", Vec2(100,100), Vec2(200,200));
-	DrawUtils::flushImage();
 }
 
 void TestModule::onPostRender(MinecraftUIRenderContext* renderCtx) {

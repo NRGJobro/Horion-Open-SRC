@@ -284,7 +284,7 @@ void* Hooks::Player_tickWorld(Player* _this, __int64 unk) {
 	static auto oTick = g_Hooks.Player_tickWorldHook->GetFastcall<void*, Player*, __int64>();
 	auto o = oTick(_this, unk);
 
-	if (_this != nullptr && Game.getLocalPlayer() != nullptr && _this == Game.getLocalPlayer()) {
+	if (_this == Game.getLocalPlayer()) {
 		GameMode* gm = Game.getLocalPlayer()->getGameMode();
 		if (_this && gm) {
 			GameData::updateGameData(gm);

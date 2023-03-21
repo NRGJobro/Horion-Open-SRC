@@ -126,8 +126,8 @@ public:
 		fillRectangle(Vec4(pos.z - lineWidth, pos.y, pos.z + lineWidth, pos.w), col, alpha);                          //
 		fillRectangle(Vec4(pos.x - lineWidth, pos.w - lineWidth, pos.z + lineWidth, pos.w + lineWidth), col, alpha);
 	}
-	static void drawImage(std::string filePath, Vec2 const& ImagePos, Vec2 const& ImageDimension, Vec2 const& uvPos = Vec2(0.f, 0.f), Vec2 const& uvSize = Vec2(1.f, 1.f));
-	static void flushImage(MC_Color flushColor = MC_Color(1.f, 1.f, 1.f), float opacity = 1.f);
+	static void drawImage(std::string filePath, Vec2& ImagePos, Vec2& ImageDimension, Vec2& idk);
+
 	static void drawText(const Vec2& pos, std::string* text, const MC_Color& color, float textSize = 1, float alpha = 1, Fonts font = Fonts::SMOOTH);
 	static void drawBox(const Vec3& lower, const Vec3& upper, float lineWidth, bool outline = false);
 	static void drawEntityBox(Entity* ent, float lineWidth);

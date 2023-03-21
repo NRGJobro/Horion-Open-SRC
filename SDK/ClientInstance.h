@@ -25,13 +25,9 @@ class Block;
 class BlockTessellator;
 class ResourceLocation {
 private:
-	char pad_0x0[0x8];   // 0x0000
-	TextHolder filePath;  // 0x0008
-public:
-	ResourceLocation(std::string filePath) {
-		memset(this, 0, sizeof(ResourceLocation));
-		this->filePath.setText(filePath);
-	};
+	char pad[0x28];
+	__int64 hashCode;  // 0x28
+	char pad2[8];
 };
 
 class HashedString {
@@ -41,15 +37,9 @@ private:
 
 public:
 	HashedString(const std::string& text) {
-		memset(this, 0x0, sizeof(HashedString));
 		this->text.setText(text);
+
 		this->computeHash();
-	}
-	
-	HashedString(uint64_t inputhash, std::string inputtext) {
-		memset(this, 0x0, sizeof(HashedString));
-		this->hash = inputhash;
-		this->text.setText(inputtext);
 	}
 
 	void computeHash() {
@@ -70,53 +60,47 @@ public:
 	}
 };
 
+namespace mce {
 class TextureGroup;
-class MaterialPtr {
-private:
-	char pad_0x0[0x138];
-
-public:
-	MaterialPtr(const std::string& materialName);
-};
+class MaterialPtr;
 class Mesh {
 public:
-	void renderMesh(__int64 screenContext, class MaterialPtr* material, size_t numTextures, __int64** textureArray);
+	void renderMesh(__int64 screenContext, mce::MaterialPtr* material, size_t numTextures, __int64** textureArray);
 
 	template <size_t numTextures>
-	void renderMesh(__int64 screenContext, class MaterialPtr* material, std::array<__int64*, numTextures> textures) {
+	void renderMesh(__int64 screenContext, mce::MaterialPtr* material, std::array<__int64*, numTextures> textures) {
 		this->renderMesh(screenContext, material, numTextures, &textures[0]);
 	}
 };
 class TexturePtr {
-public:
+private:
 	__int64* clientTexture;
-private:
-	char pad_0x0[0x10];  // 0x0000
-public:
-	struct {
-	private:
-		char pad_0x0[0x18];
-	public:
-		TextHolder filePath;
-	} * ptrToPath;
+	char pad[0x8];
+	ResourceLocation resourceLocation;  // 0x10
 
-private:
-	char pad_0x0038[0x20];  // 0x0038
 public:
 	__int64* getClientTexture() {
 		return this->clientTexture;
 	}
 };
+class MaterialPtr {
+private:
+	std::shared_ptr<void> materialPtr;
+
+public:
+	MaterialPtr(const std::string& materialName);
+};
+}  // namespace mce
 
 class LevelRenderer {
 private:
 	char pad_0x0000[0x58];  //0x0000
 public:
-	TextureGroup* textureGroup;  // 0x0058
+	mce::TextureGroup* textureGroup;  // 0x0058
 private:
 	char pad_0x0060[0xE0];  //0x0060
 public:
-	TexturePtr atlasTexture;  // 0x140
+	mce::TexturePtr atlasTexture;  // 0x140
 private:
 	char pad_0x0188[0x150];  //0x0188
 public:
