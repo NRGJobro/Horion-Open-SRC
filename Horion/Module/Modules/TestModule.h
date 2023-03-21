@@ -7,6 +7,7 @@ private:
 	int delay = 0;
 
 public:
+	Vec3 savepos;
 	float float1 = 0;
 	int int1 = 0;
 	bool bool1 = true;
