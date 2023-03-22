@@ -291,6 +291,7 @@
     <ClCompile Include="Horion\Module\Modules\Blink.cpp" />
     <ClCompile Include="Horion\Module\Modules\BowAimbot.cpp" />
     <ClCompile Include="Horion\Module\Modules\ChestAura.cpp" />
+    <ClCompile Include="Horion\Module\Modules\Criticals.cpp" />
     <ClCompile Include="Horion\Module\Modules\StorageESP.cpp" />
     <ClCompile Include="Horion\Module\Modules\ChestStealer.cpp" />
     <ClCompile Include="Horion\Module\Modules\ClickGuiMod.cpp" />
@@ -463,6 +464,7 @@
     <ClInclude Include="Horion\Module\Modules\ClientTheme.h" />
     <ClInclude Include="Horion\Module\Modules\Compass.h" />
     <ClInclude Include="Horion\Module\Modules\Crasher.h" />
+    <ClInclude Include="Horion\Module\Modules\Criticals.h" />
     <!--    <ClInclude Include="Horion\Module\Modules\Criticals.h" /> -->
     <ClInclude Include="Horion\Module\Modules\CrystalAura.h" />
     <ClInclude Include="Horion\Module\Modules\Derp.h" />

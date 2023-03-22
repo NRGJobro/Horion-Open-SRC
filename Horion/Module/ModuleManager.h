@@ -24,7 +24,7 @@
 //#include "Modules/CubeGlide.h"
 #include "Modules/TimeChanger.h"
 #include "Modules/CrystalAura.h"
-//#include "Modules/Criticals.h"
+#include "Modules/Criticals.h"
 #include "Modules/ClickGuiMod.h"
 #include "Modules/AutoClicker.h"
 //#include "Modules/AirStuck.h"

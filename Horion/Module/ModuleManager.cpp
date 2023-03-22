@@ -26,7 +26,7 @@ void ModuleManager::initModules() {
 		moduleList.emplace_back(new InventoryMove());
 		// moduleList.push_back(new Notifications());
 		moduleList.emplace_back(new AntiImmobile());
-		// moduleList.emplace_back(new Criticals());
+		moduleList.emplace_back(new Criticals());
 		moduleList.emplace_back(new ChestStealer());
 		moduleList.emplace_back(new EditionFaker());
 		moduleList.emplace_back(new ClientTheme());
