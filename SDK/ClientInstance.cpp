@@ -46,11 +46,11 @@ void GuiData::displayClientMessageNoSendF(const char *fmt, ...) {
 
 mce::MaterialPtr::MaterialPtr(const std::string &materialName) {
 	using materialPtrConst_t = void(__fastcall *)(mce::MaterialPtr *, __int64, const HashedString &);
-	static materialPtrConst_t materialPtrConst = reinterpret_cast<materialPtrConst_t>(FindSignature("48 89 4C 24 ?? 57 48 83 EC ?? 48 C7 44 24 ?? FE FF FF FF 48 89 5C 24 ?? 48 89 74 24 ?? 4C 8B CA"));
+	static materialPtrConst_t materialPtrConst = reinterpret_cast<materialPtrConst_t>(FindSignature("48 89 5C 24 ? 48 89 74 24 ? 48 89 4C 24 ? 57 48 83 EC ? 4C 8B CA"));
 
 	static __int64 renderGroupBase = 0;
 	if (renderGroupBase == 0) {
-		auto sig = FindSignature("48 8D 15 ?? ?? ?? ?? 48 8D 4C 24 ?? E8 ?? ?? ?? ?? 48 8D 54 24 ?? 49 8D 8F") + 3;
+		auto sig = FindSignature("48 8D 0D ? ? ? ? FF 50 ? 48 8B D8 48 8B 50 ? 48 85 D2 0F 84 ? ? ? ? 8B 42 ? 85 C0 0F 84 ? ? ? ? 8D 48 ? F0 0F B1 4A ? 74 ? 85 C0 0F 84 ? ? ? ? EB ? 48 8B 03 48 8B 5B ? 48 89 44 24 ? 48 89 5C 24 ? 48 8D 54 24 ? 48 8D 0D ? ? ? ? E8 ? ? ? ? BE") + 3;
 		auto off = *reinterpret_cast<int *>(sig);
 		renderGroupBase = sig + 4 + off;
 	}
