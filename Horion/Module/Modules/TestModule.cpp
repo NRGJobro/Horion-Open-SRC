@@ -44,35 +44,13 @@ bool TestModule::isFlashMode() {
 }
 
 void TestModule::onEnable() {
-	/* LocalPlayer* player = Game.getLocalPlayer();
-	Vec3 playerPos = *player->getPos();
-	playerPos.y -= 1.f;
-	for (int a = 0; a < 100; a++) {
-		if (player->region->getBlock(playerPos)->blockLegacy->blockId != 0) {
-			player->setPos(playerPos);
-			break;
-		}
-	}
-	logF("%f", playerPos.y);*/
+	SetPlayerGameTypePacket packet;
+	packet.gameMode = 1;
+	Game.getClientInstance()->loopbackPacketSender->sendToServer(&packet);
 }
 
 void TestModule::onTick(GameMode* gm) {
-	LocalPlayer* player = Game.getLocalPlayer();
-	Vec3 pos = *player->getPos();
-	Vec3 blockBelow;
-	blockBelow = Vec3(pos.x, pos.y, pos.z);
-	blockBelow.y -= 1.0;
-
-	// Check if the block below the player is solid and not air
-	while (player->region->getBlock(blockBelow)->blockLegacy->blockId == 0) {
-		blockBelow.y -= 1.0;  // move blockBelow down until a solid non-air block is found
-	}
-
-	savepos = Vec3(blockBelow.x, blockBelow.y, blockBelow.z);  // set savepos to the position just above the solid non-air block
-	savepos.y += 2.0;
-
-	//if (player->fallDistance >= 2)
-	//	player->setPos(savepos);
+	
 }
 
 void TestModule::onMove(MoveInputHandler* hand){
@@ -88,10 +66,6 @@ void TestModule::onPostRender(MinecraftUIRenderContext* renderCtx) {
 }
 
 void TestModule::onSendPacket(Packet* p) {
-	if (p->isInstanceOf<PlayerAuthInputPacket>()) {
-		PlayerAuthInputPacket* authInput = reinterpret_cast<PlayerAuthInputPacket*>(p);
-		authInput->pos = savepos;
-	}
 }
 
 void TestModule::onDisable() {
