@@ -6,7 +6,7 @@
 class NoFall : public IModule {
 public:
 	SettingEnum mode = SettingEnum(this);
-	Vec3 authPos;
+	Vec3 closestGround;
 	NoFall();
 	~NoFall();
 

@@ -1,4 +1,5 @@
 #include "NoFall.h"
+#include "../../../Utils/Logger.h"
 
 NoFall::NoFall() : IModule(VK_NUMPAD3, Category::PLAYER, "Prevents you from taking falldamage") {
 	mode.addEntry(EnumEntry("Vanilla", 0))
@@ -28,14 +29,14 @@ void NoFall::onSendPacket(Packet* packet) {
 		}
 	}
 	if (mode.selected == 4) {
-		if (packet->isInstanceOf<PlayerAuthInputPacket>()) {
+		if (packet->isInstanceOf<PlayerAuthInputPacket>() && !Game.getLocalPlayer()->onGround) {
 			PlayerAuthInputPacket* authInput = reinterpret_cast<PlayerAuthInputPacket*>(packet);
-			authInput->pos = authPos;
+			authInput->pos = closestGround;
 		}
-		if (packet->isInstanceOf<C_MovePlayerPacket>()) {
+		/*if (packet->isInstanceOf<C_MovePlayerPacket>() && !Game.getLocalPlayer()->onGround) { I don't know if this is better to have or not
 			C_MovePlayerPacket* movePacket = reinterpret_cast<C_MovePlayerPacket*>(packet);
-			movePacket->Position = authPos;
-		}
+			movePacket->Position = closestGround;
+		}*/
 	}
 }
 
@@ -63,18 +64,15 @@ void NoFall::onTick(GameMode* gm) {
 			Game.getClientInstance()->loopbackPacketSender->sendToServer(&actionPacket);
 		}
 		case 4: {
-			Vec3 pos = *localPlayer->getPos();
-			Vec3 blockBelow;
-			blockBelow = Vec3(pos.x, pos.y, pos.z);
-			blockBelow.y -= 1.0;
-
-			// Check if the block below the player is solid and not air
-			while (localPlayer->region->getBlock(blockBelow)->blockLegacy->blockId == 0) {
-				blockBelow.y -= 1.0;  // move blockBelow down until a solid non-air block is found
+			Vec3 blockBelow = localPlayer->eyePos0;
+			blockBelow.y -= localPlayer->height;
+			blockBelow.y -= 0.17999f;
+			while (localPlayer->region->getBlock(blockBelow)->blockLegacy->blockId == 0 && !localPlayer->region->getBlock(blockBelow)->blockLegacy->material->isSolid) {
+				blockBelow.y -= 1.f;
 			}
-
-			authPos = Vec3(blockBelow.x, blockBelow.y, blockBelow.z);  // set authPos to the position just above the solid non-air block
-			authPos.y += 2.0;
+			closestGround = blockBelow;
+			closestGround.y += 2.5f;
+			//logF("%f %f %f", blockBelow.x, blockBelow.y, blockBelow.z);
 		}
 		}
 	}
