@@ -1,17 +1,15 @@
 #include "NoFall.h"
-#include "../../../Utils/Logger.h"
 
 NoFall::NoFall() : IModule(VK_NUMPAD3, Category::PLAYER, "Prevents you from taking falldamage") {
 	mode.addEntry(EnumEntry("Vanilla", 0))
 		.addEntry(EnumEntry("Mineplex", 1))
 		.addEntry(EnumEntry("CubeCraft", 2))
 		.addEntry(EnumEntry("Nukkit", 3))
-		.addEntry(EnumEntry("AuthPos", 4));
+		.addEntry(EnumEntry("AuthGroundPos", 4));
 	registerEnumSetting("Mode", &mode, 0);
 }
 
-NoFall::~NoFall() {
-}
+NoFall::~NoFall() {}
 
 const char* NoFall::getModuleName() {
 	return ("NoFall");
@@ -72,7 +70,6 @@ void NoFall::onTick(GameMode* gm) {
 			}
 			closestGround = blockBelow;
 			closestGround.y += 2.5f;
-			//logF("%f %f %f", blockBelow.x, blockBelow.y, blockBelow.z);
 		}
 		}
 	}
