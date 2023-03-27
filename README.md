@@ -7,7 +7,7 @@
   <p>
     <a href="https://horion.download/injector"><img src="https://img.shields.io/static/v1?label=download&message=latest&color=12c970&logo=docusign&logoColor=white" alt="Download Injector" /></a>
     <a href="https://horion.download/discord"><img src="https://img.shields.io/discord/732833913705201736?color=5865F2&logo=discord&logoColor=white" alt="Discord server" /></a>
-    <a href="https://github.com/smintf/Horion/actions"><img src="https://img.shields.io/github/workflow/status/NRGJobro/Horion-Open-Src/MSBuild%20Release?label=builds&logo=azure%20pipelines" alt="Build Status" /></a>
+    <a href="https://github.com/NRGJobro/Horion/actions"><img src="https://img.shields.io/github/workflow/status/NRGJobro/Horion-Open-Src/MSBuild%20Release?label=builds&logo=azure%20pipelines" alt="Build Status" /></a>
     <a href="https://creativecommons.org/licenses/by-nc/4.0/"><img src="https://img.shields.io/static/v1?label=license&message=BY-NC%204.0&color=orange&logo=creative%20commons&logoColor=white" alt="License" /></a>
   </p>
   <p>
