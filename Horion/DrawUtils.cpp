@@ -89,11 +89,15 @@ void DrawUtils::setCtx(MinecraftUIRenderContext* ctx, GuiData* gui) {
 
 	if (uiMaterial == nullptr) {
 		// 2 Sigs, wanted one comes first
-		uintptr_t sigOffset = FindSignature("4C 8D 05 ?? ?? ?? ?? 48 8B D3 48 8B CF 48 8B 5C 24 ?? 0F 28 7C 24 ?? 44 0F 28 44 24 ?? 48");
-		int offset = *reinterpret_cast<int*>(sigOffset + 3);
-		uiMaterial = reinterpret_cast<MaterialPtr*>(sigOffset + offset + 7);
+		//uintptr_t sigOffset = FindSignature("4C 8D 05 ?? ?? ?? ?? 48 8B D3 48 8B CF 48 8B 5C 24 ?? 0F 28 7C 24 ?? 44 0F 28 44 24 ?? 48");
+		//int offset = *reinterpret_cast<int*>(sigOffset + 3);
+		//uiMaterial = reinterpret_cast<MaterialPtr*>(sigOffset + offset + 7);
+		uiMaterial = reinterpret_cast<MaterialPtr*>(new mce::MaterialPtr("ui_fill_color"));
 	}
-	if(entityFlatStaticMaterial == nullptr && Game.isInGame()) entityFlatStaticMaterial = reinterpret_cast<MaterialPtr*>(Game.getClientInstance()->itemInHandRenderer->entityLineMaterial.materialPtr);
+	if (entityFlatStaticMaterial == nullptr && Game.isInGame()) {
+		//entityFlatStaticMaterial = reinterpret_cast<MaterialPtr*>(Game.getClientInstance()->itemInHandRenderer->entityLineMaterial.materialPtr);
+		entityFlatStaticMaterial = reinterpret_cast<MaterialPtr*>(new mce::MaterialPtr("selection_overlay"));
+	}
 }
 
 void DrawUtils::setColor(float r, float g, float b, float a) {
