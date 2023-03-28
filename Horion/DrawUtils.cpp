@@ -149,7 +149,7 @@ float DrawUtils::getTextWidth(std::string* textStr, float textSize, Fonts font) 
 
 	Font* fontPtr = getFont(font);
 
-	float ret = renderCtx->getLineLength(fontPtr, &text, textSize);
+	float ret = renderCtx->getLineLength(fontPtr, &text, textSize, false);
 
 	return ret;
 }
@@ -349,7 +349,7 @@ void DrawUtils::drawImage(std::string filePath, Vec2& imagePos, Vec2& ImageDimen
 	if (texturePtr == nullptr) {
 		texturePtr = new TexturePtr();
 		FilePath file(filePath);
-		renderCtx->getTexture(texturePtr, file);
+		//renderCtx->getTexture(texturePtr, file);
 	}
 
 	__int64 yot = 0;
@@ -357,9 +357,9 @@ void DrawUtils::drawImage(std::string filePath, Vec2& imagePos, Vec2& ImageDimen
 	static uintptr_t flushImageAddr = FindSignature("48 8B C4 55 56 57 41 54 41 55 41 56 41 57 ?? ?? ?? ?? ?? ?? ?? 48 ?? ?? ?? ?? ?? ?? 48 ?? ?? ?? ?? ?? ?? ?? 48 89 58 ?? 0F 29 70 ?? 0F 29 78 ?? 44 0F 29 40 ?? 48 8B 05 ?? ?? ?? ?? 48 33 C4 ?? ?? ?? ?? ?? ?? ?? 4D 8B E1 44 0F 28 C2 4C 8B F2 4C 8B F9");
 
 	if (texturePtr != nullptr) {
-		renderCtx->drawImage(texturePtr, imagePos, ImageDimension, yot, idk);
+		//renderCtx->drawImage(texturePtr, imagePos, ImageDimension, yot, idk);
 		MC_Color col(1.f, 1.f, 1.f);
-		renderCtx->flushImages(col, (float)flushImageAddr, (__int64)&hashedString);
+		//renderCtx->flushImages(col, (float)flushImageAddr, (__int64)&hashedString);
 	}
 }
 
