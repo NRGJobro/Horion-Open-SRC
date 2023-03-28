@@ -502,7 +502,7 @@ void DrawUtils::drawBox3d(const Vec3& lower, const Vec3& upper, float scale, boo
 	if (game3dContext == 0 || entityFlatStaticMaterial == 0)
 		return;
 
-	auto myTess = DrawUtils::get3dTessellator();
+	Tessellator* myTess = DrawUtils::get3dTessellator();
 
 	DrawUtils::tess__begin(myTess, 4, 12);
 
@@ -555,8 +555,67 @@ void DrawUtils::drawBox3d(const Vec3& lower, const Vec3& upper, float scale, boo
 
 #undef line
 	
-	meshHelper_renderImm(game3dContext, myTess, entityFlatStaticMaterial);
+	meshHelper_renderImm(game3dContext, myTess, onUi ? uiMaterial : blendMaterial);
 }
+
+void DrawUtils::drawBox3dFilled(const Vec3& lower, const Vec3& upper, float scale, bool outline, bool onUi) {
+	if (game3dContext == 0 || entityFlatStaticMaterial == 0)
+		return;
+
+	Tessellator* myTess = DrawUtils::get3dTessellator();
+	Vec3 diff = upper.sub(lower);
+	Vec3 newLower = lower.sub(origin);
+	Vec3 vertices[8] = {
+		{newLower.x, newLower.y, newLower.z},
+		{newLower.x + diff.x, newLower.y, newLower.z},
+		{newLower.x, newLower.y, newLower.z + diff.z},
+		{newLower.x + diff.x, newLower.y, newLower.z + diff.z},
+
+		{newLower.x, newLower.y + diff.y, newLower.z},
+		{newLower.x + diff.x, newLower.y + diff.y, newLower.z},
+		{newLower.x, newLower.y + diff.y, newLower.z + diff.z},
+		{newLower.x + diff.x, newLower.y + diff.y, newLower.z + diff.z}};
+	// Scale vertices using glm
+	glm::mat4 rotationMatrix = glm::rotate(glm::mat4(scale), 0.f, glm::vec3(1.0f, 1.0f, 1.0f));
+	Vec3 newLowerReal = newLower.add(0.5f, 0.5f, 0.5f);  // .add(0.4375f, 0.4375f, 0.4375f) is chest
+	for (int i = 0; i < 8; i++) {
+		glm::vec4 rotatedVertex = rotationMatrix * glm::vec4(vertices[i].x - newLowerReal.x, vertices[i].y - newLowerReal.y, vertices[i].z - newLowerReal.z, 0.0f);
+		vertices[i] = Vec3{rotatedVertex.x + newLowerReal.x, rotatedVertex.y + newLowerReal.y, rotatedVertex.z + newLowerReal.z};
+	}
+
+	DrawUtils::tess__begin(myTess, 1);
+	static int v[48] = {5, 7, 6, 4, 4, 6, 7, 5, 1, 3, 2, 0, 0, 2, 3, 1, 4, 5, 1, 0, 0, 1, 5, 4, 6, 7, 3, 2, 2, 3, 7, 6, 4, 6, 2, 0, 0, 2, 6, 4, 5, 7, 3, 1, 1, 3, 7, 5};
+	for (int i = 0; i < 48; i++) tess_vertex(myTess, vertices[v[i]].x, vertices[v[i]].y, vertices[v[i]].z);
+	meshHelper_renderImm(game3dContext, myTess, onUi ? uiMaterial : blendMaterial);
+
+	if (!outline) return;
+	DrawUtils::tess__begin(myTess, 4, 12);
+#define line(m, n)                      \
+	tess_vertex(myTess, m.x, m.y, m.z); \
+	tess_vertex(myTess, n.x, n.y, n.z);
+
+	// Top square
+	line(vertices[4], vertices[5]);
+	line(vertices[5], vertices[7]);
+	line(vertices[7], vertices[6]);
+	line(vertices[6], vertices[4]);
+
+	// Bottom Square
+	line(vertices[0], vertices[1]);
+	line(vertices[1], vertices[3]);
+	line(vertices[3], vertices[2]);
+	line(vertices[2], vertices[0]);
+
+	// Sides
+	line(vertices[0], vertices[4]);
+	line(vertices[1], vertices[5]);
+	line(vertices[2], vertices[6]);
+	line(vertices[3], vertices[7]);
+
+#undef line
+	meshHelper_renderImm(game3dContext, myTess, onUi ? uiMaterial : blendMaterial);
+}
+
 void DrawUtils::fillRectangle(const Vec4& pos, const MC_Color& col, float alpha) {
 	DrawUtils::setColor(col.r, col.g, col.b, alpha);
 	DrawUtils::drawQuad({pos.x, pos.w}, {pos.z, pos.w}, {pos.z, pos.y}, {pos.x, pos.y});
