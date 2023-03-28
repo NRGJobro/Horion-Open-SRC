@@ -4,6 +4,9 @@
 
 class PacketLogger : public IModule {
 public:
+	bool packetadd;
+	bool authchunk = false;
+	SettingEnum addressType;
 	PacketLogger();
 	~PacketLogger();
 
