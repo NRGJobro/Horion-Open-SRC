@@ -107,7 +107,7 @@ public:
 	static void drawLine(const Vec2& start, const Vec2& end, float lineWidth);  // rgba
 	static void drawLinestrip3d(const std::vector<Vec3>& points);
 	static void drawLine3d(const Vec3& start, const Vec3& end);
-	static void drawBox3d(const Vec3& lower, const Vec3& upper);
+	static void drawBox3d(const Vec3& lower, const Vec3& upper, float scale = 1.f, bool onUi = false);
 	static void fillRectangle(const Vec4& pos, const MC_Color& col, float alpha);
 	static inline void fillRectangle(const Vec2& start, const Vec2& end) {
 		DrawUtils::drawQuad({start.x, end.y}, {end.x, end.y}, {end.x, start.y}, {start.x, start.y});

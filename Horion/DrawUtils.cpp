@@ -4,6 +4,7 @@
 #include <Windows.h>
 #include "../Utils/Logger.h"
 #include "../Utils/ClientColors.h"
+#include <glm/ext/matrix_transform.hpp>
 
 struct MaterialPtr {
 	char padding[0x138];
@@ -27,6 +28,7 @@ TexturePtr* texturePtr = nullptr;
 
 static MaterialPtr* uiMaterial = nullptr;
 static MaterialPtr* entityFlatStaticMaterial = nullptr;
+static MaterialPtr* blendMaterial = nullptr;
 
 bool DrawUtils::isLeftClickDown = false;
 bool DrawUtils::isRightClickDown = false;
@@ -94,9 +96,12 @@ void DrawUtils::setCtx(MinecraftUIRenderContext* ctx, GuiData* gui) {
 		//uiMaterial = reinterpret_cast<MaterialPtr*>(sigOffset + offset + 7);
 		uiMaterial = reinterpret_cast<MaterialPtr*>(new mce::MaterialPtr("ui_fill_color"));
 	}
-	if (entityFlatStaticMaterial == nullptr && Game.isInGame()) {
+	if (entityFlatStaticMaterial == nullptr) {
 		//entityFlatStaticMaterial = reinterpret_cast<MaterialPtr*>(Game.getClientInstance()->itemInHandRenderer->entityLineMaterial.materialPtr);
 		entityFlatStaticMaterial = reinterpret_cast<MaterialPtr*>(new mce::MaterialPtr("selection_overlay"));
+	}
+	if (blendMaterial == nullptr) {
+		blendMaterial = reinterpret_cast<MaterialPtr*>(new mce::MaterialPtr("fullscreen_cube_overlay_blend"));
 	}
 }
 
@@ -493,7 +498,7 @@ void DrawUtils::drawLine3d(const Vec3& start, const Vec3& end) {
 
 	meshHelper_renderImm(game3dContext, myTess, entityFlatStaticMaterial);
 }
-void DrawUtils::drawBox3d(const Vec3& lower, const Vec3& upper) {
+void DrawUtils::drawBox3d(const Vec3& lower, const Vec3& upper, float scale, bool onUi) {
 	if (game3dContext == 0 || entityFlatStaticMaterial == 0)
 		return;
 
@@ -518,29 +523,37 @@ void DrawUtils::drawBox3d(const Vec3& lower, const Vec3& upper) {
 	vertices[5] = Vec3(newLower.x + diff.x, newLower.y + diff.y, newLower.z);
 	vertices[6] = Vec3(newLower.x, newLower.y + diff.y, newLower.z + diff.z);
 	vertices[7] = Vec3(newLower.x + diff.x, newLower.y + diff.y, newLower.z + diff.z);
+	// Scale vertices using glm
+	glm::mat4 rotationMatrix = glm::rotate(glm::mat4(scale), 0.f, glm::vec3(1.0f, 1.0f, 1.0f));
+	Vec3 newLowerReal = newLower.add(0.5f, 0.5f, 0.5f);  // .add(0.4375f, 0.4375f, 0.4375f) is chest
+	for (int i = 0; i < 8; i++) {
+		glm::vec4 rotatedVertex = rotationMatrix * glm::vec4(vertices[i].x - newLowerReal.x, vertices[i].y - newLowerReal.y, vertices[i].z - newLowerReal.z, 0.0f);
+		vertices[i] = Vec3{rotatedVertex.x + newLowerReal.x, rotatedVertex.y + newLowerReal.y, rotatedVertex.z + newLowerReal.z};
+	}
 
-	#define line(m, n) tess_vertex(myTess, m.x, m.y, m.z); \
-		tess_vertex(myTess, n.x, n.y, n.z);
-	
-	#define li(m, n) line(vertices[m], vertices[n]);
+#define line(m, n)                      \
+	tess_vertex(myTess, m.x, m.y, m.z); \
+	tess_vertex(myTess, n.x, n.y, n.z);
 
-	li(0, 1);
-	li(1, 3);
-	li(3, 2);
-	li(2, 0);
+	// Top square
+	line(vertices[4], vertices[5]);
+	line(vertices[5], vertices[7]);
+	line(vertices[7], vertices[6]);
+	line(vertices[6], vertices[4]);
 
-	li(4, 5);
-	li(5, 7);
-	li(7, 6);
-	li(6, 4);
+	// Bottom Square
+	line(vertices[0], vertices[1]);
+	line(vertices[1], vertices[3]);
+	line(vertices[3], vertices[2]);
+	line(vertices[2], vertices[0]);
 
-	li(0, 4);
-	li(1, 5);
-	li(2, 6);
-	li(3, 7);
+	// Sides
+	line(vertices[0], vertices[4]);
+	line(vertices[1], vertices[5]);
+	line(vertices[2], vertices[6]);
+	line(vertices[3], vertices[7]);
 
-	#undef li
-	#undef line
+#undef line
 	
 	meshHelper_renderImm(game3dContext, myTess, entityFlatStaticMaterial);
 }
