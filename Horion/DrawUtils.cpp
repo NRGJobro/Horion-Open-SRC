@@ -392,6 +392,57 @@ void DrawUtils::drawBox(const Vec3& lower, const Vec3& upper, float lineWidth, b
 	}
 }
 
+void DrawUtils::draw2DBox(const Vec3& lower, const Vec3& upper, float lineWidth, bool fill, bool corners) {
+	if (Game.getLocalPlayer() == nullptr) return;
+	Vec3 worldPoints[8];
+	worldPoints[0] = Vec3(lower.x, lower.y, lower.z);
+	worldPoints[1] = Vec3(lower.x, lower.y, upper.z);
+	worldPoints[2] = Vec3(upper.x, lower.y, lower.z);
+	worldPoints[3] = Vec3(upper.x, lower.y, upper.z);
+	worldPoints[4] = Vec3(lower.x, upper.y, lower.z);
+	worldPoints[5] = Vec3(lower.x, upper.y, upper.z);
+	worldPoints[6] = Vec3(upper.x, upper.y, lower.z);
+	worldPoints[7] = Vec3(upper.x, upper.y, upper.z);
+
+	std::vector<Vec2> points;
+	for (int i = 0; i < 8; i++) {
+		Vec2 result;
+		if (refdef->OWorldToScreen(origin, worldPoints[i], result, fov, screenSize))
+			points.emplace_back(result);
+	}
+	if (points.size() < 1) return;
+
+	Vec4 resultRect = {points[0].x, points[0].y, points[0].x, points[0].y};
+	for (const auto& point : points) {
+		if (point.x < resultRect.x) resultRect.x = point.x;
+		if (point.y < resultRect.y) resultRect.y = point.y;
+		if (point.x > resultRect.z) resultRect.z = point.x;
+		if (point.y > resultRect.w) resultRect.w = point.y;
+	}
+	if (fill) DrawUtils::fillRectangle(Vec2(resultRect.x, resultRect.y), Vec2(resultRect.z, resultRect.w));
+	if (!corners)
+		DrawUtils::drawRectangle(Vec2(resultRect.x, resultRect.y), Vec2(resultRect.z, resultRect.w), lineWidth);
+	else {
+		float length = (resultRect.x - resultRect.z) / 4.f;
+
+		// Top left
+		DrawUtils::drawLine(Vec2(resultRect.x, resultRect.y), Vec2(resultRect.x - length, resultRect.y), lineWidth);
+		DrawUtils::drawLine(Vec2(resultRect.x, resultRect.y), Vec2(resultRect.x, resultRect.y - length), lineWidth);
+
+		// Top right
+		DrawUtils::drawLine(Vec2(resultRect.z, resultRect.y), Vec2(resultRect.z + length, resultRect.y), lineWidth);
+		DrawUtils::drawLine(Vec2(resultRect.z, resultRect.y), Vec2(resultRect.z, resultRect.y - length), lineWidth);
+
+		// Bottom left
+		DrawUtils::drawLine(Vec2(resultRect.x, resultRect.w), Vec2(resultRect.x - length, resultRect.w), lineWidth);
+		DrawUtils::drawLine(Vec2(resultRect.x, resultRect.w), Vec2(resultRect.x, resultRect.w + length), lineWidth);
+
+		// Bottom right
+		DrawUtils::drawLine(Vec2(resultRect.z, resultRect.w), Vec2(resultRect.z + length, resultRect.w), lineWidth);
+		DrawUtils::drawLine(Vec2(resultRect.z, resultRect.w), Vec2(resultRect.z, resultRect.w + length), lineWidth);
+	}
+}
+
 void DrawUtils::drawImage(std::string filePath, Vec2& imagePos, Vec2& ImageDimension, Vec2& idk) {
 	if (texturePtr == nullptr) {
 		texturePtr = new TexturePtr();

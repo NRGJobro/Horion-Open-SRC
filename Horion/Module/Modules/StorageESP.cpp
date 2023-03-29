@@ -3,10 +3,10 @@
 #include "../../DrawUtils.h"
 
 StorageESP::StorageESP() : IModule(0, Category::VISUAL, "ESP for but storage blocks.") {
-	registerBoolSetting("Fill", &fill, fill);
 	registerFloatSetting("Opacity", &opacity, opacity, 0.1f, 1.f);
-	mode.addEntry(EnumEntry("Full", 0)).addEntry(EnumEntry("Outline", 1));
-	registerEnumSetting("Mode", &mode, 0);
+	mode.addEntry(EnumEntry("2D", 0)).addEntry(EnumEntry("3D", 1)).addEntry(EnumEntry("Outline", 2)).addEntry(EnumEntry("Corners", 3));
+	registerEnumSetting("Mode", &mode, 2);
+	registerBoolSetting("Fill", &fill, fill);
 }
 
 StorageESP::~StorageESP() {
@@ -17,33 +17,64 @@ const char* StorageESP::getModuleName() {
 }
 
 void StorageESP::onPreRender(MinecraftUIRenderContext* renderCtx) {
-	if (!Game.isInGame() || !GameData::canUseMoveKeys() || Game.getLocalPlayer() == nullptr)
+	if (!Game.isInGame() || !GameData::canUseMoveKeys() || Game.getLocalPlayer() == nullptr || bufferedChestList.empty())
 		return;
 
 	auto ourListLock = std::scoped_lock(this->listLock);
 
 	for (const auto& chest : bufferedChestList) {
-		auto storageID = Game.getLocalPlayer()->region->getBlock(chest.upper)->blockLegacy->blockId;
-		DrawUtils::setColor(1.f, 1.f, 1.f, opacity);
+		MC_Color flushColor = MC_Color(1.f, 1.f, 1.f, opacity);
 
 		Vec3 blockPos = chest.lower;
-		if (blockPos.x < 0)
-			blockPos.x -= 1;
-		if (blockPos.z < 0)
-			blockPos.z -= 1;
-		storageID = Game.getLocalPlayer()->region->getBlock(blockPos)->toLegacy()->blockId;
+		if (blockPos.x < 0) blockPos.x -= 1;
+		if (blockPos.z < 0) blockPos.z -= 1;
+		auto storageID = Game.getLocalPlayer()->region->getBlock(blockPos)->toLegacy()->blockId;
 
-		auto mathVect = Vec3(chest.upper.floor().add(Vec3(1.f, 1.f, 1.f)).sub(chest.upper));
-		mathVect.y = floor(mathVect.y);
+		if (storageID == 54) flushColor = MC_Color(1.f, 1.f, 1.f, opacity);                     // Normal Chest
+		if (storageID == 146) flushColor = MC_Color(.92f, .14f, .14f, opacity);                 // Trapped Chest
+		if (storageID == 130) flushColor = MC_Color(0.435294f, 0.215686f, 0.631372f, opacity);  // Ender Chest
+		if (storageID == 458) flushColor = MC_Color(0.62f, 0.31f, 0.04f, opacity);              // Barrel
+		if (storageID == 205) flushColor = MC_Color(.49f, .17f, .95f, opacity);                 // Undyed Shulker Box
+		if (storageID == 218) flushColor = MC_Color(.08f, .91f, .99f, opacity);                 // Shulker Box
+		DrawUtils::setColor(flushColor.r, flushColor.g, flushColor.b, flushColor.a);
+		if (fill && (mode.selected == 0 || mode.selected == 3)) DrawUtils::draw2DBox(chest.lower, chest.upper, (float)fmax(0.5f, 1 / (float)fmax(1, Game.getLocalPlayer()->eyePos0.dist(chest.lower))), true);
+		switch (mode.selected) {
+		case 0:
+			DrawUtils::draw2DBox(chest.lower, chest.upper, (float)fmax(0.5f, 1 / (float)fmax(1, Game.getLocalPlayer()->eyePos0.dist(chest.lower))));
+			break;
+		case 2:
+			DrawUtils::drawBox(chest.lower, chest.upper, (float)fmax(0.5f, 1 / (float)fmax(1, Game.getLocalPlayer()->eyePos0.dist(chest.lower))), fill, 2);
+			break;
+		case 3:
+			DrawUtils::draw2DBox(chest.lower, chest.upper, (float)fmax(0.5f, 1 / (float)fmax(1, Game.getLocalPlayer()->eyePos0.dist(chest.lower))), false, true);
+			break;
+		}
+	}
+}
 
-		if (storageID == 54) DrawUtils::setColor(1.f, 1.f, 1.f, opacity);                     // Normal Chest
-		if (storageID == 146) DrawUtils::setColor(.92f, .14f, .14f, opacity);                 // Trapped Chest
-		if (storageID == 130) DrawUtils::setColor(0.435294f, 0.215686f, 0.631372f, opacity);  // Ender Chest
-		if (storageID == 458) DrawUtils::setColor(0.62f, 0.31f, 0.04f, opacity);           // Barrel
-		if (storageID == 205) DrawUtils::setColor(.49f, .17f, .95f, opacity);                 // Undyed Shulker Box
-		if (storageID == 218) DrawUtils::setColor(.08f, .91f, .99f, opacity);              // Shulker Box
+void StorageESP::onLevelRender() {
+	if (!Game.isInGame() || !GameData::canUseMoveKeys() || Game.getLocalPlayer() == nullptr || bufferedChestList.empty() || mode.selected != 1)
+		return;
 
-		DrawUtils::drawBox(chest.lower, chest.upper, (float)fmax(0.2f, 1 / (float)fmax(1, Game.getLocalPlayer()->eyePos0.dist(chest.lower))), fill, mode.selected + 1);  // Fancy math to give an illusion of good esp
+	auto ourListLock = std::scoped_lock(this->listLock);
+
+	for (const auto& chest : bufferedChestList) {
+		MC_Color flushColor = MC_Color(1.f, 1.f, 1.f, opacity);
+
+		Vec3 blockPos = chest.lower;
+		if (blockPos.x < 0) blockPos.x -= 1;
+		if (blockPos.z < 0) blockPos.z -= 1;
+		auto storageID = Game.getLocalPlayer()->region->getBlock(blockPos)->toLegacy()->blockId;
+
+		if (storageID == 54) flushColor = MC_Color(1.f, 1.f, 1.f, opacity);                     // Normal Chest
+		if (storageID == 146) flushColor = MC_Color(.92f, .14f, .14f, opacity);                 // Trapped Chest
+		if (storageID == 130) flushColor = MC_Color(0.435294f, 0.215686f, 0.631372f, opacity);  // Ender Chest
+		if (storageID == 458) flushColor = MC_Color(0.62f, 0.31f, 0.04f, opacity);              // Barrel
+		if (storageID == 205) flushColor = MC_Color(.49f, .17f, .95f, opacity);                 // Undyed Shulker Box
+		if (storageID == 218) flushColor = MC_Color(.08f, .91f, .99f, opacity);                 // Shulker Box
+		
+		DrawUtils::setColor(flushColor.r, flushColor.g, flushColor.b, flushColor.a);
+		if (!fill) DrawUtils::drawBox3d(chest.lower, chest.upper, 1.f, true); else DrawUtils::drawBox3dFilled(chest.lower, chest.upper, 1.f, true, true);
 	}
 }
 

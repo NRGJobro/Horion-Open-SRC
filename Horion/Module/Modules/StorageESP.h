@@ -4,12 +4,11 @@
 
 class StorageESP : public IModule {
 private:
-	int tickTimeout = 0;
 	std::vector<AABB> bufferedChestList;
+	float opacity = 1.f;
 	std::mutex listLock;
-	bool fill = false;
-	float opacity = 0.5f;
 	SettingEnum mode{this};
+	bool fill = false;
 
 public:
 	StorageESP();
@@ -19,4 +18,5 @@ public:
 	virtual const char* getModuleName() override;
 	virtual void onPreRender(MinecraftUIRenderContext* renderCtx) override;
 	virtual void onTick(GameMode* gm) override;
+	virtual void onLevelRender() override;
 };

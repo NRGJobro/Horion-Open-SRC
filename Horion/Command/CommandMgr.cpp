@@ -83,10 +83,10 @@ void CommandMgr::execute(char* message) {
 			if (alias == cmd) {
 				try {
 					if (!c->execute(&args)) {
-						Game.getClientInstance()->getGuiData()->displayClientMessageF("%s%sUsage: %s%c%s %s", RED, BOLD, RESET, cmdMgr->prefix, c->getCommand(), c->getUsage(cmd.c_str()));
+						Game.getGuiData()->displayClientMessageF("%s%sUsage: %s%c%s %s", RED, BOLD, RESET, cmdMgr->prefix, c->getCommand(), c->getUsage(cmd.c_str()));
 					}
 				} catch (...) {
-					Game.getClientInstance()->getGuiData()->displayClientMessageF("%s%sUsage: %s%c%s %s", RED, BOLD, RESET, cmdMgr->prefix, c->getCommand(), c->getUsage(cmd.c_str()));
+					Game.getGuiData()->displayClientMessageF("%s%sUsage: %s%c%s %s", RED, BOLD, RESET, cmdMgr->prefix, c->getCommand(), c->getUsage(cmd.c_str()));
 				}
 				return;
 			}
@@ -94,6 +94,18 @@ void CommandMgr::execute(char* message) {
 	}
 	// If the command doesn't exist, display an error message
 	Game.getClientInstance()->getGuiData()->displayClientMessageF("[%sHorion%s] %sCommand '%s' could not be found!", GOLD, WHITE, RED, cmd.c_str());
+	// Loop through all commands
+	for (auto it = this->commandList.begin(); it != this->commandList.end(); ++it) {
+		IMCCommand* c = *it;
+		std::string commandCopy = c->getCommand();
+
+		// Put them both in lowercase so they can be compaired
+		std::transform(commandCopy.begin(), commandCopy.end(), commandCopy.begin(), ::tolower);
+		std::transform(cmd.begin(), cmd.end(), cmd.begin(), ::tolower);
+
+		if (commandCopy.find(cmd) != std::string::npos)                                                 // if it has the name in it but not completed
+			Game.getGuiData()->displayClientMessageF("%sDid you mean to type: %s?", RED, commandCopy.c_str());  // Tell the user what they might have ment
+	}
 }
 
 CommandMgr* cmdMgr = new CommandMgr(&Game);
