@@ -7,6 +7,9 @@ private:
 	int tickTimeout = 0;
 	std::vector<AABB> bufferedChestList;
 	std::mutex listLock;
+	bool fill = false;
+	float opacity = 0.5f;
+	SettingEnum mode{this};
 
 public:
 	StorageESP();

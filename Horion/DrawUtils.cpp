@@ -241,13 +241,11 @@ void DrawUtils::drawText(const Vec2& pos, std::string* textStr, const MC_Color& 
 	renderCtx->drawText(fontPtr, posF, &text, color.arr, alpha, 0, &textMeasure, &caretMeasureData);
 }
 
-void DrawUtils::drawBox(const Vec3& lower, const Vec3& upper, float lineWidth, bool outline) {
-	
-	Vec3 diff;
-	diff.x = upper.x - lower.x;
-	diff.y = upper.y - lower.y;
-	diff.z = upper.z - lower.z;
+void DrawUtils::drawBox(const Vec3& lower, const Vec3& upper, float lineWidth, bool fill, int mode) {
+	// Calculate the dimensions of the box
+	Vec3 diff = upper.sub(lower);
 
+	// Create an array of vertices representing the corners of the box
 	Vec3 vertices[8];
 	vertices[0] = Vec3(lower.x, lower.y, lower.z);
 	vertices[1] = Vec3(lower.x + diff.x, lower.y, lower.z);
@@ -258,99 +256,139 @@ void DrawUtils::drawBox(const Vec3& lower, const Vec3& upper, float lineWidth, b
 	vertices[6] = Vec3(lower.x, lower.y + diff.y, lower.z + diff.z);
 	vertices[7] = Vec3(lower.x + diff.x, lower.y + diff.y, lower.z + diff.z);
 
-	// Convert to screen coord
-	std::vector<std::tuple<int, Vec2>> screenCords;
-	for (int i = 0; i < 8; i++) {
-		Vec2 screen;
-		if (refdef->OWorldToScreen(origin, vertices[i], screen, fov, screenSize)) {
-			screenCords.emplace_back(outline ? (int) screenCords.size() : i, screen);
-		}
-	}
-	if (screenCords.size() < 2)
-		return;  // No lines possible
-
-	if (!outline) {
-		for (auto it = screenCords.begin(); it != screenCords.end(); it++) {
-			auto from = *it;
-			auto fromOrig = vertices[std::get<0>(from)];
-
-			for (auto to : screenCords) {
-				auto toOrig = vertices[std::get<0>(to)];
-
-				bool shouldDraw = false;
-				// X direction
-				shouldDraw |= fromOrig.y == toOrig.y && fromOrig.z == toOrig.z && fromOrig.x < toOrig.x; 
-				// Y direction
-				shouldDraw |= fromOrig.x == toOrig.x && fromOrig.z == toOrig.z && fromOrig.y < toOrig.y; 
-				// Z direction
-				shouldDraw |= fromOrig.x == toOrig.x && fromOrig.y == toOrig.y && fromOrig.z < toOrig.z; 
-				
-				if (shouldDraw)
-					drawLine(std::get<1>(from), std::get<1>(to), lineWidth);
+	if (fill) {
+		// Convert the vertices to screen coordinates
+		std::vector<Vec2> screenCords;
+		for (int i = 0; i < 8; i++) {
+			Vec2 screen;
+			if (refdef->OWorldToScreen(origin, vertices[i], screen, fov, screenSize)) {
+				screenCords.push_back(screen);
 			}
 		}
 
-		return;
-	}
-	// Find start vertex
-	auto it = screenCords.begin();
-	std::tuple<int, Vec2> start = *it;
-	it++;
-	for (; it != screenCords.end(); it++) {
-		auto cur = *it;
-		if (std::get<1>(cur).x < std::get<1>(start).x) {
-			start = cur;
+		// Return if there are less than four points to draw quads with
+		if (screenCords.size() < 8) return;
+
+		// Define the indices of the vertices to use for each quad face
+		std::vector<std::tuple<int, int, int, int>> faces = {
+			{0, 1, 3, 2},  // Bottom face
+			{4, 5, 7, 6},  // Top face
+			{0, 1, 5, 4},  // Front face
+			{2, 3, 7, 6},  // Back face
+			{1, 3, 7, 5},  // Right face
+			{0, 2, 6, 4}   // Left face
+		};
+
+		// Draw the quads to fill the box
+		for (auto face : faces) {
+			DrawUtils::drawQuad(screenCords[std::get<0>(face)], screenCords[std::get<1>(face)], screenCords[std::get<2>(face)], screenCords[std::get<3>(face)]);
+			DrawUtils::drawQuad(screenCords[std::get<3>(face)], screenCords[std::get<2>(face)], screenCords[std::get<1>(face)], screenCords[std::get<0>(face)]);
 		}
 	}
 
-	// Follow outer line
-	std::vector<int> indices;
-
-	auto current = start;
-	indices.push_back(std::get<0>(current));
-	Vec2 lastDir(0, -1);
-	do {
-		float smallestAngle = PI * 2;
-		Vec2 smallestDir;
-		std::tuple<int, Vec2> smallestE;
-		auto lastDirAtan2 = atan2(lastDir.y, lastDir.x);
-		for (auto cur : screenCords) {
-			if (std::get<0>(current) == std::get<0>(cur))
-				continue;
-
-			// angle between vecs
-			Vec2 dir = Vec2(std::get<1>(cur)).sub(std::get<1>(current));
-			float angle = atan2(dir.y, dir.x) - lastDirAtan2;
-			if (angle > PI) {
-				angle -= 2 * PI;
-			} else if (angle <= -PI) {
-				angle += 2 * PI;
-			}
-			if (angle >= 0 && angle < smallestAngle) {
-				smallestAngle = angle;
-				smallestDir = dir;
-				smallestE = cur;
+	if (mode == 1 || mode == 2) {
+		// Convert the vertices to screen coordinates
+		std::vector<std::tuple<int, Vec2>> screenCords;
+		for (int i = 0; i < 8; i++) {
+			Vec2 screen;
+			if (refdef->OWorldToScreen(origin, vertices[i], screen, fov, screenSize)) {
+				screenCords.emplace_back(mode == 2 ? (int)screenCords.size() : i, screen);
 			}
 		}
-		indices.push_back(std::get<0>(smallestE));
-		lastDir = smallestDir;
-		current = smallestE;
-	} while (std::get<0>(current) != std::get<0>(start) && indices.size() < 8);
 
-	// draw
-	
-	Vec2 lastVertex;
-	bool hasLastVertex = false;
-	for (auto& indice : indices) {
-		Vec2 curVertex = std::get<1>(screenCords[indice]);
-		if (!hasLastVertex) {
-			hasLastVertex = true;
-			lastVertex = curVertex;
-			continue;
+		// Return if there are less than two points to draw lines between
+		if (screenCords.size() < 2) return;
+
+		switch (mode) {
+		case 1: {
+			// Draw lines between all pairs of vertices
+			for (auto it = screenCords.begin(); it != screenCords.end(); it++) {
+				auto from = *it;
+				auto fromOrig = vertices[std::get<0>(from)];
+
+				for (auto to : screenCords) {
+					auto toOrig = vertices[std::get<0>(to)];
+
+					// Determine if the line should be drawn based on the relative positions of the vertices
+					bool shouldDraw = false;
+					// X direction
+					shouldDraw |= fromOrig.y == toOrig.y && fromOrig.z == toOrig.z && fromOrig.x < toOrig.x;
+					// Y direction
+					shouldDraw |= fromOrig.x == toOrig.x && fromOrig.z == toOrig.z && fromOrig.y < toOrig.y;
+					// Z direction
+					shouldDraw |= fromOrig.x == toOrig.x && fromOrig.y == toOrig.y && fromOrig.z < toOrig.z;
+
+					if (shouldDraw) DrawUtils::drawLine(std::get<1>(from), std::get<1>(to), lineWidth);
+				}
+			}
+			return;
+			break;
 		}
-		
-		drawLine(lastVertex, curVertex, lineWidth);
-		lastVertex = curVertex;
+		case 2: {
+			// Find start vertex
+			auto it = screenCords.begin();
+			std::tuple<int, Vec2> start = *it;
+			it++;
+			for (; it != screenCords.end(); it++) {
+				auto cur = *it;
+				if (std::get<1>(cur).x < std::get<1>(start).x) {
+					start = cur;
+				}
+			}
+
+			// Follow outer line
+			std::vector<int> indices;
+
+			auto current = start;
+			indices.push_back(std::get<0>(current));
+			Vec2 lastDir(0, -1);
+			do {
+				float smallestAngle = PI * 2;
+				Vec2 smallestDir;
+				std::tuple<int, Vec2> smallestE;
+				auto lastDirAtan2 = atan2(lastDir.y, lastDir.x);
+				for (auto cur : screenCords) {
+					if (std::get<0>(current) == std::get<0>(cur))
+						continue;
+
+					// angle between vecs
+					Vec2 dir = Vec2(std::get<1>(cur)).sub(std::get<1>(current));
+					float angle = atan2(dir.y, dir.x) - lastDirAtan2;
+					if (angle > PI) {
+						angle -= 2 * PI;
+					} else if (angle <= -PI) {
+						angle += 2 * PI;
+					}
+					if (angle >= 0 && angle < smallestAngle) {
+						smallestAngle = angle;
+						smallestDir = dir;
+						smallestE = cur;
+					}
+				}
+				indices.push_back(std::get<0>(smallestE));
+				lastDir = smallestDir;
+				current = smallestE;
+			} while (std::get<0>(current) != std::get<0>(start) && indices.size() < 8);
+
+			// draw
+
+			Vec2 lastVertex;
+			bool hasLastVertex = false;
+			for (auto& indice : indices) {
+				Vec2 curVertex = std::get<1>(screenCords[indice]);
+				if (!hasLastVertex) {
+					hasLastVertex = true;
+					lastVertex = curVertex;
+					continue;
+				}
+
+				drawLine(lastVertex, curVertex, lineWidth);
+				lastVertex = curVertex;
+			}
+			return;
+			break;
+		}
+		}
 	}
 }
 
@@ -424,49 +462,60 @@ void DrawUtils::drawNameTags(Entity* ent, float textSize, bool drawHealth, bool 
 	}
 }
 
-void DrawUtils::drawEntityBox(Entity* ent, float lineWidth) {
+void DrawUtils::drawEntityBox(Entity* ent, float lineWidth, bool fill) {
 	Vec3 end = ent->eyePos0;
-	AABB render(end, ent->width, ent->height, end.y - ent->aabb.lower.y);
+	AABB render;
+	if (ent->isPlayer()) {
+		render = AABB(end, ent->width, ent->height, ent->height);
+		render.upper.y += 0.2f;
+		render.lower.y += 0.2f;
+	} else
+		render = AABB(end, ent->width, ent->height, 0);
 	render.upper.y += 0.1f;
 
-	drawBox(render.lower, render.upper, lineWidth, true);
+	float LineWidth = (float)fmax(0.5f, 1 / (float)fmax(1, (float)Game.getLocalPlayer()->eyePos0.dist(end)));
+	DrawUtils::drawBox(render.lower, render.upper, lineWidth == 0 ? LineWidth : lineWidth, fill);
 }
 
 void DrawUtils::draw2D(Entity* ent, float lineWidth) {
-	Vec3 base = ent->eyePos0;
-	float ofs = (Game.getLocalPlayer()->yaw + 90.f) * (PI / 180);
+	if (Game.getLocalPlayer() == nullptr) return;
+	Vec3 end = ent->eyePos0;
+	AABB render;
+	if (ent->isPlayer()) {
+		render = AABB(end, ent->width, ent->height, ent->height);
+		render.upper.y += 0.2f;
+		render.lower.y += 0.2f;
+	} else
+		render = AABB(end, ent->width, ent->height, 0);
+	render.upper.y += 0.1f;
 
-	Vec3 corners[4];
-	Vec2 corners2d[4];
+	Vec3 worldPoints[8];
+	worldPoints[0] = Vec3(render.lower.x, render.lower.y, render.lower.z);
+	worldPoints[1] = Vec3(render.lower.x, render.lower.y, render.upper.z);
+	worldPoints[2] = Vec3(render.upper.x, render.lower.y, render.lower.z);
+	worldPoints[3] = Vec3(render.upper.x, render.lower.y, render.upper.z);
+	worldPoints[4] = Vec3(render.lower.x, render.upper.y, render.lower.z);
+	worldPoints[5] = Vec3(render.lower.x, render.upper.y, render.upper.z);
+	worldPoints[6] = Vec3(render.upper.x, render.upper.y, render.lower.z);
+	worldPoints[7] = Vec3(render.upper.x, render.upper.y, render.upper.z);
 
-	corners[0] = Vec3(base.x - ent->width / 1.5f * -sin(ofs), ent->aabb.upper.y + (float)0.1, base.z - ent->width / 1.5f * cos(ofs));
-	corners[1] = Vec3(base.x + ent->width / 1.5f * -sin(ofs), ent->aabb.upper.y + (float)0.1, base.z + ent->width / 1.5f * cos(ofs));
-	corners[2] = Vec3(base.x - ent->width / 1.5f * -sin(ofs), ent->aabb.lower.y, base.z - ent->width / 1.5f * cos(ofs));
-	corners[3] = Vec3(base.x + ent->width / 1.5f * -sin(ofs), ent->aabb.lower.y, base.z + ent->width / 1.5f * cos(ofs));
-
-	if (refdef->OWorldToScreen(origin, corners[0], corners2d[0], fov, screenSize) &&
-		refdef->OWorldToScreen(origin, corners[1], corners2d[1], fov, screenSize) &&
-		refdef->OWorldToScreen(origin, corners[2], corners2d[2], fov, screenSize) &&
-		refdef->OWorldToScreen(origin, corners[3], corners2d[3], fov, screenSize)) {
-		//float length = (corners2d[1].x - corners2d[0].x) / 4.f;
-
-		/*drawLine(corners2d[0], Vec2(corners2d[0].x + length, corners2d[0].y), lineWidth);
-		drawLine(corners2d[0], Vec2(corners2d[0].x, corners2d[0].y + length), lineWidth);
-
-		drawLine(Vec2(corners2d[1].x - length, corners2d[1].y), corners2d[1], lineWidth);
-		drawLine(corners2d[1], Vec2(corners2d[1].x, corners2d[1].y + length), lineWidth);
-
-		drawLine(Vec2(corners2d[2].x, corners2d[2].y - length), corners2d[2], lineWidth);
-		drawLine(corners2d[2], Vec2(corners2d[2].x + length, corners2d[2].y), lineWidth);
-
-		drawLine(Vec2(corners2d[3].x, corners2d[3].y - length), corners2d[3], lineWidth);
-		drawLine(Vec2(corners2d[3].x - length, corners2d[3].y), corners2d[3], lineWidth);*/
-
-		drawLine(corners2d[0], corners2d[1], lineWidth);
-		drawLine(corners2d[0], corners2d[2], lineWidth);
-		drawLine(corners2d[3], corners2d[1], lineWidth);
-		drawLine(corners2d[3], corners2d[2], lineWidth);
+	std::vector<Vec2> points;
+	for (int i = 0; i < 8; i++) {
+		Vec2 result;
+		if (refdef->OWorldToScreen(origin, worldPoints[i], result, fov, screenSize))
+			points.emplace_back(result);
 	}
+	if (points.size() < 1) return;
+
+	Vec4 resultRect = {points[0].x, points[0].y, points[0].x, points[0].y};
+	for (const auto& point : points) {
+		if (point.x < resultRect.x) resultRect.x = point.x;
+		if (point.y < resultRect.y) resultRect.y = point.y;
+		if (point.x > resultRect.z) resultRect.z = point.x;
+		if (point.y > resultRect.w) resultRect.w = point.y;
+	}
+	float LineWidth = (float)fmax(0.5f, 1 / (float)fmax(1, (float)Game.getLocalPlayer()->eyePos0.dist(end)));
+	DrawUtils::drawRectangle(Vec2(resultRect.x, resultRect.y), Vec2(resultRect.z, resultRect.w), lineWidth == 0 ? LineWidth : lineWidth);
 }
 
 void DrawUtils::drawItem(ItemStack* item, const Vec2& itemPos, float opacity, float scale, bool isEnchanted) {

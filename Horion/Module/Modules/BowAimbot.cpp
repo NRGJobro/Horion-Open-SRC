@@ -62,8 +62,10 @@ void BowAimbot::onPostRender(MinecraftUIRenderContext* renderCtx) {
 			velocity.z *= origin.dist(pos) / 2.f;
 			pos = pos.add(velocity);
 		}
-		if(visualize)
+		if (visualize) {
+			DrawUtils::setColor(.75f, .25f, .5f, 0.2f);
 			DrawUtils::drawBox(pos.sub(0.5), pos.add(0.5), 0.3f, true);
+		}
 		pos = pos.sub(origin);
 		float yaw = (atan2f(pos.z, pos.x) * DEG_RAD) - 90;
 		float len = pos.magnitudexz();
