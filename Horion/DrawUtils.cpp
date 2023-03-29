@@ -531,7 +531,7 @@ Vec2 DrawUtils::worldToScreen(const Vec3& world) {
 	refdef->OWorldToScreen(origin, world, ret, fov, screenSize);
 	return ret;
 }
-void DrawUtils::drawLine3d(const Vec3& start, const Vec3& end) {
+void DrawUtils::drawLine3d(const Vec3& start, const Vec3& end, bool onUi) {
 	if(game3dContext == 0 || entityFlatStaticMaterial == 0)
 		return;
 
@@ -545,7 +545,7 @@ void DrawUtils::drawLine3d(const Vec3& start, const Vec3& end) {
 	tess_vertex(myTess, start1.x, start1.y, start1.z);
 	tess_vertex(myTess, end1.x, end1.y, end1.z);
 
-	meshHelper_renderImm(game3dContext, myTess, entityFlatStaticMaterial);
+	meshHelper_renderImm(game3dContext, myTess, onUi ? uiMaterial : blendMaterial);
 }
 void DrawUtils::drawBox3d(const Vec3& lower, const Vec3& upper, float scale, bool onUi) {
 	if (game3dContext == 0 || entityFlatStaticMaterial == 0)

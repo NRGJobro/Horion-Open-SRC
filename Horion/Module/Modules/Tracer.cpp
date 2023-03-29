@@ -30,7 +30,7 @@ void Tracer::onLevelRender() {
 		Game.forEachEntity([&](Entity* ent, bool valid) {
 			if (ent != Game.getLocalPlayer() && Target::isValidTarget(ent) && Game.canUseMoveKeys()) {
 				DrawUtils::setColor(255, 255, 255, 1);
-				DrawUtils::drawLine3d(origin, *ent->getPos());
+				DrawUtils::drawLine3d(origin, *ent->getPos(), true);
 			}
 		});
 	}

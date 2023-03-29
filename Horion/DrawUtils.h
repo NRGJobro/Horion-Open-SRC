@@ -102,7 +102,7 @@ public:
 	static void drawQuad(const Vec2& p1, const Vec2& p2, const Vec2& p3, const Vec2& p4);
 	static void drawLine(const Vec2& start, const Vec2& end, float lineWidth);  // rgba
 	static void drawLinestrip3d(const std::vector<Vec3>& points);
-	static void drawLine3d(const Vec3& start, const Vec3& end);
+	static void drawLine3d(const Vec3& start, const Vec3& end, bool onUi = false);
 	static void drawBox3d(const Vec3& lower, const Vec3& upper, float scale = 1.f, bool onUi = false);
 	static void drawBox3dFilled(const Vec3& lower, const Vec3& upper, float scale = 1.f, bool outline = false, bool onUi = false);
 	static void drawCircle(Vec2 pos, Vec2 radius, MC_Color color, double quality);
