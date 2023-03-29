@@ -11,13 +11,13 @@ struct MaterialPtr {
 };
 
 using tess_vertex_t = void(__fastcall*)(Tessellator* _this, float v1, float v2, float v3);
-using meshHelper_renderImm_t = void(__fastcall*)(__int64, Tessellator* tesselator, MaterialPtr*);
+using meshHelper_renderImm_t = void(__fastcall*)(__int64, Tessellator* tessellator, MaterialPtr*);
 
 MinecraftUIRenderContext* renderCtx;
 GuiData* guiData;
 __int64 screenContext2d;
 __int64 game3dContext;
-Tessellator* tesselator;
+Tessellator* tessellator;
 float* colorHolder;
 std::shared_ptr<glmatrixf> refdef;
 Vec2 fov;
@@ -77,7 +77,7 @@ void DrawUtils::setCtx(MinecraftUIRenderContext* ctx, GuiData* gui) {
 	renderCtx = ctx;
 	screenContext2d = reinterpret_cast<__int64*>(renderCtx)[2];
 
-	tesselator = *reinterpret_cast<Tessellator**>(screenContext2d + 0xB0);
+	tessellator = *reinterpret_cast<Tessellator**>(screenContext2d + 0xB0);
 	colorHolder = *reinterpret_cast<float**>(screenContext2d + 0x30);
 
 	glmatrixf* badrefdef = Game.getClientInstance()->getRefDef();
@@ -177,25 +177,25 @@ void DrawUtils::flush() {
 
 void DrawUtils::drawTriangle(const Vec2& p1, const Vec2& p2, const Vec2& p3) {
 	
-	DrawUtils::tess__begin(tesselator, 3, 3);
+	DrawUtils::tess__begin(tessellator, 3, 3);
 
-	tess_vertex(tesselator, p1.x, p1.y, 0);
-	tess_vertex(tesselator, p2.x, p2.y, 0);
-	tess_vertex(tesselator, p3.x, p3.y, 0);
+	tess_vertex(tessellator, p1.x, p1.y, 0);
+	tess_vertex(tessellator, p2.x, p2.y, 0);
+	tess_vertex(tessellator, p3.x, p3.y, 0);
 
-	meshHelper_renderImm(screenContext2d, tesselator, uiMaterial);
+	meshHelper_renderImm(screenContext2d, tessellator, uiMaterial);
 }
 
 
 void DrawUtils::drawQuad(const Vec2& p1, const Vec2& p2, const Vec2& p3, const Vec2& p4) {
-	DrawUtils::tess__begin(tesselator, 1, 4);
+	DrawUtils::tess__begin(tessellator, 1, 4);
 
-	tess_vertex(tesselator, p1.x, p1.y, 0);
-	tess_vertex(tesselator, p2.x, p2.y, 0);
-	tess_vertex(tesselator, p3.x, p3.y, 0);
-	tess_vertex(tesselator, p4.x, p4.y, 0);
+	tess_vertex(tessellator, p1.x, p1.y, 0);
+	tess_vertex(tessellator, p2.x, p2.y, 0);
+	tess_vertex(tessellator, p3.x, p3.y, 0);
+	tess_vertex(tessellator, p4.x, p4.y, 0);
 
-	meshHelper_renderImm(screenContext2d, tesselator, uiMaterial);
+	meshHelper_renderImm(screenContext2d, tessellator, uiMaterial);
 }
 
 void DrawUtils::drawLine(const Vec2& start, const Vec2& end, float lineWidth) {
@@ -209,17 +209,17 @@ void DrawUtils::drawLine(const Vec2& start, const Vec2& end, float lineWidth) {
 	modX *= lineWidth;
 	modY *= lineWidth;
 
-	DrawUtils::tess__begin(tesselator, 3, 6);
+	DrawUtils::tess__begin(tessellator, 3, 6);
 
-	tess_vertex(tesselator, start.x + modX, start.y + modY, 0);
-	tess_vertex(tesselator, start.x - modX, start.y - modY, 0);
-	tess_vertex(tesselator, end.x - modX, end.y - modY, 0);
+	tess_vertex(tessellator, start.x + modX, start.y + modY, 0);
+	tess_vertex(tessellator, start.x - modX, start.y - modY, 0);
+	tess_vertex(tessellator, end.x - modX, end.y - modY, 0);
 
-	tess_vertex(tesselator, start.x + modX, start.y + modY, 0);
-	tess_vertex(tesselator, end.x + modX, end.y + modY, 0);
-	tess_vertex(tesselator, end.x - modX, end.y - modY, 0);
+	tess_vertex(tessellator, start.x + modX, start.y + modY, 0);
+	tess_vertex(tessellator, end.x + modX, end.y + modY, 0);
+	tess_vertex(tessellator, end.x - modX, end.y - modY, 0);
 
-	meshHelper_renderImm(screenContext2d, tesselator, uiMaterial);
+	meshHelper_renderImm(screenContext2d, tessellator, uiMaterial);
 }
 
 void DrawUtils::drawText(const Vec2& pos, std::string* textStr, const MC_Color& color, float textSize, float alpha, Fonts font) {
@@ -616,12 +616,44 @@ void DrawUtils::drawBox3dFilled(const Vec3& lower, const Vec3& upper, float scal
 	meshHelper_renderImm(game3dContext, myTess, onUi ? uiMaterial : blendMaterial);
 }
 
+void DrawUtils::drawCircle(Vec2 pos, Vec2 radius, MC_Color color, double quality) {
+	DrawUtils::setColor(color.r, color.g, color.b, color.a);
+	DrawUtils::tess__begin(tessellator, 5);
+
+	for (int i = 0; i <= 360 / quality; i++) {
+		double x2 = sin(((i * quality * PI) / 180)) * radius.x;
+		double y2 = cos(((i * quality * PI) / 180)) * radius.y;
+		tess_vertex(tessellator, pos.x + x2, pos.y + y2, 0);
+	}
+	meshHelper_renderImm(screenContext2d, tessellator, uiMaterial);
+}
+
+void DrawUtils::drawCircleFilled(Vec2 pos, Vec2 radius, MC_Color color, double quality) {
+	float x;
+	float y;
+	DrawUtils::setColor(color.r, color.g, color.b, color.a);
+	for (double i = 0; i <= 360;) {
+		DrawUtils::tess__begin(tessellator, 3);
+		x = radius.x * (float)cos(i);
+		y = radius.y * (float)sin(i);
+		tess_vertex(tessellator, x + pos.x, y + pos.y, 0);
+		i = i + quality;
+		x = radius.x * (float)cos(i);
+		y = radius.y * (float)sin(i);
+		tess_vertex(tessellator, x + pos.x, y + pos.y, 0);
+		tess_vertex(tessellator, pos.x, pos.y, 0);
+		i = i + quality;
+	}
+
+	meshHelper_renderImm(screenContext2d, tessellator, uiMaterial);
+}
+
 void DrawUtils::fillRectangle(const Vec4& pos, const MC_Color& col, float alpha) {
 	DrawUtils::setColor(col.r, col.g, col.b, alpha);
 	DrawUtils::drawQuad({pos.x, pos.w}, {pos.z, pos.w}, {pos.z, pos.y}, {pos.x, pos.y});
 }
 inline void DrawUtils::tess__begin(Tessellator* tess, int vertexFormat, int numVerticesReserved) {
-	__int64 tesselator = reinterpret_cast<__int64>(tess);
+	__int64 tessellator = reinterpret_cast<__int64>(tess);
 
 	using tess_begin_t = void(__fastcall*)(Tessellator*, int, int);
 	static tess_begin_t tess_begin = reinterpret_cast<tess_begin_t>(FindSignature("48 89 5C 24 ?? 55 48 83 EC ?? 80 B9 ?? ?? ?? ?? 00 45"));

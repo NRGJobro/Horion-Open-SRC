@@ -77,10 +77,6 @@ struct MC_Color {
 	MC_Color lerp(const MC_Color& o, float t) const;
 };
 
-enum VertexFormat {
-
-};
-
 class MatrixStack;
 
 class DrawUtils {
@@ -109,6 +105,8 @@ public:
 	static void drawLine3d(const Vec3& start, const Vec3& end);
 	static void drawBox3d(const Vec3& lower, const Vec3& upper, float scale = 1.f, bool onUi = false);
 	static void drawBox3dFilled(const Vec3& lower, const Vec3& upper, float scale = 1.f, bool outline = false, bool onUi = false);
+	static void drawCircle(Vec2 pos, Vec2 radius, MC_Color color, double quality);
+	static void drawCircleFilled(Vec2 pos, Vec2 radius, MC_Color color, double quality);
 	static void fillRectangle(const Vec4& pos, const MC_Color& col, float alpha);
 	static inline void fillRectangle(const Vec2& start, const Vec2& end) {
 		DrawUtils::drawQuad({start.x, end.y}, {end.x, end.y}, {end.x, start.y}, {start.x, start.y});
