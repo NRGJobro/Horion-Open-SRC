@@ -6,7 +6,7 @@
 
 bool old = false;
 Tracer::Tracer() : IModule('R', Category::VISUAL, "Draws lines to ESP highlighted entities.") {
-	//registerBoolSetting("3D Tracers", &old, old);
+	registerBoolSetting("3D Tracers", &old, old);
 }
 
 Tracer::~Tracer() {
@@ -18,7 +18,15 @@ const char* Tracer::getModuleName() {
 
 void Tracer::onLevelRender() {
 	if (old) {
-		Vec3 origin = Game.getLocalPlayer()->level->rayHitVec;
+		if (!Game.getLocalPlayer()) return;
+		float calcYaw = (Game.getLocalPlayer()->yaw + 90) * (PI / 180);
+		float calcPitch = (Game.getLocalPlayer()->pitch) * -(PI / 180);
+		Vec3 moveVec;
+		moveVec.x = cos(calcYaw) * cos(calcPitch) * 0.5f;
+		moveVec.y = sin(calcPitch) * 0.5f;
+		moveVec.z = sin(calcYaw) * cos(calcPitch) * 0.5f;
+
+		const Vec3 origin = Game.getClientInstance()->levelRenderer->getOrigin().add(moveVec); /*place the start of the line slightly forward so it won't get clipped*/
 		Game.forEachEntity([&](Entity* ent, bool valid) {
 			if (ent != Game.getLocalPlayer() && Target::isValidTarget(ent) && Game.canUseMoveKeys()) {
 				DrawUtils::setColor(255, 255, 255, 1);

@@ -549,7 +549,7 @@ public:
 	virtual __int64 getUser(void) const;
 	virtual __int64 getGameRenderer(void) const;
 	virtual __int64 getHolosceneRenderer(void) const;
-	virtual __int64 getLevelRenderer(void) const;
+	virtual LevelRenderer* getLevelRenderer(void) const;
 	virtual __int64 getLevelRendererCameraProxy(void) const;
 
 public:
