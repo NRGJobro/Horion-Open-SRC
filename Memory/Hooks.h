@@ -123,13 +123,14 @@ private:
 	static void LocalPlayer__updateFromCamera(__int64 a1, Camera* camera, __int64* a3, Entity* a4);
 	static bool Mob__isImmobile(Entity*);
 	static void Actor__setRot(Entity* _this, Vec2& angle);
-	static void test(Weather* _this, float fogLevel);
 	static bool playerCallBack(Player* lp, __int64 a2, __int64 a3);
 	static void InventoryTransactionManager__addAction(InventoryTransactionManager*, InventoryAction&);
 	static void LevelRendererPlayer__renderNameTags(__int64 a1, __int64 a2, TextHolder* name, __int64 a4);
 	static void KeyMapHookCallback(unsigned char key, bool isDown);
 	static float getDestroySpeed(Player* _this, Block& block);
-
+	static bool Actor__isInWall(Entity* ent);
+	//static bool testFunction(Entity* ent);
+	
 	std::unique_ptr<FuncHook> Actor_rotationHook;
 	std::unique_ptr<FuncHook> setPosHook;
 	std::unique_ptr<FuncHook> Actor_baseTickHook;
@@ -188,7 +189,8 @@ private:
 	std::unique_ptr<FuncHook> InventoryTransactionManager__addActionHook;
 	std::unique_ptr<FuncHook> LevelRendererPlayer__renderNameTagsHook;
 	std::unique_ptr<FuncHook> KeyMapHook;
-	std::unique_ptr<FuncHook> testyHook;
+	std::unique_ptr<FuncHook> ActorisInWallHook;
+	//std::unique_ptr<FuncHook> testFunctionHook;
 };
 
 extern Hooks g_Hooks;

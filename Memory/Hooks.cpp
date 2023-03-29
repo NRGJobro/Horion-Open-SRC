@@ -42,9 +42,6 @@ void Hooks::Init() {
 
 		void* fogColorFunc = reinterpret_cast<void*>(FindSignature("41 0F 10 08 48 8B C2 0F"));
 		g_Hooks.Dimension_getFogColorHook = std::make_unique<FuncHook>(fogColorFunc, Hooks::Dimension_getFogColor);
-
-		//void* testy = reinterpret_cast<void*>(FindSignature("48 89 5c 24 ? 56 57 41 56 48 83 ec ? 48 8b 71 ? 48 8b d9"));
-		//g_Hooks.testyHook = std::make_unique<FuncHook>(testy, Hooks::test);
 		
 		void* timeOfDay = reinterpret_cast<void*>(FindSignature("44 8B C2 B8 ? ? ? ? F7 EA"));
 		g_Hooks.Dimension_getTimeOfDayHook = std::make_unique<FuncHook>(timeOfDay, Hooks::Dimension_getTimeOfDay);
@@ -116,6 +113,12 @@ void Hooks::Init() {
 		
 		void* destroySpeed = reinterpret_cast<void*>(FindSignature("48 89 5c 24 ? 48 89 74 24 ? 57 48 83 ec ? 48 8b fa 0f 29 74 24 ? 48 8b 91"));
 		g_Hooks.getDestroySpeedHook = std::make_unique<FuncHook>(destroySpeed, Hooks::getDestroySpeed);
+
+		void* actorisInWall = reinterpret_cast<void*>(FindSignature("40 53 48 83 EC ? 48 8B 05 ? ? ? ? 48 33 C4 48 89 44 24 ? 48 8B 01 48 8D 54 24 ? 0F 57 DB 41 B8 ? ? ? ? 48 8B D9 FF 90 ? ? ? ? 48 8B 8B"));
+		g_Hooks.ActorisInWallHook = std::make_unique<FuncHook>(actorisInWall, Hooks::Actor__isInWall);
+
+		//void* testFunc = reinterpret_cast<void*>(FindSignature("40 53 48 83 ec ? 48 8b 05 ? ? ? ? 48 33 c4 48 89 44 24 ? 48 8b 01 48 8d 54 24 ? 0f 57 db 41 b8 ? ? ? ? 48 8b d9 ff 90 ? ? ? ? 48 8b 8b"));
+		//g_Hooks.testFunctionHook = std::make_unique<FuncHook>(testFunc, Hooks::testFunction);
 		
 		static constexpr auto counterStart = __COUNTER__ + 1;
 		#define lambda_counter (__COUNTER__ - counterStart)
@@ -1273,17 +1276,6 @@ void Hooks::Actor__setRot(Entity* _this, Vec2& angle) {
 	func(_this, angle);
 }
 
-void Hooks::test(Weather* _this, float idk) {
-	auto func = g_Hooks.testHook->GetFastcall<void, Weather*, float>();
-	//static auto testModTEst = moduleMgr->getModule<TestModule>();
-
-	//if (testModTEst->isEnabled()) {
-	//	func(_this, idk = 1000);
-	//}
-	
-	func(_this, idk);
-}
-
 void Hooks::InventoryTransactionManager__addAction(InventoryTransactionManager* _this, InventoryAction& action) {
 	auto func = g_Hooks.InventoryTransactionManager__addActionHook->GetFastcall<void, InventoryTransactionManager*, InventoryAction&>();
 
@@ -1334,3 +1326,26 @@ float Hooks::getDestroySpeed(Player* _this, Block& block) {
 
 	return instaBreakMod->isEnabled() ? INFINITY : oFunc(_this, block);
 }
+
+bool Hooks::Actor__isInWall(Entity* ent) {
+	auto func = g_Hooks.ActorisInWallHook->GetFastcall<bool, Entity*>();
+	static auto nofallMod = moduleMgr->getModule<NoFall>();
+
+	if (nofallMod->isEnabled() && nofallMod->mode.selected == 4 /*&& Game.getLocalPlayer() == ent*/) {
+		return false;
+	}
+
+	return func(ent);
+}
+/*
+bool Hooks::testFunction(Entity* ent) {
+	auto func = g_Hooks.testFunctionHook->GetFastcall<bool, Entity*>();
+	static auto nofallMod = moduleMgr->getModule<NoFall>();
+
+	if (nofallMod->isEnabled() && nofallMod->mode.selected == 4) {
+		return false;
+	}
+
+	return func(ent);
+}
+*/
