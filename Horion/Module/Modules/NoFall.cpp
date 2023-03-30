@@ -68,8 +68,10 @@ void NoFall::onTick(GameMode* gm) {
 			while (localPlayer->region->getBlock(blockBelow)->blockLegacy->blockId == 0 && !localPlayer->region->getBlock(blockBelow)->blockLegacy->material->isSolid) {
 				blockBelow.y -= 1.f;
 			}
-			closestGround = blockBelow;
-			closestGround.y += 2.5f;
+			blockBelow.y += 2.62001f;
+			//closestGround.y = blockBelow.y;
+			Vec3 pos = *localPlayer->getPos();
+			closestGround = {pos.x, blockBelow.y, pos.z};
 		}
 		}
 	}
