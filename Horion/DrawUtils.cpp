@@ -6,7 +6,7 @@
 #include "../Utils/ClientColors.h"
 #include <glm/ext/matrix_transform.hpp>
 
-struct MaterialPtr {
+class MaterialPtr {
 	char padding[0x138];
 };
 

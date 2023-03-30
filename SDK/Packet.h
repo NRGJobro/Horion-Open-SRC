@@ -79,7 +79,8 @@ public:
 class AnimatePacket : public Packet {
 public:
 	AnimatePacket();
-	
+	AnimatePacket(int action, __int64 entityRuntimeID, float unknownValue);
+
 	__int64 entityId;
 	int action;
 	float unknown;
