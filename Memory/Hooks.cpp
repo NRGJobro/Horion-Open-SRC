@@ -726,6 +726,10 @@ void Hooks::LoopbackPacketSender_sendToServer(LoopbackPacketSender* a, Packet* p
 	static auto autoSneakMod = moduleMgr->getModule<AutoSneak>();
 	static auto blinkMod = moduleMgr->getModule<Blink>();
 	static auto noPacketMod = moduleMgr->getModule<NoPacket>();
+	static auto noSwingMod = moduleMgr->getModule<NoSwing>();
+
+	if (noSwingMod->isEnabled() && noSwingMod->server && packet->isInstanceOf<AnimatePacket>())
+		return;
 
 	if (noPacketMod->isEnabled() && Game.isInGame())
 		return;
