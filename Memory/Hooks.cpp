@@ -1049,7 +1049,10 @@ void Hooks::Actor_ascendLadder(Entity* _this) {
 void Hooks::Actor_swing(Entity* _this) {
 	static auto oFunc = g_Hooks.Actor_swingHook->GetFastcall<void, Entity*>();
 	static auto noSwingMod = moduleMgr->getModule<NoSwing>();
-	if (!noSwingMod->isEnabled()) return oFunc(_this);
+	if (noSwingMod->isEnabled() && !noSwingMod->server) 
+		return;
+
+	oFunc(_this);
 }
 
 void Hooks::Actor_startSwimming(Entity* _this) {
