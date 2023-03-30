@@ -76,12 +76,12 @@ public:
 	C_EmotePacket();
 };
 
-class C_AnimatePacket : public Packet {
+class AnimatePacket : public Packet {
 public:
-	C_AnimatePacket();
+	AnimatePacket();
 	
-	int64_t entityId;
-	int64_t action;
+	__int64 entityId;
+	int action;
 	float unknown;
 };
 
@@ -171,16 +171,11 @@ class C_MobEquipmentPacket : public Packet {
 public:
 	C_MobEquipmentPacket();
 	C_MobEquipmentPacket(__int64 entityRuntimeId, ItemStack& item, int hotbarSlot, int inventorySlot);
-	
-	__int64 actorRuntimeId;  // 0x28
-	ItemDescriptor item;     // 0x30
-	int inventorySlot0;      // 0xC0
-	int selectedSlot0;       // 0xC4
-	uint8_t containerId;     // 0xC9
-	uint8_t inventorySlot;   // 0xC9
-	uint8_t selectedSlot;    // 0xC9
-	uint8_t containerId0;    // 0xC9
-	char unknown1;
+	__int64 eid;
+	Item* item;
+	char inventorySlot;
+	char hotbarSlot;
+	char windowId;
 };
 
 class InventoryTransactionPacket : public Packet {
