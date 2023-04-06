@@ -54,10 +54,11 @@ PlayerAuthInputPacket::PlayerAuthInputPacket(Vec3 pos, float pitch, float yaw, f
 	this->InputAD = 0.f;
 	this->InputWS = 0.f;
 }
-C_MobEquipmentPacket::C_MobEquipmentPacket() {
+
+MobEquipmentPacket::MobEquipmentPacket() {
 	static uintptr_t** MobEquipmentPacketVtable = 0x0;
 	if (MobEquipmentPacketVtable == 0x0) {
-		uintptr_t sigOffset = FindSignature("48 8D 05 ? ? ? ? 48 89 51 28");
+		uintptr_t sigOffset = FindSignature("48 8D 05 ? ? ? ? 48 89 06 48 8B C6 4C 8D 9C 24");
 		int offset = *reinterpret_cast<int*>(sigOffset + 3);
 		MobEquipmentPacketVtable = reinterpret_cast<uintptr_t**>(sigOffset + offset + /*length of instruction*/ 7);
 #ifdef _DEBUG
@@ -65,17 +66,19 @@ C_MobEquipmentPacket::C_MobEquipmentPacket() {
 			__debugbreak();
 #endif
 	}
-	memset(this, 0, sizeof(C_MobEquipmentPacket));  // Avoid overwriting vtable
+	memset(this, 0, sizeof(MobEquipmentPacket));  // Avoid overwriting vtable
 	vTable = MobEquipmentPacketVtable;
 }
-C_MobEquipmentPacket::C_MobEquipmentPacket(__int64 entityRuntimeId, ItemStack& item, int hotbarSlot, int inventorySlot) {
-	memset(this, 0x0, sizeof(C_MobEquipmentPacket));
-	using MobEquimentPacketConstructor_t = void(__fastcall*)(C_MobEquipmentPacket*, __int64, ItemStack&, int, int, char);
-	static MobEquimentPacketConstructor_t MobEquimentPacketConstructor = reinterpret_cast<MobEquimentPacketConstructor_t>(FindSignature("48 89 5C 24 ? 48 89 4C 24 ? 57 48 83 EC ? 41 8B D9 48 8B F9 C7 41 ? ? ? ? ? C7 41"));
+
+MobEquipmentPacket::MobEquipmentPacket(__int64 entityRuntimeId, ItemStack& item, int hotbarSlot, int inventorySlot) {
+	memset(this, 0x0, sizeof(MobEquipmentPacket));
+	using MobEquimentPacketConstructor_t = void(__fastcall*)(MobEquipmentPacket*, __int64, ItemStack&, int, int, char);
+	static MobEquimentPacketConstructor_t MobEquimentPacketConstructor = reinterpret_cast<MobEquimentPacketConstructor_t>(FindSignature("48 8D 05 ? ? ? ? 48 89 06 48 8B C6 4C 8D 9C 24"));
 
 	if (MobEquimentPacketConstructor != 0)
 		MobEquimentPacketConstructor(this, entityRuntimeId, item, hotbarSlot, inventorySlot, 0);
 }
+
 InventoryTransactionPacket::InventoryTransactionPacket() {
 	static uintptr_t** InventoryTransactionPacketVtable = 0x0;
 	if (InventoryTransactionPacketVtable == 0x0) {

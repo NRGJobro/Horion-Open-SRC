@@ -168,15 +168,24 @@ public:
 	int16_t itemId;            //0x003E
 };
 
-class C_MobEquipmentPacket : public Packet {
+class MobEquipmentPacket : public Packet {
 public:
-	C_MobEquipmentPacket();
-	C_MobEquipmentPacket(__int64 entityRuntimeId, ItemStack& item, int hotbarSlot, int inventorySlot);
-	__int64 eid;
-	Item* item;
-	char inventorySlot;
-	char hotbarSlot;
-	char windowId;
+	MobEquipmentPacket();
+	MobEquipmentPacket(__int64 entityRuntimeId, ItemStack& item, int hotbarSlot, int inventorySlot);
+
+private:
+	char pad_0x8[0x28];  // 0x0
+public:
+	__int64 entityRuntimeId;  // 0x28
+	ItemStack item;         // 0x30
+	int inventorySlot;        // 0xB8 DONT USE FOR PACKET SENDING
+	int hotbarSlot;           // 0xBC DONT USE FOR PACKET SENDING
+	char windowId;            // 0xC0  DONT USE FOR PACKET SENDING
+	char windowId1;           // 0xC1  DONT USE FOR PACKET SENDING
+	char inventorySlot1;      // 0xC2
+	char hotbarSlot1;         // 0xC3
+	char windowId2;           // 0xC4 ALL OF THIS IS PROBABLY BROKEN, DONT USE
+	char unknown1;
 };
 
 class InventoryTransactionPacket : public Packet {
