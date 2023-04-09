@@ -203,39 +203,57 @@ public:
 	FuncHook(void* func, void* hooked) {
 		funcPtr = func;
 
+		// Check if the function pointer is valid
+		if (IsBadReadPtr(funcPtr, sizeof(funcPtr))) {
+			logF("Invalid function pointer!");
+			return;
+		}
+
 		MH_STATUS ret = MH_CreateHook(func, hooked, &funcReal);
 		if (ret == MH_OK && (__int64)func > 10) {
-		} else
+			// Hook created successfully
+		} else {
 			logF("MH_CreateHook = %i", ret);
+		}
 	};
 
 	FuncHook(uintptr_t func, void* hooked) {
 		funcPtr = reinterpret_cast<void*>(func);
 
+		// Check if the function pointer is valid
+		if (IsBadReadPtr(funcPtr, sizeof(funcPtr))) {
+			logF("Invalid function pointer!");
+			return;
+		}
+
 		MH_STATUS ret = MH_CreateHook(funcPtr, hooked, &funcReal);
 		if (ret == MH_OK && (__int64)funcPtr > 10) {
-		} else
+		} else {
 			logF("MH_CreateHook = %i", ret);
+		}
 	};
 
 	void enableHook(bool enable = true) {
 		if (funcPtr != nullptr) {
 			int ret = enable ? MH_EnableHook(funcPtr) : MH_DisableHook(funcPtr);
-			if (ret != MH_OK)
+			if (ret != MH_OK) {
 				logF("MH_EnableHook = %i", ret);
-		} else
+			}
+		} else {
 			logF("enableHook() called with nullptr func!");
+		}
 	}
-
-	~FuncHook() {
-		Restore();
-	}
-
+	~FuncHook() {Restore();}
+	// Restore the hook
 	void Restore() {
-		if (funcPtr != nullptr)
-			MH_DisableHook(funcPtr);
+		if (funcPtr != nullptr) {
+			MH_STATUS ret = MH_DisableHook(funcPtr);
+			if (ret != MH_OK) {
+				logF("MH_DisableHook = %i", ret);
+			}
+		}
 	}
-
+	// Get the original function pointer with fastcall calling convention
 	template <typename TRet, typename... TArgs>
 	inline auto* GetFastcall() {
 		using Fn = TRet(__fastcall*)(TArgs...);
