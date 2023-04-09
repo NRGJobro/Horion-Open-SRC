@@ -28,15 +28,17 @@ void Criticals::onTick(GameMode* gm) {
 
 void Criticals::onSendPacket(Packet* packet) {
 	LocalPlayer* player = Game.getLocalPlayer();
-	Vec3 pos = player->eyePos0;
-	pos.y += 2.f;
-	if (packet->isInstanceOf<C_MovePlayerPacket>() && player != nullptr) {
-		C_MovePlayerPacket* movePacket = reinterpret_cast<C_MovePlayerPacket*>(packet);
-		movePacket->onGround = false;
-		movePacket->Position = pos;
-	}
-	if (packet->isInstanceOf<PlayerAuthInputPacket>() && player != nullptr) {
-		PlayerAuthInputPacket* authInput = reinterpret_cast<PlayerAuthInputPacket*>(packet);
-		authInput->pos = pos;
+	if (player != nullptr) {
+		Vec3 pos = player->eyePos0;
+		pos.y += 2.f;
+		if (packet->isInstanceOf<C_MovePlayerPacket>() && player != nullptr) {
+			C_MovePlayerPacket* movePacket = reinterpret_cast<C_MovePlayerPacket*>(packet);
+			movePacket->onGround = false;
+			movePacket->Position = pos;
+		}
+		if (packet->isInstanceOf<PlayerAuthInputPacket>() && player != nullptr) {
+			PlayerAuthInputPacket* authInput = reinterpret_cast<PlayerAuthInputPacket*>(packet);
+			authInput->pos = pos;
+		}
 	}
 }
