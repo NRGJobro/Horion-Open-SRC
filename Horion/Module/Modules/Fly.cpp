@@ -22,6 +22,7 @@ const char *Fly::getModuleName() {
 void Fly::onEnable() {
 	switch (mode.selected) {
 	case 5:
+		if (Game.getLocalPlayer() != nullptr)
 		Game.getLocalPlayer()->setPos((*Game.getLocalPlayer()->getPos()).add(Vec3(0, 1, 0)));
 		break;
 	}
