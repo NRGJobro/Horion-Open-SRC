@@ -71,11 +71,22 @@ int ItemStack::getEnchantValue(int enchantId) {
 	static getEnchantsLevel_t getEnchantsLevel = reinterpret_cast<getEnchantsLevel_t>(FindSignature("48 89 5C 24 ? 48 89 74 24 ? 57 48 83 EC ? 48 8B F2 0F B6 D9 33 FF 48 8B CA E8 ? ? ? ?"));
 	return getEnchantsLevel(enchantId, this);
 }
+
+void ItemStack::setLore(std::string customLore) {
+	using setCustomLore_t = void(__fastcall *)(ItemStack*, TextHolder**);
+	setCustomLore_t setCustomLore = reinterpret_cast<setCustomLore_t>(FindSignature("48 8B C4 48 89 58 ? 48 89 70 ? 55 57 41 54 41 56 41 57 48 8D 68 ? 48 81 EC ? ? ? ? 0F 29 70 ? 48 8B 05 ? ? ? ? 48 33 C4 48 89 45 ? 4C 8B F2"));
+	TextHolder lore = customLore;
+	TextHolder *pText = &lore;
+	TextHolder *vec[] = {pText, &pText[1], &pText[1]};
+	setCustomLore(this, vec);
+}
+
 void ItemStack::setVtable(void) {
 	static uintptr_t sigOffset = FindSignature("48 8D 05 ? ? ? ? C7 05 ? ? ? ? ? ? ? ? 48 8D 0D ? ? ? ? 48 89 05 ? ? ? ? C6 05 ? ? ? ? ? 48 83 C4");
 	int offset = *reinterpret_cast<int *>(sigOffset + 3);
 	this->vTable = reinterpret_cast<uintptr_t **>(sigOffset + offset + /*length of instruction*/ 7);
 }
+
 Item ***ItemRegistry::getItemFromId(void *ptr, int itemId) {
 	using getItemFromId_t = Item ***(__fastcall *)(void *, int);
 	static getItemFromId_t getItemFromId = reinterpret_cast<getItemFromId_t>(FindSignature("40 53 48 83 EC ? 8D 42 ? 48 8B D9 66 83 F8 ? 0F 86 ? ? ? ? 44 0F BF C2 49 B9 ? ? ? ? ? ? ? ? 41 8B C0"));

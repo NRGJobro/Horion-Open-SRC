@@ -331,6 +331,8 @@ public:
 		*(bool *)(reinterpret_cast<__int64>(this) + 0x30) = b;
 	}
 
+	void setLore(std::string lore);
+
 private:
 	inline void setVtable(void);
 };
