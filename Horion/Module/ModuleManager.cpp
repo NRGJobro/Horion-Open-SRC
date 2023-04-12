@@ -234,6 +234,16 @@ void ModuleManager::onPostRender(MinecraftUIRenderContext* renderCtx) {
 	}
 }
 
+void ModuleManager::onSendClientPacket(Packet* packet) {
+	if (!isInitialized())
+		return;
+	auto lock = lockModuleList();
+	for (auto& it : moduleList) {
+		if (it->isEnabled() || it->callWhenDisabled())
+			it->onSendClientPacket(packet);
+	}
+}
+
 void ModuleManager::onSendPacket(Packet* packet) {
 	if (!isInitialized())
 		return;

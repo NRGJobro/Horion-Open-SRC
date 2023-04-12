@@ -167,6 +167,8 @@ void Hooks::Init() {
 				logF("LoopbackPacketSenderVtable is invalid");
 			else {
 				g_Hooks.LoopbackPacketSender_sendToServerHook = std::make_unique<FuncHook>(packetSenderVtable[2], Hooks::LoopbackPacketSender_sendToServer);
+
+				g_Hooks.LoopbackPacketSender_sendToClientHook = std::make_unique<FuncHook>(packetSenderVtable[4], Hooks::LoopbackPacketSender_sendToClient); //I use the second sendToClient
 			}
 		} else logF("LoopbackPacketSender is null");
 
@@ -787,6 +789,13 @@ void Hooks::LoopbackPacketSender_sendToServer(LoopbackPacketSender* a, Packet* p
 	oFunc(a, packet);
 }
 
+void Hooks::LoopbackPacketSender_sendToClient(networkhandler* _this, const void* networkIdentifier, Packet* packet, int a4) {
+	auto func = g_Hooks.LoopbackPacketSender_sendToClientHook->GetFastcall<void, networkhandler*, const void*, Packet*, int>();
+	
+	moduleMgr->onSendClientPacket(packet);
+	func(_this, networkIdentifier, packet, a4);
+}
+
 float Hooks::LevelRendererPlayer_getFov(__int64 _this, float a2, bool a3) {
 	static auto oGetFov = g_Hooks.LevelRendererPlayer_getFovHook->GetFastcall<float, __int64, float, bool>();
 	return oGetFov(_this, a2, a3);
@@ -1345,14 +1354,18 @@ bool Hooks::Actor__isInWall(Entity* ent) {
 	return func(ent);
 }
 /*
-bool Hooks::testFunction(Entity* ent) {
-	auto func = g_Hooks.testFunctionHook->GetFastcall<bool, Entity*>();
-	static auto nofallMod = moduleMgr->getModule<NoFall>();
-
-	if (nofallMod->isEnabled() && nofallMod->mode.selected == 4) {
-		return false;
+void Hooks::testFunction(class networkhandler* _this, const void* networkIdentifier, Packet* packet, int a4) {
+	auto func = g_Hooks.testHook->GetFastcall<void, networkhandler*, const void*, Packet*, int>();
+	static auto test = moduleMgr->getModule<TestModule>();
+	
+	if (test->isEnabled()) {
+		//if (strcmp(packet->getName()->getText(), "SetTitlePacket") != 0) {
+			Game.getClientInstance()->getGuiData()->displayClientMessageF("%s", packet->getName()->getText());
+		//}
 	}
-
-	return func(ent);
-}
-*/
+	if (test->isEnabled() && test->bool1) {
+		return;
+	}
+	moduleMgr->onSendClientPacket(packet);
+	func(_this, networkIdentifier, packet, a4);
+}*/

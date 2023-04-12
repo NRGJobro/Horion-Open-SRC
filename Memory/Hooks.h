@@ -93,6 +93,7 @@ private:
 	static int AppPlatform_getGameEdition(__int64 _this);
 	static void PleaseAutoComplete(__int64 _this, __int64 a2, TextHolder* text, int a4);
 	static void LoopbackPacketSender_sendToServer(LoopbackPacketSender* a, Packet* packet);
+	static void LoopbackPacketSender_sendToClient(class networkhandler* _this, const void* networkIdentifier, Packet* packet, int a4);
 	static float LevelRendererPlayer_getFov(__int64 _this, float a2, bool a3);
 	static void MultiLevelPlayer_tick(EntityList* entityList);
 	static void GameMode_startDestroyBlock(GameMode* _this, Vec3i* a2, uint8_t face, void* a4, void* a5);
@@ -129,7 +130,7 @@ private:
 	static void KeyMapHookCallback(unsigned char key, bool isDown);
 	static float getDestroySpeed(Player* _this, Block& block);
 	static bool Actor__isInWall(Entity* ent);
-	//static bool testFunction(Entity* ent);
+	//static void testFunction(class networkhandler* _this, const void* networkIdentifier, Packet* packet, int a4);
 	
 	std::unique_ptr<FuncHook> Actor_rotationHook;
 	std::unique_ptr<FuncHook> setPosHook;
@@ -147,6 +148,7 @@ private:
 	std::unique_ptr<FuncHook> AppPlatform_getGameEditionHook;
 	std::unique_ptr<FuncHook> PleaseAutoCompleteHook;
 	std::unique_ptr<FuncHook> LoopbackPacketSender_sendToServerHook;
+	std::unique_ptr<FuncHook> LoopbackPacketSender_sendToClientHook;
 	std::unique_ptr<FuncHook> LevelRendererPlayer_getFovHook;
 	std::unique_ptr<FuncHook> MultiLevelPlayer_tickHook;
 	std::unique_ptr<FuncHook> GameMode_startDestroyBlockHook;
@@ -182,7 +184,6 @@ private:
 	std::unique_ptr<FuncHook> LocalPlayer__updateFromCameraHook;
 	std::unique_ptr<FuncHook> Mob__isImmobileHook;
 	std::unique_ptr<FuncHook> Actor__setRotHook;
-	std::unique_ptr<FuncHook> testHook;
 	std::unique_ptr<FuncHook> getDestroySpeedHook;
 	std::unique_ptr<FuncHook> Actor__isInvisibleHook;
 	std::unique_ptr<FuncHook> FishingHook___fishHookEventHook;

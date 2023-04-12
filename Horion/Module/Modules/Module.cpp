@@ -225,6 +225,9 @@ void IModule::onPostRender(MinecraftUIRenderContext* renderCtx) {
 void IModule::onSendPacket(Packet*) {
 }
 
+void IModule::onSendClientPacket(Packet*) {
+}
+
 void IModule::onWorldTick(GameMode*) {
 }
 
