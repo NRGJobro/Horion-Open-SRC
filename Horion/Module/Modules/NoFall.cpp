@@ -38,6 +38,15 @@ void NoFall::onSendPacket(Packet* packet) {
 	}
 }
 
+bool NoFall::isOverVoid() {
+	for (float posY = Game.getLocalPlayer()->getPos()->y; posY > 0.0f; --posY) {
+		if (!(Game.getLocalPlayer()->region->getBlock(Vec3(Game.getLocalPlayer()->getPos()->x, posY, Game.getLocalPlayer()->getPos()->z))->blockLegacy->blockId == 0)) {
+			return false;
+		}
+	}
+	return true;
+};
+
 void NoFall::onTick(GameMode* gm) {
 	LocalPlayer* localPlayer = Game.getLocalPlayer();
 	if (localPlayer != nullptr) {
@@ -65,13 +74,13 @@ void NoFall::onTick(GameMode* gm) {
 				Vec3 blockBelow = localPlayer->eyePos0;
 				blockBelow.y -= localPlayer->height;
 				blockBelow.y -= 0.17999f;
-				int numBlocks = 0;  // keep track of the number of blocks checked
-				while (localPlayer->region->getBlock(blockBelow)->blockLegacy->blockId == 0 && !localPlayer->region->getBlock(blockBelow)->blockLegacy->material->isSolid && numBlocks < 1000) {
+				while (localPlayer->region->getBlock(blockBelow)->blockLegacy->blockId == 0 && !localPlayer->region->getBlock(blockBelow)->blockLegacy->material->isSolid) {
 					blockBelow.y -= 1.f;
-					numBlocks++;
+					if (isOverVoid()) {
+						return;
+					}
 				}
 				blockBelow.y += 2.62001f;
-				// closestGround.y = blockBelow.y;
 				Vec3 pos = *localPlayer->getPos();
 				closestGround = {pos.x, blockBelow.y, pos.z};
 			}

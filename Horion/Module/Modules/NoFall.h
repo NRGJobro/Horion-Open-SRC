@@ -7,6 +7,7 @@ class NoFall : public IModule {
 public:
 	SettingEnum mode = SettingEnum(this);
 	Vec3 closestGround;
+	bool isOverVoid();
 	NoFall();
 	~NoFall();
 
