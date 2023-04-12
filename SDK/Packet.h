@@ -241,3 +241,43 @@ public:
 };
 
 #pragma pack(pop)
+
+class PlayerHotbarPacket : public Packet {
+public:
+	PlayerHotbarPacket();
+	PlayerHotbarPacket(int selectedHotbarSlot, char containerId, bool selectHotbarSlot);
+
+	int selectedHotbarSlot;
+	char containerId;
+	bool selectHotbarSlot;
+};
+
+class MobEffectPacket : public Packet {
+public:
+	MobEffectPacket();
+	MobEffectPacket(__int64 entityRuntimeId, char event, int effectId, int amplifier, bool showParticles, int duration);  // showparticles and duration might be a in a different order
+
+	__int64 eid;
+	char event; // 0: None 1 : Add 2 : Modify 3 : Remove
+	int effectId;
+	int amplifier;
+	bool showParticles;
+	int duration;
+};
+
+class RemoveActorPacket : public Packet {
+public:
+	RemoveActorPacket();
+};
+
+class PlayerArmorDamagePacket : public Packet {
+public:
+	PlayerArmorDamagePacket();
+};
+
+class SetHealthPacket : public Packet {
+public:
+	SetHealthPacket();
+
+	int health;
+};

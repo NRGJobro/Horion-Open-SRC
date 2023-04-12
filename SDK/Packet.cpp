@@ -362,3 +362,117 @@ ActorEventPacket::ActorEventPacket(uint64_t entityRuntimeId, char eventId, int16
 	this->eventId = eventId;
 	this->itemId = itemId;
 }
+
+PlayerHotbarPacket::PlayerHotbarPacket() { //Client
+	static uintptr_t** playerHotbarPacketVtable = 0x0;
+	if (playerHotbarPacketVtable == 0x0) {
+		uintptr_t sigOffset = FindSignature("48 8D 15 ? ? ? ? C7 40 ? ? ? ? ? 33 C9 C7 40 ? ? ? ? ? 48 89 48 28 48 89 48 30 89 48 38 89 48 40 C7 40 ? ? ? ? ? C7 40 ? ? ? ? ? 66 C7 40 ? ? ? 48 89 50 10 66 C7 40 ? ? ?");
+		int offset = *reinterpret_cast<int*>(sigOffset + 3);
+		playerHotbarPacketVtable = reinterpret_cast<uintptr_t**>(sigOffset + offset + /*length of instruction*/ 7);
+#ifdef _DEBUG
+		if (playerHotbarPacketVtable == 0x0 || sigOffset == 0x0)
+			__debugbreak();
+#endif
+	}
+	memset(this, 0, sizeof(PlayerHotbarPacket));  // Avoid overwriting vtable
+	vTable = playerHotbarPacketVtable;
+}
+
+PlayerHotbarPacket::PlayerHotbarPacket(int selectedHotbarSlot, char containerId, bool selectHotbarSlot) { //Client
+	static uintptr_t** playerHotbarPacketVtable = 0x0;
+	if (playerHotbarPacketVtable == 0x0) {
+		uintptr_t sigOffset = FindSignature("48 8D 15 ? ? ? ? C7 40 ? ? ? ? ? 33 C9 C7 40 ? ? ? ? ? 48 89 48 28 48 89 48 30 89 48 38 89 48 40 C7 40 ? ? ? ? ? C7 40 ? ? ? ? ? 66 C7 40 ? ? ? 48 89 50 10 66 C7 40 ? ? ?");
+		int offset = *reinterpret_cast<int*>(sigOffset + 3);
+		playerHotbarPacketVtable = reinterpret_cast<uintptr_t**>(sigOffset + offset + /*length of instruction*/ 7);
+#ifdef _DEBUG
+		if (playerHotbarPacketVtable == 0x0 || sigOffset == 0x0)
+			__debugbreak();
+#endif
+	}
+	memset(this, 0, sizeof(PlayerHotbarPacket));  // Avoid overwriting vtable
+	vTable = playerHotbarPacketVtable;
+	this->selectedHotbarSlot = selectedHotbarSlot;
+	this->containerId = containerId;
+	this->selectHotbarSlot = selectHotbarSlot;
+}
+
+MobEffectPacket::MobEffectPacket() { //Client
+	static uintptr_t** mobEffectPacketVtable = 0x0;
+	if (mobEffectPacketVtable == 0x0) {
+		uintptr_t sigOffset = FindSignature("48 8D 15 ? ? ? ? C7 40 ? ? ? ? ? 33 C9 C7 40 ? ? ? ? ? 48 89 48 28 48 89 48 30 89 48 38 48 89 48 40 89 48 48 88 48 4C 48 89 48 50 88 48 58");
+		int offset = *reinterpret_cast<int*>(sigOffset + 3);
+		mobEffectPacketVtable = reinterpret_cast<uintptr_t**>(sigOffset + offset + /*length of instruction*/ 7);
+#ifdef _DEBUG
+		if (mobEffectPacketVtable == 0x0 || sigOffset == 0x0)
+			__debugbreak();
+#endif
+	}
+	memset(this, 0, sizeof(MobEffectPacket));  // Avoid overwriting vtable
+	vTable = mobEffectPacketVtable;
+}
+
+MobEffectPacket::MobEffectPacket(__int64 entityRuntimeId, char event, int effectId, int amplifier, bool showParticles, int duration) { //Client
+	static uintptr_t** mobEffectPacketVtable = 0x0;
+	if (mobEffectPacketVtable == 0x0) {
+		uintptr_t sigOffset = FindSignature("48 8D 15 ? ? ? ? C7 40 ? ? ? ? ? 33 C9 C7 40 ? ? ? ? ? 48 89 48 28 48 89 48 30 89 48 38 48 89 48 40 89 48 48 88 48 4C 48 89 48 50 88 48 58");
+		int offset = *reinterpret_cast<int*>(sigOffset + 3);
+		mobEffectPacketVtable = reinterpret_cast<uintptr_t**>(sigOffset + offset + /*length of instruction*/ 7);
+#ifdef _DEBUG
+		if (mobEffectPacketVtable == 0x0 || sigOffset == 0x0)
+			__debugbreak();
+#endif
+	}
+	memset(this, 0, sizeof(MobEffectPacket));  // Avoid overwriting vtable
+	vTable = mobEffectPacketVtable;
+	this->eid = entityRuntimeId;
+	this->event = event;
+	this->effectId = effectId;
+	this->amplifier = amplifier;
+	this->duration = duration;
+	this->showParticles = showParticles;
+}
+
+RemoveActorPacket::RemoveActorPacket() { //Client
+	static uintptr_t** removeActorPacketVtable = 0x0;
+	if (removeActorPacketVtable == 0x0) {
+		uintptr_t sigOffset = FindSignature("48 8D 0D ? ? ? ? 48 89 48 10 C7 40 ? ? ? ? ? C7 40 ? ? ? ? ? 66 C7 40 ? ? ? 48 C7 40 ? ? ? ? ? EB 04 33 C9 8B C1 48 8D 48 10 48 8D 15 ? ? ? ? 48 89 51 20 48 89 43 08 48 8B C3 48 89 0B 48 83 C4 30 5B C3 48 8D 0D ? ? ? ? E8 ? ? ? ? 83 3D ? ? ? ? ? 0F 85 ? ? ? ? 48 8D 05 ? ? ? ? 48 8D 0D ? ? ? ? 48 89 05 ? ? ? ? E8 ? ? ? ? 48 8D 0D ? ? ? ? E8 ? ? ? ? E9 ? ? ? ? CC CC CC CC CC CC CC CC CC CC 40 53 ");
+		int offset = *reinterpret_cast<int*>(sigOffset + 3);
+		removeActorPacketVtable = reinterpret_cast<uintptr_t**>(sigOffset + offset + /*length of instruction*/ 7);
+#ifdef _DEBUG
+		if (removeActorPacketVtable == 0x0 || sigOffset == 0x0)
+			__debugbreak();
+#endif
+	}
+	memset(this, 0, sizeof(RemoveActorPacket));  // Avoid overwriting vtable
+	vTable = removeActorPacketVtable;
+}
+
+PlayerArmorDamagePacket::PlayerArmorDamagePacket() { //Client
+	static uintptr_t** playerArmorDamagePacketVtable = 0x0;
+	if (playerArmorDamagePacketVtable == 0x0) {
+		uintptr_t sigOffset = FindSignature("48 8d 0d ? ? ? ? 48 89 48 ? 33 c9 c7 40");
+		int offset = *reinterpret_cast<int*>(sigOffset + 3);
+		playerArmorDamagePacketVtable = reinterpret_cast<uintptr_t**>(sigOffset + offset + /*length of instruction*/ 7);
+#ifdef _DEBUG
+		if (playerArmorDamagePacketVtable == 0x0 || sigOffset == 0x0)
+			__debugbreak();
+#endif
+	}
+	memset(this, 0, sizeof(PlayerArmorDamagePacket));  // Avoid overwriting vtable
+	vTable = playerArmorDamagePacketVtable;
+}
+
+SetHealthPacket::SetHealthPacket() {  // Client
+	static uintptr_t** setHealthPacketVtable = 0x0;
+	if (setHealthPacketVtable == 0x0) {
+		uintptr_t sigOffset = FindSignature("48 8d 15 ? ? ? ? c7 40 ? ? ? ? ? 33 c9 c7 40 ? ? ? ? ? 48 89 48 ? 48 89 48 ? 89 48 ? 89 48 ? c7 40 ? ? ? ? ? c7 40 ? ? ? ? ? 66 c7 40 ? ? ? 48 89 50 ? eb ? 33 c9 8b c1 48 8d 48 ? 48 8d 15 ? ? ? ? 48 89 51 ? 48 89 43 ? 48 8b c3 48 89 0b 48 83 c4 ? 5b c3 48 8d 0d ? ? ? ? e8 ? ? ? ? 83 3d ? ? ? ? ? 0f 85 ? ? ? ? 48 8d 05 ? ? ? ? 48 8d 0d ? ? ? ? 48 89 05 ? ? ? ? e8 ? ? ? ? 48 8d 0d ? ? ? ? e8 ? ? ? ? e9 ? ? ? ? cc cc cc cc cc cc cc cc cc cc cc cc cc cc cc 40 53 48 83 ec ? 48 8b 05");
+		int offset = *reinterpret_cast<int*>(sigOffset + 3);
+		setHealthPacketVtable = reinterpret_cast<uintptr_t**>(sigOffset + offset + /*length of instruction*/ 7);
+#ifdef _DEBUG
+		if (setHealthPacketVtable == 0x0 || sigOffset == 0x0)
+			__debugbreak();
+#endif
+	}
+	memset(this, 0, sizeof(SetHealthPacket));  // Avoid overwriting vtable
+	vTable = setHealthPacketVtable;
+}
