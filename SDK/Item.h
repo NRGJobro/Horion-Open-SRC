@@ -234,6 +234,8 @@ public:
 		auto val = *reinterpret_cast<__int64 ***>(reinterpret_cast<__int64>(this) + 0x1A0);
 		return val != nullptr && *val != nullptr;
 	}
+
+	Item* setAllowOffhand(bool allow = true);
 };
 
 class ItemDescriptor {

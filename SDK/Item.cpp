@@ -104,3 +104,9 @@ ItemDescriptor::ItemDescriptor(int id, int16_t itemData) {
 	static ItemDescriptor__ItemDescriptor_t func = reinterpret_cast<ItemDescriptor__ItemDescriptor_t>(FindSignature("48 89 5C 24 ? 55 56 57 48 83 EC ? 33 ED 48 8B D9 48 89 29 41 8B F8 48 89 69 ? 8B F2 48 89 69 ? 66 89 69 ? C6 41"));
 	func(this, id, itemData);
 }
+
+Item *Item::setAllowOffhand(bool allow) {
+	using setAllowOffhand_t = Item*(__fastcall *)(Item*, bool);
+	setAllowOffhand_t setAllowOffhand = reinterpret_cast<setAllowOffhand_t>(FindSignature("80 89 22 01 00 00 ? 48 8B ? C3 CC CC CC CC CC 40"));
+	return setAllowOffhand(this, allow);
+}

@@ -28,6 +28,7 @@ void ModuleManager::initModules() {
 		moduleList.emplace_back(new AntiImmobile());
 		moduleList.emplace_back(new Criticals());
 		moduleList.emplace_back(new ChestStealer());
+		moduleList.emplace_back(new OffhandAllow());
 		moduleList.emplace_back(new EditionFaker());
 		moduleList.emplace_back(new ClientTheme());
 		moduleList.emplace_back(new FontChanger());

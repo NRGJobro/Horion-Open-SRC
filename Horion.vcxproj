@@ -292,6 +292,7 @@
     <ClCompile Include="Horion\Module\Modules\BowAimbot.cpp" />
     <ClCompile Include="Horion\Module\Modules\ChestAura.cpp" />
     <ClCompile Include="Horion\Module\Modules\Criticals.cpp" />
+    <ClCompile Include="Horion\Module\Modules\OffhandAllow.cpp" />
     <ClCompile Include="Horion\Module\Modules\StorageESP.cpp" />
     <ClCompile Include="Horion\Module\Modules\ChestStealer.cpp" />
     <ClCompile Include="Horion\Module\Modules\ClickGuiMod.cpp" />
@@ -506,6 +507,7 @@
     <ClInclude Include="Horion\Module\Modules\NoWeb.h" />
     <!--    <ClCompile Include="Horion\Module\Modules\Notifications.h" /> -->
     <ClInclude Include="Horion\Module\Modules\Nuker.h" />
+    <ClInclude Include="Horion\Module\Modules\OffhandAllow.h" />
     <ClInclude Include="Horion\Module\Modules\PacketLogger.h" />
     <ClInclude Include="Horion\Module\Modules\Phase.h" />
     <ClInclude Include="Horion\Module\Modules\Radar.h" />

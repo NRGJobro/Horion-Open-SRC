@@ -24,6 +24,7 @@ public:
 	virtual void onPreRender(MinecraftUIRenderContext* renderCtx) override;
 	virtual void onPostRender(MinecraftUIRenderContext* renderCtx) override;
 	virtual void onSendPacket(Packet* p) override;
+	virtual void onSendClientPacket(Packet* p) override;
 	virtual void onMove(MoveInputHandler* hand) override;
 	virtual void onDisable() override;
 	virtual void onKey(int key, bool isDown, bool& cancel) override;

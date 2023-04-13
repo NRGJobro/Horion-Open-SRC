@@ -20,7 +20,11 @@
 #include "../../path/goals/JoeGoal.h"
 #include "../../path/goals/JoeGoalXZ.h"
 #include "../../ImmediateGui.h"
-
+#include <chrono>  // for std::this_thread::sleep_for()
+#include <thread>
+#include "../../../Memory/Hooks.h"
+//#include "../../../Memory/SlimMem.h"
+//#include "../../../Memory/GameData.cpp"
 using json = nlohmann::json;
 
 
@@ -44,9 +48,13 @@ bool TestModule::isFlashMode() {
 }
 
 void TestModule::onEnable() {
-	SetPlayerGameTypePacket packet;
-	packet.gameMode = 0;
-	Game.getClientInstance()->loopbackPacketSender->sendToServer(&packet);
+	LocalPlayer* player = Game.getLocalPlayer();
+	Inventory* inv = player->getSupplies()->inventory;
+	if (player != nullptr) {
+	}
+	//PlayerHotbarPacket packet;
+	//packet = PlayerHotbarPacket(1, 10, false);
+	//Game.getClientInstance()->loopbackPacketSender->sendToServer(&packet);
 }
 
 void TestModule::onTick(GameMode* gm) {
@@ -56,22 +64,42 @@ void TestModule::onMove(MoveInputHandler* hand){
 }
 
 void TestModule::onPreRender(MinecraftUIRenderContext* renderCtx) {
-	if (HorionGui.Button("Test Button", Vec2(100, 100), true)) { //Check if button is pressed. When it gets pressed it sends the message.
-		clientMessageF("Test Button Was Clicked");
+	/* LocalPlayer* player = Game.getLocalPlayer();
+	Inventory* inv = player->getSupplies()->inventory;
+	Vec2 pos = Vec2(Game.getGuiData()->heightReal, Game.getGuiData()->widthReal);
+	pos.x / 2.55;
+	pos.y / 2.55;
+	if (player != nullptr) {
+		for (int i = 0; i <= 35; i++) {
+			ItemStack* item = inv->getItemStack(i);
+			//if (item->item != nullptr) {
+				//std::string itemName = TextHolder(item->getItem()->name).getText();
+				DrawUtils::drawItem(item, pos, 10.f, 1.f, false);
+				pos.x += 20;
+			}
+		}
 	}
+	if (HorionGui.Button("Test Button", Vec2(200, 200), true)) {  // Check if button is pressed. When it gets pressed it sends the message.
+		clientMessageF("Test Button Was Clicked");
+	}*/
 }
 
 void TestModule::onPostRender(MinecraftUIRenderContext* renderCtx) {
 }
 
 void TestModule::onSendPacket(Packet* p) {
-	if (p->isInstanceOf<PlayerAuthInputPacket>()) {
-		PlayerAuthInputPacket* authInput = reinterpret_cast<PlayerAuthInputPacket*>(p);
-		authInput->pos.y = -100.f;
+	if (p->isInstanceOf<PlayerHotbarPacket>()) {
+		PlayerHotbarPacket* packet = reinterpret_cast<PlayerHotbarPacket*>(p);
+		//packet->dimension = 1;
+		//logF("%i", packet->numTransactions);
 	}
-	if (p->isInstanceOf<C_MovePlayerPacket>()) {
-		C_MovePlayerPacket* authInput = reinterpret_cast<C_MovePlayerPacket*>(p);
-		authInput->Position.y = -100.f;
+}
+
+void TestModule::onSendClientPacket(Packet* p) {
+	if (p->isInstanceOf<PlayerHotbarPacket>()) {
+		PlayerHotbarPacket* packet = reinterpret_cast<PlayerHotbarPacket*>(p);
+		//packet->dimension = 1;
+		//logF("%s", packet->name);
 	}
 }
 
