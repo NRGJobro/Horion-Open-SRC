@@ -19,8 +19,8 @@ bool Scaffold::tryScaffold(Vec3 blockBelow) {
 	vel = vel.normalize();  // Only use values from 0 - 1
 	blockBelow = blockBelow.floor();
 
-	DrawUtils::setColor(1.f, 1.f, 1.f, 1.f);  // white when placing all the time
-	if (highlight) DrawUtils::drawBox(blockBelow, Vec3(blockBelow).add(1), 0.4f);  // Draw a box around the block about to be placed
+	DrawUtils::setColor(1.f, 1.f, 1.f, 1.f); // white when placing all the time
+	if (highlight) DrawUtils::drawBox(blockBelow, Vec3(blockBelow).add(1), 0.4f); // Draw a box around the block about to be placed
 
 	BlockSource* region = Game.getLocalPlayer()->region;
 	Block* block = region->getBlock(Vec3i(blockBelow));
@@ -68,7 +68,7 @@ bool Scaffold::tryClutchScaffold(Vec3 blockBelow) {
 	vel = vel.normalize();  // Only use values from 0 - 1
 	blockBelow = blockBelow.floor();
 
-	DrawUtils::setColor(0.f, 0.f, 1.f, 1.f);  // blue when predicting
+	DrawUtils::setColor(0.f, 0.f, 1.f, 1.f);                                       // blue when predicting
 	if (highlight) DrawUtils::drawBox(blockBelow, Vec3(blockBelow).add(1), 0.4f);  // Draw a box around the block about to be placed
 
 	static std::vector<Vec3i> checkBlocks;
@@ -150,83 +150,115 @@ bool Scaffold::findBlock() {
 }
 
 void Scaffold::onPostRender(MinecraftUIRenderContext* ctx) {
-	if (Game.getLocalPlayer() == nullptr)
-		return;
-	if (!Game.canUseMoveKeys())
-		return;
-
 	auto player = Game.getLocalPlayer();
-	auto selectedItem = player->getSelectedItem();
-	if ((selectedItem == nullptr || selectedItem->count == 0 || selectedItem->item == nullptr || !selectedItem->getItem()->isBlock()) && !autoSelect)  // Block in hand?
+	if (player == nullptr || !Game.canUseMoveKeys()) {
 		return;
+	}
 
-	// Adjustment by velocity
-	float speed = Game.getLocalPlayer()->velocity.magnitudexz();
-	Vec3 vel = Game.getLocalPlayer()->velocity;
-	vel = vel.normalize();  // Only use values from 0 - 1
+	auto selectedItem = player->getSelectedItem();
+	if ((selectedItem == nullptr || selectedItem->count == 0 || selectedItem->item == nullptr || !selectedItem->getItem()->isBlock()) && !autoSelect) {
+		return;
+	}
+
+	float speed = player->velocity.magnitudexz();
+	Vec3 velocity = player->velocity.normalize();
 
 	if (down) {
-		Vec3 blockBelow = player->eyePos0;  // Block 1 block below the player
-		blockBelow.y -= player->height;
-		blockBelow.y -= 1.5f;
-
-		Vec3 blockBelowBelow = player->eyePos0;  // Block 2 blocks below the player
-		blockBelowBelow.y -= player->height;
-		blockBelowBelow.y -= 2.0f;
-
-		if (!tryScaffold(blockBelow) && !tryScaffold(blockBelowBelow)) {
-			if (speed > 0.05f) {  // Are we actually walking?
-				blockBelow.z -= vel.z * 0.4f;
-				blockBelowBelow.z -= vel.z * 0.4f;
-				if (!tryScaffold(blockBelow) && !tryScaffold(blockBelowBelow)) {
-					blockBelow.x -= vel.x * 0.4f;
-					blockBelowBelow.x -= vel.x * 0.4f;
-					if (!tryScaffold(blockBelow) && !tryScaffold(blockBelowBelow) && player->isSprinting()) {
-						blockBelow.z += vel.z;
-						blockBelow.x += vel.x;
-						blockBelowBelow.z += vel.z;
-						blockBelowBelow.x += vel.x;
-						tryScaffold(blockBelow);
-						tryScaffold(blockBelowBelow);
-					}
-				}
-			}
-		}
+		handleScaffoldDown(player, speed, velocity);
 	} else {
-		Vec3 blockBelowReal = player->eyePos0;  // Block 1 block below the player
-		blockBelowReal.y -= player->height;
-		blockBelowReal.y -= 0.5f;
-		Vec3 blockBelow = blockBelowReal;
-		//Lock the Y coordinate
-		if (Ylock) {
-			blockBelow.y = YCoord;
-			if (blockBelowReal.y < YCoord)
-				YCoord = blockBelowReal.y;
+		handleScaffoldUp(player, speed, velocity);
+	}
+}
+
+void Scaffold::handleScaffoldDown(Player* player, float speed, const Vec3& velocity) {
+	Vec3 blockBelow = getBlockBelow(player, 1.5f);
+	Vec3 blockBelowBelow = getBlockBelow(player, 2.0f);
+
+	if (!tryScaffold(blockBelow) && !tryScaffold(blockBelowBelow)) {
+		if (speed > 0.05f) {
+			attemptScaffoldWhileMoving(player, speed, velocity, blockBelow, blockBelowBelow);
 		}
+	}
+}
 
-		//Extend
-		blockBelow.x += vel.x * extend;
-		blockBelow.z += vel.z * extend;
+void Scaffold::handleScaffoldUp(Player* player, float speed, const Vec3& velocity) {
+	Vec3 blockBelowReal = getBlockBelow(player, 0.5f);
+	Vec3 blockBelow = blockBelowReal;
 
-		Vec3 nextBlock = blockBelow;
-		if (abs(vel.x) > abs(vel.z)) nextBlock.x += (vel.x > 0 ? 1 : (vel.x < 0 ? -1 : 0)); else nextBlock.z += (vel.z > 0 ? 1 : (vel.z < 0 ? -1 : 0));
+	if (Ylock) {
+		adjustYCoordinate(blockBelow, blockBelowReal);
+	}
 
-		if (player->region->getBlock(Vec3i(blockBelow.floor()))->blockLegacy->material->isReplaceable) {
-			tryClutchScaffold(blockBelow);
-			if (hive) tryClutchScaffold(nextBlock);
-		} else {
-			if (!hive) {
+	extendBlock(player, velocity, blockBelow);
+
+	if (player->region->getBlock(Vec3i(blockBelow.floor()))->blockLegacy->material->isReplaceable) {
+		handleReplaceableBlock(player, speed, velocity, blockBelow);
+	} else {
+		handleNonReplaceableBlock(player, speed, velocity, blockBelow);
+	}
+}
+
+Vec3 Scaffold::getBlockBelow(Player* player, float yOffset) {
+	Vec3 blockBelow = player->eyePos0;
+	blockBelow.y -= player->height + yOffset;
+	return blockBelow;
+}
+
+void Scaffold::adjustYCoordinate(Vec3& blockBelow, const Vec3& blockBelowReal) {
+	blockBelow.y = YCoord;
+	if (blockBelowReal.y < YCoord) {
+		YCoord = blockBelowReal.y;
+	}
+}
+
+void Scaffold::extendBlock(Player* player, const Vec3& velocity, Vec3& blockBelow) {
+	blockBelow.x += velocity.x * extend;
+	blockBelow.z += velocity.z * extend;
+}
+
+void Scaffold::attemptScaffoldWhileMoving(Player* player, float speed, const Vec3& velocity, Vec3& blockBelow, Vec3& blockBelowBelow) {
+	blockBelow.z -= velocity.z * 0.4f;
+	blockBelowBelow.z -= velocity.z * 0.4f;
+
+	if (!tryScaffold(blockBelow) && !tryScaffold(blockBelowBelow)) {
+		blockBelow.x -= velocity.x * 0.4f;
+		blockBelowBelow.x -= velocity.x * 0.4f;
+
+		if (!tryScaffold(blockBelow) && !tryScaffold(blockBelowBelow) && player->isSprinting()) {
+			blockBelow.z += velocity.z;
+			blockBelow.x += velocity.x;
+			blockBelowBelow.z += velocity.z;
+			blockBelowBelow.x += velocity.x;
+
+			tryScaffold(blockBelow);
+			tryScaffold(blockBelowBelow);
+		}
+	}
+}
+
+void Scaffold::handleReplaceableBlock(Player* player, float speed, const Vec3& velocity, Vec3& blockBelow) {
+	tryClutchScaffold(blockBelow);
+
+	if (hive) {
+		Vec3 nextBlock = getNextBlock(player, velocity, blockBelow);
+		tryClutchScaffold(nextBlock);
+	}
+}
+
+void Scaffold::handleNonReplaceableBlock(Player* player, float speed, const Vec3& velocity, Vec3& blockBelow) {
+	if (!hive) {
+		if (!tryScaffold(blockBelow)) {
+			if (speed > 0.05f) {
+				blockBelow.z -= velocity.z * 0.4f;
+
 				if (!tryScaffold(blockBelow)) {
-					if (speed > 0.05f) {  // Are we actually walking?
-						blockBelow.z -= vel.z * 0.4f;
-						if (!tryScaffold(blockBelow)) {
-							blockBelow.x -= vel.x * 0.4f;
-							if (!tryScaffold(blockBelow) && player->isSprinting()) {
-								blockBelow.z += vel.z;
-								blockBelow.x += vel.x;
-								tryScaffold(blockBelow);
-							}
-						}
+					blockBelow.x -= velocity.x * 0.4f;
+
+					if (!tryScaffold(blockBelow) && player->isSprinting()) {
+						blockBelow.z += velocity.z;
+						blockBelow.x += velocity.x;
+
+						tryScaffold(blockBelow);
 					}
 				}
 			}
@@ -234,7 +266,17 @@ void Scaffold::onPostRender(MinecraftUIRenderContext* ctx) {
 	}
 }
 
-//Rotations with packets/serversided
+Vec3 Scaffold::getNextBlock(Player* player, const Vec3& velocity, const Vec3& blockBelow) {
+	Vec3 nextBlock = blockBelow;
+	if (abs(velocity.x) > abs(velocity.z)) {
+		nextBlock.x += (velocity.x > 0 ? 1 : (velocity.x < 0 ? -1 : 0));
+	} else {
+		nextBlock.z += (velocity.z > 0 ? 1 : (velocity.z < 0 ? -1 : 0));
+	}
+	return nextBlock;
+}
+
+
 void Scaffold::onSendPacket(Packet* packet) {
 	auto player = Game.getLocalPlayer();
 	if (player == nullptr) return;
@@ -256,7 +298,6 @@ void Scaffold::onSendPacket(Packet* packet) {
 	}
 }
 
-// Rotations clientsided
 void Scaffold::onPlayerTick(Player* player) {
 	if (player == nullptr) return;
 	if (hive || rotations) {

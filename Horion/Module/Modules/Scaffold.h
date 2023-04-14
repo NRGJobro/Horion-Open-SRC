@@ -18,6 +18,16 @@ public:
 	Scaffold();
 	~Scaffold(){};
 
+	void handleScaffoldDown(Player* player, float speed, const Vec3& velocity);
+	void handleScaffoldUp(Player* player, float speed, const Vec3& velocity);
+	Vec3 getBlockBelow(Player* player, float yOffset);
+	void adjustYCoordinate(Vec3& blockBelow, const Vec3& blockBelowReal);
+	void extendBlock(Player* player, const Vec3& velocity, Vec3& blockBelow);
+	void attemptScaffoldWhileMoving(Player* player, float speed, const Vec3& velocity, Vec3& blockBelow, Vec3& blockBelowBelow);
+	void handleReplaceableBlock(Player* player, float speed, const Vec3& velocity, Vec3& blockBelow);
+	void handleNonReplaceableBlock(Player* player, float speed, const Vec3& velocity, Vec3& blockBelow);
+	Vec3 getNextBlock(Player* player, const Vec3& velocity, const Vec3& blockBelow);
+
 	virtual const char* getModuleName() {
 		return "Scaffold";
 	};
