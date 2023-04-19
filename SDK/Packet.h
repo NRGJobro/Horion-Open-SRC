@@ -74,16 +74,24 @@ public:
 class C_EmotePacket : public Packet {
 public:
 	C_EmotePacket();
+
+private:
+	char padding[0x28];
+
+public:
+	int64_t entityRuntimeId;
+	TextHolder emotId;
+	char flags;
 };
 
 class AnimatePacket : public Packet {
 public:
 	AnimatePacket();
-	AnimatePacket(int action, __int64 entityRuntimeID, float unknownValue);
+	AnimatePacket(int action, __int64 entityRuntimeID, float rowingTime);
 
 	__int64 entityId;
 	int action;
-	float unknown;
+	float rowingTime;
 };
 
 class C_NPCRequestPacket : public Packet {
