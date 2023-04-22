@@ -144,4 +144,5 @@ public:
 	virtual void onSendClientPacket(Packet*);
 	virtual bool callWhenDisabled();
 	const char* getTooltip();
+	virtual void onBaseTick(Entity*) {}
 };
