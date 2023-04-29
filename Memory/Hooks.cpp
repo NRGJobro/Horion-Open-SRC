@@ -331,6 +331,9 @@ void Hooks::Actor_baseTick(Entity* ent) {
 		g_Hooks.entityList.clear();
 		tickCountThen = tickCountNow;
 	}
+
+	moduleMgr->onBaseTick(ent);
+
 	if (ent->isClientSide()) {
 		EntityListPointerHolder e;
 		e.addedTick = tickCountNow;

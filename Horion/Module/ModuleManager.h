@@ -134,6 +134,7 @@ public:
 	void onPlayerTick(Player* player);
 	void onSendPacket(Packet*);
 	void onSendClientPacket(Packet*);
+	void onBaseTick(Entity*);
 
 	std::shared_lock<std::shared_mutex> lockModuleList() { return std::shared_lock(moduleListMutex); }
 	std::unique_lock<std::shared_mutex> lockModuleListExclusive() { return std::unique_lock(moduleListMutex); }

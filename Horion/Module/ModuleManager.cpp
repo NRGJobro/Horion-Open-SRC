@@ -255,6 +255,15 @@ void ModuleManager::onSendPacket(Packet* packet) {
 	}
 }
 
+void ModuleManager::onBaseTick(Entity* ent) {
+	if (!isInitialized())
+		return;
+	auto lock = lockModuleList();
+	for (auto& mod : moduleList) {
+		mod->onBaseTick(ent);
+	}
+}
+
 std::vector<std::shared_ptr<IModule>>* ModuleManager::getModuleList() {
 	return &moduleList;
 }
