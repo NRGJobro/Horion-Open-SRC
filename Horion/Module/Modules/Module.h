@@ -1,7 +1,7 @@
 #pragma once
 
 #include "../../../Memory/GameData.h"
-#include "../../FriendList/FriendList.h"
+#include "../../FriendList/FriendsManager.h"
 #include "../../../Utils/keys.h"
 //#include "../../DrawUtils.h"
 

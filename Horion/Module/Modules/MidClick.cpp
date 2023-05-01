@@ -1,4 +1,5 @@
 #include "MidClick.h"
+#include "../../FriendList/FriendsManager.h"
 
 MidClick::MidClick() : IModule(0, Category::PLAYER, "Click a player with your mouse wheel to add em as a friend.") {
 }
@@ -18,12 +19,12 @@ void MidClick::onTick(GameMode* gm) {
 	std::string name = entity->getNameTag()->getText();
 
 	if (GameData::isWheelDown() && !hasClicked) {
-		if (!FriendList::findPlayer(name)) {
-			FriendList::addPlayerToList(name);
+		if (!FriendsManager::findFriend(name)) {
+			FriendsManager::addFriendToList(name);
 			Game.getGuiData()->displayClientMessageF("%sSuccessfully added %s %sto your friendlist.", GREEN, name.c_str(), GREEN);
 		} else {
 			std::transform(name.begin(), name.end(), name.begin(), ::tolower);
-			FriendList::removePlayer(name);
+			FriendsManager::removeFriend(name);
 			Game.getGuiData()->displayClientMessageF("%sSuccessfully removed %s %sfrom your friendlist.", GREEN, name.c_str(), GREEN);
 		}
 		hasClicked = true;

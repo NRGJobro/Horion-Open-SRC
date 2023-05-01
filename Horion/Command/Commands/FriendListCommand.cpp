@@ -1,4 +1,5 @@
 #include "FriendListCommand.h"
+#include "../../FriendList/FriendsManager.h"
 
 FriendListCommand::FriendListCommand() : IMCCommand("friend", "Add/Remove friendly players", "<add/remove>") {
 	registerAlias("friendlist");
@@ -47,12 +48,12 @@ bool FriendListCommand::execute(std::vector<std::string>* args) {
 		return true;
 	}
 	if (subcommand == "add") {
-		FriendList::addPlayerToList(playerName);
+		FriendsManager::addFriendToList(playerName);
 		clientMessageF("[%sHorion%s] %s%s is now your friend!", GOLD, WHITE, GREEN, playerName.c_str());
 		return true;
 
 	} else if (subcommand == "remove") {
-		if (FriendList::removePlayer(searchedName)) {
+		if (FriendsManager::removeFriend(searchedName)) {
 			clientMessageF("[%sHorion%s] %s%s has been removed from your friendlist!", GOLD, WHITE, GREEN, searchedName.c_str());
 			return true;
 		} else {

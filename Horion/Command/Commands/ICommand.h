@@ -1,7 +1,7 @@
 #pragma once
 
 #include "../../../Memory/GameData.h"
-#include "../../FriendList/FriendList.h"
+#include "../../FriendList/FriendsManager.h"
 
 #ifndef ASSERT_T
 #define ASSERT_T(x) \

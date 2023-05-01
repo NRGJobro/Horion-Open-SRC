@@ -1,6 +1,7 @@
 ﻿#include "Target.h"
 
 #include <regex>
+#include "../Horion/FriendList/FriendsManager.h"
 
 #include "../Horion/Module/ModuleManager.h"
 
@@ -70,7 +71,7 @@ bool Target::isValidTarget(Entity* ent) {
 	if (antibot->isNameCheckEnabled() && !Target::containsOnlyASCII(ent->getNameTag()->getText()))
 		return false;
 
-	if (!noFriends->isEnabled() && FriendList::findPlayer(ent->getNameTag()->getText()))
+	if (!noFriends->isEnabled() && FriendsManager::findFriend(ent->getNameTag()->getText()))
 		return false;
 
 	if (antibot->isInvisibleCheckEnabled() && ent->isInvisible())

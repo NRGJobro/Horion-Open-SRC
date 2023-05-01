@@ -70,6 +70,10 @@ void ConfigManager::loadConfig(std::string name, bool create) {
 				std::string prefix = currentConfigObj["prefix"];
 				cmdMgr->prefix = prefix.at(0);
 			}
+			if (currentConfigObj.contains("friends")) {
+				std::vector<std::string> Friends = currentConfigObj["friends"];
+				friends.loadList(Friends);
+			}
 		}
 
 		if (create) 
@@ -102,6 +106,7 @@ void ConfigManager::saveConfig() {
 	std::string prefix;
 	prefix.push_back(cmdMgr->prefix);
 	currentConfigObj["prefix"] = prefix;
+	currentConfigObj["friends"] = friends.getList();
 
 	std::ofstream o(fullPath, std::ifstream::binary);
 	o << std::setw(4) << currentConfigObj << std::endl;

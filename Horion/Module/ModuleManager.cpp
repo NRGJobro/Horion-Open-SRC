@@ -26,13 +26,11 @@ void ModuleManager::initModules() {
 		moduleList.emplace_back(new InventoryMove());
 		// moduleList.push_back(new Notifications());
 		moduleList.emplace_back(new AntiImmobile());
-		moduleList.emplace_back(new Criticals());
 		moduleList.emplace_back(new ChestStealer());
 		moduleList.emplace_back(new OffhandAllow());
 		moduleList.emplace_back(new EditionFaker());
 		moduleList.emplace_back(new ClientTheme());
 		moduleList.emplace_back(new FontChanger());
-		moduleList.emplace_back(new VanillaPlus());
 		moduleList.emplace_back(new TimeChanger());
 		// moduleList.emplace_back(new CubeGlide());
 		moduleList.emplace_back(new CrystalAura());
@@ -62,6 +60,7 @@ void ModuleManager::initModules() {
 		moduleList.emplace_back(new AutoArmor());
 		moduleList.emplace_back(new AutoTotem());
 		moduleList.emplace_back(new BowAimbot());
+		moduleList.emplace_back(new Criticals());
 		moduleList.emplace_back(new HudModule());
 		moduleList.emplace_back(new FastStop());
 		moduleList.emplace_back(new Freelook());
@@ -112,6 +111,7 @@ void ModuleManager::initModules() {
 
 #ifdef _DEBUG
 		moduleList.emplace_back(new PacketLogger());
+		moduleList.emplace_back(new VanillaPlus());
 		moduleList.emplace_back(new TestModule());
 #endif
 
