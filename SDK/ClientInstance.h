@@ -196,7 +196,7 @@ public:
 
 class GuiData {
 private:
-	char pad_0x0000[0x18];  //0x0000
+	char pad_0x0000[0x30];  //0x0000
 public:
 	union {
 		struct {
@@ -694,6 +694,7 @@ private:
 
 public:
 	virtual void setMoveTurnInput(__int64);
+	virtual void ifarted();
 	virtual MoveInputHandler* getMoveTurnInput(void);
 
 public:
@@ -870,7 +871,7 @@ public:
 	}
 
 	GuiData* getGuiData() {
-		return (GuiData*)*reinterpret_cast<__int64*>(reinterpret_cast<GuiData*>(reinterpret_cast<__int64>(this) + 0x4E8));
+		return (GuiData*)*reinterpret_cast<__int64*>(reinterpret_cast<GuiData*>(reinterpret_cast<__int64>(this) + 0x500));
 	};
 
 	class LocalPlayer* getCILocalPlayer() {
