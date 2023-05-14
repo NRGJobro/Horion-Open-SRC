@@ -107,10 +107,9 @@ public:
 	BlockTessellator* blockTessellator;  // 0x02D8
 private:
 	char pad_0x02F0[0x568];  //0x02E0
-	Vec3 origin;           //0x0890
 public:
 	Vec3& getOrigin() {
-		return *(Vec3*)((char*)this + (0x798));
+		return *(Vec3*)((char*)this + (0x7A8));
 	}
 
 	__int64 getLevelRendererPlayer() {
