@@ -176,7 +176,6 @@ void DrawUtils::flush() {
 }
 
 void DrawUtils::drawTriangle(const Vec2& p1, const Vec2& p2, const Vec2& p3) {
-	
 	DrawUtils::tess__begin(tessellator, 3, 3);
 
 	tess_vertex(tessellator, p1.x, p1.y, 0);
@@ -226,7 +225,6 @@ void DrawUtils::drawText(const Vec2& pos, std::string* textStr, const MC_Color& 
 	TextHolder text(*textStr);
 	Font* fontPtr = getFont(font);
 	static uintptr_t caretMeasureData = 0xFFFFFFFF;
-
 
 	float posF[4];  // Vec4(startX, startY, endX, endY);
 	posF[0] = pos.x;
