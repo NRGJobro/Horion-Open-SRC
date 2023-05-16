@@ -137,32 +137,31 @@ private:
 	__int64 pad;                        // 0x0008
 	void* ptrToSelf;                    // 0x0010
 	void* ptrToSelfSharedPtr;           // 0x0018
-	__int64 pad2;                       // 0x0020
 public:
-	FontRepository_FontList* fontList;  //0x0028
-										  //FontRepository_FontList* fontList1;  //0x0040
+	FontRepository_FontList* fontList;  // 0x0028
+										// FontRepository_FontList* fontList1;  //0x0040
 };
 
 class MinecraftGame {
-	char pad_0000[0x110];  //0x0000
+	char pad_0000[0x110];  // 0x0000
 public:
-	FontRepository* fontRepository;  //0x00110
+	FontRepository* fontRepository;  // 0x00110
 private:
-	char pad_0100[0x8];  //0x00118
+	char pad_0100[0x8];  // 0x00118
 public:
-	Font* mcFont;  //0x00120
+	Font* mcFont;  // 0x00120
 private:
-	char pad_0128[0x18];  //0x00128
+	char pad_0128[0x18];  // 0x00128
 public:
-	FontRepository* fontRepository1;  //0x0140
+	FontRepository* fontRepository1;  // 0x0140
 private:
-	char pad_0148[0x1D0];  //0x0148
+	char pad_0148[0x1D0];  // 0x0148
 public:
-	bool canUseKeys;  //0x0318
+	bool canUseKeys;  // 0x0318
 private:
-	char pad_0301[799];  //0x0319
+	char pad_0301[799];  // 0x0319
 public:
-	TextHolder xuid;  //0x0638
+	TextHolder xuid;  // 0x0638
 
 	// 0x2F0
 
@@ -335,7 +334,7 @@ public:
 	virtual bool isDestroyingGame(void) const;
 
 private:
-	virtual __int64 sub_1400C98E0(void) const;
+	virtual __int64 isShuttingDown(void) const;
 	virtual __int64 useLowFrequencyUIRender(void) const;
 
 public:
@@ -365,7 +364,7 @@ public:
 	virtual bool isPlatformNX(void) const;
 	virtual bool isLocalSplitscreenWith(__int64 const&) const;
 	virtual bool isValidCrossPlatformSkin(void) const;
-	virtual __int64 sub_1400C9B70(void);
+	virtual __int64 isSelectedSkinInitialized(void);
 
 private:
 	virtual __int64 getSplitScreenInfo(void) const;
@@ -387,26 +386,26 @@ private:
 public:
 	virtual void setOpenControllerDisconnectScreen(bool);
 
-private:
+
 	virtual __int64 getClientPlayMode(void) const;
 
 public:
 	virtual void setClientPlayMode(__int64 const&);
 
-private:
+
 	virtual __int64 getLivingRoomForCredits(void) const;
 
 public:
 	virtual void setLivingRoomForCredits(bool);
 
-private:
+
 	virtual __int64 getCreditsCallback(void);
 
 public:
 	virtual void setCreditsCallback(__int64);
 	virtual void setupTransitionForCredits(__int64);
 
-private:
+
 	virtual __int64 refreshScreenSizeData(void);
 	virtual __int64 onScreenSizeChanged(int, int, float);
 	virtual __int64 onGuiScaleOffsetChanged(void);
@@ -416,16 +415,16 @@ private:
 public:
 	virtual __int64 getMinecraftGame(void) const;
 
-private:
+
 	virtual __int64 getAutomationClient(void) const;
 	virtual __int64 getScreenshotStreamer(void) const;
 	virtual __int64 getEventing(void) const;
 	virtual __int64 sub_1400CA2E0(__int64 a1);
 	virtual __int64 sub_1400CA2E8(__int64 a1);
 	virtual __int64 sub_1400CA2F0(__int64 a1);
-	virtual Font* getFont(void) const;
-	virtual Font* getRuneFont(void) const;
-	virtual Font* getUnicodeFont(void) const;
+	virtual Font* getFontDONTUSE(void) const;
+	virtual Font* getRuneFontDONTUSE(void) const;
+	virtual Font* getUnicodeFontDONTUSE(void) const;
 	virtual __int64 getGeometryGroup(void) const;
 	virtual __int64 getMultiplayerServiceManager(void) const;
 	virtual __int64 getLocalServerLevel(void);
@@ -449,7 +448,7 @@ public:
 	virtual bool isPrimaryLevelMultiplayer(void) const;
 	virtual bool isAdhocEnabled(void) const;
 
-private:
+
 	virtual char sub_1406A1620(void) const;
 	virtual __int64 linkToOffer(std::string const&, bool, std::string const&, __int64);
 	virtual __int64 linkToAllOffers(std::string const&, std::string const&, bool, std::string const&, bool);
@@ -462,12 +461,12 @@ private:
 	virtual __int64 navigateToServersScreen(bool);
 	virtual __int64 navigateToHowToPlayScreen(std::string const&);
 	virtual __int64 tryPushLeaveGameScreen(void);
-	virtual char sub_1400D16A0(void) const;
+	virtual __int64 tryStartDayOneExperience(void);
 
 public:
 	virtual bool isReadyToRender(void) const;
 
-private:
+
 	virtual __int64 onDimensionChanged(void);
 	virtual __int64 onGameEventNotification(__int64);
 
@@ -475,12 +474,12 @@ public:
 	virtual TextHolder getTopScreenName(void) const;
 	virtual void setLeaveGameInProgressAsReadyToContinue(void);
 
-private:
+
 	virtual __int64 stopDestroying(void);
 	virtual __int64 onClientCreatedLevel(__int64);
 	virtual __int64 getClientRandomId(void) const;
 	virtual __int64 getUserAuthentication(void);
-	virtual __int64 sub_1400CAC50(__int64* a2);
+	virtual __int64 getWeakUserAuthentication(void);
 	virtual __int64 registerToUserManager(__int64&, int);
 	virtual __int64 resumeWithUserManager(__int64&, int);
 	virtual __int64 createUserAuthentication(std::string);
@@ -491,7 +490,7 @@ private:
 public:
 	virtual bool isHoloCursorNeeded(void) const;
 
-private:
+
 	virtual __int64 useController(void) const;
 	virtual __int64 useTouchscreen(void) const;
 	virtual void subFunction1(void) const;
@@ -517,8 +516,8 @@ public:
 	virtual bool isShowingWorldProgressScreen(void) const;
 	virtual bool isShowingDeathScreen(void) const;
 	virtual bool isScreenReplaceable(void) const;
-	virtual bool isInGame(void) const;
-	virtual bool sub_14070D6F0(void) const;
+	virtual __int64 NullFunc_27();
+	virtual bool isInGame(void);
 	virtual bool isInRealm(void);
 
 private:
@@ -693,7 +692,6 @@ private:
 
 public:
 	virtual void setMoveTurnInput(__int64);
-	virtual void ifarted();
 	virtual MoveInputHandler* getMoveTurnInput(void);
 
 public:
@@ -855,6 +853,24 @@ public:
 		fov.x = *reinterpret_cast<float*>((uintptr_t)(this) + 0x678);
 		fov.y = *reinterpret_cast<float*>((uintptr_t)(this) + 0x68C);
 		return fov;
+	}
+
+	Font* getFont() {
+		using getFont_t = Font*(__fastcall*)(ClientInstance*);
+		static getFont_t getFontFunc = reinterpret_cast<getFont_t>(FindSignature("40 53 48 83 EC 30 48 8B DA 48 8B 89 ? ? ? ? 48 8B 01 48 8D 54 24 ? FF 90 ? ? ? ? 90 48 8B C8 E8 ? ? ? ? 48 8B D0 48 8B CB E8 ? ? ? ? 90 48 8D 4C 24 ? E8 ? ? ? ? 48 8B C3 48 83 C4 30 5B C3 CC CC CC CC CC CC CC CC CC CC 48 89 5C 24 ?"));
+		return getFontFunc(this);
+	}
+
+	Font* getRuneFont() {
+		using getRuneFont_t = Font*(__fastcall*)(ClientInstance*);
+		static getRuneFont_t getRuneFontFunc = reinterpret_cast<getRuneFont_t>(FindSignature("40 53 48 83 EC 30 48 8B DA 48 8B 89 ? ? ? ? 48 8B 01 48 8D 54 24 ? FF 90 ? ? ? ? 90 48 8B C8 E8 ? ? ? ? 48 8B D0 48 8B CB E8 ? ? ? ? 90 48 8D 4C 24 ? E8 ? ? ? ? 48 8B C3 48 83 C4 30 5B C3 CC CC CC CC CC CC CC CC CC CC 40 53 48 83 EC 30"));
+		return getRuneFontFunc(this);
+	}
+
+	Font* getUnicodeFont() {
+		using getUnicodeFont_t = Font*(__fastcall*)(ClientInstance*);
+		static getUnicodeFont_t getUnicodeFontFunc = reinterpret_cast<getUnicodeFont_t>(FindSignature("40 53 48 83 EC 30 48 8B DA 48 8B 89 ? ? ? ? 48 8B 01 48 8D 54 24 ? FF 90 ? ? ? ? 90 48 8B C8 E8 ? ? ? ? 48 8B D0 48 8B CB E8 ? ? ? ? 90 48 8D 4C 24 ? E8 ? ? ? ? 48 8B C3 48 83 C4 30 5B C3 CC CC CC CC CC CC CC CC CC CC 40 53 48 83 EC 20"));
+		return getUnicodeFontFunc(this);
 	}
 
 	Font* _getFont() {
