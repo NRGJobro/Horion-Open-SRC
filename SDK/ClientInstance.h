@@ -432,11 +432,11 @@ public:
 	virtual __int64 getResourcePackManager(void) const;
 	virtual __int64 getSkinRepository(void) const;
 	virtual __int64 getSkinRepositoryClientInterface(void) const;
-	virtual __int64 sub_140630650(void) const;
-	virtual void test0();
-	virtual void test1();
-	virtual __int64 sub_1400CA400(void) const;
-	virtual __int64 getTextures(void) const;
+	virtual __int64 getPersonaPieceCollectionModel(void);
+	virtual __int64 getPersonaRepository(void);
+	virtual __int64 NullFunc_19();
+	virtual __int64 getTextures(void);
+	virtual __int64 NullFunc_20();
 	virtual __int64 getStoreCacheTextures(void) const;
 	virtual __int64 getMinecraftGraphics(void) const;
 	virtual __int64 getUIRepository(void) const;
@@ -692,6 +692,7 @@ private:
 
 public:
 	virtual void setMoveTurnInput(__int64);
+	virtual MoveInputHandler* getMoveTurnInput(void) const;
 	virtual MoveInputHandler* getMoveTurnInput(void);
 
 public:
