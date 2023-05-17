@@ -38,7 +38,7 @@ struct IModuleContainer {
 			moduleName = moduleNameChr;
 		else {
 			char text[50];
-			sprintf_s(text, 50, "%s%s", moduleNameChr, hudMod->keybinds ? std::string(" [" + std::string(Utils::getKeybindName(keybind)) + "]").c_str() : "");
+			sprintf_s(text, 50, "%s%s%s", moduleNameChr, std::string(GRAY).c_str(), hudMod->keybinds ? std::string(" [" + std::string(Utils::getKeybindName(keybind)) + "]").c_str() : "");
 			moduleName = text;
 		}
 
