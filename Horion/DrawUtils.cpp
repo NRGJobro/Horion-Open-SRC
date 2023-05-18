@@ -77,7 +77,7 @@ void DrawUtils::setCtx(MinecraftUIRenderContext* ctx, GuiData* gui) {
 	renderCtx = ctx;
 	screenContext2d = reinterpret_cast<__int64*>(renderCtx)[2];
 
-	tessellator = *reinterpret_cast<Tessellator**>(screenContext2d + 0xB0);
+	tessellator = *reinterpret_cast<Tessellator**>(screenContext2d + 0xB8);
 	colorHolder = *reinterpret_cast<float**>(screenContext2d + 0x30);
 
 	glmatrixf* badrefdef = Game.getClientInstance()->getRefDef();
@@ -141,7 +141,7 @@ Font* DrawUtils::getFont(Fonts font) {
 }
 
 Tessellator* DrawUtils::get3dTessellator() {
-	auto myTess = *reinterpret_cast<Tessellator**>(game3dContext + 0xB0);
+	auto myTess = *reinterpret_cast<Tessellator**>(game3dContext + 0xB8);
 	return myTess;
 }
 
