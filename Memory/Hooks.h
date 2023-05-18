@@ -94,7 +94,6 @@ private:
 	static void PleaseAutoComplete(__int64 _this, __int64 a2, TextHolder* text, int a4);
 	static void LoopbackPacketSender_sendToServer(LoopbackPacketSender* a, Packet* packet);
 	static void LoopbackPacketSender_sendToClient(class networkhandler* _this, const void* networkIdentifier, Packet* packet, int a4);
-	static float LevelRendererPlayer_getFov(__int64 _this, float a2, bool a3);
 	static void MultiLevelPlayer_tick(EntityList* entityList);
 	static void GameMode_startDestroyBlock(GameMode* _this, Vec3i* a2, uint8_t face, void* a4, void* a5);
 	static void HIDController_keyMouse(HIDController* _this, void* a2, void* a3);
@@ -149,7 +148,6 @@ private:
 	std::unique_ptr<FuncHook> PleaseAutoCompleteHook;
 	std::unique_ptr<FuncHook> LoopbackPacketSender_sendToServerHook;
 	std::unique_ptr<FuncHook> LoopbackPacketSender_sendToClientHook;
-	std::unique_ptr<FuncHook> LevelRendererPlayer_getFovHook;
 	std::unique_ptr<FuncHook> MultiLevelPlayer_tickHook;
 	std::unique_ptr<FuncHook> GameMode_startDestroyBlockHook;
 	std::unique_ptr<FuncHook> HIDController_keyMouseHook;
