@@ -240,7 +240,7 @@ public:
 
 class ItemDescriptor {
 private:
-	char pad_0x0[0x48];  //0x0000
+	char pad_0x0[0x98];  //0x0000
 public:
 	ItemDescriptor() {
 		memset(this, 0x0, sizeof(ItemDescriptor));

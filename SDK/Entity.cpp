@@ -3,16 +3,14 @@
 #include "../Memory/GameData.h"
 #include "../Utils/Utils.h"
 InventoryTransactionManager *Entity::getTransactionManager() {
-	//return &this->transac;
-	static unsigned int offset = 0x1210;
-	//if (offset == 0) {
-	// EnchantCommand::execute
-	//offset = *reinterpret_cast<int *>(FindSignature("48 89 5C 24 18 55 56 57 41 56 41 57 48 83 EC 30 45 0F B6 F8 4C ") + 3);
-	//}
+	static unsigned int offset = 0x1218;
+	if (offset == 0) {
+		offset = *reinterpret_cast<int*>(FindSignature("49 8d 8e ? ? ? ? e8 ? ? ? ? 90 48 8d 8d ? ? ? ? e8 ? ? ? ? 49 8b 06 48 8b 95 ") + 3);
+	}
 	return reinterpret_cast<InventoryTransactionManager *>(reinterpret_cast<__int64>(this) + offset);
 }
 PlayerInventoryProxy *Player::getSupplies() {
-	static unsigned int offset = 0xB70;
+	static unsigned int offset = 0xB68;
 	/*if (offset == 0) {
 		offset = *reinterpret_cast<int *>(FindSignature("48 8B 51 ?? 4C 8B 82 ?? ?? ?? ?? 48 8B B2 ?? ?? ?? ?? 41 80 B8") + 7);  // GameMode::startDestroyBlock -> GameMode::_canDestroy -> getSupplies
 	}*/

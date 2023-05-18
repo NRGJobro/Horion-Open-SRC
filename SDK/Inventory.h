@@ -88,13 +88,13 @@ public:
 
 class PlayerInventoryProxy {
 private:
-	char pad_0x0000[0x10];  //0x0000
+	char pad_0000[16];           // 0x0000
 public:
-	int selectedHotbarSlot;  //0x0010
+	int selectedHotbarSlot;		 // 0x0010
 private:
-	char pad_0x0014[0x9C];  //0x0014
+	char pad_0011[175];          // 0x0011
 public:
-	Inventory* inventory;  //0x00B0
+	class Inventory* inventory;  // 0x00C0
 
 	class Container* getContainer() {
 		return reinterpret_cast<Container*>((uintptr_t)(this) + 0xD0);

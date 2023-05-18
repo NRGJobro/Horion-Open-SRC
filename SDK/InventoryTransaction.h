@@ -7,7 +7,7 @@ class InventoryAction {
 public:
 	void fixInventoryStuff(ItemDescriptor* a1, ItemStack* a2);
 	InventoryAction() = default;
-	InventoryAction(int slot, ItemStack* sourceItem, ItemStack* targetItem, int sourceType = 0, int type = 0) {
+	InventoryAction(int slot, ItemStack* sourceItem, ItemStack* targetItem, int sourceType = 0, int type = 0, int flag = 0) {
 		memset(this, 0x0, sizeof(InventoryAction));
 		this->slot = slot;
 		if (sourceItem != nullptr) {
@@ -18,14 +18,15 @@ public:
 		}
 
 		// These seem to fix the inventory stuff
-		fixInventoryStuff(reinterpret_cast<ItemDescriptor*>(reinterpret_cast<__int64>(this) + 0x10), reinterpret_cast<ItemStack*>(reinterpret_cast<__int64>(this) + 0x110));
-		fixInventoryStuff(reinterpret_cast<ItemDescriptor*>(reinterpret_cast<__int64>(this) + 0x90), reinterpret_cast<ItemStack*>(reinterpret_cast<__int64>(this) + 0x1A0));
+		fixInventoryStuff(reinterpret_cast<ItemDescriptor*>(reinterpret_cast<__int64>(this) + 0x10), reinterpret_cast<ItemStack*>(reinterpret_cast<__int64>(this) + 0x140));
+		fixInventoryStuff(reinterpret_cast<ItemDescriptor*>(reinterpret_cast<__int64>(this) + 0xA8), reinterpret_cast<ItemStack*>(reinterpret_cast<__int64>(this) + 0x1E0));
 
 		this->sourceType = sourceType;
 		this->type = type;
+		this->flags = flag;
 	}
 
-	InventoryAction(int slot, ItemDescriptor* source, ItemDescriptor* target, ItemStack* sourceItem, ItemStack* targetItem, int count, int sourceType = 0, int type = 0) {
+	InventoryAction(int slot, ItemDescriptor* source, ItemDescriptor* target, ItemStack* sourceItem, ItemStack* targetItem, int count, int sourceType = 0, int type = 0, int flag = 0) {
 		memset(this, 0x0, sizeof(InventoryAction));
 		this->slot = slot;
 
@@ -46,13 +47,14 @@ public:
 
 		this->sourceType = sourceType;
 		this->type = type;
+		this->flags = flag;
 	}
 
 public:
 	int type;        //0x0  // named sourceType in nukkit
 	int sourceType;  //0x4 // sometimes windowId
 private:
-	int unknown;  //0x8
+	int flags;  //0x8
 public:
 	int slot;                             //0xC
 	ItemDescriptor sourceItemDescriptor;  //0x10
