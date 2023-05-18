@@ -138,47 +138,38 @@ private:
 	void* ptrToSelf;                    // 0x0010
 	void* ptrToSelfSharedPtr;           // 0x0018
 public:
-	FontRepository_FontList* fontList;  // 0x0028
-										// FontRepository_FontList* fontList1;  //0x0040
+	FontRepository_FontList* fontList;  // 0x0020
+	//FontRepository_FontList* fontList1;  //0x0028
 };
 
 class MinecraftGame {
-	char pad_0000[0x110];  // 0x0000
-public:
-	FontRepository* fontRepository;  // 0x00110
 private:
-	char pad_0100[0x8];  // 0x00118
+	char pad_0000[312];                     // 0x0000
 public:
-	Font* mcFont;  // 0x00120
+	bool canUseKeys;                        // 0x0138
 private:
-	char pad_0128[0x18];  // 0x00128
+	char pad_0139[3319];                    // 0x0139
 public:
-	FontRepository* fontRepository1;  // 0x0140
+	FontRepository** fontRepository;  // 0x0E30
 private:
-	char pad_0148[0x1D0];  // 0x0148
+	char pad_0E38[8];                       // 0x0E38
 public:
-	bool canUseKeys;  // 0x0318
-private:
-	char pad_0301[799];  // 0x0319
-public:
-	TextHolder xuid;  // 0x0638
-
-	// 0x2F0
+	Font* mcFont;                     // 0x0E40
 
 	Font* getTheGoodFontThankYou() {
-		return fontRepository->fontList->fontEntries[7].font;
+		return (*fontRepository)->fontList->fontEntries[7].font;
 	};
 
 	Font* getTheRandomFontPlease() {
-		return fontRepository->fontList->fontEntries[4].font;
+		return (*fontRepository)->fontList->fontEntries[4].font;
 	};
 
 	Font* getOldFont() {
-		return fontRepository->fontList->fontEntries[7].font;
+		return (*fontRepository)->fontList->fontEntries[7].font;
 	};
 
 	Font* getTheBetterFontYes() {
-		return fontRepository->fontList->fontEntries[3].font;
+		return (*fontRepository)->fontList->fontEntries[3].font;
 	}
 
 	Font* getMCFont() {
