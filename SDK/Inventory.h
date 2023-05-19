@@ -47,7 +47,7 @@ public:
 	virtual __int64 addAdditionalSaveData();     //  CompoundTag &
 	virtual __int64 createTransactionContext();  // std::function<void(Inventory&, int, const ItemStack&, const ItemStack&)>, std::function<void(void)>
 	virtual __int64 initializeContainerContents(BlockSource&);
-	virtual char isEmpty();
+	virtual bool isEmpty();
 	virtual __int64 add(ItemStack&);
 	virtual __int64 canAdd(const ItemStack&);
 	//virtual void unknown();
@@ -55,9 +55,9 @@ public:
 	virtual __int64 clearInventory(int);
 	virtual __int64 load();  // ListTag const&,SemVersion const&,Level &
 	//virtual void unknown2();
-	virtual __int64 getEmptySlotsCount();
+	virtual int getEmptySlotsCount();
 	virtual int getFirstEmptySlot();
-	virtual __int64 setContainerSize();
+	virtual void setContainerSize();
 
 	void moveItem(int from, int to);
 	void swapSlots(int from, int to);
@@ -88,13 +88,13 @@ public:
 
 class PlayerInventoryProxy {
 private:
-	char pad_0000[16];           // 0x0000
+	char pad_0x8[0x8];  // 0x8
 public:
-	int selectedHotbarSlot;		 // 0x0010
+	int selectedHotbarSlot;  // 0x10
 private:
-	char pad_0011[175];          // 0x0011
+	char pad_0x14[0xAC];  // 0x14
 public:
-	class Inventory* inventory;  // 0x00C0
+	Inventory* inventory;  // 0xC0
 
 	class Container* getContainer() {
 		return reinterpret_cast<Container*>((uintptr_t)(this) + 0xD0);
