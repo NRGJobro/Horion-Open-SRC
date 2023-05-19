@@ -101,13 +101,7 @@ private:
 	char pad_0x0060[0xE0];  //0x0060
 public:
 	mce::TexturePtr atlasTexture;  // 0x140
-private:
-	char pad_0x0188[0x150];  //0x0188
-public:
-	BlockTessellator* blockTessellator;  // 0x02D8
-private:
-	char pad_0x02F0[0x568];  //0x02E0
-public:
+
 	Vec3& getOrigin() {
 		return *(Vec3*)((char*)this + (0x7A8));
 	}
@@ -279,8 +273,8 @@ public:
 
 	Vec2 getFov() {
 		Vec2 fov;
-		fov.x = *reinterpret_cast<float*>((uintptr_t)(this) + 0x678);
-		fov.y = *reinterpret_cast<float*>((uintptr_t)(this) + 0x68C);
+		fov.x = *reinterpret_cast<float*>((uintptr_t)(this) + 0x690);
+		fov.y = *reinterpret_cast<float*>((uintptr_t)(this) + 0x6A0);
 		return fov;
 	}
 
@@ -330,6 +324,10 @@ public:
 
 	GuiData* getGuiData() {
 		return (GuiData*)*reinterpret_cast<__int64*>(reinterpret_cast<GuiData*>(reinterpret_cast<__int64>(this) + 0x500));
+	};
+
+	BlockTessellator* getBlockTesselator() {
+		return (BlockTessellator*)*reinterpret_cast<__int64*>(reinterpret_cast<BlockTessellator*>(reinterpret_cast<__int64>(this) + 0x4C8));
 	};
 
 	class LocalPlayer* getCILocalPlayer() {
