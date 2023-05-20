@@ -21,7 +21,7 @@ void findTarget(Entity* currentEntity, bool isRegularEntitie) {
 	if (currentEntity == 0)
 		return;
 
-	if (currentEntity->timeSinceDeath > 0 || currentEntity->damageTime >= 7)
+	if (!currentEntity->isAlive() || currentEntity->damageTime >= 7)
 		return;
 
 	if (!Target::isValidTarget(currentEntity))

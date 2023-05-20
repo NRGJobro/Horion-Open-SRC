@@ -13,12 +13,12 @@ const char* AirSwim::getModuleName() {
 void AirSwim::onEnable() {
 	if (Game.getLocalPlayer() == nullptr)
 		return;
-	Game.getLocalPlayer()->didEnterWaterBool = true;
+	Game.getLocalPlayer()->setIsInWater(true);
 	Game.getLocalPlayer()->startSwimming();
 }
 
 void AirSwim::onTick(GameMode* gm) {
-	Game.getLocalPlayer()->didEnterWaterBool = true;
+	Game.getLocalPlayer()->setIsInWater(true);
 	Game.getLocalPlayer()->doWaterSplashEffect();
 	Game.getLocalPlayer()->startSwimming();
 }
@@ -26,6 +26,6 @@ void AirSwim::onTick(GameMode* gm) {
 void AirSwim::onDisable() {
 	if (Game.getLocalPlayer() == nullptr)
 		return;
-	Game.getLocalPlayer()->didEnterWaterBool = false;
+	Game.getLocalPlayer()->setIsInWater(false);
 	Game.getLocalPlayer()->stopSwimming();
 }

@@ -5,7 +5,7 @@
 InventoryTransactionManager *Entity::getTransactionManager() {
 	static unsigned int offset = 0x1218;
 	if (offset == 0) {
-		offset = *reinterpret_cast<int*>(FindSignature("49 8d 8e ? ? ? ? e8 ? ? ? ? 90 48 8d 8d ? ? ? ? e8 ? ? ? ? 49 8b 06 48 8b 95 ") + 3);
+		offset = *reinterpret_cast<int*>(FindSignature("49 8D 8E ? ? ? ? E8 ? ? ? ? 90 48 8D 8D ? ? ? ? E8 ? ? ? ? 49 8B 06 48 8B 95") + 3);
 	}
 	return reinterpret_cast<InventoryTransactionManager *>(reinterpret_cast<__int64>(this) + offset);
 }

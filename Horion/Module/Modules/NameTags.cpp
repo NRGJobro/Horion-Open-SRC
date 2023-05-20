@@ -21,7 +21,7 @@ void drawNameTags(Entity* ent, bool) {
 	static auto nameTagsMod = moduleMgr->getModule<NameTags>();
 
 	if (ent != localPlayer) {
-		if (ent->timeSinceDeath > 0)
+		if (!ent->isAlive())
 			return;
 		if (ent->getNameTag()->getTextLength() < 1)
 			return;
