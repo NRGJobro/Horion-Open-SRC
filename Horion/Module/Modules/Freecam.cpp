@@ -36,31 +36,37 @@ void Freecam::onPreRender(MinecraftUIRenderContext* rcx) {
 		return;
 	//yaw = Player->bodyYaw;
 
-	if (GameData::isKeyDown(*input->forwardKey) && GameData::isKeyDown(*input->backKey))
+	bool isForwardKeyDown = GameData::isKeyDown(*input->forwardKey);
+	bool isBackKeyDown = GameData::isKeyDown(*input->backKey);
+	bool isRightKeyDown = GameData::isKeyDown(*input->rightKey);
+	bool isLeftKeyDown = GameData::isKeyDown(*input->leftKey);
+
+	if (isForwardKeyDown && isBackKeyDown) {
 		return;
-	else if (GameData::isKeyDown(*input->forwardKey) && GameData::isKeyDown(*input->rightKey) && !GameData::isKeyDown(*input->leftKey)) {
-		yaw += 45.f;
+	} else if (isForwardKeyDown) {
 		keyPressed = true;
-	} else if (GameData::isKeyDown(*input->forwardKey) && GameData::isKeyDown(*input->leftKey) && !GameData::isKeyDown(*input->rightKey)) {
-		yaw -= 45.f;
+
+		if (isRightKeyDown && !isLeftKeyDown) {
+			yaw += 45.f;
+		} else if (isLeftKeyDown && !isRightKeyDown) {
+			yaw -= 45.f;
+		}
+	} else if (isBackKeyDown) {
 		keyPressed = true;
-	} else if (GameData::isKeyDown(*input->backKey) && GameData::isKeyDown(*input->rightKey) && !GameData::isKeyDown(*input->leftKey)) {
-		yaw += 135.f;
+
+		if (isRightKeyDown && !isLeftKeyDown) {
+			yaw += 135.f;
+		} else if (isLeftKeyDown && !isRightKeyDown) {
+			yaw -= 135.f;
+		} else {
+			yaw += 180.f;
+		}
+	} else if (isRightKeyDown && !isLeftKeyDown) {
 		keyPressed = true;
-	} else if (GameData::isKeyDown(*input->backKey) && GameData::isKeyDown(*input->leftKey) && !GameData::isKeyDown(*input->rightKey)) {
-		yaw -= 135.f;
-		keyPressed = true;
-	} else if (GameData::isKeyDown(*input->forwardKey)) {
-		keyPressed = true;
-	} else if (GameData::isKeyDown(*input->backKey)) {
-		yaw += 180.f;
-		keyPressed = true;
-	} else if (GameData::isKeyDown(*input->rightKey) && !GameData::isKeyDown(*input->leftKey)) {
 		yaw += 90.f;
+	} else if (isLeftKeyDown && !isRightKeyDown) {
 		keyPressed = true;
-	} else if (GameData::isKeyDown(*input->leftKey) && !GameData::isKeyDown(*input->rightKey)) {
 		yaw -= 90.f;
-		keyPressed = true;
 	}
 	if (yaw >= 180) yaw -= 360.f;
 
