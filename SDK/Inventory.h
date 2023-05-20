@@ -88,17 +88,13 @@ public:
 
 class PlayerInventoryProxy {
 private:
-	char pad_0x8[0x8];  // 0x8
+	char pad_0x0[0x10];  // 0x0
 public:
 	int selectedHotbarSlot;  // 0x10
 private:
 	char pad_0x14[0xAC];  // 0x14
 public:
 	Inventory* inventory;  // 0xC0
-
-	class Container* getContainer() {
-		return reinterpret_cast<Container*>((uintptr_t)(this) + 0xD0);
-	}
 };
 
 //Im not sure exactly where these unknown's go but the funcs we use work.
