@@ -109,7 +109,7 @@ private:
 	static void Actor_ascendLadder(Entity* _this);
 	static void Actor_swing(Entity* _this);
 	static void Actor_startSwimming(Entity* _this);
-	static void RakNetInstance_tick(RakNetInstance* _this, __int64 a2, __int64 a3);
+	static void RakNetInstance_tick(RakNetInstance* _this);
 	static float GameMode_getPickRange(GameMode* _this, __int64 a2, char a3);
 	static __int64 GameMode_attack(GameMode* _this, Entity*);
 	static __int64 ConnectionRequest_create(__int64 _this, __int64 privateKeyManager, void* a3, TextHolder* selfSignedId, TextHolder* serverAddress, __int64 clientRandomId, TextHolder* skinId, SkinData* skinData, __int64 capeData, CoolSkinData* coolSkinStuff, TextHolder* deviceId, int inputMode, int uiProfile, int guiScale, TextHolder* languageCode, bool sendEduModeParams, TextHolder* tenantId, __int64 unused, TextHolder* platformUserId, TextHolder* thirdPartyName, bool thirdPartyNameOnly, TextHolder* platformOnlineId, TextHolder* platformOfflineId, TextHolder* capeId);

@@ -88,7 +88,7 @@ void Hooks::Init() {
 		void* fullbright = reinterpret_cast<void*>(FindSignature("48 83 EC ? 80 B9 ? ? ? ? ? 48 8D 54 24 ? 48 8B 01 74 ? 41 B8 ? ? ? ? FF 50 ? 48 8B 10 48 85 D2 74 ? 48 8B 42 ? 48 8B 88 ? ? ? ? 48 85 C9 74 ? E8 ? ? ? ? 48 83 C4 ? C3 F3 0F 10 42 ? 48 83 C4 ? C3 41 B8 ? ? ? ? FF 50 ? 48 8B 10 48 85 D2 75 ? E8 ? ? ? ? CC E8 ? ? ? ? CC CC CC CC CC CC CC CC CC CC 40 53 48 83 EC ? 48 8B 01"));
 		g_Hooks.GetGammaHook = std::make_unique<FuncHook>(fullbright, Hooks::GetGamma);
 
-		void* RakNetInstance__tick = reinterpret_cast<void*>(FindSignature("48 89 5C 24 10 48 89 74 24 18 55 57 41 54 41 56 41 57 48 8D AC 24 20 FD FF FF 48 81 EC E0 03 00 00"));
+		void* RakNetInstance__tick = reinterpret_cast<void*>(FindSignature("48 89 5C 24 ? 48 89 74 24 ? 55 57 41 54 41 56 41 57 48 8D AC 24 ? ? ? ? 48 81 EC ? ? ? ? 48 8B 05 ? ? ? ? 48 33 C4 48 89 85 ? ? ? ? 48 8B F9 45 33 FF"));
 		g_Hooks.RakNetInstance_tickHook = std::make_unique<FuncHook>(RakNetInstance__tick, Hooks::RakNetInstance_tick);
 
 		void* ConnectionRequest__create = reinterpret_cast<void*>(FindSignature("40 55 53 56 57 41 54 41 55 41 56 41 57 48 8D AC 24 ?? ?? ?? ?? 48 81 EC ?? ?? ?? ?? 48 8B ?? ?? ?? ?? ?? 48 33 C4 48 89 85 ?? ?? ?? ?? 49 8B D9 48 89 55 E8"));
@@ -1069,10 +1069,10 @@ void Hooks::Actor_startSwimming(Entity* _this) {
 	oFunc(_this);
 }
 
-void Hooks::RakNetInstance_tick(RakNetInstance* _this, __int64 a2, __int64 a3) {
-	static auto oTick = g_Hooks.RakNetInstance_tickHook->GetFastcall<void, RakNetInstance*, __int64, __int64>();
+void Hooks::RakNetInstance_tick(RakNetInstance* _this) {
+	static auto oTick = g_Hooks.RakNetInstance_tickHook->GetFastcall<void, RakNetInstance*>();
 	GameData::setRakNetInstance(_this);
-	oTick(_this, a2, a3);
+	oTick(_this);
 }
 
 float Hooks::GameMode_getPickRange(GameMode* _this, __int64 a2, char a3) {
