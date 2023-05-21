@@ -1,48 +1,42 @@
 #pragma once
 
 class RakNetInstance {
-	char pad_0000[856];    //0x0000
+	char pad_0000[0x3C8];  // 0x0000
 public:
-	TextHolder numericalIp;  //0x0360
-	TextHolder serverIp;        //0x0380
-	uint32_t serverPort;   //0x03A0
+	TextHolder numericalIp;  // 0x03D0
+	TextHolder serverIp;
+	uint32_t serverPort;
 
-	private:
+private:
 	virtual ~RakNetInstance();
-	virtual __int64 onAppResumed(void);
-	virtual __int64 onAppSuspended(void);
-
 public:
 	virtual TextHolder* getLocalIps(TextHolder*);
 	virtual TextHolder* getLocalIp(TextHolder*);
-
-public:
-	virtual unsigned int getPort(void) const;
-
-private:
-	virtual __int64 getRefinedLocalIps(void) const;
-	virtual __int64 getConnectedGameInfo(void) const;
-
-public:
+	virtual __int64 getPort(void);
+	virtual __int64 getRefinedLocalIps(void);
+	virtual int getConnectedGameInfo(void);
 	virtual void setupNatPunch(bool);
-
-private:
-	virtual __int64 getNatPunchInfo(void) const;
-	virtual __int64 startNatPunchingClient(__int64);
-	virtual __int64 addConnectionStateListener(__int64);
-	virtual __int64 removeConnectionStateListener(__int64);
+	virtual int getNatPunchInfo(void);
+	virtual void startNatPunchingClient(std::string const &, short);
+	virtual void addConnectionStateListener(__int64*);
+	virtual void removeConnectionStateListener(__int64*);
+	virtual bool isIPv4Supported(void);
+	virtual bool isIPv6Supported(void);
+	virtual int getIPv4Port(void);
+	virtual int getIPv6Port(void);
+	virtual void host(__int64 const &);
+	virtual void connect(void *);
+	virtual void disconnect(void);
+	virtual void tick(void);
+	virtual void runEvents(void);
+	virtual bool isServer(void);
+	virtual int getTransportIdentifier(void);
+	virtual int getPeer(void);
+	virtual int getPeer1(void);
+	virtual void _onDisable(void);
+	virtual void _onEnable(void);
 
 public:
-	virtual bool isIPv4Supported(void) const;
-	virtual bool isIPv6Supported(void) const;
-
-private:
-	virtual __int64 getIPv4Port(void) const;
-	virtual __int64 getIPv6Port(void) const;
-	virtual __int64 getGUID(void) const;
-
-public:
-	bool isonaServer() { return !(serverIp.textLength == 0); }
+	bool isonaServer() { return !(serverIp.getTextLength() < 1); }
 
 };                         //Size: 0x0848
-
