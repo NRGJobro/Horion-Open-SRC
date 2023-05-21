@@ -107,6 +107,6 @@ ItemDescriptor::ItemDescriptor(int id, int16_t itemData) {
 
 Item *Item::setAllowOffhand(bool allow) {
 	using setAllowOffhand_t = Item*(__fastcall *)(Item*, bool);
-	setAllowOffhand_t setAllowOffhand = reinterpret_cast<setAllowOffhand_t>(FindSignature("80 89 22 01 00 00 ? 48 8B ? C3 CC CC CC CC CC 40"));
+	setAllowOffhand_t setAllowOffhand = reinterpret_cast<setAllowOffhand_t>(FindSignature("80 89 ? ? ? ? ? 48 8B C1 C3 CC CC CC CC CC 4C 8B DC"));
 	return setAllowOffhand(this, allow);
 }
