@@ -7,7 +7,7 @@ InventoryTransactionManager *Entity::getTransactionManager() {
 	if (offset == 0) {
 		offset = *reinterpret_cast<int*>(FindSignature("49 8D 8E ? ? ? ? E8 ? ? ? ? 90 48 8D 8D ? ? ? ? E8 ? ? ? ? 49 8B 06 48 8B 95") + 3);
 	}
-	return reinterpret_cast<InventoryTransactionManager *>(reinterpret_cast<__int64>(this) + offset);
+	return reinterpret_cast<InventoryTransactionManager *>(reinterpret_cast<__int64>(this) + 0x1218);
 }
 PlayerInventoryProxy *Player::getSupplies() {
 	static unsigned int offset = 0xB68;

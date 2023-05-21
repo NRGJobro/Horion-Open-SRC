@@ -72,15 +72,7 @@ public:
 	ItemStack targetItem;  //0x1A0
 };
 
-class InventoryTransaction {
-private:
-	char pad_0x0[8];
-
-public:
-	__int64 ptr;  // 0x008
-private:
-	char pad_0x10[0x58 - 16];  //0x10
-};
+class InventoryTransaction {};
 
 class InventoryTransactionManager {
 public:
