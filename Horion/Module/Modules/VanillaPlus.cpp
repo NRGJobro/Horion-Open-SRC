@@ -9,7 +9,7 @@ unsigned char* flyingItemsFuncPtr = 0;
 
 bool lastFastFlyingItems = false;
 
-VanillaPlus::VanillaPlus() : IModule(0, Category::MISC, "Tweaks the minecraft experience.") {
+VanillaPlus::VanillaPlus() : IModule(0x0, Category::MISC, "Tweaks the minecraft experience.") {
 	registerBoolSetting("Fast Item Lerp", &fastFlyingItems, true);
 }
 

@@ -1,6 +1,6 @@
 #include "AirSwim.h"
 
-AirSwim::AirSwim() : IModule(0, Category::MOVEMENT, "Swim in Air.") {
+AirSwim::AirSwim() : IModule(0x0, Category::MOVEMENT, "Swim in Air.") {
 }
 
 AirSwim::~AirSwim() {

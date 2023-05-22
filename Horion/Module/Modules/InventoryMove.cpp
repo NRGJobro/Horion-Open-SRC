@@ -1,6 +1,6 @@
 #include "InventoryMove.h"
 
-InventoryMove::InventoryMove() : IModule(0, Category::MOVEMENT, "Move even when you have your inventory open.") {
+InventoryMove::InventoryMove() : IModule(0x0, Category::MOVEMENT, "Move even when you have your inventory open.") {
 }
 
 InventoryMove::~InventoryMove() {

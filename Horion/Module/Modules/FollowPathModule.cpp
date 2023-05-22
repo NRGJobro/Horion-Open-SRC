@@ -2,7 +2,7 @@
 
 #include "../../../Utils/Logger.h"
 
-FollowPathModule::FollowPathModule() : IModule(0, Category::MOVEMENT, "Follows joe paths.") {}
+FollowPathModule::FollowPathModule() : IModule(0x0, Category::MOVEMENT, "Follows joe paths.") {}
 
 const char *FollowPathModule::getModuleName() {
 	return "FollowPath";

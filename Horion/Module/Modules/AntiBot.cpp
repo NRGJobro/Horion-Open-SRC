@@ -1,6 +1,6 @@
 #include "AntiBot.h"
 
-AntiBot::AntiBot() : IModule(0, Category::PLAYER, "Enable this module to filter out bots!") {
+AntiBot::AntiBot() : IModule(0x0, Category::PLAYER, "Enable this module to filter out bots!") {
 	registerBoolSetting("Hitbox Check", &hitboxCheck, hitboxCheck);
 	//registerBoolSetting("Name Check", &nameCheck, nameCheck);
 	registerBoolSetting("Invisible Check", &invisibleCheck, invisibleCheck);

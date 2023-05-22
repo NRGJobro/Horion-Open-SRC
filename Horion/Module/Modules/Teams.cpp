@@ -1,6 +1,6 @@
 #include "Teams.h"
 
-Teams::Teams() : IModule(0, Category::COMBAT, "Don't attack team members!") {
+Teams::Teams() : IModule(0x0, Category::COMBAT, "Don't attack team members!") {
 	registerBoolSetting("Is Allied", &alliedCheck, alliedCheck);
 	registerBoolSetting("Same Color", &colorCheck, colorCheck);
 }

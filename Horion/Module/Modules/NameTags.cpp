@@ -3,7 +3,7 @@
 #include "../../../Utils/Target.h"
 #include "../ModuleManager.h"
 
-NameTags::NameTags() : IModule(0, Category::VISUAL, "Shows better nametags.") {
+NameTags::NameTags() : IModule(0x0, Category::VISUAL, "Shows better nametags.") {
 	registerBoolSetting("Underline", &underline, underline);
 	registerBoolSetting("Armor", &displayArmor, displayArmor);
 	registerFloatSetting("Opacity", &opacity, opacity, 0.f, 1.f);

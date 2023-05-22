@@ -1,6 +1,6 @@
 #include "Xray.h"
 
-Xray::Xray() : IModule(0, Category::VISUAL, "Allows you to see certain blocks easier.") {
+Xray::Xray() : IModule(0x0, Category::VISUAL, "Allows you to see certain blocks easier.") {
 }
 
 Xray::~Xray() {

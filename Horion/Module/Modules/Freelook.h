@@ -8,7 +8,7 @@ public:
 	Vec2 Pos;
 	bool hold = true;
 
-	Freelook() : IModule(0, Category::VISUAL, "Look around freely without moving your rotation.") {
+	Freelook() : IModule(0x0, Category::VISUAL, "Look around freely without moving your rotation.") {
 		registerBoolSetting("Hold", &hold, hold);
 	}
 	~Freelook(){};

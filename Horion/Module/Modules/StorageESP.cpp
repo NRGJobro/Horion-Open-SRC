@@ -2,7 +2,7 @@
 
 #include "../../DrawUtils.h"
 
-StorageESP::StorageESP() : IModule(0, Category::VISUAL, "ESP for but storage blocks.") {
+StorageESP::StorageESP() : IModule(0x0, Category::VISUAL, "ESP for but storage blocks.") {
 	registerFloatSetting("Opacity", &opacity, opacity, 0.1f, 1.f);
 	mode.addEntry(EnumEntry("2D", 0)).addEntry(EnumEntry("3D", 1)).addEntry(EnumEntry("Outline", 2)).addEntry(EnumEntry("Corners", 3));
 	registerEnumSetting("Mode", &mode, 2);

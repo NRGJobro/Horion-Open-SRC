@@ -3,7 +3,7 @@
 #include "../ModuleManager.h"
 #include "../../../Utils/ClientColors.h"
 
-HudModule::HudModule() : IModule(0, Category::CLIENT, "Displays things like the ArrayList/TabGUI.") {
+HudModule::HudModule() : IModule(0x0, Category::CLIENT, "Displays things like the ArrayList/TabGUI.") {
 	registerBoolSetting("TabGui", &tabgui, tabgui);
 	registerBoolSetting("ClickToggle", &clickToggle, clickToggle);
 	registerBoolSetting("Watermark", &watermark, watermark);

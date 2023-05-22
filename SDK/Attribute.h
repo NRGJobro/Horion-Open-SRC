@@ -25,57 +25,57 @@ public:
 
 class HealthAttribute : public Attribute {
 public:
-	HealthAttribute() { this->hash = 25769804032; }
+	HealthAttribute() : Attribute(25769804032) {}
 };
 
 class PlayerHungerAttribute : public Attribute {
 public:
-	PlayerHungerAttribute() { this->hash = 4294967552; }
+	PlayerHungerAttribute() : Attribute(4294967552) {}
 };
 
 class MovementAttribute : public Attribute {
 public:
-	MovementAttribute() { this->hash = 38654705921; }
+	MovementAttribute() : Attribute(38654705921) {}
 };
 
 class AbsorptionAttribute : public Attribute {
 public:
-	AbsorptionAttribute() { this->hash = 55834575105; }
+	AbsorptionAttribute() : Attribute(55834575105) {}
 };
 
 class PlayerSaturationAttribute : public Attribute {
 public:
-	PlayerSaturationAttribute() { this->hash = 8589934848; }
+	PlayerSaturationAttribute() : Attribute(8589934848) {}
 };
 
 class AttackDamageAttribute : public Attribute {
 public:
-	AttackDamageAttribute() { this->hash = 51539607553; }
+	AttackDamageAttribute() : Attribute(51539607553) {}
 };
 
 class FollowRangeAttribute : public Attribute {
 public:
-	FollowRangeAttribute() { this->hash = 30064771073; }
+	FollowRangeAttribute() : Attribute(30064771073) {}
 };
 
 class PlayerLevelAttribute : public Attribute {
 public:
-	PlayerLevelAttribute() { this->hash = 17179869440; }
+	PlayerLevelAttribute() : Attribute(17179869440) {}
 };
 
 class PlayerExperienceAttribute : public Attribute {
 public:
-	PlayerExperienceAttribute() { this->hash = 21474836736; }
+	PlayerExperienceAttribute() : Attribute(21474836736) {}
 };
 
 class KnockbackResistanceAttribute : public Attribute {
 public:
-	KnockbackResistanceAttribute() { this->hash = 34359738369; }
+	KnockbackResistanceAttribute() : Attribute(34359738369) {}
 };
 
 class LuckAttribute : public Attribute {
 public:
-	LuckAttribute() { this->hash = 60129542401; }
+	LuckAttribute() : Attribute(60129542401) {}
 };
 
 class AttributeInstance {
@@ -87,6 +87,6 @@ public:
 	float maximumValue;
 	float currentValue;
 
-	~AttributeInstance();
-	virtual void tick(void);
+	virtual ~AttributeInstance() = default;
+	virtual void tick() {}
 };

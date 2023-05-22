@@ -461,8 +461,6 @@ __int64 Hooks::RenderText(__int64 a1, MinecraftUIRenderContext* renderCtx) {
 						static std::string name = "Horion";
 #ifdef _DEBUG
 						static std::string version = "dev";
-#elif defined _BETA
-						static std::string version = "beta";
 #else
 						static std::string version = "public";
 #endif

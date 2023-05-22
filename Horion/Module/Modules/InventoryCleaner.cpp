@@ -2,7 +2,7 @@
 
 #include "../ModuleManager.h"
 
-InventoryCleaner::InventoryCleaner() : IModule(0, Category::PLAYER, "Automatically throws not needed stuff out of your inventory.") {
+InventoryCleaner::InventoryCleaner() : IModule(0x0, Category::PLAYER, "Automatically throws not needed stuff out of your inventory.") {
 	registerBoolSetting("Tools", &keepTools, keepTools);
 	registerBoolSetting("Armor", &keepArmor, keepArmor);
 	registerBoolSetting("Food", &keepFood, keepFood);

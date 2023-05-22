@@ -1,6 +1,6 @@
 #include "NoSwing.h"
 
-NoSwing::NoSwing() : IModule(0, Category::PLAYER, "Disable arm swing animation (Server cancels the AnimatePacket being sent)") {
+NoSwing::NoSwing() : IModule(0x0, Category::PLAYER, "Disable arm swing animation (Server cancels the AnimatePacket being sent)") {
 	registerBoolSetting("Server", &server, server);
 }
 

@@ -1,7 +1,7 @@
 #include "NoWeb.h"
 #include "OffhandAllow.h"
 
-OffhandAllow::OffhandAllow() : IModule(0, Category::MISC, "Let's you place any item in your offhand") {}
+OffhandAllow::OffhandAllow() : IModule(0x0, Category::MISC, "Let's you place any item in your offhand") {}
 
 OffhandAllow::~OffhandAllow() {}
 

@@ -1,6 +1,6 @@
 #include "Glide.h"
 
-Glide::Glide() : IModule(0, Category::MOVEMENT, "Float down like a chicken.") {
+Glide::Glide() : IModule(0x0, Category::MOVEMENT, "Float down like a chicken.") {
 	registerFloatSetting("Value", &glideMod, glideMod, -2, 1);
 }
 

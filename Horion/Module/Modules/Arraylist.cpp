@@ -2,7 +2,7 @@
 #include "../../../Utils/ColorUtil.h"
 #include "../../../Utils/ClientColors.h"
 
-Arraylist::Arraylist() : IModule(0, Category::VISUAL, "Display your enabled modules on the HUD!") {
+Arraylist::Arraylist() : IModule(0x0, Category::VISUAL, "Display your enabled modules on the HUD!") {
 	registerFloatSetting("Opacity", &alpha, alpha, 0.f, 1.f);
 	registerFloatSetting("Color Speed", &cycleSpeed, cycleSpeed, 1.f, 5.f);
 	registerFloatSetting("Saturation", &saturation, saturation, 0.f, 1.f);
