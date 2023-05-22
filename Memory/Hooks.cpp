@@ -215,7 +215,7 @@ void Hooks::Init() {
 
 		// GameMode::vtable
 		{
-			uintptr_t** gameModeVtable = GetVtableFromSig("48 8d 05 ? ? ? ? 48 8b d9 48 89 01 8b fa 48 8b 89 ? ? ? ? 48 85 c9 74 ? 48 8b 01 ba ? ? ? ? ff 10 48 8b 8b", 3);
+			uintptr_t** gameModeVtable = GetVtableFromSig("48 8D ? ? ? ? ? 48 8B D9 48 89 01 48 8B 89 B0 00 00 00 48 85 C9 74 11 48 8B 01 BA 01 00 00 00 48 8B 00 FF 15 ? ? ? ? 48 8B 8B A8 00 00 00 48 85 C9 74 17 48 8B 01 BA 01 00 00 00 48 8B 00 48 83 C4 20 5B 48 FF 25 ? ? ? ? 48 83 C4 20 5B C3 CC CC CC CC CC CC CC 48 89 5C 24 10 48 89 74 24 18 48 89 7C 24 20 55 41 56 41 57 48 8D 6C 24 A0 48 81 EC 60 01 00 00 48 8B ? ? ? ? ? 48 33 C4 48 89 45 50", 3);
 			if (gameModeVtable == 0x0)
 				logF("GameMode signature not working!!!");
 			else {
