@@ -309,8 +309,8 @@ void Hooks::ClientInstanceScreenModel_sendChatMessage(void* _this, TextHolder* t
 	} else if (*message == '.') {
 		static std::once_flag flag;
 		std::call_once(flag, [] {
-			Game.getClientInstance()->getGuiData()->displayClientMessageF("%sYour Horion prefix is: \"%s%c%s\"", RED, YELLOW, cmdMgr->prefix, RED);
-			Game.getClientInstance()->getGuiData()->displayClientMessageF("%sEnter \"%s%cprefix .%s\" to reset your prefix", RED, YELLOW, cmdMgr->prefix, RED);
+			Game.getGuiData()->displayClientMessageF("%sYour Horion prefix is: \"%s%c%s\"", RED, YELLOW, cmdMgr->prefix, RED);
+			Game.getGuiData()->displayClientMessageF("%sEnter \"%s%cprefix .%s\" to reset your prefix", RED, YELLOW, cmdMgr->prefix, RED);
 		});
 	}
 	return oSendMessage(_this, text);
@@ -391,7 +391,7 @@ __int64 Hooks::UIScene_render(UIScene* uiscene, __int64 screencontext) {
 __int64 Hooks::RenderText(__int64 a1, MinecraftUIRenderContext* renderCtx) {
 	static auto oText = g_Hooks.RenderTextHook->GetFastcall<__int64, __int64, MinecraftUIRenderContext*>();
 
-	GuiData* dat = Game.getClientInstance()->getGuiData();
+	GuiData* dat = Game.getGuiData();
 
 	DrawUtils::setCtx(renderCtx, dat);
 	{
@@ -405,7 +405,7 @@ __int64 Hooks::RenderText(__int64 a1, MinecraftUIRenderContext* renderCtx) {
 
 		Game.frameCount++;
 
-		auto wid = Game.getClientInstance()->getGuiData()->windowSize;
+		auto wid = Game.getGuiData()->windowSize;
 
 		// Call PreRender() functions
 		moduleMgr->onPreRender(renderCtx);
@@ -448,7 +448,7 @@ __int64 Hooks::RenderText(__int64 a1, MinecraftUIRenderContext* renderCtx) {
 				if (shouldRenderTabGui) TabGui::render();
 
 				{
-					Vec2 windowSize = Game.getClientInstance()->getGuiData()->windowSize;
+					Vec2 windowSize = Game.getGuiData()->windowSize;
 					
 					// Draw Horion logo
 					if (shouldRenderWatermark) {
@@ -469,16 +469,16 @@ __int64 Hooks::RenderText(__int64 a1, MinecraftUIRenderContext* renderCtx) {
 
 						float nameLength = DrawUtils::getTextWidth(&name, nameTextSize);
 						float fullTextLength = nameLength + DrawUtils::getTextWidth(&version, versionTextSize);
-						Vec4 rect = Vec4(
-							windowSize.x - margin - fullTextLength - borderPadding * 2,
-							windowSize.y - margin - textHeight,
-							windowSize.x - margin + borderPadding,
-							windowSize.y - margin);
+						Vec4 rect(windowSize.x - margin - fullTextLength - borderPadding * 2,
+								  windowSize.y - margin - textHeight,
+								  windowSize.x - margin + borderPadding,
+								  windowSize.y - margin);
 
 						DrawUtils::drawRectangle(rect, MC_Color(color), 1.f, 2.f);
 						DrawUtils::fillRectangle(rect, ClientColors::watermarkBackgroundColor, 1.f);
 						DrawUtils::drawText(Vec2(rect.x + borderPadding, rect.y), &name, MC_Color(color), nameTextSize);
 						DrawUtils::drawText(Vec2(rect.x + borderPadding + nameLength, rect.w - 7), &version, MC_Color(color), versionTextSize);
+
 					}
 				}
 			}
@@ -858,24 +858,26 @@ int Hooks::BlockLegacy_getRenderLayer(BlockLegacy* a1) {
 	static auto xrayMod = moduleMgr->getModule<Xray>();
 	if (xrayMod->isEnabled()) {
 		char* text = a1->name.getText();
-		if (strstr(text, "ore") == NULL)
-			if (strcmp(text, "lava") != NULL)
-				if (strcmp(text, "water") != NULL)
-					if (strcmp(text, "portal") != NULL)
-						if (strcmp(text, "amethyst_block") != NULL)
-							if (strcmp(text, "ancient_debris") != NULL)
-								if (strcmp(text, "command_block") != NULL)
-									if (strcmp(text, "repeating_command_block") != NULL)
-										if (strcmp(text, "chain_command_block") != NULL)
-											if (strcmp(text, "structure_block") != NULL)
-												if (strcmp(text, "deny") != NULL)
-													if (strcmp(text, "allow") != NULL)
-														if (strcmp(text, "bedrock") != NULL)
-															if (strcmp(text, "border_block") != NULL)
-																return 10;
+		if (strstr(text, "ore") == NULL &&
+			strcmp(text, "lava") != NULL &&
+			strcmp(text, "water") != NULL &&
+			strcmp(text, "portal") != NULL &&
+			strcmp(text, "amethyst_block") != NULL &&
+			strcmp(text, "ancient_debris") != NULL &&
+			strcmp(text, "command_block") != NULL &&
+			strcmp(text, "repeating_command_block") != NULL &&
+			strcmp(text, "chain_command_block") != NULL &&
+			strcmp(text, "structure_block") != NULL &&
+			strcmp(text, "deny") != NULL &&
+			strcmp(text, "allow") != NULL &&
+			strcmp(text, "bedrock") != NULL &&
+			strcmp(text, "border_block") != NULL) {
+			return 10;
+		}
 	}
 	return oFunc(a1);
 }
+
 
 __int8* Hooks::BlockLegacy_getLightEmission(BlockLegacy* a1, __int8* a2) {
 	static auto oFunc = g_Hooks.BlockLegacy_getLightEmissionHook->GetFastcall<__int8*, BlockLegacy*, __int8*>();
