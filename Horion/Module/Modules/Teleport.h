@@ -4,9 +4,10 @@
 
 class Teleport : public IModule {
 private:
-	bool hasClicked = false;
 	bool onlyHand = false;
-	bool bypass = false;
+	bool lerp = false;
+	float lerpSpeed = 0.1f;
+	bool hasClicked = false;
 	bool shouldTP = false;
 	Vec3 tpPos;
 

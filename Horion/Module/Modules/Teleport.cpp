@@ -2,7 +2,8 @@
 
 Teleport::Teleport() : IModule(0, Category::MISC, "Click a block to teleport to it.") {
 	registerBoolSetting("Only Hand", &onlyHand, onlyHand);
-	registerBoolSetting("Push", &bypass, bypass);
+	registerBoolSetting("Lerp", &lerp, lerp);
+	registerFloatSetting("Lerp Speed", &lerpSpeed, 0.1f, 0.01f, 1.f);
 }
 
 Teleport::~Teleport() {}
@@ -32,8 +33,8 @@ void Teleport::onTick(GameMode* gm) {
 
 	if (shouldTP && GameData::isKeyDown(*Game.getClientInstance()->getGameSettingsInput()->sneakKey)) {
 		tpPos.y += (gm->player->getPos()->y - gm->player->getAABB()->lower.y) + 1;  // eye height + 1
-		if (bypass) {
-			Game.getLocalPlayer()->lerpTo(tpPos, Vec2(1, 1), (int)std::fmax((int)(gm->player->getPos()->dist(tpPos) * 0.1), 1));
+		if (lerp) {
+			Game.getLocalPlayer()->lerpTo(tpPos, Vec2(1, 1), (int)std::fmax((int)(gm->player->getPos()->dist(tpPos) * lerpSpeed), 1));
 		} else {
 			gm->player->setPos(tpPos);
 		}
