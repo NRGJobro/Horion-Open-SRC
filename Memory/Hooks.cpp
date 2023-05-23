@@ -212,8 +212,10 @@ void Hooks::Init() {
 
 		// GameMode::vtable
 		{
-			uintptr_t** gameModeVtable = *reinterpret_cast<uintptr_t***>(Game.getLocalPlayer()->getGameMode());
-			if (gameModeVtable == 0x0)
+			uintptr_t sigOffset = FindSignature("48 8D 05 ? ? ? ? 48 89 01 48 89 51 ? 48 C7 41 ? ? ? ? ? C7 41");
+			int offset = *reinterpret_cast<int*>(sigOffset + 3);
+			uintptr_t** gameModeVtable = reinterpret_cast<uintptr_t**>(sigOffset + offset + /*length of instruction*/ 7);
+			if (gameModeVtable == 0x0 || sigOffset == 0x0)
 				logF("GameMode signature not working!!!");
 			else {
 				g_Hooks.GameMode_startDestroyBlockHook = std::make_unique<FuncHook>(gameModeVtable[1], Hooks::GameMode_startDestroyBlock);
