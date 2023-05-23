@@ -228,12 +228,12 @@ void Hooks::Init() {
 
 		// PackAccessStrategy vtables for isTrusted
 		{
-			uintptr_t** directoryPackVtable = GetVtableFromSig("48 8d 05 ? ? ? ? 49 89 06 49 8d 76 ? 45 33 e4", 3);
+			uintptr_t** directoryPackVtable = GetVtableFromSig("48 8D 05 ? ? ? ? 48 89 06 45 33 E4 4C 89 66", 3);
 			if (directoryPackVtable == 0x0)
 				logF("directoryPackVtable signature not working!!!");
 			else g_Hooks.DirectoryPackAccessStrategy__isTrustedHook = std::make_unique<FuncHook>(directoryPackVtable[6], Hooks::DirectoryPackAccessStrategy__isTrusted);
 
-			uintptr_t** directoryPackVtable2 = GetVtableFromSig("48 8d 05 ? ? ? ? 48 89 01 4c 8d b1 ? ? ? ? 49 8b 46", 3);
+			uintptr_t** directoryPackVtable2 = GetVtableFromSig("48 8D 05 ? ? ? ? 48 89 01 4C 8D A9", 3);
 			if (directoryPackVtable2 == 0x0)
 				logF("directoryPackVtable2 signature not working!!!");
 			else g_Hooks.ZipPackAccessStrategy__isTrustedHook = std::make_unique<FuncHook>(directoryPackVtable2[6], Hooks::ReturnTrue);
