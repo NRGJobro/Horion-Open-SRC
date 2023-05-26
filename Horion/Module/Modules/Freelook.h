@@ -18,9 +18,8 @@ public:
 		if (Game.getLocalPlayer() != nullptr)
 		oldPos = Game.getLocalPlayer()->viewAngles; 
 	}
-	void onDisable() override { Game.getLocalPlayer()->setRot(oldPos);
-	}
-	bool callWhenDisabled() override {
-		return true;
-	}
+	void onDisable() override { Game.getLocalPlayer()->setRot(oldPos); }
+	virtual bool isFlashMode() override {
+		return hold;
+	};
 };
