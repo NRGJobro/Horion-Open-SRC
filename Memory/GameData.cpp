@@ -16,18 +16,18 @@ size_t AABBHasher::operator()(const AABB& i) const {
 	return Utils::posToHash(i.lower);
 }
 void GameData::retrieveClientInstance() {
-	static uintptr_t clientInstanceOffset = 0x5470B68;//48 8B 89 ? ? ? ? 48 8B 01 48 FF A0 ? ? ? ? CC CC CC CC CC CC CC CC CC CC CC CC CC CC CC 40 53 48 83 EC ? 48 8B DA
-	Game.clientInstance = reinterpret_cast<ClientInstance*>(Utils::readPointer<uintptr_t*>(clientInstanceOffset, {0x0, 0x0, 0x48}));
-	/*static uintptr_t clientInstanceOffset = 0x0;
+	/* static uintptr_t clientInstanceOffset = 0x5470B68;  // 48 8B 89 ? ? ? ? 48 8B 01 48 FF A0 ? ? ? ? CC CC CC CC CC CC CC CC CC CC CC CC CC CC CC 40 53 48 83 EC ? 48 8B DA
+	Game.clientInstance = reinterpret_cast<ClientInstance*>(Utils::readPointer<uintptr_t*>(clientInstanceOffset, {0x0, 0x0, 0x48}));*/
+	static uintptr_t clientInstanceOffset = 0x0;
 	if (clientInstanceOffset == 0x0) {
-		clientInstanceOffset = GetOffsetFromSig("48 8B 15 ? ? ? ? 4C 8B 02 4C 89 06 40 84 FF 74 ? 48 8B CD E8 ? ? ? ? 48 8B C6 48 8B 4C 24 ? 48 33 CC E8 ? ? ? ? 48 8B 5C 24 ? 48 8B 6C 24 ? 48 8B 74 24 ? 48 83 C4 ? 5F C3 B9 ? ? ? ? E8 ? ? ? ? CC E8 ? ? ? ? CC CC CC CC CC CC CC CC CC CC CC 48 89 5C 24 ? 48 89 6C 24 ? 56", 3);
+		clientInstanceOffset = GetOffsetFromSig("48 8B 15 ? ? ? ? 4C 8B 02 4C 89 06 40 84 FF 74 0C 48 8D 0D ? ? ? ? E8 ? ? ? ? 48 8B C6 48 8B 4C ? ? 48 33 CC E8 ? ? ? ? 48 8B 5C ? ? 48 8B 74 ? ? 48 83 C4 ? 5F C3 E8 ? ? ? ? 90 CC CC CC CC CC CC CC CC CC 48 89 5C ? ? 48 89 6C", 3);
 		logF("Client: %llX", clientInstanceOffset);
 	}
-	Game.clientInstance = reinterpret_cast<ClientInstance*>(Utils::readPointer<uintptr_t*>(clientInstanceOffset, {0x0, 0x0, 0x58}));
+	Game.clientInstance = reinterpret_cast<ClientInstance*>(Utils::readPointer<uintptr_t*>(clientInstanceOffset, {0x0, 0x0, 0x48}));
 #ifdef _DEBUG
 	if (Game.clientInstance == 0)
 		throw std::exception("Client Instance is 0");
-#endif*/
+#endif
 }
 
 bool GameData::canUseMoveKeys() {
