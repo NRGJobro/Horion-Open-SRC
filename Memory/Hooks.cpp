@@ -98,7 +98,7 @@ void Hooks::Init() {
 		g_Hooks.SkinRepository___loadSkinPackHook = std::make_unique<FuncHook>(_getSkinPack, Hooks::SkinRepository___loadSkinPack);
 
 #ifdef TEST_DEBUG
-		void* addAction = reinterpret_cast<void*>(FindSignature("48 89 5C 24 ? 55 56 57 41 56 41 57 48 83 EC 30 45 0F B6 F8 4C 8B F2 48 8B F1 48 8B 01 48 8B 88 ? ? ? ? 48 85 C9"));
+		void* addAction = reinterpret_cast<void*>(FindSignature("48 89 5C 24 ? 55 56 57 41 56 41 57 48 83 EC ? 45 0F B6 F8 4C 8B F2 48 8B F1 48 8B 01 48 8B 88"));
 		g_Hooks.InventoryTransactionManager__addActionHook = std::make_unique<FuncHook>(addAction, Hooks::InventoryTransactionManager__addAction);
 #endif
 
@@ -564,7 +564,7 @@ float* Hooks::Dimension_getFogColor(Dimension* _this, float* color, __int64 a3, 
 	return oGetFogColor(_this, color, a3, a4);
 }
 
-float Hooks::Dimension_getTimeOfDay(Dimension* _this, int a2, float a3) {
+float Hooks::Dimension_getTimeOfDay(Dimension* _this, int time, float a) {
 	static auto oGetTimeOfDay = g_Hooks.Dimension_getTimeOfDayHook->GetFastcall<float, Dimension*, int, float>();
 
 	static auto timeChange = moduleMgr->getModule<TimeChanger>();
@@ -572,10 +572,10 @@ float Hooks::Dimension_getTimeOfDay(Dimension* _this, int a2, float a3) {
 		return timeChange->modifier;
 	}
 
-	return oGetTimeOfDay(_this, a2, a3);
+	return oGetTimeOfDay(_this, time, a);
 }
 
-float Hooks::Dimension_getSunIntensity(Dimension* a1, float a2, Vec3* a3, float a4) {
+float Hooks::Dimension_getSunIntensity(Dimension* _this, float a, Vec3* viewVector, float minInfluenceAngle) {
 	static auto oGetSunIntensity = g_Hooks.Dimension_getSunIntensityHook->GetFastcall<float, Dimension*, float, Vec3*, float>();
 
 	static auto nightMod = moduleMgr->getModule<NightMode>();
@@ -583,7 +583,7 @@ float Hooks::Dimension_getSunIntensity(Dimension* a1, float a2, Vec3* a3, float 
 		return -0.5f;
 	}
 
-	return oGetSunIntensity(a1, a2, a3, a4);
+	return oGetSunIntensity(_this, a, viewVector, minInfluenceAngle);
 }
 
 void Hooks::ChestBlockActor_tick(ChestBlockActor* _this, BlockSource* source) {
@@ -791,11 +791,11 @@ void Hooks::LoopbackPacketSender_sendToServer(LoopbackPacketSender* a, Packet* p
 	oFunc(a, packet);
 }
 
-void Hooks::LoopbackPacketSender_sendToClient(networkhandler* _this, const void* networkIdentifier, Packet* packet, int a4) {
+void Hooks::LoopbackPacketSender_sendToClient(networkhandler* _this, const void* networkIdentifier, Packet* packet, int subId) {
 	auto func = g_Hooks.LoopbackPacketSender_sendToClientHook->GetFastcall<void, networkhandler*, const void*, Packet*, int>();
 	
 	moduleMgr->onSendClientPacket(packet);
-	func(_this, networkIdentifier, packet, a4);
+	func(_this, networkIdentifier, packet, subId);
 }
 
 void Hooks::MultiLevelPlayer_tick(EntityList* _this) {
@@ -806,7 +806,7 @@ void Hooks::MultiLevelPlayer_tick(EntityList* _this) {
 	GameData::EntityList_tick(_this);
 }
 
-void Hooks::GameMode_startDestroyBlock(GameMode* _this, Vec3i* a2, uint8_t face, void* a4, void* a5) {
+void Hooks::GameMode_startDestroyBlock(GameMode* _this, Vec3i* pos, uint8_t face, void* a4, void* a5) {
 	static auto oFunc = g_Hooks.GameMode_startDestroyBlockHook->GetFastcall<void, GameMode*, Vec3i*, uint8_t, void*, void*>();
 
 	static auto nukerModule = moduleMgr->getModule<Nuker>();
@@ -843,7 +843,7 @@ void Hooks::GameMode_startDestroyBlock(GameMode* _this, Vec3i* a2, uint8_t face,
 		return;
 	}
 
-	oFunc(_this, a2, face, a4, a5);
+	oFunc(_this, pos, face, a4, a5);
 }
 
 void Hooks::HIDController_keyMouse(HIDController* _this, void* a2, void* a3) {
@@ -1077,7 +1077,7 @@ void Hooks::RakNetInstance_tick(RakNetInstance* _this) {
 	oTick(_this);
 }
 
-float Hooks::GameMode_getPickRange(GameMode* _this, __int64 a2, char a3) {
+float Hooks::GameMode_getPickRange(GameMode* _this, __int64 currentInputMode, char isVR) {
 	static auto oFunc = g_Hooks.GameMode_getPickRangeHook->GetFastcall<float, GameMode*, __int64, char>();
 
 	if (Game.getLocalPlayer() != nullptr) {
@@ -1090,7 +1090,7 @@ float Hooks::GameMode_getPickRange(GameMode* _this, __int64 a2, char a3) {
 			return 255;
 	}
 
-	return oFunc(_this, a2, a3);
+	return oFunc(_this, currentInputMode, isVR);
 }
 
 __int64 Hooks::ConnectionRequest_create(__int64 _this, __int64 privateKeyManager, void* a3, TextHolder* selfSignedId, TextHolder* serverAddress, __int64 clientRandomId, TextHolder* skinId, SkinData* skinData, __int64 capeData, CoolSkinData* coolSkinStuff, TextHolder* deviceId, int inputMode, int uiProfile, int guiScale, TextHolder* languageCode, bool sendEduModeParams, TextHolder* tenantId, __int64 unused, TextHolder* platformUserId, TextHolder* thirdPartyName, bool thirdPartyNameOnly, TextHolder* platformOnlineId, TextHolder* platformOfflineId, TextHolder* capeId) {
@@ -1190,9 +1190,9 @@ __int64 Hooks::ConnectionRequest_create(__int64 _this, __int64 privateKeyManager
 	return res;
 }
 
-void Hooks::InventoryTransactionManager_addAction(InventoryTransactionManager* a1, InventoryAction* a2) {
+void Hooks::InventoryTransactionManager_addAction(InventoryTransactionManager* _this, InventoryAction* action) {
 	static auto Func = g_Hooks.InventoryTransactionManager_addActionHook->GetFastcall<void, InventoryTransactionManager*, InventoryAction*>();
-	Func(a1, a2);
+	Func(_this, action);
 }
 
 bool Hooks::DirectoryPackAccessStrategy__isTrusted(__int64 _this) {
@@ -1289,17 +1289,11 @@ void Hooks::Actor__setRot(Entity* _this, Vec2& angle) {
 	func(_this, angle);
 }
 
-void Hooks::InventoryTransactionManager__addAction(InventoryTransactionManager* _this, InventoryAction& action) {
-	auto func = g_Hooks.InventoryTransactionManager__addActionHook->GetFastcall<void, InventoryTransactionManager*, InventoryAction&>();
+void Hooks::InventoryTransactionManager__addAction(Player* _this, InventoryAction* action, char a3) {
+	auto func = g_Hooks.InventoryTransactionManager__addActionHook->GetFastcall<void, Player*, InventoryAction*, char>();
 
 #ifdef TEST_DEBUG
-	char* srcName = "none";
-	if (action.sourceItem.item && *action.sourceItem.item)
-		srcName = (*action.sourceItem.item)->name.getText();
-	char* targetName = "none";
-	if (action.targetItem.item && *action.targetItem.item)
-		targetName = (*action.targetItem.item)->name.getText();
-	logF("%i %i %i %s %s", action.type, action.slot, action.sourceType, srcName, targetName, action.sourceType);
+	Game.getGuiData()->displayClientMessageF("type: %i sourceType: %i flags: %i slot: %i sourceItemCount: %i", action->type, action->sourceType, action->flags, action->slot, action->sourceItem.count);
 
 	/*if(/*action.slot == 14 && action.sourceType == 124 && strcmp(targetName, "none") == 0 && *strcmp(srcName, "stone_shovel") == 0){
 		std::string tag = "{ench:[{id:9s,lvl:1s}]}";
@@ -1310,8 +1304,7 @@ void Hooks::InventoryTransactionManager__addAction(InventoryTransactionManager* 
 		action.targetItem.setUserData(std::move(Mojangson::parseTag(tag)));
 	}*/
 #endif
-
-	func(_this, action);
+	func(_this, action, a3);
 }
 
 void Hooks::LevelRendererPlayer__renderNameTags(__int64 a1, __int64 a2, TextHolder* a3, __int64 a4) {

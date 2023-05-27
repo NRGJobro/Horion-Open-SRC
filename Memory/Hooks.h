@@ -124,7 +124,7 @@ private:
 	static bool Mob__isImmobile(Entity*);
 	static void Actor__setRot(Entity* _this, Vec2& angle);
 	static bool playerCallBack(Player* lp, __int64 a2, __int64 a3);
-	static void InventoryTransactionManager__addAction(InventoryTransactionManager*, InventoryAction&);
+	static void InventoryTransactionManager__addAction(Player* _this, InventoryAction* a2, char a3);
 	static void LevelRendererPlayer__renderNameTags(__int64 a1, __int64 a2, TextHolder* name, __int64 a4);
 	static void KeyMapHookCallback(unsigned char key, bool isDown);
 	static float getDestroySpeed(Player* _this, Block& block);
