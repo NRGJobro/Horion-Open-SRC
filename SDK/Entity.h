@@ -583,7 +583,7 @@ public:
 		return *reinterpret_cast<class Level **>(reinterpret_cast<__int64>(this) + 0x368);
 	}
 
-	void lerpTo(Vec3 const &pos, Vec2 const &a2, int a3);
+	void lerpTo(Vec3 const &pos, Vec2 const &rot, int steps);
 };
 #pragma pack(pop)
 
