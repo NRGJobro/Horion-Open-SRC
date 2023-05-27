@@ -819,16 +819,16 @@ void Hooks::GameMode_startDestroyBlock(GameMode* _this, Vec3i* pos, uint8_t face
 		const bool isAutoMode = nukerModule->isAutoMode();
 
 		BlockSource* region = Game.getLocalPlayer()->region;
-		auto selectedBlockId = ((region->getBlock(*a2)->blockLegacy))->blockId;
-		uint8_t selectedBlockData = region->getBlock(*a2)->data;
+		auto selectedBlockId = ((region->getBlock(*pos)->blockLegacy))->blockId;
+		uint8_t selectedBlockData = region->getBlock(*pos)->data;
 
 		if (!isAutoMode) {
 			for (int x = -range; x < range; x++) {
 				for (int y = -range; y < range; y++) {
 					for (int z = -range; z < range; z++) {
-						tempPos.x = a2->x + x;
-						tempPos.y = a2->y + y;
-						tempPos.z = a2->z + z;
+						tempPos.x = pos->x + x;
+						tempPos.y = pos->y + y;
+						tempPos.z = pos->z + z;
 						if (tempPos.y > 0) {
 							Block* blok = region->getBlock(tempPos);
 							uint8_t data = blok->data;
