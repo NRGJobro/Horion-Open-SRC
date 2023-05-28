@@ -44,7 +44,7 @@ void GuiData::displayClientMessageNoSendF(const char *fmt, ...) {
 	va_end(arg);
 }
 
-mce::MaterialPtr::MaterialPtr(const std::string &materialName) {
+mce::MaterialPtr::MaterialPtr(const HashedString &materialName) {
 	using materialPtrConst_t = void(__fastcall *)(mce::MaterialPtr *, __int64, const HashedString &);
 	static materialPtrConst_t materialPtrConst = reinterpret_cast<materialPtrConst_t>(FindSignature("48 89 5C 24 ? 48 89 74 24 ? 48 89 4C 24 ? 57 48 83 EC ? 4C 8B CA"));
 
@@ -55,8 +55,7 @@ mce::MaterialPtr::MaterialPtr(const std::string &materialName) {
 		renderGroupBase = sig + 4 + off;
 	}
 
-	HashedString hashedStr(materialName);
-	materialPtrConst(this, renderGroupBase, hashedStr);
+	materialPtrConst(this, renderGroupBase, materialName);
 }
 
 void mce::Mesh::renderMesh(__int64 screenContext, mce::MaterialPtr *material, size_t numTextures, __int64 **textureArray) {

@@ -94,14 +94,14 @@ void DrawUtils::setCtx(MinecraftUIRenderContext* ctx, GuiData* gui) {
 		//uintptr_t sigOffset = FindSignature("4C 8D 05 ?? ?? ?? ?? 48 8B D3 48 8B CF 48 8B 5C 24 ?? 0F 28 7C 24 ?? 44 0F 28 44 24 ?? 48");
 		//int offset = *reinterpret_cast<int*>(sigOffset + 3);
 		//uiMaterial = reinterpret_cast<MaterialPtr*>(sigOffset + offset + 7);
-		uiMaterial = reinterpret_cast<MaterialPtr*>(new mce::MaterialPtr("ui_fill_color"));
+		uiMaterial = reinterpret_cast<MaterialPtr*>(new mce::MaterialPtr(HashedString("ui_fill_color")));
 	}
 	if (entityFlatStaticMaterial == nullptr) {
 		//entityFlatStaticMaterial = reinterpret_cast<MaterialPtr*>(Game.getClientInstance()->itemInHandRenderer->entityLineMaterial.materialPtr);
-		entityFlatStaticMaterial = reinterpret_cast<MaterialPtr*>(new mce::MaterialPtr("selection_overlay"));
+		entityFlatStaticMaterial = reinterpret_cast<MaterialPtr*>(new mce::MaterialPtr(HashedString("selection_overlay")));
 	}
 	if (blendMaterial == nullptr) {
-		blendMaterial = reinterpret_cast<MaterialPtr*>(new mce::MaterialPtr("fullscreen_cube_overlay_blend"));
+		blendMaterial = reinterpret_cast<MaterialPtr*>(new mce::MaterialPtr(HashedString("fullscreen_cube_overlay_blend")));
 	}
 }
 
