@@ -792,7 +792,7 @@ void Hooks::LoopbackPacketSender_sendToServer(LoopbackPacketSender* a, Packet* p
 }
 
 void Hooks::LoopbackPacketSender_sendToClient(networkhandler* _this, const void* networkIdentifier, Packet* packet, int subId) {
-	auto func = g_Hooks.LoopbackPacketSender_sendToClientHook->GetFastcall<void, networkhandler*, const void*, Packet*, int>();
+	static auto func = g_Hooks.LoopbackPacketSender_sendToClientHook->GetFastcall<void, networkhandler*, const void*, Packet*, int>();
 	
 	moduleMgr->onSendClientPacket(packet);
 	func(_this, networkIdentifier, packet, subId);
@@ -1242,18 +1242,18 @@ GamerTextHolder* Hooks::toStyledString(__int64 strIn, GamerTextHolder* strOut) {
 }
 
 __int64 Hooks::InGamePlayScreen___renderLevel(__int64 playScreen, __int64 a2, __int64 a3) {
-	auto func = g_Hooks.InGamePlayScreen___renderLevelHook->GetFastcall<__int64, __int64, __int64, __int64>();
+	static auto func = g_Hooks.InGamePlayScreen___renderLevelHook->GetFastcall<__int64, __int64, __int64, __int64>();
 	return func(playScreen, a2, a3);
 }
 
 __int64 Hooks::GameMode_attack(GameMode* _this, Entity* ent) {
-	auto func = g_Hooks.GameMode_attackHook->GetFastcall<__int64, GameMode*, Entity*>();
+	static auto func = g_Hooks.GameMode_attackHook->GetFastcall<__int64, GameMode*, Entity*>();
 	moduleMgr->onAttack(ent);
 	return func(_this, ent);
 }
 
 void Hooks::LocalPlayer__updateFromCamera(__int64 a1, Camera* camera, __int64* a3, Entity* a4) {
-	auto func = g_Hooks.LocalPlayer__updateFromCameraHook->GetFastcall<__int64, __int64, Camera*, __int64*, Entity*>();
+	static auto func = g_Hooks.LocalPlayer__updateFromCameraHook->GetFastcall<__int64, __int64, Camera*, __int64*, Entity*>();
 	auto freecamMod = moduleMgr->getModule<Freecam>();
 	freecamMod->camera = camera;
 	//camera->nearClippingPlane = 0.000001;
@@ -1262,7 +1262,7 @@ void Hooks::LocalPlayer__updateFromCamera(__int64 a1, Camera* camera, __int64* a
 }
 
 bool Hooks::Mob__isImmobile(Entity* ent) {
-	auto func = g_Hooks.Mob__isImmobileHook->GetFastcall<bool, Entity*>();
+	static auto func = g_Hooks.Mob__isImmobileHook->GetFastcall<bool, Entity*>();
 	static auto freecamMod = moduleMgr->getModule<Freecam>();
 	static auto antiImmobileMod = moduleMgr->getModule<AntiImmobile>();
 	if (freecamMod->isEnabled())
@@ -1274,7 +1274,7 @@ bool Hooks::Mob__isImmobile(Entity* ent) {
 }
 
 void Hooks::Actor__setRot(Entity* _this, Vec2& angle) {
-	auto func = g_Hooks.Actor__setRotHook->GetFastcall<void, Entity*, Vec2&>();
+	static auto func = g_Hooks.Actor__setRotHook->GetFastcall<void, Entity*, Vec2&>();
 	static auto killauraMod = moduleMgr->getModule<Killaura>();
 	static auto freelookMod = moduleMgr->getModule<Freelook>();
 	static auto freecamMod = moduleMgr->getModule<Freecam>();
@@ -1290,7 +1290,7 @@ void Hooks::Actor__setRot(Entity* _this, Vec2& angle) {
 }
 
 void Hooks::InventoryTransactionManager__addAction(Player* _this, InventoryAction* action, char a3) {
-	auto func = g_Hooks.InventoryTransactionManager__addActionHook->GetFastcall<void, Player*, InventoryAction*, char>();
+	static auto func = g_Hooks.InventoryTransactionManager__addActionHook->GetFastcall<void, Player*, InventoryAction*, char>();
 
 #ifdef TEST_DEBUG
 	Game.getGuiData()->displayClientMessageF("type: %i sourceType: %i flags: %i slot: %i sourceItemCount: %i", action->type, action->sourceType, action->flags, action->slot, action->sourceItem.count);
@@ -1334,7 +1334,7 @@ float Hooks::getDestroySpeed(Player* _this, Block& block) {
 }
 
 bool Hooks::Actor__isInWall(Entity* ent) {
-	auto func = g_Hooks.ActorisInWallHook->GetFastcall<bool, Entity*>();
+	static auto func = g_Hooks.ActorisInWallHook->GetFastcall<bool, Entity*>();
 	static auto nofallMod = moduleMgr->getModule<NoFall>();
 
 	if (nofallMod->isEnabled() && nofallMod->mode.selected == 4 /*&& Game.getLocalPlayer() == ent*/) {
