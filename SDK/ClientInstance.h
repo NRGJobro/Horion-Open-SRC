@@ -103,13 +103,10 @@ public:
 	mce::TexturePtr atlasTexture;  // 0x140
 
 	Vec3& getOrigin() {
-		return *(Vec3*)((char*)this + (0x7A8));
-	}
-
-	__int64 getLevelRendererPlayer() {
-		return reinterpret_cast<__int64>(this) + 0x310;
+		return *(Vec3*)((char*)this + (0x79C));
 	}
 };
+
 class HitDetectSystem;
 
 struct FontRepository_FontList_FontEntry {
@@ -274,7 +271,7 @@ public:
 	Vec2 getFov() {
 		Vec2 fov;
 		fov.x = *reinterpret_cast<float*>((uintptr_t)(this) + 0x690);
-		fov.y = *reinterpret_cast<float*>((uintptr_t)(this) + 0x6A0);
+		fov.y = *reinterpret_cast<float*>((uintptr_t)(this) + 0x6A4);
 		return fov;
 	}
 
