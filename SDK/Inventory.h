@@ -79,13 +79,6 @@ public:
 	}
 };
 
-class Container {
-public:
-	class ItemStack* getItemStackFromSlot(int slot){
-		return Utils::CallVFunc<5, class ItemStack*, int>(this, slot);
-	}
-};
-
 class PlayerInventoryProxy {
 private:
 	char pad_0x0[0x10];  // 0x0

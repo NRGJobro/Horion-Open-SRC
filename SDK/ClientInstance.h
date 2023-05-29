@@ -229,36 +229,30 @@ class CameraManager;
 
 class ClientInstance {
 private:
-	char pad_0000[184];                                 // 0x0000
+	char pad_0x0[0xB8];  // 0x0
 public:
-	class MinecraftGame* minecraftGame;                // 0x00B8
-	class Minecraft* minecraft;                        // 0x00C0
+	MinecraftGame* minecraftGame;  // 0xB8
+	Minecraft* minecraft;          // 0xC0
 private:
-	char pad_00C8[8];                                   // 0x00C8
+	char pad_0xC8[0x8];  // 0xC8
 public:
-	class LevelRenderer* levelRenderer;                // 0x00D0
+	LevelRenderer* levelRenderer;  // 0xD0
 private:
-	char pad_00D8[8];                                   // 0x00D8
+	char pad_0xD8[0x8];  // 0xD8
 public:
-	class LoopbackPacketSender* loopbackPacketSender;  // 0x00E0
+	LoopbackPacketSender* loopbackPacketSender;  // 0xE0
 private:
-	char pad_00E8[24];                                  // 0x00E8
+	char pad_0xE8[0x18];  // 0xE8
 public:
-	PtrToGameSettings1* ptr;							// 0x0100
+	PtrToGameSettings1* ptr;  // 0x100
 private:
-	char pad_0108[8];                                   // 0x0108
+	char pad_0x108[0x8];  // 0x108
 public:
-	class HitDetectSystem* hitDetectSystem;            // 0x0110
+	HitDetectSystem* hitDetectSystem;  // 0x110
 private:
-	char pad_0118[984];                      // 0x0118
+	char pad_0x118[0x3D8];  // 0x118
 public:
-	struct {
-		char pad[0x238];
-		struct {
-			__int64 materialPtr;
-			size_t refCount;
-		} entityLineMaterial;
-	} * itemInHandRenderer;  // 0x04F0
+	class ItemInHandRenderer* itemInHandRenderer;  // 0x4F0
 
 	glmatrixf* getRefDef() {
 		return reinterpret_cast<glmatrixf*>((uintptr_t)(this) + 0x2F0);
