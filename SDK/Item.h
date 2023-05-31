@@ -99,7 +99,7 @@ public:
 	virtual __int64 setIsGlint(bool);                                                                                                      // 34
 	virtual __int64 setShouldDespawn(bool);												       // 35
 	virtual void buildNetworkTag(void);//We forgored these funcs, the vtable index numbers are now invalid
-    	virtual void initializeFromNetwork(CompoundTag const &);
+    virtual void initializeFromNetwork(CompoundTag const &);
 	virtual __int64 getBlockShape(void);                                                                                                   // 36
 	virtual bool canBeDepleted(void);                                                                                                      // 37
 	virtual bool canDestroySpecial(Block const &);                                                                                       // 38
@@ -123,6 +123,7 @@ public:
 	virtual __int64 getEnchantSlot(void);                                                                                                  // 56
 	virtual __int64 getEnchantValue(void);                                                                                                 // 57
 	virtual __int64 getArmorValue(void);                                                                                                   // 58
+	virtual int getToughnessValue(void);
 	virtual bool isComplex(void);                                                                                                          // 59
 	virtual bool isValidAuxValue(int);                                                                                                     // 60
 	virtual __int64 getDamageChance(int);                                                                                                  // 61
@@ -130,7 +131,7 @@ public:
 	virtual __int64 uniqueAuxValues(void);                                                                                                 // 63
 	virtual bool isActorPlacerItem(void);                                                                                                  // 64
 	virtual bool isMultiColorTinted(ItemStack const &);                                                                                  // 65
-	virtual __int64 getColor();                                                                                                            // 66
+	virtual int getColor(CompoundTag const *, class ItemDescriptor const &);
 	virtual bool hasCustomColor(ItemStack const &);                                                                                      // 67
 	virtual bool hasCustomColor(CompoundTag const *);                                                                                      // 68
 	virtual __int64 clearColor(ItemStack &);                                                                                             // 69
@@ -139,8 +140,6 @@ public:
 	virtual __int64 getBaseColor(ItemStack const &);                                                                                     // 72
 	virtual __int64 getSecondaryColor(ItemStack const &);                                                                                // 73
 	virtual __int64 getActorIdentifier(ItemStack const &);                                                                               // 74
-	virtual __int64 saveAdditionalData(ItemStack const &, CompoundTag &);                                                                // 75
-	virtual __int64 readAdditionalData(ItemStack &, CompoundTag const &);                                                                // 76
 	virtual __int64 buildIdAux(short, CompoundTag const *);                                                                                // 77
 	virtual bool canUseOnSimTick(void);                                                                                                    // 78
 	virtual __int64 use(ItemStack &, Player &);                                                                                        // 79
@@ -191,7 +190,6 @@ public:
 	virtual __int64 _checkUseOnPermissions(Entity &, ItemStack &, unsigned char const &, Vec3i const &);                             // 124
 	virtual __int64 _calculatePlacePos(ItemStack &, Entity &, unsigned char &, Vec3i &);                                             // 125
 	virtual __int64 _useOn(ItemStack &, Entity &, Vec3i, unsigned char, float, float, float);                                        // 126
-	virtual __int64 getArmorKnockbackResistance(void);                                                                                     // 127
 
 public:
 	bool isTool(void) {
