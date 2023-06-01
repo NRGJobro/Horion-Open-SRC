@@ -403,6 +403,7 @@ __int64 Hooks::RenderText(__int64 a1, MinecraftUIRenderContext* renderCtx) {
 
 		static auto hudModule = moduleMgr->getModule<HudModule>();
 		static auto clickGuiModule = moduleMgr->getModule<ClickGuiMod>();
+		static auto clientThemeModule = moduleMgr->getModule<ClientTheme>();
 
 		HorionGui.startFrame();
 
@@ -412,6 +413,7 @@ __int64 Hooks::RenderText(__int64 a1, MinecraftUIRenderContext* renderCtx) {
 
 		// Call PreRender() functions
 		moduleMgr->onPreRender(renderCtx);
+		clientThemeModule->onRender(renderCtx);
 		DrawUtils::flush();
 
 		__int64 retval = oText(a1, renderCtx);
@@ -452,7 +454,7 @@ __int64 Hooks::RenderText(__int64 a1, MinecraftUIRenderContext* renderCtx) {
 
 				{
 					Vec2 windowSize = Game.getClientInstance()->getGuiData()->windowSize;
-					
+
 					// Draw Horion logo
 					if (shouldRenderWatermark) {
 						constexpr float nameTextSize = 1.5f;
@@ -489,18 +491,20 @@ __int64 Hooks::RenderText(__int64 a1, MinecraftUIRenderContext* renderCtx) {
 
 		if (shouldPostRender) moduleMgr->onPostRender(renderCtx);
 		DrawUtils::flush();
+		std::shared_ptr<InfoBoxData> firstBox = Game.getFreshInfoBox();
+		std::vector<std::shared_ptr<InfoBoxData>>& allBoxes = Game.getInfoBoxList();
+		if (!allBoxes.empty()) {
+			float yOffset = wid.y;  // Starting y-position at the bottom of the screen
 
-		// Draw Info / Alert Boxes
-		{
-			auto box = Game.getFreshInfoBox();
-			if (box) {
+			for (auto& box : allBoxes) {
 				box->fade();
 				if (box->fadeTarget == 1 && box->closeTimer <= 0 && box->closeTimer > -1)
 					box->fadeTarget = 0;
 				else if (box->closeTimer > 0 && box->fadeVal > 0.9f)
 					box->closeTimer -= 1.f / 60;
-				const float paddingHoriz = 40 * box->fadeVal;
-				const float paddingVert = 10 * box->fadeVal;
+
+				const float paddingHoriz = 20;  // Adjusted horizontal padding
+				const float paddingVert = 5;    // Adjusted vertical padding
 				const float titleTextSize = box->fadeVal * 2;
 				const float messageTextSize = box->fadeVal * 1;
 				const float titleTextHeight = DrawUtils::getFont(Fonts::SMOOTH)->getLineHeight() * titleTextSize;
@@ -521,18 +525,23 @@ __int64 Hooks::RenderText(__int64 a1, MinecraftUIRenderContext* renderCtx) {
 
 				float titleWidth = DrawUtils::getTextWidth(&box->title, titleTextSize);
 				float msgWidth = DrawUtils::getTextWidth(&box->message, messageTextSize);
-				Vec2 centerPos(wid.x / 2.f, wid.y / 9.f);
-				Vec2 textPos = Vec2(wid.x / 2.f - titleWidth / 2.f, wid.y / 9.f);
-				Vec2 msgPos = Vec2(wid.x / 2.f - msgWidth / 2.f, textPos.y + titleTextHeight + paddingVert);
+				Vec2 bottomRight(wid.x - paddingHoriz - std::max(titleWidth, msgWidth) / 2, yOffset - paddingVert * 2 - titleTextHeight - messageHeight * lines - paddingVert);
+				Vec2 textPos = Vec2(bottomRight.x - titleWidth / 2, bottomRight.y);
+				Vec2 msgPos = Vec2(bottomRight.x - msgWidth / 2, textPos.y + titleTextHeight + paddingVert);
 				Vec4 rectPos = Vec4(
-					centerPos.x - paddingHoriz - std::max(titleWidth, msgWidth) / 2,
-					centerPos.y - paddingVert,
-					centerPos.x + paddingHoriz + std::max(titleWidth, msgWidth) / 2,
-					centerPos.y + paddingVert * 2 + titleTextHeight + messageHeight * lines);
+					bottomRight.x - paddingHoriz - std::max(titleWidth, msgWidth) / 2,
+					bottomRight.y - paddingVert,
+					bottomRight.x + paddingHoriz + std::max(titleWidth, msgWidth) / 2,
+					bottomRight.y + paddingVert * 2 + titleTextHeight + messageHeight * lines);
 				DrawUtils::fillRectangle(rectPos, MC_Color(12, 12, 12), box->fadeVal);
 				DrawUtils::drawRectangle(rectPos, color, box->fadeVal, 2.f);
 				DrawUtils::drawText(textPos, &box->title, MC_Color(), titleTextSize, box->fadeVal);
 				DrawUtils::drawText(msgPos, &box->message, MC_Color(), messageTextSize, box->fadeVal);
+
+				// Animate the box's upward movement when it opens
+				if (box->isOpen) {
+					if (box->fadeVal > 0.001f) yOffset -= paddingVert * 2 + titleTextHeight + messageHeight * lines + paddingVert;
+				}
 			}
 		}
 		DrawUtils::shouldToggleLeftClick = false;

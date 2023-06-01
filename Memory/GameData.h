@@ -27,7 +27,7 @@ struct InfoBoxData {
 	InfoBoxData(std::string title, std::string message) : title(title), message(message){};
 
 	void fade() {
-		fadeVal = fadeTarget - ((fadeTarget - fadeVal) * 0.65f);
+		fadeVal = fadeTarget - ((fadeTarget - fadeVal) * 0.96f);
 		if (fadeTarget == 0 && fadeVal < 0.001f)
 			isOpen = false;
 	}
@@ -69,7 +69,7 @@ private:
 
 public:
 	HIDController* hidController = nullptr;
-	std::queue<std::shared_ptr<InfoBoxData>> infoBoxQueue;
+	std::vector<std::shared_ptr<InfoBoxData>> infoBoxQueue;
 	static SlimUtils::SlimMem* slimMem;
 	static bool keys[0x256];
 
@@ -105,19 +105,32 @@ public:
 	}
 	inline std::shared_ptr<InfoBoxData> getFreshInfoBox() {
 		while (!infoBoxQueue.empty()) {
-			auto box = infoBoxQueue.front();
-			if (!box->isOpen) {
-				infoBoxQueue.pop();
+			auto state = infoBoxQueue.front();
+			if (!state->isOpen) {
+				infoBoxQueue.erase(infoBoxQueue.begin());
 				continue;
 			}
-			return box;
+			return state;
 		}
 		return std::shared_ptr<InfoBoxData>();
 	}
+
+	inline std::vector<std::shared_ptr<InfoBoxData>>& getInfoBoxList() {
+		while (!infoBoxQueue.empty()) {
+			auto box = infoBoxQueue.front();
+			if (!box->isOpen) {
+				infoBoxQueue.erase(infoBoxQueue.begin());
+				continue;
+			}
+			break;
+		}
+		return infoBoxQueue;
+	}
+
 	inline std::shared_ptr<InfoBoxData> addInfoBox(std::string title, std::string message) {
-		auto box = std::make_shared<InfoBoxData>(title, message);
-		infoBoxQueue.push(box);
-		return box;
+		auto notification = std::make_shared<InfoBoxData>(title, message);
+		infoBoxQueue.push_back(notification);
+		return notification;
 	}
 	inline void setCustomGeometryOverride(bool setActive, std::shared_ptr<std::string> customGeoPtr) {
 		customGeoActive = setActive;
