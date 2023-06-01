@@ -27,9 +27,11 @@ struct InfoBoxData {
 	InfoBoxData(std::string title, std::string message) : title(title), message(message){};
 
 	void fade() {
-		fadeVal = fadeTarget - ((fadeTarget - fadeVal) * 0.96f);
-		if (fadeTarget == 0 && fadeVal < 0.001f)
+		fadeVal += (fadeTarget - fadeVal) * 0.04f;  // Adjust the fade factor as needed
+		if (fadeTarget == 0 && abs(fadeVal) < 0.001f) {
+			fadeVal = 0.0f;
 			isOpen = false;
+		}
 	}
 };
 
