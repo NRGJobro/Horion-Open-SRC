@@ -3,7 +3,7 @@
 //TabGui
 MC_Color ClientColors::tabGuiBackground = MC_Color(12, 12, 12);
 MC_Color ClientColors::tabGuiSelectedItemColor = MC_Color(85, 85, 85);
-MC_Color ClientColors::tabGuiEnabledItemColor = MC_Color(255, 255, 255);
+MC_Color ClientColors::tabGuiEnabledItemColor = MC_Color(30, 30, 30);
 
 //ClickGui
 MC_Color ClientColors::clickGuiTooltipFillColor = MC_Color(18, 18, 18);
