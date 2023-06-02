@@ -82,7 +82,7 @@ void ItemStack::setLore(std::string customLore) {
 }
 
 void ItemStack::setVtable(void) {
-	static uintptr_t sigOffset = FindSignature("48 8D 05 ? ? ? ? C7 05 ? ? ? ? ? ? ? ? 48 8D 0D ? ? ? ? 48 89 05 ? ? ? ? C6 05 ? ? ? ? ? 48 83 C4");
+	static uintptr_t sigOffset = FindSignature("48 8D 05 ? ? ? ? 48 89 07 4C 8D 83");
 	int offset = *reinterpret_cast<int *>(sigOffset + 3);
 	this->vTable = reinterpret_cast<uintptr_t **>(sigOffset + offset + /*length of instruction*/ 7);
 }
