@@ -10,12 +10,12 @@ class Minecraft {
 private:
 	char pad_0x0000[0xD8];  //0x0000
 public:
-	float* timer;       //0x00D8
-	float* otherTimer;  //0x00E0
+	float* simTimer;   // 0x00D8
+	float* realTimer;  // 0x00E0
 
 	void setTimerSpeed(float tps) {
-		*this->timer = tps;
-		*this->otherTimer = tps;
+		*this->simTimer = tps;
+		*this->realTimer = tps;
 	}
 };
 

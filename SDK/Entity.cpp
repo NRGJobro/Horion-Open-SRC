@@ -39,7 +39,7 @@ bool Level::hasEntity() {
 }
 
 float Entity::getBlocksPerSecond() {
-	return getTicksPerSecond() * *Game.getClientInstance()->minecraft->timer;
+	return getTicksPerSecond() * *Game.getClientInstance()->minecraft->simTimer;
 }
 
 void Entity::lerpTo(Vec3 const &pos, Vec2 const &rot, int steps) { //lerpTo was removed from the Player vtable so this is how we are going to use it from now on

@@ -62,8 +62,8 @@ void DrawUtils::setCtx(MinecraftUIRenderContext* ctx, GuiData* gui) {
 	ElapsedMicroseconds.QuadPart *= 1000000;
 	int ticksPerSecond = 20;
 	if(Game.getClientInstance()->minecraft)
-		if (Game.getClientInstance()->minecraft->timer != nullptr)
-			ticksPerSecond = (int)*Game.getClientInstance()->minecraft->timer;
+		if (Game.getClientInstance()->minecraft->simTimer != nullptr)
+			ticksPerSecond = (int)*Game.getClientInstance()->minecraft->simTimer;
 	if(ticksPerSecond < 1)
 		ticksPerSecond = 1;
 	ElapsedMicroseconds.QuadPart /= Frequency.QuadPart / ticksPerSecond;
@@ -772,7 +772,7 @@ void DrawUtils::setGameRenderContext(std::int64_t ctx) {
 		ElapsedMicroseconds.QuadPart *= 1000000;
 		int ticksPerSecond = 20;
 		if (Game.getClientInstance()->minecraft)
-			ticksPerSecond = (int)*Game.getClientInstance()->minecraft->timer;
+			ticksPerSecond = (int)*Game.getClientInstance()->minecraft->simTimer;
 		ticksPerSecond = std::max(ticksPerSecond, 1);
 		ElapsedMicroseconds.QuadPart /= Frequency.QuadPart / ticksPerSecond;
 		lerpT = (ElapsedMicroseconds.QuadPart / 1000000.f);
