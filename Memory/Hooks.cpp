@@ -113,9 +113,6 @@ void Hooks::Init() {
 
 		void* actorisInWall = reinterpret_cast<void*>(FindSignature("40 53 48 83 EC ? 48 8B 05 ? ? ? ? 48 33 C4 48 89 44 24 ? 48 8B 01 48 8D 54 24 ? 0F 57 DB 41 B8 ? ? ? ? 48 8B D9 FF 90 ? ? ? ? 48 8B 8B"));
 		g_Hooks.ActorisInWallHook = std::make_unique<FuncHook>(actorisInWall, Hooks::Actor__isInWall);
-
-		//void* testFunc = reinterpret_cast<void*>(FindSignature("40 53 48 83 ec ? 48 8b 05 ? ? ? ? 48 33 c4 48 89 44 24 ? 48 8b 01 48 8d 54 24 ? 0f 57 db 41 b8 ? ? ? ? 48 8b d9 ff 90 ? ? ? ? 48 8b 8b"));
-		//g_Hooks.testFunctionHook = std::make_unique<FuncHook>(testFunc, Hooks::testFunction);
 		
 		static constexpr auto counterStart = __COUNTER__ + 1;
 		#define lambda_counter (__COUNTER__ - counterStart)
@@ -228,17 +225,23 @@ void Hooks::Init() {
 
 		// PackAccessStrategy vtables for isTrusted
 		{
-			uintptr_t** directoryPackVtable = GetVtableFromSig("48 8d 05 ? ? ? ? 49 89 06 49 8d 76 ? 45 33 e4", 3);
+			uintptr_t sigOffset = FindSignature("48 8D 05 ? ? ? ? 49 89 06 49 8D 76 ? 45 33 E4");
+			int offset = *reinterpret_cast<int*>(sigOffset + 3);
+			uintptr_t** directoryPackVtable = reinterpret_cast<uintptr_t**>(sigOffset + offset +  7);
+			//uintptr_t** directoryPackVtable = GetVtableFromSig("48 8D 05 ? ? ? ? 49 89 06 49 8D 76 ? 45 33 E4", 3);
 			if (directoryPackVtable == 0x0)
 				logF("directoryPackVtable signature not working!!!");
 			else g_Hooks.DirectoryPackAccessStrategy__isTrustedHook = std::make_unique<FuncHook>(directoryPackVtable[6], Hooks::DirectoryPackAccessStrategy__isTrusted);
 
-			uintptr_t** directoryPackVtable2 = GetVtableFromSig("48 8d 05 ? ? ? ? 48 89 01 4c 8d b1 ? ? ? ? 49 8b 46", 3);
+			uintptr_t sigOffset2 = FindSignature("48 8D 05 ? ? ? ? 48 89 03 48 83 3E");
+			int offset2 = *reinterpret_cast<int*>(sigOffset2 + 3);
+			uintptr_t** directoryPackVtable2 = reinterpret_cast<uintptr_t**>(sigOffset2 + offset2 +  7);
+			//uintptr_t** directoryPackVtable2 = GetVtableFromSig("48 8D 05 ? ? ? ? 48 89 03 48 83 3E", 3);
 			if (directoryPackVtable2 == 0x0)
 				logF("directoryPackVtable2 signature not working!!!");
 			else g_Hooks.ZipPackAccessStrategy__isTrustedHook = std::make_unique<FuncHook>(directoryPackVtable2[6], Hooks::ReturnTrue);
 			
-			g_Hooks.SkinRepository___checkSignatureFileInPack = std::make_unique<FuncHook>(FindSignature("48 89 5c 24 ? 57 48 81 ec ? ? ? ? 48 8b 05 ? ? ? ? 48 33 c4 48 89 44 24 ? 48 8b 79"), Hooks::ReturnTrue);
+			g_Hooks.SkinRepository___checkSignatureFileInPack = std::make_unique<FuncHook>(FindSignature("48 89 5C 24 ? 57 48 81 EC ? ? ? ? 48 8B 05 ? ? ? ? 48 33 C4 48 89 44 24 ? 48 8B 79"), Hooks::ReturnTrue);
 		}
 		logF("Vtables initialized");
 	}
@@ -1210,7 +1213,7 @@ bool Hooks::DirectoryPackAccessStrategy__isTrusted(__int64 _this) {
 	static uintptr_t** directoryPackAccessStrategyVtable = 0;
 
 	if (!directoryPackAccessStrategyVtable) {
-		uintptr_t sigOffset = FindSignature("48 8D 05 ?? ?? ?? ?? 49 89 06 49 8D 76 50");
+		uintptr_t sigOffset = FindSignature("48 8D 05 ? ? ? ? 49 89 06 49 8D 76 ? 45 33 E4");
 		int offset = *reinterpret_cast<int*>(sigOffset + 3);
 		directoryPackAccessStrategyVtable = reinterpret_cast<uintptr_t**>(sigOffset + offset + 7);
 	}
@@ -1230,7 +1233,7 @@ __int64 Hooks::SkinRepository___loadSkinPack(__int64 _this, __int64 pack, __int6
 
 	// auto res = (*(unsigned __int8 (**)(void))(**(__int64**)(pack + 8) + 48i64))();
 	// logF("SkinRepository___loadSkinPack: origin %i, is Trusted: %i", *(int*)((*(__int64*)pack) + 888i64), res);
-	*(int*)((*(__int64*)pack) + 888i64) = 2;  // Set pack origin to "2"
+	*(int*)((*(__int64*)pack) + 912i64) = 2;  // Set pack origin to "2"
 
 	return func(_this, pack, a3);
 }
