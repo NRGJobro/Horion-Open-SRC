@@ -22,12 +22,12 @@ bool DupeCommand::execute(std::vector<std::string>* args) {
 	if (isGive) {
 		InventoryAction* firstAction = nullptr;
 		InventoryAction* secondAction = nullptr;
-		firstAction = new InventoryAction(0, item, nullptr, 507, 99999);
+		firstAction = new InventoryAction(0, item, nullptr);
 		transactionManager->addInventoryAction(*firstAction);
 		inv->addItemToFirstEmptySlot(item);
 	} else {
 		InventoryAction* pp = nullptr;
-		pp = new InventoryAction(0, item, nullptr, 507, 99999);
+		pp = new InventoryAction(0, item, nullptr);
 		transactionManager->addInventoryAction(*pp);
 		Game.getLocalPlayer()->setOffhandSlot(item);
 	}

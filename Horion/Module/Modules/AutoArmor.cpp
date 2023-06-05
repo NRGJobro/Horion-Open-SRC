@@ -75,7 +75,7 @@ void AutoArmor::onTick(GameMode* gm) {
 			if (armorItem->item != nullptr && (ArmorStruct(armorItem, reinterpret_cast<ArmorItem*>(*armorItem->item), 0).isEqual(armorList[0])) == false) {
 				int slot = inv->getFirstEmptySlot();
 
-				first = new InventoryAction(i, armorItem, nullptr, 632);
+				first = new InventoryAction(i, armorItem, nullptr, InventorySource(ContainerInventory, Armor, NoFlag));
 				second = new InventoryAction(slot, nullptr, armorItem);
 
 				*Game.getLocalPlayer()->getArmor(i) = *emptyItemStack;
@@ -88,7 +88,7 @@ void AutoArmor::onTick(GameMode* gm) {
 				delete second;
 
 				first = new InventoryAction(armorList[0].m_slot, armorList[0].m_item, nullptr);
-				second = new InventoryAction(i, nullptr, armorList[0].m_item, 632);
+				second = new InventoryAction(i, nullptr, armorList[0].m_item, InventorySource(ContainerInventory, Armor, NoFlag));
 
 				*Game.getLocalPlayer()->getArmor(i) = *inv->getItemStack(armorList[0].m_slot);
 				*inv->getItemStack(armorList[0].m_slot) = *emptyItemStack;
@@ -103,7 +103,7 @@ void AutoArmor::onTick(GameMode* gm) {
 				*Game.getLocalPlayer()->getArmor(i) = *inv->getItemStack(armorList[0].m_slot);
 
 				first = new InventoryAction(armorList[0].m_slot, armorList[0].m_item, nullptr);
-				second = new InventoryAction(i, nullptr, armorList[0].m_item, 632);
+				second = new InventoryAction(i, nullptr, armorList[0].m_item, InventorySource(ContainerInventory, Armor, NoFlag));
 
 				*inv->getItemStack(armorList[0].m_slot) = *emptyItemStack;
 

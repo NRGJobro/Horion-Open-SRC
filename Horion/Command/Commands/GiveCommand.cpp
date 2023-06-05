@@ -80,14 +80,14 @@ bool GiveCommand::execute(std::vector<std::string> *args) {
 		}
 
 		if (args->size() > 4) {
-			Game.getLocalPlayer()->getTransactionManager()->addInventoryAction(InventoryAction(0, nullptr, nullptr, item, nullptr, 1, 507, 99999));
+			Game.getLocalPlayer()->getTransactionManager()->addInventoryAction(InventoryAction(0, item, nullptr, InventorySource(NonImplementedFeatureTODO, inventory, NoFlag)));
 		}
 		clientMessageF("%s%s", GREEN, "Successfully loaded mojangson !");
 	}
 	if (args->size() > 4) {
 		InventoryAction *firstAction = nullptr;
 		auto transactionMan = Game.getLocalPlayer()->getTransactionManager();
-		firstAction = new InventoryAction(0, item, nullptr, 507, 99999);
+		firstAction = new InventoryAction(0, item, nullptr);
 		transactionMan->addInventoryAction(*firstAction);
 		inv->addItemToFirstEmptySlot(item);
 	}
@@ -115,15 +115,15 @@ bool GiveCommand::giveItem(uint8_t count, int itemId, uint8_t itemData, std::str
 		itemStack->fromTag(*Mojangson::parseTag(tag));
 	}
 
-	ItemDescriptor *desc = new ItemDescriptor((*itemStack->item)->itemId, itemData);
+	//ItemDescriptor *desc = new ItemDescriptor((*itemStack->item)->itemId, itemData);
 
-	InventoryAction *firstAction = new InventoryAction(slot, desc, nullptr, itemStack, nullptr, count, 507, 99999);
+	InventoryAction *firstAction = new InventoryAction(slot, itemStack, nullptr, InventorySource(NonImplementedFeatureTODO, inventory, NoFlag));
 
 	transactionManager->addInventoryAction(*firstAction);
 
 	inv->addItemToFirstEmptySlot(itemStack);
 
-	delete desc;
+	//delete desc;
 	delete firstAction;
 	return true;
 }
@@ -148,15 +148,15 @@ bool GiveCommand::giveItem(uint8_t count, TextHolder &text, uint8_t itemData, st
 		itemStack->fromTag(*Mojangson::parseTag(tag));
 	}
 
-	ItemDescriptor *desc = new ItemDescriptor((*itemStack->item)->itemId, itemData);
+	//ItemDescriptor *desc = new ItemDescriptor((*itemStack->item)->itemId, itemData);
 
-	InventoryAction *firstAction = new InventoryAction(slot, desc, nullptr, itemStack, nullptr, count, 507, 99999);
+	InventoryAction *firstAction = new InventoryAction(slot, itemStack, nullptr, InventorySource(NonImplementedFeatureTODO, inventory, NoFlag));
 
 	transactionManager->addInventoryAction(*firstAction);
 
 	inv->addItemToFirstEmptySlot(itemStack);
 
-	delete desc;
+	//delete desc;
 	delete firstAction;
 	return true;
 }

@@ -244,6 +244,7 @@ public:
 		memset(this, 0x0, sizeof(ItemDescriptor));
 	}
 	ItemDescriptor(int id, int16_t itemData);
+	void fromStack(ItemStack *item);
 };
 
 class ItemStack {

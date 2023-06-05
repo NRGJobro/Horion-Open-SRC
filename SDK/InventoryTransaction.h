@@ -3,11 +3,52 @@
 #include "Inventory.h"
 #include "Item.h"
 
+enum InventorySourceType : int32_t {
+	InvalidInventory = -1,
+	ContainerInventory = 0,
+	GlobalInventory = 1,
+	WorldInteraction = 2,
+	CreativeInventory = 3,
+	//UntrackedInteractionUI = 100,
+	NonImplementedFeatureTODO = 99999,
+	EnchantStuff = 32766,
+};
+
+enum ContainerID : uint8_t {
+	Invalid = 0xFF,
+	inventory = 0, //needs to be lower case bec stupidness
+	First = 1,
+	Last = 100,
+	Offhand = 119,
+	Armor = 120,
+	SelectionSlots = 122,
+	PlayerUIOnly = 124
+};
+
+enum InventorySourceFlags : int32_t {
+	NoFlag = 0,
+	WorldInteraction_Random = 1,
+};
+
+class InventorySource {
+public:
+	InventorySource::InventorySourceType type;
+	InventorySource::ContainerID containerId;
+	InventorySource::InventorySourceFlags flags;
+
+	InventorySource() = default;
+	InventorySource(InventorySourceType mType, ContainerID mContainerId, InventorySourceFlags mFlags) {
+		this->type = mType;
+		this->containerId = mContainerId;
+		this->flags = mFlags;
+	}
+};
+
 class InventoryAction {
 public:
 	void fixInventoryStuff(ItemDescriptor* a1, ItemStack* a2);
 	InventoryAction() = default;
-	InventoryAction(int slot, ItemStack* sourceItem, ItemStack* targetItem, int sourceType = 0, int type = 0, int flag = 0) {
+	InventoryAction(int slot, ItemStack* sourceItem, ItemStack* targetItem, InventorySource invSource = InventorySource(NonImplementedFeatureTODO, inventory, NoFlag)) {
 		memset(this, 0x0, sizeof(InventoryAction));
 		this->slot = slot;
 		if (sourceItem != nullptr) {
@@ -16,45 +57,15 @@ public:
 		if (targetItem != nullptr) {
 			this->targetItem = *targetItem;
 		}
-
-		// These seem to fix the inventory stuff
+		this->sourceItemDescriptor.fromStack(&this->sourceItem);
+		this->targetItemDescriptor.fromStack(&this->targetItem);
 		fixInventoryStuff(reinterpret_cast<ItemDescriptor*>(reinterpret_cast<__int64>(this) + 0x10), reinterpret_cast<ItemStack*>(reinterpret_cast<__int64>(this) + 0x140));
 		fixInventoryStuff(reinterpret_cast<ItemDescriptor*>(reinterpret_cast<__int64>(this) + 0xA8), reinterpret_cast<ItemStack*>(reinterpret_cast<__int64>(this) + 0x1E0));
-
-		this->sourceType = sourceType;
-		this->type = type;
-		this->flags = flag;
-	}
-
-	InventoryAction(int slot, ItemDescriptor* source, ItemDescriptor* target, ItemStack* sourceItem, ItemStack* targetItem, int count, int sourceType = 0, int type = 0, int flag = 0) {
-		memset(this, 0x0, sizeof(InventoryAction));
-		this->slot = slot;
-
-		if (source != nullptr) {
-			this->sourceItemDescriptor = *source;
-		}
-		if (target != nullptr) {
-			this->targetItemDescriptor = *target;
-		}
-
-		if (sourceItem != nullptr) {
-			this->sourceItem = *sourceItem;
-			this->sourceItem.count = count;
-		}
-		if (targetItem != nullptr) {
-			this->targetItem = *targetItem;
-			this->targetItem.count = count;
-		}
-
-		this->sourceType = sourceType;
-		this->type = type;
-		this->flags = flag;
+		this->inventorySource = invSource;
 	}
 
 public:
-	int type;        //0x0  // named sourceType in nukkit
-	int sourceType;  //0x4 // sometimes windowId
-	int flags;  //0x8
+	InventorySource inventorySource;
 	int slot;                             //0xC
 	ItemDescriptor sourceItemDescriptor;  //0x10
 	ItemDescriptor targetItemDescriptor;  //0x90

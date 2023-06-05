@@ -64,7 +64,7 @@ bool SetOffhandCommand::execute(std::vector<std::string>* args) {
 	InventoryAction* firstAction = nullptr;
 	InventoryAction* secondAction = nullptr;
 
-	firstAction = new InventoryAction(0, desc, nullptr, yot, nullptr, count, 507, 99999);
+	firstAction = new InventoryAction(0, yot, nullptr);
 
 	transactionManager->addInventoryAction(*firstAction);
 

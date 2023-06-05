@@ -1304,9 +1304,8 @@ void Hooks::Actor__setRot(Entity* _this, Vec2& angle) {
 void Hooks::InventoryTransactionManager__addAction(Player* _this, InventoryAction* action, char a3) {
 	static auto func = g_Hooks.InventoryTransactionManager__addActionHook->GetFastcall<void, Player*, InventoryAction*, char>();
 
-#ifdef TEST_DEBUG
-	Game.getGuiData()->displayClientMessageF("type: %i sourceType: %i flags: %i slot: %i sourceItemCount: %i", action->type, action->sourceType, action->flags, action->slot, action->sourceItem.count);
-
+//#ifdef TEST_DEBUG
+	Game.getGuiData()->displayClientMessageF("%sInvSource: %d %d %d %sSlot: %i %sItem counts: %i %i", RED, action->inventorySource.type, action->inventorySource.containerId, action->inventorySource.flags, GREEN, action->slot, BLUE, action->sourceItem.count, action->targetItem.count);
 	/*if(/*action.slot == 14 && action.sourceType == 124 && strcmp(targetName, "none") == 0 && *strcmp(srcName, "stone_shovel") == 0){
 		std::string tag = "{ench:[{id:9s,lvl:1s}]}";
 		action.sourceItem.setUserData(std::move(Mojangson::parseTag(tag)));
@@ -1315,7 +1314,7 @@ void Hooks::InventoryTransactionManager__addAction(Player* _this, InventoryActio
 		std::string tag = "{ench:[{id:9s,lvl:1s}]}";
 		action.targetItem.setUserData(std::move(Mojangson::parseTag(tag)));
 	}*/
-#endif
+//#endif
 	func(_this, action, a3);
 }
 

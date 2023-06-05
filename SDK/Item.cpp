@@ -28,7 +28,7 @@ void ItemRenderer::renderGuiItemInChunk(BaseActorRenderContext *BaseActorRenderC
 ItemStack::ItemStack(const ItemStack &src) {
 	memset(this, 0x0, sizeof(ItemStack));
 	using ItemStackCopyConstructor_t = void(__fastcall *)(ItemStack &, ItemStack const &);
-	static ItemStackCopyConstructor_t ItemStackCopyConstructor = reinterpret_cast<ItemStackCopyConstructor_t>(FindSignature("48 89 4C 24 ? 53 55 56 57 41 54 41 56 41 57 48 83 EC ? 48 8B EA"));
+	static ItemStackCopyConstructor_t ItemStackCopyConstructor = reinterpret_cast<ItemStackCopyConstructor_t>(FindSignature("48 89 5C 24 ? 57 48 83 EC 20 48 8B D9 8B FA 48 81 C1 ? ? ? ? 48 0F BE 41 ?"));
 	ItemStackCopyConstructor(*this, src);
 	this->setVtable();
 }
@@ -97,6 +97,12 @@ Item ***ItemRegistry::lookUpByName(void *a1, void *a2, TextHolder &text) {
 	using ItemRegistry__lookupByName_t = Item ***(__fastcall *)(void *, void *, TextHolder &);
 	static ItemRegistry__lookupByName_t ItemRegistry__lookupByNameF = reinterpret_cast<ItemRegistry__lookupByName_t>(FindSignature("48 89 5c 24 ? 55 56 57 41 54 41 55 41 56 41 57 48 8d 6c 24 ? 48 81 ec ? ? ? ? 48 8b 05 ? ? ? ? 48 33 c4 48 89 45 ? 4c 8b ea 48 8b f1 48 89 4d ? 49 83 78"));
 	return ItemRegistry__lookupByNameF(a1, a2, text);
+}
+
+void ItemDescriptor::fromStack(ItemStack *item) { //all credit to horion continued and floppy dolphin for this
+	using ItemDescriptor_ctorT = void (*)(ItemDescriptor *, ItemStack *);
+	static ItemDescriptor_ctorT ItemDescriptor_ctor = (ItemDescriptor_ctorT)FindSignature("48 89 5C 24 ? 48 89 6C 24 ? 56 57 41 56 48 81 EC ? ? ? ? 48 8B 05 ? ? ? ? 48 33 C4 48 89 84 24 ? ? ? ? 48 8B EA 48 8B F9 48 89 4C 24 ? 0F B6 5A ? 48 8D 54 24 ? 48 8B CD E8 ? ? ? ? 90 48 8B D0 48 8B CF E8 ? ? ? ? 66 89 5F ? 48 8D 4C 24 ? E8 ? ? ? ? 48 8B 5C 24 ? 48 85 DB 74 ? BE ? ? ? ? 8B C6 F0 0F C1 43 ? 83 F8 ? 75 ? 48 8B 03 48 8B CB FF 10 F0 0F C1 73 ? 83 FE ? 75 ? 48 8B 03 48 8B CB FF 50 ? 48 8B 4C 24 ? 48 85 C9 74 ? F0 FF 49 ? 8B 41 ? 90 85 C0 7F ? 48 83 39 ? 75 ? 48 8B 4C 24 ? 48 85 C9 74 ? BA ? ? ? ? E8 ? ? ? ? 45 33 F6");
+	ItemDescriptor_ctor(this, item);
 }
 
 ItemDescriptor::ItemDescriptor(int id, int16_t itemData) {

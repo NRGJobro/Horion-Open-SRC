@@ -74,7 +74,7 @@ bool NbtCommand::execute(std::vector<std::string>* args) {
 
 		{
 			manager->addInventoryAction(InventoryAction(supplies->selectedHotbarSlot, item, nullptr));
-			manager->addInventoryAction(InventoryAction(0, nullptr, item, 507, 99999));
+			manager->addInventoryAction(InventoryAction(0, nullptr, item, InventorySource(NonImplementedFeatureTODO, inventory, NoFlag)));
 		}
 
 		if (tag.size() > 1 && tag.front() == MojangsonToken::COMPOUND_START.getSymbol() && tag.back() == MojangsonToken::COMPOUND_END.getSymbol()) {
@@ -90,7 +90,7 @@ bool NbtCommand::execute(std::vector<std::string>* args) {
 		}
 
 		{
-			manager->addInventoryAction(InventoryAction(0, item, nullptr, 507, 99999));
+			manager->addInventoryAction(InventoryAction(0, item, nullptr, InventorySource(NonImplementedFeatureTODO, inventory, NoFlag)));
 			manager->addInventoryAction(InventoryAction(supplies->selectedHotbarSlot, nullptr, item));
 		}
 

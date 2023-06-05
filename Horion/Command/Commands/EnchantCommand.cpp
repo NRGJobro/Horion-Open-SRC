@@ -88,11 +88,11 @@ bool EnchantCommand::execute(std::vector<std::string>* args) {
 
 	if (isAuto) {
 		{
-			firstAction = new InventoryAction(supplies->selectedHotbarSlot, desc, nullptr, item, nullptr, item->count);
+			firstAction = new InventoryAction(supplies->selectedHotbarSlot, item, nullptr);
 			if (strcmp(Game.getRakNetInstance()->serverIp.getText(), "mco.mineplex.com") == 0)
-				secondAction = new InventoryAction(0, nullptr, desc, nullptr, item, item->count, 32766, 100);
+				secondAction = new InventoryAction(0, nullptr, item, InventorySource(EnchantStuff, Last, NoFlag));
 			else 
-				secondAction = new InventoryAction(0, nullptr, desc, nullptr, item, item->count, 507, 99999);
+				secondAction = new InventoryAction(0, nullptr, item, InventorySource(NonImplementedFeatureTODO, Invalid, NoFlag));
 			manager->addInventoryAction(*firstAction);
 			manager->addInventoryAction(*secondAction);
 			delete firstAction;
@@ -122,16 +122,16 @@ bool EnchantCommand::execute(std::vector<std::string>* args) {
 
 			__int64 enchantPair = ((__int64)enchantLevel << 32) | i;
 
-			if (addEnchant(EnchantData, enchantPair)) {  // Upper 4 bytes = level, lower 4 bytes = enchant type
+			if (addEnchant(EnchantData, enchantPair)) {
+				// Upper 4 bytes = level, lower 4 bytes = enchant type
 				saveEnchantsToUserData(item, EnchantData);
 				__int64 proxy = reinterpret_cast<__int64>(Game.getLocalPlayer()->getSupplies());
-				if (!*(uint8_t*)(proxy + 168))
-					(*(void(__fastcall**)(unsigned long long, unsigned long long, ItemStack*))(**(unsigned long long**)(proxy + 176) + 72i64))(
-						*(unsigned long long*)(proxy + 176),
-						*(unsigned int*)(proxy + 16),
-						item);  // Player::selectItem
 
-				 //Game.getLocalPlayer()->sendInventory();
+				if (!*(uint8_t*)(proxy + 168)) {
+					(*(void(__fastcall**)(unsigned long long, unsigned long long, ItemStack*))(**(unsigned long long**)(proxy + 192) + 72i64))(*(unsigned long long*)(proxy + 192), *(unsigned int*)(proxy + 16), item);  // Player::selectItem
+				}
+
+				// Game.getLocalPlayer()->sendInventory();
 			}
 			free(EnchantData);
 		}
@@ -149,8 +149,8 @@ bool EnchantCommand::execute(std::vector<std::string>* args) {
 			saveEnchantsToUserData(item, EnchantData);
 			__int64 proxy = reinterpret_cast<__int64>(Game.getLocalPlayer()->getSupplies());
 			if (!*(uint8_t*)(proxy + 168))
-				(*(void(__fastcall**)(unsigned long long, unsigned long long, ItemStack*))(**(unsigned long long**)(proxy + 176) + 72i64))(
-					*(unsigned long long*)(proxy + 176),
+				(*(void(__fastcall**)(unsigned long long, unsigned long long, ItemStack*))(**(unsigned long long**)(proxy + 192) + 72i64))(
+					*(unsigned long long*)(proxy + 192),
 					*(unsigned int*)(proxy + 16),
 					item);  // Player::selectItem
 
@@ -164,10 +164,10 @@ bool EnchantCommand::execute(std::vector<std::string>* args) {
 
 	if (isAuto) {
 		if (strcmp(Game.getRakNetInstance()->serverIp.getText(), "mco.mineplex.com") == 0)
-			firstAction = new InventoryAction(0, desc, nullptr, item, nullptr, item->count, 32766, 100);
+			firstAction = new InventoryAction(0, item, nullptr, InventorySource(EnchantStuff, Last, NoFlag));
 		else
-			firstAction = new InventoryAction(0, desc, nullptr, item, nullptr, item->count, 507, 99999);
-		secondAction = new InventoryAction(supplies->selectedHotbarSlot, nullptr, desc, nullptr, item, item->count);
+			firstAction = new InventoryAction(0, item, nullptr, InventorySource(NonImplementedFeatureTODO, Invalid, NoFlag));
+		secondAction = new InventoryAction(supplies->selectedHotbarSlot, nullptr, item);
 		manager->addInventoryAction(*firstAction);
 		manager->addInventoryAction(*secondAction);
 		delete firstAction;

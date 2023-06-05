@@ -11,5 +11,6 @@ const char* NoWeb::getModuleName() {
 }
 
 void NoWeb::onTick(GameMode* gm) {
-	gm->player->slowdownFactor = {0, 0, 0};
+	if (gm->player != nullptr)
+		gm->player->resetBlockMovementSlowdownMultiplier();
 }
