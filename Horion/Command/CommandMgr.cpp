@@ -28,6 +28,7 @@ void CommandMgr::initCommands() {
 	commandList.push_back(new SpammerCommand());
 	commandList.push_back(new ModulesCommand());
 	commandList.push_back(new EnchantCommand());
+	commandList.push_back(new SetLoreCommand());
 	commandList.push_back(new ConfigCommand());
 	commandList.push_back(new DamageCommand());
 	commandList.push_back(new CoordsCommand());
@@ -35,6 +36,7 @@ void CommandMgr::initCommands() {
 	commandList.push_back(new UnbindCommand());
 	commandList.push_back(new ToggleCommand());
 	commandList.push_back(new PanicCommand());
+	commandList.push_back(new EjectCommand());
 	commandList.push_back(new PathCommand());
 	commandList.push_back(new DupeCommand());
 	commandList.push_back(new BruhCommand());
@@ -42,7 +44,6 @@ void CommandMgr::initCommands() {
 	commandList.push_back(new HideCommand());
 	commandList.push_back(new HelpCommand());
 	commandList.push_back(new BindCommand());
-	commandList.push_back(new EjectCommand());
 	commandList.push_back(new TopCommand());
 	commandList.push_back(new NbtCommand());
 	commandList.push_back(new SayCommand());

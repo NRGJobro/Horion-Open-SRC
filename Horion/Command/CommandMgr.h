@@ -32,8 +32,9 @@
 #include "Commands/SetPrefixCommand.h"
 #include "Commands/NbtCommand.h"
 #include "Commands/WaypointCommand.h"
-#include"Commands/XpCommand.h"
+#include "Commands/XpCommand.h"
 #include "Commands/PathCommand.h"
+#include "Commands/SetLoreCommand.h"
 
 #ifdef _DEBUG
 #include "Commands/TestCommand.h"
