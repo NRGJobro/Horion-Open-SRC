@@ -27,7 +27,10 @@ bool SetLoreCommand::execute(std::vector<std::string>* args) {
 	std::string lore;
 
 	for (int i = 1; i < args->size(); i++) {
-		lore += args->at(i) + " ";
+		lore += args->at(i);
+		if (i < args->size() - 1) {
+			lore += " ";
+		}
 	}
 
 	transactionManager->addInventoryAction(InventoryAction(selectedSlot, item, nullptr, InventorySource(ContainerInventory, inventory, NoFlag)));
@@ -39,6 +42,6 @@ bool SetLoreCommand::execute(std::vector<std::string>* args) {
 	transactionManager->addInventoryAction(InventoryAction(selectedSlot, nullptr, item, InventorySource(ContainerInventory, inventory, NoFlag)));
 	transactionManager->addInventoryAction(InventoryAction(selectedSlot, nullptr, item, InventorySource(ContainerInventory, inventory, NoFlag)));
 
-	clientMessageF("Set lore to '%s'!", lore);
+	clientMessageF("Set lore to \"%s\"!", lore.c_str());
 	return true;
 }
