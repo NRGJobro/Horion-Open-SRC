@@ -73,8 +73,8 @@ bool NbtCommand::execute(std::vector<std::string>* args) {
 		}
 
 		{
-			manager->addInventoryAction(InventoryAction(supplies->selectedHotbarSlot, item, nullptr));
-			manager->addInventoryAction(InventoryAction(0, nullptr, item, InventorySource(NonImplementedFeatureTODO, inventory, NoFlag)));
+			manager->addInventoryAction(InventoryAction(supplies->selectedHotbarSlot, item, nullptr, InventorySource(ContainerInventory, inventory, NoFlag)));
+			manager->addInventoryAction(InventoryAction(0, nullptr, item, InventorySource(NonImplementedFeatureTODO, Invalid, NoFlag)));
 		}
 
 		if (tag.size() > 1 && tag.front() == MojangsonToken::COMPOUND_START.getSymbol() && tag.back() == MojangsonToken::COMPOUND_END.getSymbol()) {
@@ -90,8 +90,8 @@ bool NbtCommand::execute(std::vector<std::string>* args) {
 		}
 
 		{
-			manager->addInventoryAction(InventoryAction(0, item, nullptr, InventorySource(NonImplementedFeatureTODO, inventory, NoFlag)));
-			manager->addInventoryAction(InventoryAction(supplies->selectedHotbarSlot, nullptr, item));
+			manager->addInventoryAction(InventoryAction(0, item, nullptr, InventorySource(NonImplementedFeatureTODO, Invalid, NoFlag)));
+			manager->addInventoryAction(InventoryAction(supplies->selectedHotbarSlot, nullptr, item, InventorySource(ContainerInventory, inventory, NoFlag)));
 		}
 
 		clientMessageF("%s%s", GREEN, "Successfully loaded mojangson !");
