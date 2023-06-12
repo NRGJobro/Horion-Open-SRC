@@ -10,13 +10,9 @@ bool SetLoreCommand::execute(std::vector<std::string>* args) {
 	assertTrue(args->size() >= 2);
 
 	PlayerInventoryProxy* supplies = Game.getLocalPlayer()->getSupplies();
-
 	auto transactionManager = Game.getLocalPlayer()->getTransactionManager();
-
 	Inventory* inv = supplies->inventory;
-
 	int selectedSlot = supplies->selectedHotbarSlot;
-
 	ItemStack* item = inv->getItemStack(selectedSlot);
 
 	if (item == nullptr || item->item == nullptr) {

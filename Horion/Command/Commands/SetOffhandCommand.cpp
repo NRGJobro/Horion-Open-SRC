@@ -28,7 +28,7 @@ bool SetOffhandCommand::execute(std::vector<std::string>* args) {
 	ItemStack* yot = nullptr;
 	auto transactionManager = Game.getLocalPlayer()->getTransactionManager();
 
-	if (itemId == 0) {
+		if (itemId == 0) {
 		TextHolder tempText(args->at(1));
 		std::unique_ptr<void*> ItemPtr = std::make_unique<void*>();
 		std::unique_ptr<void*> buffer = std::make_unique<void*>();
@@ -58,13 +58,9 @@ bool SetOffhandCommand::execute(std::vector<std::string>* args) {
 		}
 	}
 
-	ItemDescriptor* desc = nullptr;
-	desc = new ItemDescriptor((*yot->item)->itemId, itemData);
+	ItemDescriptor* desc = new ItemDescriptor((*yot->item)->itemId, itemData);
 
-	InventoryAction* firstAction = nullptr;
-	InventoryAction* secondAction = nullptr;
-
-	firstAction = new InventoryAction(0, yot, nullptr);
+	InventoryAction* firstAction = new InventoryAction(0, yot, nullptr);
 
 	transactionManager->addInventoryAction(*firstAction);
 

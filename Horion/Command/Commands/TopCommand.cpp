@@ -11,22 +11,23 @@ bool TopCommand::execute(std::vector<std::string>* args) {
 
 	LocalPlayer* player = Game.getLocalPlayer();
 	Vec3 playerPos = player->eyePos0;
-	bool groundAbove = false;  // Checking if ground above us.
+	bool groundAbove = false;  // Checking if ground is above us
 	Vec3i blockPos;
 
 	// Start the loop from the player's current y position instead of 0
-	for (int y = (int)playerPos.y; y < 256; ++y) {
-		if (player->region->getBlock({(int)playerPos.x, y, (int)playerPos.z})->toLegacy()->blockId != 0) {
+	for (int y = static_cast<int>(playerPos.y); y < 256; ++y) {
+		if (player->region->getBlock({static_cast<int>(playerPos.x), y, static_cast<int>(playerPos.z)})->toLegacy()->blockId != 0) {
 			groundAbove = true;
-			blockPos = {(int)playerPos.x, y, (int)playerPos.z};
+			blockPos = {static_cast<int>(playerPos.x), y, static_cast<int>(playerPos.z)};
 			break;
 		}
 	}
 
 	if (groundAbove) {
-		for (int y(blockPos.y); y < 256; ++y) {  // This time we're going through loop again, but continuing where we left off to find open air pocket.
+		for (int y = blockPos.y; y < 256; ++y) {
+			// This time we're going through the loop again, but continuing where we left off to find an open air pocket.
 			if ((player->region->getBlock({blockPos.x, y, blockPos.z})->toLegacy()->blockId == 0) && (player->region->getBlock({blockPos.x, y + 1, blockPos.z})->toLegacy()->blockId == 0)) {
-				player->setPos({(float)blockPos.x, y + 1.f, (float)blockPos.z});
+				player->setPos({static_cast<float>(blockPos.x), y + 1.f, static_cast<float>(blockPos.z)});
 				clientMessageF("Whoosh!");
 				return true;
 			}

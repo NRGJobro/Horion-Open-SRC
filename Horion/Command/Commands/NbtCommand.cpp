@@ -13,7 +13,7 @@ NbtCommand::~NbtCommand() {
 bool NbtCommand::execute(std::vector<std::string>* args) {
 	assertTrue(args->size() > 1);
 	bool isRaw = args->at(0) == "nbtraw";
-	if(isRaw){
+	if (isRaw) {
 		assertTrue(args->at(1) == "write");
 		assertTrue(args->size() > 2);
 	}
@@ -59,7 +59,7 @@ bool NbtCommand::execute(std::vector<std::string>* args) {
 		clientMessageF(builtStr.c_str());
 	} else if ((args->at(1) == "write" || args->at(1) == "load") && item) {
 		std::string tag;
-		if(isRaw){
+		if (isRaw) {
 			std::ostringstream os;
 			for (int i = 2; i < args->size(); i++) {
 				if (i > 2)
@@ -68,7 +68,7 @@ bool NbtCommand::execute(std::vector<std::string>* args) {
 			}
 
 			tag = os.str();
-		}else{
+		} else {
 			tag = Utils::getClipboardText();
 		}
 
@@ -101,8 +101,9 @@ bool NbtCommand::execute(std::vector<std::string>* args) {
 
 	return true;
 }
+
 const char* NbtCommand::getUsage(const char* alias) {
-	if(strcmp(alias, "nbtraw") == 0){
+	if (strcmp(alias, "nbtraw") == 0) {
 		return "write <nbt>";
 	}
 

@@ -47,7 +47,7 @@ bool WaypointCommand::execute(std::vector<std::string>* args) {
 		if (mod->add(name, pos, dimension)) {
 			clientMessageF("%sSuccessfully added waypoint \"%s\"", GREEN, name.c_str());
 			if (!mod->isEnabled())
-				clientMessageF("%sEnable the waypoints module to see it ingame!", YELLOW);
+				clientMessageF("%sEnable the waypoints module to see it in-game!", YELLOW);
 		} else {
 			clientMessageF("%sWaypoint \"%s\" already exists", RED, name.c_str());
 		}
@@ -57,7 +57,7 @@ bool WaypointCommand::execute(std::vector<std::string>* args) {
 		} else {
 			clientMessageF("%sUnknown waypoint \"%s\"", RED, name.c_str());
 		}
-	}else if (opt == "tp" || opt == "teleport") {
+	} else if (opt == "tp" || opt == "teleport") {
 		if (auto wp = mod->getWaypoint(name)) {
 			auto wpV = wp.value();
 			auto pos = wpV.pos;

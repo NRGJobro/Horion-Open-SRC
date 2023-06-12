@@ -1,44 +1,43 @@
 #include "EnchantCommand.h"
+
 #include "../../../Utils/Utils.h"
 
 EnchantCommand::EnchantCommand() : IMCCommand("enchant", "Enchants items", "<enchantment> [level] <mode: auto / manual : 1/0>") {
-	enchantMap = {
-		{"protection", 0},
-		{"fire_protection", 1},
-		{"feather_falling", 2},
-		{"blast_protection", 3},
-		{"projectile_protection", 4},
-		{"thorns", 5},
-		{"respiration", 6},
-		{"depth_strider", 7},
-		{"aqua_affinity", 8},
-		{"frost_walker", 25},
-		{"sharpness", 9},
-		{"smite", 10},
-		{"bane_of_arthropods", 11},
-		{"knockback", 12},
-		{"fire_aspect", 13},
-		{"looting", 14},
-		{"channeling", 32},
-		{"impaling", 29},
-		{"loyalty", 31},
-		{"riptide", 30},
-		{"silktouch", 16},
-		{"fortune", 18},
-		{"unbreaking", 17},
-		{"efficiency", 15},
-		{"mending", 26},
-		{"power", 19},
-		{"punch", 20},
-		{"flame", 21},
-		{"infinity", 22},
-		{"multishot", 33},
-		{"quick_charge", 35},
-		{"piercing", 34},
-		{"luck_of_sea", 23},
-		{"lure", 24},
-		{"soul_speed", 36}
-	};
+	enchantMap["protection"] = 0;
+	enchantMap["fire_protection"] = 1;
+	enchantMap["feather_falling"] = 2;
+	enchantMap["blast_protection"] = 3;
+	enchantMap["projectile_protection"] = 4;
+	enchantMap["thorns"] = 5;
+	enchantMap["respiration"] = 6;
+	enchantMap["depth_strider"] = 7;
+	enchantMap["aqua_affinity"] = 8;
+	enchantMap["frost_walker"] = 25;
+	enchantMap["sharpness"] = 9;
+	enchantMap["smite"] = 10;
+	enchantMap["bane_of_arthropods"] = 11;
+	enchantMap["knockback"] = 12;
+	enchantMap["fire_aspect"] = 13;
+	enchantMap["looting"] = 14;
+	enchantMap["channeling"] = 32;
+	enchantMap["impaling"] = 29;
+	enchantMap["loyalty"] = 31;
+	enchantMap["riptide"] = 30;
+	enchantMap["silktouch"] = 16;
+	enchantMap["fortune"] = 18;
+	enchantMap["unbreaking"] = 17;
+	enchantMap["efficiency"] = 15;
+	enchantMap["mending"] = 26;
+	enchantMap["power"] = 19;
+	enchantMap["punch"] = 20;
+	enchantMap["flame"] = 21;
+	enchantMap["infinity"] = 22;
+	enchantMap["multishot"] = 33;
+	enchantMap["quick_charge"] = 35;
+	enchantMap["piercing"] = 34;
+	enchantMap["luck_of_sea"] = 23;
+	enchantMap["lure"] = 24;
+	enchantMap["soul_speed"] = 36;
 }
 
 EnchantCommand::~EnchantCommand() {
@@ -46,55 +45,50 @@ EnchantCommand::~EnchantCommand() {
 
 bool EnchantCommand::execute(std::vector<std::string>* args) {
 	assertTrue(args->size() > 1);
-
 	int enchantId = 0;
 	int enchantLevel = 32767;
 	bool isAuto = true;
 
 	if (args->at(1) != "all") {
 		try {
-			// convert string to back to lower case
+			// convert string to lower case
 			std::string data = args->at(1);
 			std::transform(data.begin(), data.end(), data.begin(), ::tolower);
 
-			auto convertedString = enchantMap.find(data);
-			if (convertedString != enchantMap.end())
-				enchantId = convertedString->second;
-			else
+			auto it = enchantMap.find(data);
+			if (it != enchantMap.end()) {
+				enchantId = it->second;
+			} else {
 				enchantId = assertInt(args->at(1));
+			}
 		} catch (int) {
-			clientMessageF("exception while trying to get enchant string");
+			clientMessageF("Exception while trying to get enchant string");
 			enchantId = assertInt(args->at(1));
 		}
 	}
 
-	if (args->size() > 2)
+	if (args->size() > 2) {
 		enchantLevel = assertInt(args->at(2));
-	if (args->size() > 3)
+	}
+	if (args->size() > 3) {
 		isAuto = static_cast<bool>(assertInt(args->at(3)));
+	}
 
 	PlayerInventoryProxy* supplies = Game.getLocalPlayer()->getSupplies();
 	Inventory* inv = supplies->inventory;
 	InventoryTransactionManager* manager = Game.getLocalPlayer()->getTransactionManager();
-
 	int selectedSlot = supplies->selectedHotbarSlot;
 	ItemStack* item = inv->getItemStack(selectedSlot);
-
 	InventoryAction* firstAction = nullptr;
 	InventoryAction* secondAction = nullptr;
 
-	ItemDescriptor* desc = nullptr;
-	desc = new ItemDescriptor((*item->item)->itemId, 0); 
-
 	if (isAuto) {
-		{
-			firstAction = new InventoryAction(supplies->selectedHotbarSlot, item, nullptr, InventorySource(ContainerInventory, inventory, NoFlag));
-			secondAction = new InventoryAction(0, nullptr, item, InventorySource(NonImplementedFeatureTODO, Invalid, NoFlag));
-			manager->addInventoryAction(*firstAction);
-			manager->addInventoryAction(*secondAction);
-			delete firstAction;
-			delete secondAction;
-		}
+		firstAction = new InventoryAction(supplies->selectedHotbarSlot, item, nullptr, InventorySource(ContainerInventory, inventory, NoFlag));
+		secondAction = new InventoryAction(0, nullptr, item, InventorySource(NonImplementedFeatureTODO, Invalid, NoFlag));
+		manager->addInventoryAction(*firstAction);
+		manager->addInventoryAction(*secondAction);
+		delete firstAction;
+		delete secondAction;
 	}
 
 	using getEnchantsFromUserData_t = void(__fastcall*)(ItemStack*, void*);
@@ -103,60 +97,63 @@ bool EnchantCommand::execute(std::vector<std::string>* args) {
 
 	static getEnchantsFromUserData_t getEnchantsFromUserData = reinterpret_cast<getEnchantsFromUserData_t>(FindSignature("48 89 5C 24 ? 55 56 57 48 81 EC ? ? ? ? 48 8B F2 48 8B D9 48 89 54 24 ? 33 FF 89 7C 24 ? E8 ? ? ? ? 84 C0"));
 	static addEnchant_t addEnchant = reinterpret_cast<addEnchant_t>(FindSignature("48 89 5C 24 ?? 48 89 54 24 ?? 57 48 83 EC ?? 45 0F"));
-
 	static saveEnchantsToUserData_t saveEnchantsToUserData = 0x0;
+
 	if (!saveEnchantsToUserData) {
 		saveEnchantsToUserData = reinterpret_cast<saveEnchantsToUserData_t>(FindSignature("48 89 5C 24 ? 56 57 41 56 48 81 EC ? ? ? ? 0F 29 B4 24 ? ? ? ? 48 8B FA 4C 8B C1 48 8B 41 08 48 85 C0"));
 	}
 
 	if (strcmp(args->at(1).c_str(), "all") == 0) {
 		for (int i = 0; i < 38; i++) {
-			void* EnchantData = malloc(0x60);
-			if (EnchantData != nullptr)
-				memset(EnchantData, 0x0, 0x60);
+			void* enchantData = malloc(0x60);
+			if (enchantData != nullptr) {
+				memset(enchantData, 0x0, 0x60);
+			}
 
-			getEnchantsFromUserData(item, EnchantData);
+			getEnchantsFromUserData(item, enchantData);
 
 			__int64 enchantPair = ((__int64)enchantLevel << 32) | i;
 
-			if (addEnchant(EnchantData, enchantPair)) {
-				// Upper 4 bytes = level, lower 4 bytes = enchant type
-				saveEnchantsToUserData(item, EnchantData);
+			if (addEnchant(enchantData, enchantPair)) {  // Upper 4 bytes = level, lower 4 bytes = enchant type
+				saveEnchantsToUserData(item, enchantData);
 				__int64 proxy = reinterpret_cast<__int64>(Game.getLocalPlayer()->getSupplies());
-
 				if (!*(uint8_t*)(proxy + 168)) {
-					(*(void(__fastcall**)(unsigned long long, unsigned long long, ItemStack*))(**(unsigned long long**)(proxy + 192) + 72i64))(*(unsigned long long*)(proxy + 192), *(unsigned int*)(proxy + 16), item);  // Player::selectItem
+					(*(void(__fastcall**)(unsigned long long, unsigned long long, ItemStack*))(**(unsigned long long**)(proxy + 192) + 72i64))(
+						*(unsigned long long*)(proxy + 192),
+						*(unsigned int*)(proxy + 16),
+						item);  // Player::selectItem
 				}
-
 				// Game.getLocalPlayer()->sendInventory();
 			}
-			free(EnchantData);
+			free(enchantData);
 		}
 		clientMessageF("%sEnchant successful!", GREEN);
 	} else {
-		void* EnchantData = malloc(0x60);
-		if (EnchantData != nullptr)
-			memset(EnchantData, 0x0, 0x60);
+		void* enchantData = malloc(0x60);
+		if (enchantData != nullptr) {
+			memset(enchantData, 0x0, 0x60);
+		}
 
-		getEnchantsFromUserData(item, EnchantData);
+		getEnchantsFromUserData(item, enchantData);
 
 		__int64 enchantPair = ((__int64)enchantLevel << 32) | enchantId;
 
-		if (addEnchant(EnchantData, enchantPair)) {  // Upper 4 bytes = level, lower 4 bytes = enchant type
-			saveEnchantsToUserData(item, EnchantData);
+		if (addEnchant(enchantData, enchantPair)) {  // Upper 4 bytes = level, lower 4 bytes = enchant type
+			saveEnchantsToUserData(item, enchantData);
 			__int64 proxy = reinterpret_cast<__int64>(Game.getLocalPlayer()->getSupplies());
-			if (!*(uint8_t*)(proxy + 168))
-				(*(void(__fastcall**)(unsigned long long, unsigned long long, ItemStack*))(**(unsigned long long**)(proxy + 192) + 72i64))(
+			if (!*(uint8_t*)(proxy + 168)) {
+				(*(void(__fastcall**)(unsigned long long, unsigned long long, ItemStack*))(**(unsigned long long**)(proxy + 176) + 72i64))(
 					*(unsigned long long*)(proxy + 192),
 					*(unsigned int*)(proxy + 16),
 					item);  // Player::selectItem
-
-			//Game.getLocalPlayer()->sendInventory();
+			}
+			// Game.getLocalPlayer()->sendInventory();
 			clientMessageF("%sEnchant successful!", GREEN);
-		} else
-			clientMessageF("%sEnchant failed, try using a lower enchant-level", RED);
+		} else {
+			clientMessageF("%sEnchant failed, try using a lower enchant level", RED);
+		}
 
-		free(EnchantData);
+		free(enchantData);
 	}
 
 	if (isAuto) {
@@ -167,6 +164,5 @@ bool EnchantCommand::execute(std::vector<std::string>* args) {
 		delete firstAction;
 		delete secondAction;
 	}
-
 	return true;
 }

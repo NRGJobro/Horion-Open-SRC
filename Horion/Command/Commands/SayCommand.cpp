@@ -17,7 +17,7 @@ std::string string_replace(const std::string& s, const std::string& findS, const
 }
 
 std::string parse(const std::string& s) {
-	static std::vector<std::pair<std::string, std::string> > patterns = {
+	static std::vector<std::pair<std::string, std::string>> patterns = {
 		{"\\\\", "\\"},
 		{"\\n", "\n"},
 		{"\\r", "\r"},
@@ -35,7 +35,7 @@ bool SayCommand::execute(std::vector<std::string>* args) {
 	assertTrue(args->size() > 1);
 
 	std::ostringstream os;
-	for (int i = 1; i < args->size(); i++) {
+	for (size_t i = 1; i < args->size(); i++) {
 		if (i > 1)
 			os << " ";
 		os << args->at(i);

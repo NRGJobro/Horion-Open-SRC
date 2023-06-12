@@ -15,24 +15,29 @@ bool DupeCommand::execute(std::vector<std::string>* args) {
 	ItemStack* item = inv->getItemStack(selectedSlot);
 	int count = item->count;
 	bool isGive = true;
-	if (args->size() > 1)
+
+	if (args->size() > 1) {
 		item->count = assertInt(args->at(1));
-	if (args->size() > 2)
+	}
+
+	if (args->size() > 2) {
 		isGive = static_cast<bool>(assertInt(args->at(2)));
+	}
+
 	if (isGive) {
-		InventoryAction* firstAction = nullptr;
-		InventoryAction* secondAction = nullptr;
-		firstAction = new InventoryAction(0, item, nullptr);
+		InventoryAction* firstAction = new InventoryAction(0, item, nullptr);
 		transactionManager->addInventoryAction(*firstAction);
 		inv->addItemToFirstEmptySlot(item);
 	} else {
-		InventoryAction* pp = nullptr;
-		pp = new InventoryAction(0, item, nullptr);
+		InventoryAction* pp = new InventoryAction(0, item, nullptr);
 		transactionManager->addInventoryAction(*pp);
 		Game.getLocalPlayer()->setOffhandSlot(item);
 	}
-	if (args->size() > 1)
+
+	if (args->size() > 1) {
 		item->count = count;
-		clientMessageF("%sSuccessfully duplicated the item!", GREEN);
+	}
+
+	clientMessageF("%sSuccessfully duplicated the item!", GREEN);
 	return true;
 }
