@@ -9,17 +9,19 @@ ConfigCommand::~ConfigCommand() {
 }
 
 bool ConfigCommand::execute(std::vector<std::string>* args) {
-	if (args->at(1) == "load" || args->at(1) == "l") {
+	std::string option = args->at(1);
+	if (option == "load" || option == "l") {
 		std::string name = args->at(2);
 		configMgr->loadConfig(name, false);
 		return true;
-	} else if (args->at(1) == "new" || args->at(1) == "n") {
+	} else if (option == "new" || option == "n") {
 		std::string name = args->at(2);
 		configMgr->loadConfig(name, true);
 		return true;
-	} else if (args->at(1) == "save" || args->at(1) == "s") {
+	} else if (option == "save" || option == "s") {
 		configMgr->saveConfig();
-		clientMessageF("[%sHorion%s] %sSuccessfully saved config %s%s%s!", GOLD, WHITE, GREEN, GRAY, configMgr->currentConfig.c_str(), GREEN);
+		std::string configName = configMgr->currentConfig;
+		clientMessageF("[%sHorion%s] %sSuccessfully saved config %s%s%s!", GOLD, WHITE, GREEN, GRAY, configName.c_str(), GREEN);
 		return true;
 	}
 	return false;

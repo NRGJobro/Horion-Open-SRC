@@ -34,7 +34,7 @@ bool UnbindCommand::execute(std::vector<std::string>* args) {
 	if (!modOpt.has_value()) {
 		clientMessageF("%sCould not find module with name: %s", RED, moduleName.c_str());
 		return true;
-	} 
+	}
 
 	auto mod = modOpt.value();
 	mod->setKeybind(0x0);

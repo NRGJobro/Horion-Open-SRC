@@ -10,27 +10,31 @@ PathCommand::PathCommand() : IMCCommand("path", "Joe path", "<y|xz|xyz> [args]")
 }
 PathCommand::~PathCommand() {
 }
-bool PathCommand::execute(std::vector<std::string> *args) {
+
+bool PathCommand::execute(std::vector<std::string>* args) {
 	assertTrue(args->size() > 1);
 	static auto mod = moduleMgr->getModule<FollowPathModule>();
-	if(mod->isEnabled()){
-		clientMessageF("Joe is already enabled, disable joe to use this command");
+
+	if (mod->isEnabled()) {
+		clientMessageF("Joe is already enabled, disable Joe to use this command");
 		return true;
 	}
 
 	auto cmd = args->at(1);
-	if(cmd == "y"){
+
+	if (cmd == "y") {
 		assertTrue(args->size() > 2);
 		int yLevel = assertInt(args->at(2));
 		assertTrue(yLevel > 0 && yLevel < 256);
 
-		mod->goal = std::make_unique<JoeGoalY>((float)yLevel);
+		mod->goal = std::make_unique<JoeGoalY>(static_cast<float>(yLevel));
 		mod->setEnabled(true);
 
 		clientMessageF("Starting search...");
 		return true;
 	}
-	if(cmd == "xz"){
+
+	if (cmd == "xz") {
 		assertTrue(args->size() > 3);
 		int x = assertInt(args->at(2));
 		int z = assertInt(args->at(3));
@@ -41,7 +45,8 @@ bool PathCommand::execute(std::vector<std::string> *args) {
 		clientMessageF("Starting search...");
 		return true;
 	}
-	if(cmd == "xyz"){
+
+	if (cmd == "xyz") {
 		assertTrue(args->size() > 4);
 		int x = assertInt(args->at(2));
 		int y = assertInt(args->at(3));
@@ -53,28 +58,29 @@ bool PathCommand::execute(std::vector<std::string> *args) {
 		clientMessageF("Starting search...");
 		return true;
 	}
-	if(cmd == "p" || cmd == "player"){
+
+	if (cmd == "p" || cmd == "player") {
 		std::string nameOfPlayer = args->at(2);
 		assertTrue(!nameOfPlayer.empty());
-		std::string nameOfPlayerLower = std::string(nameOfPlayer);
+		std::string nameOfPlayerLower = nameOfPlayer;
 		std::transform(nameOfPlayerLower.begin(), nameOfPlayerLower.end(), nameOfPlayerLower.begin(), ::tolower);
 		nameOfPlayerLower = Utils::sanitize(nameOfPlayerLower);
 
 		Vec3 pos{};
-		auto playerFinder = [&](Entity* e, bool isNewList){
-			if(e == Game.getLocalPlayer())
+		auto playerFinder = [&](Entity* e, bool isNewList) {
+			if (e == Game.getLocalPlayer())
 				return;
 			std::string name(e->getNameTag()->getText());
 			std::transform(name.begin(), name.end(), name.begin(), ::tolower);
 
 			if (name.find(nameOfPlayerLower) == std::string::npos)
-			  return;
+				return;
 
 			pos = e->eyePos0;
 		};
 		Game.forEachEntity(playerFinder);
 
-		if(pos.iszero()){
+		if (pos.iszero()) {
 			clientMessageF("%s Player \"%s\" could not be found!", GOLD, nameOfPlayer.c_str());
 			return true;
 		}
@@ -86,7 +92,6 @@ bool PathCommand::execute(std::vector<std::string> *args) {
 
 		return true;
 	}
-
 
 	return false;
 }

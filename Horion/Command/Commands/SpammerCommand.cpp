@@ -11,6 +11,7 @@ SpammerCommand::~SpammerCommand() {
 
 bool SpammerCommand::execute(std::vector<std::string>* args) {
 	assertTrue(Game.getLocalPlayer() != nullptr);
+
 	std::string option = args->at(1);
 	std::transform(option.begin(), option.end(), option.begin(), ::tolower);
 
@@ -39,7 +40,7 @@ bool SpammerCommand::execute(std::vector<std::string>* args) {
 	} else if (option == "bypass") {
 		std::string data = args->at(2);
 		std::transform(data.begin(), data.end(), data.begin(), ::tolower);
-		bool state = (data == "true") ? true : false;
+		bool state = (data == "true");
 		spamMod->getBypass() = state;
 		clientMessageF("%sBypass set to %s%s%s!", GREEN, GRAY, state ? "true" : "false", GREEN);
 		return true;
@@ -70,5 +71,6 @@ bool SpammerCommand::execute(std::vector<std::string>* args) {
 		}
 		return true;
 	}
+
 	return false;
 }

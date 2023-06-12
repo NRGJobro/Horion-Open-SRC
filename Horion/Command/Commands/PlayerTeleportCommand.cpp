@@ -12,7 +12,7 @@ bool PlayerTeleportCommand::execute(std::vector<std::string>* args) {
 	assertTrue(args->size() > 1);  // .playertp <player>
 	std::string nameOfPlayer = args->at(1);
 	assertTrue(!nameOfPlayer.empty());
-	std::string nameOfPlayerLower = std::string(nameOfPlayer);
+	std::string nameOfPlayerLower = nameOfPlayer;
 	std::transform(nameOfPlayerLower.begin(), nameOfPlayerLower.end(), nameOfPlayerLower.begin(), ::tolower);
 	nameOfPlayerLower = Utils::sanitize(nameOfPlayerLower);
 
@@ -23,19 +23,20 @@ bool PlayerTeleportCommand::execute(std::vector<std::string>* args) {
 	if (listSize > 5000) {
 		return true;
 	}
+
 	std::string playerName;
-	//Loop through all our players and retrieve their information
+
+	// Loop through all the players and retrieve their information
 	for (size_t i = 0; i < listSize; i++) {
 		Entity* currentEntity = entList->get(i);
 
-		std::string name(currentEntity->getNameTag()->getText());
-
-		std::transform(name.begin(), name.end(), name.begin(), ::tolower);
-
-		if (currentEntity == 0)
+		if (currentEntity == nullptr)
 			break;
 
-		if (currentEntity == Game.getLocalPlayer())  // Skip Local player
+		std::string name(currentEntity->getNameTag()->getText());
+		std::transform(name.begin(), name.end(), name.begin(), ::tolower);
+
+		if (currentEntity == Game.getLocalPlayer())  // Skip local player
 			continue;
 
 		if (name.find(nameOfPlayerLower) == std::string::npos)
@@ -45,10 +46,12 @@ bool PlayerTeleportCommand::execute(std::vector<std::string>* args) {
 		playerName = currentEntity->getNameTag()->getText();
 		break;
 	}
+
 	if (pos.iszero()) {
 		clientMessageF("[%sHorion%s] %sCouldn't find player: %s!", GOLD, WHITE, RED, nameOfPlayer.c_str());
 		return true;
 	}
+
 	Game.getLocalPlayer()->setPos(pos);
 	clientMessageF("[%sHorion%s] %sTeleported to %s", GOLD, WHITE, GREEN, playerName.c_str());
 	return true;

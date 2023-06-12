@@ -12,9 +12,11 @@ HelpCommand::~HelpCommand() {
 bool HelpCommand::execute(std::vector<std::string>* args) {
 	clientMessageF("==========");
 	std::vector<IMCCommand*>* commandList = cmdMgr->getCommandList();
+
 	for (auto it = commandList->begin(); it != commandList->end(); ++it) {
-		IMCCommand* plump = *it;
-		clientMessageF("%s%s - %s%s", plump->getCommand(), GRAY, ITALIC, plump->getDescription());
+		IMCCommand* command = *it;
+		clientMessageF("%s%s - %s%s", command->getCommand(), GRAY, ITALIC, command->getDescription());
 	}
+
 	return true;
 }

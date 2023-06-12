@@ -12,10 +12,10 @@ TestCommand::~TestCommand() {
 
 void listEnts() {
 	Level* level = Game.getLocalPlayer()->getlevel();
-	auto entity = level->getEntity();
+	Entity* entity = level->getEntity();
 	if (entity != nullptr) {
-		auto id = entity->getEntityTypeId();
-		char* name = entity->getNameTag()->getText();
+		int64_t id = entity->getEntityTypeId();
+		const char* name = entity->getNameTag()->getText();
 		Game.getGuiData()->displayClientMessageF("---------------");
 		Game.getGuiData()->displayClientMessageF("Entity Name: %s", name);
 		Game.getGuiData()->displayClientMessageF("Entity ID: %lld", id);
@@ -25,13 +25,13 @@ void listEnts() {
 
 void itemId() {
 	LocalPlayer* player = Game.getLocalPlayer();
-	PlayerInventoryProxy* supplies = Game.getLocalPlayer()->getSupplies();
+	PlayerInventoryProxy* supplies = player->getSupplies();
 	Inventory* inv = supplies->inventory;
-	auto n = supplies->selectedHotbarSlot;
+	int n = supplies->selectedHotbarSlot;
 	ItemStack* stack = inv->getItemStack(n);
-	if (stack->item != nullptr) {
-		auto id = stack->getItem()->itemId;
-		char* name = stack->getItem()->name.getText();
+	if (stack != nullptr && stack->item != nullptr) {
+		int64_t id = stack->getItem()->itemId;
+		const char* name = stack->getItem()->name.getText();
 		Game.getGuiData()->displayClientMessageF("---------------");
 		Game.getGuiData()->displayClientMessageF("Item Name: %s", name);
 		Game.getGuiData()->displayClientMessageF("Item ID: %lld", id);
@@ -41,12 +41,11 @@ void itemId() {
 
 void showAimedBlockInfo() {
 	LocalPlayer* player = Game.getLocalPlayer();
-	Level* level = Game.getLocalPlayer()->getlevel();
-	Block* block = Game.getLocalPlayer()->region->getBlock(level->block);
-	auto entity = level->getEntity();
-	if (block != nullptr && level != nullptr && entity == nullptr && block->blockLegacy->blockId != 7) {
-		char* name = block->toLegacy()->name.getText();
-		auto id = block->toLegacy()->blockId;
+	Level* level = player->getlevel();
+	Block* block = player->region->getBlock(level->block);
+	if (block != nullptr && level != nullptr && block->blockLegacy != nullptr && block->blockLegacy->blockId != 7) {
+		const char* name = block->toLegacy()->name.getText();
+		int64_t id = block->toLegacy()->blockId;
 		Game.getGuiData()->displayClientMessageF("---------------");
 		Game.getGuiData()->displayClientMessageF("Block Name: %s", name);
 		Game.getGuiData()->displayClientMessageF("Block ID: %lld", id);
