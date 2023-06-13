@@ -278,8 +278,12 @@ bool Hooks::playerCallBack(Player* lp, __int64 a2, __int64 a3) {
 
 			if (entity == nullptr) continue;
 
-			if (entity != nullptr && (__int64)entity != 0xFFFFFFFFFFFFFCD7 && ent.ent != nullptr && *(__int64*)ent.ent != 0xFFFFFFFFFFFFFCD7 && *(__int64*)ent.ent > 0x6FF000000000 && *(__int64*)ent.ent < 0x800000000000 && *((int64_t*)ent.ent + 1) < 0x6FF000000000 && *(__int64*)ent.ent <= (__int64)(Utils::getBase() + 0x10000000) && entity->isAlive())
+			if (entity != nullptr && (__int64)entity != 0xFFFFFFFFFFFFFCD7 && ent.ent != nullptr && *(__int64*)ent.ent != 0xFFFFFFFFFFFFFCD7 &&
+				*(__int64*)ent.ent > 0x6FF000000000 && *(__int64*)ent.ent < 0x800000000000 && *((int64_t*)ent.ent + 1) < 0x6FF000000000 &&
+				*(__int64*)ent.ent <= (__int64)(Utils::getBase() + 0x10000000) && entity->isAlive()) {
 				validEntities.push_back(ent);
+			}
+
 		}
 		g_Hooks.entityList.clear();
 		g_Hooks.entityList = validEntities;

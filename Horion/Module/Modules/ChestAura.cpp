@@ -20,18 +20,19 @@ void ChestAura::onTick(GameMode* gm) {
 	for (int x = (int)pos->x - range; x < pos->x + range; x++) {
 		for (int z = (int)pos->z - range; z < pos->z + range; z++) {
 			for (int y = (int)pos->y - range; y < pos->y + range; y++) {
-				Vec3i pos = Vec3i(x, y, z);
-				Block* block = gm->player->region->getBlock(pos);
+				Vec3i blockPos = Vec3i(x, y, z);
+				Block* block = gm->player->region->getBlock(blockPos);
 				if (block != nullptr && Game.canUseMoveKeys()) {
-					auto id = gm->player->region->getBlock(pos)->toLegacy()->blockId;
+					auto id = block->toLegacy()->blockId;
 					bool open = false;
-					if (id == 54) open = true;                  // Chests
-					if (id == 130 && enderchests) open = true;  // EnderCheats
-					if (open)
-					if (!(std::find(chestlist.begin(), chestlist.end(), pos) != chestlist.end())) {
+					if (id == 54)
+						open = true;  // Chests
+					if (id == 130 && enderchests)
+						open = true;  // EnderCheats
+					if (open && !(std::find(chestlist.begin(), chestlist.end(), blockPos) != chestlist.end())) {
 						bool idk = true;
-						gm->buildBlock(&pos, 0, idk);
-						chestlist.push_back(pos);
+						gm->buildBlock(&blockPos, 0, idk);
+						chestlist.push_back(blockPos);
 						return;
 					}
 				}

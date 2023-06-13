@@ -82,6 +82,11 @@ bool EnchantCommand::execute(std::vector<std::string>* args) {
 	InventoryAction* firstAction = nullptr;
 	InventoryAction* secondAction = nullptr;
 
+	if (item == nullptr || item->item == nullptr) {
+		clientMessageF("Please hold an item!");
+		return false;
+	}
+
 	if (isAuto) {
 		firstAction = new InventoryAction(supplies->selectedHotbarSlot, item, nullptr, InventorySource(ContainerInventory, inventory, NoFlag));
 		secondAction = new InventoryAction(0, nullptr, item, InventorySource(NonImplementedFeatureTODO, Invalid, NoFlag));
