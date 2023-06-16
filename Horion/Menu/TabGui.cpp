@@ -11,7 +11,7 @@ struct SelectedItemInformation {
 
 	void setSelectedItemForce(int item) {
 		selectedItemId = item;
-		currentSelectedItemInterpol = (float)item;
+		currentSelectedItemInterpol = static_cast<float>(item);
 	}
 
 	void interp() {
@@ -21,6 +21,7 @@ struct SelectedItemInformation {
 	void rollback() {
 		rollbackVal *= 0.95f;
 	}
+
 	void rollin() {
 		rollbackVal = 1 - ((1 - rollbackVal) * 0.95f);
 	}
@@ -37,25 +38,22 @@ static float xOffset;
 int renderedLevel;
 
 struct LabelContainer {
-	const char* text = 0;
+	const char* text = nullptr;
 	bool enabled = false;
-	std::shared_ptr<IModule> mod = 0;
+	std::shared_ptr<IModule> mod = nullptr;
 };
 
 std::vector<LabelContainer> labelList;
 
 void TabGui::renderLabel(const char* text, std::shared_ptr<IModule> mod) {
-	// size_t strlength = strlen(text) + 1;
-	// char* alloc = new char[strlength];
-	// strcpy_s(alloc, strlength, text);
-	LabelContainer yikes;
-	yikes.text = text;
-	if (mod != 0) {
-		yikes.enabled = mod->isEnabled();
-		yikes.mod = mod;
+	LabelContainer label;
+	label.text = text;
+	if (mod != nullptr) {
+		label.enabled = mod->isEnabled();
+		label.mod = mod;
 	}
 
-	labelList.push_back(yikes);
+	labelList.push_back(label);
 }
 
 void TabGui::renderLevel() {
@@ -69,10 +67,10 @@ void TabGui::renderLevel() {
 	// First loop: Get the maximum text length
 	float maxLength = 0.f;
 	int labelListLength = 0;
-	for (auto it = labelList.begin(); it != labelList.end(); ++it) {
+	for (const auto& label : labelList) {
 		labelListLength++;
-		std::string label = it->text;
-		maxLength = fmax(maxLength, DrawUtils::getTextWidth(&label, textSize));
+		std::string labelText(label.text);
+		maxLength = std::max(maxLength, DrawUtils::getTextWidth(&labelText, textSize));
 	}
 
 	if (selected[renderedLevel].selectedItemId < 0)
@@ -88,15 +86,14 @@ void TabGui::renderLevel() {
 	int i = 0;
 	float selectedYOffset = yOffset;
 	float startYOffset = yOffset;
-	for (auto it = labelList.begin(); it != labelList.end(); ++it, i++) {
-		auto label = *it;
+	for (const auto& label : labelList) {
 		Vec4 rectPos = Vec4(
 			xOffset - 0.5f,  // Off screen / Left border not visible
 			yOffset,
 			xOffset + maxLength + 4.5f,
 			yOffset + textHeight);
 
-		MC_Color color = MC_Color(200, 200, 200);
+		MC_Color color(200, 200, 200);
 
 		if (selected[renderedLevel].selectedItemId == i && level >= renderedLevel) {  // We are selected
 			if (renderedLevel == level) {                                             // Are we actually in the menu we are drawing right now?
@@ -111,13 +108,13 @@ void TabGui::renderLevel() {
 						toggleCurrentSelection = false;
 						label.mod->toggle();
 					}
-				} else if (toggleCurrentSelection != lastVal && label.mod->isFlashMode())
+				} else if (toggleCurrentSelection != lastVal && label.mod->isFlashMode()) {
 					label.mod->setEnabled(false);
+				}
 				lastVal = toggleCurrentSelection;
 			} else {  // selected, but not what the user is interacting with
 				DrawUtils::fillRectangle(rectPos, ClientColors::tabGuiBackground, 1.f);
 			}
-			// selectedYOffset = yOffset;
 		} else {  // We are not selected
 			DrawUtils::fillRectangle(rectPos, label.enabled ? ClientColors::tabGuiEnabledItemColor : ClientColors::tabGuiBackground, 1.f);
 		}
@@ -126,6 +123,7 @@ void TabGui::renderLevel() {
 		DrawUtils::drawText(Vec2(xOffset + 1.5f, yOffset + 0.5f), &tempLabel, label.enabled ? MC_Color() : color, textSize);
 
 		yOffset += textHeight;
+		i++;
 	}
 
 	// Draw selected item
@@ -142,19 +140,21 @@ void TabGui::renderLevel() {
 
 		if (renderedLevel > level) {
 			selected[renderedLevel].rollback();
-		} else
+		} else {
 			selected[renderedLevel].rollin();
+		}
 
 		DrawUtils::fillRectangle(selectedPos, ClientColors::tabGuiSelectedItemColor, alphaVal);
 	}
 
-	//  Cleanup
+	// Cleanup
 	DrawUtils::flush();
 	labelList.clear();
 	xOffset += maxLength + 4.5f;
 	yOffset = selectedYOffset;
 	renderedLevel++;
-};
+}
+
 void TabGui::render() {
 	if (!moduleMgr->isInitialized())
 		return;
@@ -164,7 +164,7 @@ void TabGui::render() {
 	yOffset = 4;
 	xOffset = 3;
 
-	// Render all categorys
+	// Render all categories
 	renderLabel("Combat");
 	renderLabel("Visual");
 	renderLabel("Movement");
@@ -179,8 +179,7 @@ void TabGui::render() {
 		auto lock = moduleMgr->lockModuleList();
 
 		std::vector<std::shared_ptr<IModule>>* modules = moduleMgr->getModuleList();
-		for (std::vector<std::shared_ptr<IModule>>::iterator it = modules->begin(); it != modules->end(); ++it) {
-			auto mod = *it;
+		for (const auto& mod : *modules) {
 			if (selected[0].selectedItemId == static_cast<int>(mod->getCategory())) {
 				auto name = mod->getModuleName();
 				renderLabel(name, mod);
@@ -223,8 +222,9 @@ void TabGui::onKeyUpdate(int key, bool isDown) {
 			level++;
 			selected[level].setSelectedItemForce(0);
 			selected[level].rollbackVal = 0;
-		} else
+		} else {
 			toggleCurrentSelection = true;
+		}
 		return;
 	case VK_UP:
 		if (level >= 0)

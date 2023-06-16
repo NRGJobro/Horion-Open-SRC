@@ -12,7 +12,7 @@ const char* Freecam::getModuleName() {
 	return ("Freecam");
 }
 
-void* cameraAddr = (void*)FindSignature("f3 0f 11 43 ? f3 0f 10 44 24 ? f3 0f 11 43 ? f3 0f 10 44 24 ? f3 0f 11 43 ? f3 0f 10 44 24 ? f3 0f 11 43 ? f3 0f 10 44 24 ? f3 0f 11 43 ? f3 0f 10 44 24 ? f3 0f 11 43 ? f3 0f 10 44 24 ? f3 0f 11 43 ? f3 0f 10 44 24 ? f3 0f 11 43 ? f3 0f 10 44 24 ? f3 0f 11 43 ? f3 0f 10 44 24 ? f3 0f 11 43 ? f3 0f 10 44 24 ? f3 0f 11 43");
+void* cameraAddr = (void*)FindSignature("f3 0f 11 43 ? f3 0f 10 44 24 ? f3 0f 11 43");
 
 void Freecam::onEnable() {
 	auto Player = Game.getLocalPlayer();
@@ -40,10 +40,9 @@ void Freecam::onPreRender(MinecraftUIRenderContext* rcx) {
 	bool isBackKeyDown = GameData::isKeyDown(*input->backKey);
 	bool isRightKeyDown = GameData::isKeyDown(*input->rightKey);
 	bool isLeftKeyDown = GameData::isKeyDown(*input->leftKey);
+	bool keyPressed = false;
 
-	if (isForwardKeyDown && isBackKeyDown) {
-		return;
-	} else if (isForwardKeyDown) {
+	if (isForwardKeyDown) {
 		keyPressed = true;
 
 		if (isRightKeyDown && !isLeftKeyDown) {
@@ -68,7 +67,15 @@ void Freecam::onPreRender(MinecraftUIRenderContext* rcx) {
 		keyPressed = true;
 		yaw -= 90.f;
 	}
-	if (yaw >= 180) yaw -= 360.f;
+
+	if (isForwardKeyDown && isBackKeyDown) {
+		return;
+	}
+
+	yaw = fmod(yaw, 360.0f);
+	if (yaw < 0) {
+		yaw += 360.0f;
+	}
 
 	float calcYaw = (yaw + 90) * (PI / 180);
 

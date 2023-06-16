@@ -16,7 +16,6 @@ const char* Arraylist::getModuleName() {
 }
 
 struct IModuleContainer {
-	// Struct used to Sort IModules in a std::set
 	std::shared_ptr<IModule> backingModule;
 	std::string moduleName;
 	bool enabled;
@@ -29,28 +28,28 @@ struct IModuleContainer {
 		static auto arrayMod = moduleMgr->getModule<Arraylist>();
 		static auto hudMod = moduleMgr->getModule<HudModule>();
 		const char* moduleNameChr = mod->getModuleName();
-		this->enabled = mod->isEnabled();
-		this->keybind = mod->getKeybind();
-		this->backingModule = mod;
-		this->pos = mod->getPos();
+		enabled = mod->isEnabled();
+		keybind = mod->getKeybind();
+		backingModule = mod;
+		pos = mod->getPos();
 
 		if (keybind == 0x0)
 			moduleName = moduleNameChr;
 		else {
 			char text[50];
-			sprintf_s(text, 50, "%s%s", moduleNameChr, hudMod->keybinds ? std::string(" [" + std::string(Utils::getKeybindName(keybind)) + "]").c_str() : "");
+			sprintf_s(text, 50, "%s%s", moduleNameChr, hudMod->keybinds ? (" [" + std::string(Utils::getKeybindName(keybind)) + "]").c_str() : "");
 			moduleName = text;
 		}
 
-		if (!this->enabled && *this->pos == Vec2(0.f, 0.f))
-			this->shouldRender = false;
-		this->textWidth = DrawUtils::getTextWidth(&moduleName, hudMod->scale);
+		if (!enabled && *pos == Vec2(0.f, 0.f))
+			shouldRender = false;
+		textWidth = DrawUtils::getTextWidth(&moduleName, hudMod->scale);
 	}
 
 	bool operator<(const IModuleContainer& other) const {
-		if (this->textWidth == other.textWidth)
+		if (textWidth == other.textWidth)
 			return moduleName < other.moduleName;
-		return this->textWidth > other.textWidth;
+		return textWidth > other.textWidth;
 	}
 };
 
@@ -62,17 +61,13 @@ void Arraylist::onPostRender(MinecraftUIRenderContext* renderCtx) {
 	Vec2 mousePos = *Game.getClientInstance()->getMousePos();
 
 	// Convert mousePos to visual Pos
-	{
-		mousePos = mousePos.div(windowSizeReal);
-		mousePos = mousePos.mul(windowSize);
-	}
+	mousePos = mousePos.div(windowSizeReal).mul(windowSize);
 
 	// Mouse click detector
-	static bool wasLeftMouseDown = GameData::isLeftClickDown();  // Last isDown value
-	bool leftMouseDown = GameData::isLeftClickDown();            // current isDown value
-
-	bool executeClick = leftMouseDown && leftMouseDown != wasLeftMouseDown;  // isDown == true AND (current state IS NOT last state)
-	wasLeftMouseDown = leftMouseDown;                                        // Set last isDown value
+	static bool wasLeftMouseDown = GameData::isLeftClickDown();
+	bool leftMouseDown = GameData::isLeftClickDown();
+	bool executeClick = leftMouseDown && leftMouseDown != wasLeftMouseDown;
+	wasLeftMouseDown = leftMouseDown;
 
 	std::set<IModuleContainer> modContainerList;
 	// Fill modContainerList with Modules
@@ -89,18 +84,18 @@ void Arraylist::onPostRender(MinecraftUIRenderContext* renderCtx) {
 	float textSize = hudMod->scale;
 	float textPadding = 1.0f * textSize;
 	float textHeight = 10.0f * textSize;
-	int seperation = 50;  // Adjust this to change the seperation of the colors
+	int separation = 50;
 	int index = 0;
 	float yOffset = 0;
 
-	for (auto it = modContainerList.begin(); it != modContainerList.end(); ++it) {
-		if (!it->shouldRender) continue;
+	for (const auto& container : modContainerList) {
+		if (!container.shouldRender)
+			continue;
 
-		auto& container = *it;
 		auto textStr = container.moduleName;
 		auto textWidth = container.textWidth;
 
-		auto arrayColor = ColorUtil::getRainbowColor(cycleSpeed, saturation, 1, index * (seperation * 2));
+		auto arrayColor = ColorUtil::getRainbowColor(cycleSpeed, saturation, 1, index * (separation * 2));
 		auto xOffsetOri = windowSize.x - textWidth - (textPadding * 2);
 		auto xOffset = windowSize.x - container.pos->x;
 
@@ -123,7 +118,8 @@ void Arraylist::onPostRender(MinecraftUIRenderContext* renderCtx) {
 			selectedRect.x = sideRect.z;
 			if (leftMouseDown) {
 				DrawUtils::fillRectangle(selectedRect, MC_Color(0.8f, 0.8f, 0.8f), 0.8f);
-				if (executeClick) container.backingModule->toggle();
+				if (executeClick)
+					container.backingModule->toggle();
 			} else {
 				DrawUtils::fillRectangle(selectedRect, MC_Color(0.8f, 0.8f, 0.8f, 0.8f), 0.3f);
 			}

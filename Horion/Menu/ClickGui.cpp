@@ -784,31 +784,29 @@ void ClickGui::onWheelScroll(bool direction) {
 }
 
 void ClickGui::onKeyUpdate(int key, bool isDown) {
-	if (!initialised)
-		return;
-	static auto clickGuiMod = moduleMgr->getModule<ClickGuiMod>();
-	
-	if (!isDown)
+	 if (!initialised || !isDown)
 		return;
 
-	if (!clickGuiMod->isEnabled()) {
+	 static auto clickGuiMod = moduleMgr->getModule<ClickGuiMod>();
+
+	 if (!clickGuiMod->isEnabled()) {
 		timesRendered = 0;
 		return;
-	}
+	 }
 
-	if (timesRendered < 10)
+	 if (timesRendered < 10)
 		return;
-	timesRendered = 0;
 
-	switch (key) {
-	case VK_ESCAPE:
+	 timesRendered = 0;
+
+	 switch (key) {
+	 case VK_ESCAPE:
 		clickGuiMod->setEnabled(false);
 		return;
-	default:
+	 default:
 		if (key == clickGuiMod->getKeybind())
 			clickGuiMod->setEnabled(false);
-	}
-	
+	 }
 }
 using json = nlohmann::json;
 void ClickGui::onLoadConfig(void* confVoid) {
