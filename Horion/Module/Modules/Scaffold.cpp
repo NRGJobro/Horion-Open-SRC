@@ -72,7 +72,7 @@ bool Scaffold::tryClutchScaffold(Vec3 blockBelow) {
 	if (highlight) DrawUtils::drawBox(blockBelow, Vec3(blockBelow).add(1), 0.4f);  // Draw a box around the block about to be placed
 
 	static std::vector<Vec3i> checkBlocks;
-	if (checkBlocks.empty()) {  // Only re sort if its empty
+	if (checkBlocks.empty()) {  // Only re-sort if it's empty
 		for (int y = -4; y <= 4; y++) {
 			for (int x = -4; x <= 4; x++) {
 				for (int z = -4; z <= 4; z++) {
@@ -82,7 +82,7 @@ bool Scaffold::tryClutchScaffold(Vec3 blockBelow) {
 		}
 		// https://www.mathsisfun.com/geometry/pythagoras-3d.html c2 = x2 + y2 + z2 funny
 		std::sort(checkBlocks.begin(), checkBlocks.end(), [](Vec3i first, Vec3i last) {
-			return sqrtf((float)(first.x * first.x) + (float)(first.y * first.y) + (float)(first.z * first.z)) < sqrtf((float)(last.x * last.x) + (float)(last.y * last.y) + (float)(last.z * last.z));
+			return sqrtf(static_cast<float>(first.x * first.x) + static_cast<float>(first.y * first.y) + static_cast<float>(first.z * first.z)) < sqrtf(static_cast<float>(last.x * last.x) + static_cast<float>(last.y * last.y) + static_cast<float>(last.z * last.z));
 		});
 	}
 
@@ -91,20 +91,18 @@ bool Scaffold::tryClutchScaffold(Vec3 blockBelow) {
 
 		// Normal tryScaffold after it sorts
 		BlockSource* region = Game.getLocalPlayer()->region;
-		Block* block = region->getBlock(Vec3i(currentBlock));
-		BlockLegacy* blockLegacy = (block->blockLegacy);
+		Block* block = region->getBlock(currentBlock);
+		BlockLegacy* blockLegacy = block->blockLegacy;
 		if (blockLegacy->material->isReplaceable) {
 			Vec3i blok(currentBlock);
 
-			// Find neighbour
+			// Find neighbor
 			static std::vector<Vec3i*> checklist;
 			if (checklist.empty()) {
 				checklist.push_back(new Vec3i(0, -1, 0));
 				checklist.push_back(new Vec3i(0, 1, 0));
-
 				checklist.push_back(new Vec3i(0, 0, -1));
 				checklist.push_back(new Vec3i(0, 0, 1));
-
 				checklist.push_back(new Vec3i(-1, 0, 0));
 				checklist.push_back(new Vec3i(1, 0, 0));
 			}
@@ -113,8 +111,7 @@ bool Scaffold::tryClutchScaffold(Vec3 blockBelow) {
 			int i = 0;
 			for (auto current : checklist) {
 				Vec3i calc = blok.sub(*current);
-				bool Y = ((region->getBlock(calc)->blockLegacy))->material->isReplaceable;
-				if (!((region->getBlock(calc)->blockLegacy))->material->isReplaceable) {
+				if (!(region->getBlock(calc)->blockLegacy->material->isReplaceable)) {
 					// Found a solid block to click
 					foundCandidate = true;
 					blok = calc;
@@ -246,20 +243,18 @@ void Scaffold::handleReplaceableBlock(Player* player, float speed, const Vec3& v
 }
 
 void Scaffold::handleNonReplaceableBlock(Player* player, float speed, const Vec3& velocity, Vec3& blockBelow) {
-	if (!hive) {
-		if (!tryScaffold(blockBelow)) {
-			if (speed > 0.05f) {
-				blockBelow.z -= velocity.z * 0.4f;
+	if (!hive && !tryScaffold(blockBelow)) {
+		if (speed > 0.05f) {
+			blockBelow.z -= velocity.z * 0.4f;
 
-				if (!tryScaffold(blockBelow)) {
-					blockBelow.x -= velocity.x * 0.4f;
+			if (!tryScaffold(blockBelow)) {
+				blockBelow.x -= velocity.x * 0.4f;
 
-					if (!tryScaffold(blockBelow) && player->isSprinting()) {
-						blockBelow.z += velocity.z;
-						blockBelow.x += velocity.x;
+				if (!tryScaffold(blockBelow) && player->isSprinting()) {
+					blockBelow.z += velocity.z;
+					blockBelow.x += velocity.x;
 
-						tryScaffold(blockBelow);
-					}
+					tryScaffold(blockBelow);
 				}
 			}
 		}
@@ -268,7 +263,7 @@ void Scaffold::handleNonReplaceableBlock(Player* player, float speed, const Vec3
 
 Vec3 Scaffold::getNextBlock(Player* player, const Vec3& velocity, const Vec3& blockBelow) {
 	Vec3 nextBlock = blockBelow;
-	if (abs(velocity.x) > abs(velocity.z)) {
+	if (std::abs(velocity.x) > std::abs(velocity.z)) {
 		nextBlock.x += (velocity.x > 0 ? 1 : (velocity.x < 0 ? -1 : 0));
 	} else {
 		nextBlock.z += (velocity.z > 0 ? 1 : (velocity.z < 0 ? -1 : 0));
@@ -279,10 +274,13 @@ Vec3 Scaffold::getNextBlock(Player* player, const Vec3& velocity, const Vec3& bl
 
 void Scaffold::onSendPacket(Packet* packet) {
 	auto player = Game.getLocalPlayer();
-	if (player == nullptr) return;
+	if (player == nullptr) {
+		return;
+	}
+
 	if (hive || rotations) {
 		float speed = player->velocity.magnitudexz();
-		Vec3 blockBelow = player->eyePos0;  // Block 1 block below the player
+		Vec3 blockBelow = player->eyePos0;
 		blockBelow.y -= player->height;
 		blockBelow.y -= 0.5f;
 
@@ -299,10 +297,13 @@ void Scaffold::onSendPacket(Packet* packet) {
 }
 
 void Scaffold::onPlayerTick(Player* player) {
-	if (player == nullptr) return;
+	if (player == nullptr) {
+		return;
+	}
+
 	if (hive || rotations) {
 		float speed = player->velocity.magnitudexz();
-		Vec3 blockBelow = player->eyePos0;  // Block 1 block below the player
+		Vec3 blockBelow = player->eyePos0;
 		blockBelow.y -= player->height;
 		blockBelow.y -= 0.5f;
 

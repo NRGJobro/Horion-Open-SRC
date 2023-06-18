@@ -157,53 +157,47 @@ void Hooks::Init() {
 		// LoopbackPacketSender::vtable
 		if (Game.getClientInstance()->loopbackPacketSender != nullptr) {
 			uintptr_t** packetSenderVtable = reinterpret_cast<uintptr_t**>(*(uintptr_t*)Game.getClientInstance()->loopbackPacketSender);
-			if (packetSenderVtable == nullptr)
+			if (packetSenderVtable == nullptr) {
 				logF("LoopbackPacketSenderVtable is invalid");
-			else {
+			} else {
 				g_Hooks.LoopbackPacketSender_sendToServerHook = std::make_unique<FuncHook>(packetSenderVtable[2], Hooks::LoopbackPacketSender_sendToServer);
-
-				g_Hooks.LoopbackPacketSender_sendToClientHook = std::make_unique<FuncHook>(packetSenderVtable[4], Hooks::LoopbackPacketSender_sendToClient); //I use the second sendToClient
+				g_Hooks.LoopbackPacketSender_sendToClientHook = std::make_unique<FuncHook>(packetSenderVtable[4], Hooks::LoopbackPacketSender_sendToClient);
+				// Use the second sendToClient
 			}
-		} else logF("LoopbackPacketSender is null");
+		} else {
+			logF("LoopbackPacketSender is null");
+		}
 
 		// MoveInputHandler::vtable
 		if (Game.getClientInstance()->getMoveTurnInput() != nullptr) {
 			uintptr_t** moveInputVtable = reinterpret_cast<uintptr_t**>(*(uintptr_t*)Game.getClientInstance()->getMoveTurnInput());
-			if (moveInputVtable == 0x0)
+			if (moveInputVtable == nullptr) {
 				logF("MoveInputHandler signature not working!!!");
-			else {
+			} else {
 				g_Hooks.MoveInputHandler_tickHook = std::make_unique<FuncHook>(moveInputVtable[1], Hooks::MoveInputHandler_tick);
 			}
-		} else logF("MoveTurnInput is null");
+		} else {
+			logF("MoveTurnInput is null");
+		}
 
 		//The reason im using a sig is because injecting on the menu causes LocalPlayer to be null so i cant get the vtable from just doing Game.getLocalPlayer(). Same with Gamemode bc i get that from local player.
 		// LocalPlayer::vtable
 		{
 			uintptr_t** localPlayerVtable = GetVtableFromSig("48 8d 05 ? ? ? ? 48 89 01 48 8b 89 ? ? ? ? 48 8b 01 ff 90 ? ? ? ? 48 8b 10", 3);
-			if (localPlayerVtable == 0x0)
+			if (localPlayerVtable == nullptr) {
 				logF("LocalPlayer signature not working!!!");
-			else {
+			} else {
 				g_Hooks.Actor_startSwimmingHook = std::make_unique<FuncHook>(localPlayerVtable[200], Hooks::Actor_startSwimming);
-
 				g_Hooks.Actor_ascendLadderHook = std::make_unique<FuncHook>(localPlayerVtable[346], Hooks::Actor_ascendLadder);
-				
 				g_Hooks.Actor__setRotHook = std::make_unique<FuncHook>(localPlayerVtable[27], Hooks::Actor__setRot);
-
 				g_Hooks.Actor_swingHook = std::make_unique<FuncHook>(localPlayerVtable[218], Hooks::Actor_swing);
-
-				g_Hooks.JumpPowerHook = std::make_unique<FuncHook>(localPlayerVtable[352], Hooks::JumpPower); //jump from ground with movement proxy
-
-				//g_Hooks.setPosHook = std::make_unique<FuncHook>(localPlayerVtable[19], Hooks::setPos);
-
+				g_Hooks.JumpPowerHook = std::make_unique<FuncHook>(localPlayerVtable[352], Hooks::JumpPower); // jump from ground with movement proxy
+				// g_Hooks.setPosHook = std::make_unique<FuncHook>(localPlayerVtable[19], Hooks::setPos);
 				g_Hooks.Actor_baseTickHook = std::make_unique<FuncHook>(localPlayerVtable[49], Hooks::Actor_baseTick);
-
 				g_Hooks.Mob__isImmobileHook = std::make_unique<FuncHook>(localPlayerVtable[92], Hooks::Mob__isImmobile);
-
 				g_Hooks.Actor_isInWaterHook = std::make_unique<FuncHook>(localPlayerVtable[71], Hooks::Actor_isInWater);
-
 				g_Hooks.Player_tickWorldHook = std::make_unique<FuncHook>(localPlayerVtable[368], Hooks::Player_tickWorld);
-
-				//g_Hooks.Actor__isInvisibleHook = std::make_unique<FuncHook>(localPlayerVtable[59], Hooks::Actor__isInvisible);
+				// g_Hooks.Actor__isInvisibleHook = std::make_unique<FuncHook>(localPlayerVtable[59], Hooks::Actor__isInvisible);
 			}
 		}
 
@@ -211,14 +205,12 @@ void Hooks::Init() {
 		{
 			uintptr_t sigOffset = FindSignature("48 8D 05 ? ? ? ? 48 89 01 48 89 51 ? 48 C7 41 ? ? ? ? ? C7 41");
 			int offset = *reinterpret_cast<int*>(sigOffset + 3);
-			uintptr_t** gameModeVtable = reinterpret_cast<uintptr_t**>(sigOffset + offset + /*length of instruction*/ 7);
-			if (gameModeVtable == 0x0 || sigOffset == 0x0)
+			uintptr_t** gameModeVtable = reinterpret_cast<uintptr_t**>(sigOffset + offset + 7); // length of instruction
+			if (gameModeVtable == nullptr || sigOffset == 0x0) {
 				logF("GameMode signature not working!!!");
-			else {
+			} else {
 				g_Hooks.GameMode_startDestroyBlockHook = std::make_unique<FuncHook>(gameModeVtable[1], Hooks::GameMode_startDestroyBlock);
-
 				g_Hooks.GameMode_getPickRangeHook = std::make_unique<FuncHook>(gameModeVtable[10], Hooks::GameMode_getPickRange);
-
 				g_Hooks.GameMode_attackHook = std::make_unique<FuncHook>(gameModeVtable[14], Hooks::GameMode_attack);
 			}
 		}
@@ -227,20 +219,24 @@ void Hooks::Init() {
 		{
 			uintptr_t sigOffset = FindSignature("48 8D 05 ? ? ? ? 49 89 06 49 8D 76 ? 45 33 E4");
 			int offset = *reinterpret_cast<int*>(sigOffset + 3);
-			uintptr_t** directoryPackVtable = reinterpret_cast<uintptr_t**>(sigOffset + offset +  7);
-			//uintptr_t** directoryPackVtable = GetVtableFromSig("48 8D 05 ? ? ? ? 49 89 06 49 8D 76 ? 45 33 E4", 3);
-			if (directoryPackVtable == 0x0)
+			uintptr_t** directoryPackVtable = reinterpret_cast<uintptr_t**>(sigOffset + offset + 7);
+			// uintptr_t** directoryPackVtable = GetVtableFromSig("48 8D 05 ? ? ? ? 49 89 06 49 8D 76 ? 45 33 E4", 3);
+			if (directoryPackVtable == nullptr) {
 				logF("directoryPackVtable signature not working!!!");
-			else g_Hooks.DirectoryPackAccessStrategy__isTrustedHook = std::make_unique<FuncHook>(directoryPackVtable[6], Hooks::DirectoryPackAccessStrategy__isTrusted);
+			} else {
+				g_Hooks.DirectoryPackAccessStrategy__isTrustedHook = std::make_unique<FuncHook>(directoryPackVtable[6], Hooks::DirectoryPackAccessStrategy__isTrusted);
+			}
 
 			uintptr_t sigOffset2 = FindSignature("48 8D 05 ? ? ? ? 48 89 03 48 83 3E");
 			int offset2 = *reinterpret_cast<int*>(sigOffset2 + 3);
-			uintptr_t** directoryPackVtable2 = reinterpret_cast<uintptr_t**>(sigOffset2 + offset2 +  7);
-			//uintptr_t** directoryPackVtable2 = GetVtableFromSig("48 8D 05 ? ? ? ? 48 89 03 48 83 3E", 3);
-			if (directoryPackVtable2 == 0x0)
+			uintptr_t** directoryPackVtable2 = reinterpret_cast<uintptr_t**>(sigOffset2 + offset2 + 7);
+			// uintptr_t** directoryPackVtable2 = GetVtableFromSig("48 8D 05 ? ? ? ? 48 89 03 48 83 3E", 3);
+			if (directoryPackVtable2 == nullptr) {
 				logF("directoryPackVtable2 signature not working!!!");
-			else g_Hooks.ZipPackAccessStrategy__isTrustedHook = std::make_unique<FuncHook>(directoryPackVtable2[6], Hooks::ReturnTrue);
-			
+			} else {
+				g_Hooks.ZipPackAccessStrategy__isTrustedHook = std::make_unique<FuncHook>(directoryPackVtable2[6], Hooks::ReturnTrue);
+			}
+
 			g_Hooks.SkinRepository___checkSignatureFileInPack = std::make_unique<FuncHook>(FindSignature("48 89 5C 24 ? 57 48 81 EC ? ? ? ? 48 8B 05 ? ? ? ? 48 33 C4 48 89 44 24 ? 48 8B 79"), Hooks::ReturnTrue);
 		}
 		logF("Vtables initialized");
@@ -318,8 +314,8 @@ void Hooks::ClientInstanceScreenModel_sendChatMessage(void* _this, TextHolder* t
 	} else if (*message == '.') {
 		static std::once_flag flag;
 		std::call_once(flag, [] {
-			Game.getClientInstance()->getGuiData()->displayClientMessageF("%sYour Horion prefix is: \"%s%c%s\"", RED, YELLOW, cmdMgr->prefix, RED);
-			Game.getClientInstance()->getGuiData()->displayClientMessageF("%sEnter \"%s%cprefix .%s\" to reset your prefix", RED, YELLOW, cmdMgr->prefix, RED);
+			Game.getGuiData()->displayClientMessageF("%sYour Horion prefix is: \"%s%c%s\"", RED, YELLOW, cmdMgr->prefix, RED);
+			Game.getGuiData()->displayClientMessageF("%sEnter \"%s%cprefix .%s\" to reset your prefix", RED, YELLOW, cmdMgr->prefix, RED);
 		});
 	}
 	return oSendMessage(_this, text);
@@ -437,8 +433,8 @@ __int64 Hooks::RenderText(__int64 a1, MinecraftUIRenderContext* renderCtx) {
 				// Draw BIG epic horion watermark
 				{
 					std::string text = "H O R I O N";
-					Vec2 textPos = Vec2(wid.x / 2.f - DrawUtils::getTextWidth(&text, 8.f) / 2.f, wid.y / 9.5f);
-					Vec4 rectPos = Vec4(textPos.x - 55.f, textPos.y - 15.f, textPos.x + DrawUtils::getTextWidth(&text, 8.f) + 55.f, textPos.y + 75.f);
+					Vec2 textPos(wid.x / 2.f - DrawUtils::getTextWidth(&text, 8.f) / 2.f, wid.y / 9.5f);
+					Vec4 rectPos(textPos.x - 55.f, textPos.y - 15.f, textPos.x + DrawUtils::getTextWidth(&text, 8.f) + 55.f, textPos.y + 75.f);
 					DrawUtils::fillRectangle(rectPos, ClientColors::menuBackgroundColor, 1.f);
 					DrawUtils::drawRectangle(rectPos, color, 1.f, 2.f);
 					DrawUtils::drawText(textPos, &text, MC_Color(255, 255, 255, 1), 8.f);
@@ -465,26 +461,27 @@ __int64 Hooks::RenderText(__int64 a1, MinecraftUIRenderContext* renderCtx) {
 					if (shouldRenderWatermark) {
 						constexpr float nameTextSize = 1.5f;
 						constexpr float versionTextSize = 0.7f;
-						static const float textHeight = (nameTextSize + versionTextSize * 0.7f /* We don't quite want the version string in its own line, just a bit below the name */) * DrawUtils::getFont(Fonts::SMOOTH)->getLineHeight();
+						static const float textHeight = (nameTextSize + versionTextSize * 0.7f) * DrawUtils::getFont(Fonts::SMOOTH)->getLineHeight();
 						constexpr float borderPadding = 1;
 						constexpr float margin = 5;
 
 						static std::string name = "Horion";
+						std::string version;
+
 #ifdef _DEBUG
-						static std::string version = "dev";
+						version = "dev";
 #elif defined _BETA
-						static std::string version = "beta";
+						version = "beta";
 #else
-						static std::string version = "public";
+						version = "public";
 #endif
 
 						float nameLength = DrawUtils::getTextWidth(&name, nameTextSize);
 						float fullTextLength = nameLength + DrawUtils::getTextWidth(&version, versionTextSize);
-						Vec4 rect = Vec4(
-							windowSize.x - margin - fullTextLength - borderPadding * 2,
-							windowSize.y - margin - textHeight,
-							windowSize.x - margin + borderPadding,
-							windowSize.y - margin);
+						Vec4 rect(windowSize.x - margin - fullTextLength - borderPadding * 2,
+								  windowSize.y - margin - textHeight,
+								  windowSize.x - margin + borderPadding,
+								  windowSize.y - margin);
 
 						DrawUtils::drawRectangle(rect, MC_Color(color), 1.f, 2.f);
 						DrawUtils::fillRectangle(rect, ClientColors::watermarkBackgroundColor, 1.f);
@@ -561,6 +558,8 @@ float* Hooks::Dimension_getFogColor(Dimension* _this, float* color, __int64 a3, 
 	static auto oGetFogColor = g_Hooks.Dimension_getFogColorHook->GetFastcall<float*, Dimension*, float*, __int64, float>();
 	MC_Color rColor = ColorUtil::getRainbowColor(3, 0.5f, 1, 1);
 	static auto nightMod = moduleMgr->getModule<NightMode>();
+	static auto rainbowSkyMod = moduleMgr->getModule<RainbowSky>();
+
 	if (nightMod->isEnabled()) {
 		color[0] = 0.f;
 		color[1] = 0.f;
@@ -569,7 +568,6 @@ float* Hooks::Dimension_getFogColor(Dimension* _this, float* color, __int64 a3, 
 		return color;
 	}
 
-	static auto rainbowSkyMod = moduleMgr->getModule<RainbowSky>();
 	if (rainbowSkyMod->isEnabled()) {
 		color[0] = rColor.r;
 		color[1] = rColor.g;
@@ -577,6 +575,7 @@ float* Hooks::Dimension_getFogColor(Dimension* _this, float* color, __int64 a3, 
 		color[3] = 1;
 		return color;
 	}
+
 	return oGetFogColor(_this, color, a3, a4);
 }
 
@@ -643,50 +642,50 @@ int Hooks::AppPlatform_getGameEdition(__int64 _this) {
 
 void Hooks::PleaseAutoComplete(__int64 a1, __int64 a2, TextHolder* text, int a4) {
 	static auto oAutoComplete = g_Hooks.PleaseAutoCompleteHook->GetFastcall<void, __int64, __int64, TextHolder*, int>();
+
 	char* tx = text->getText();
 	if (tx != nullptr && text->getTextLength() >= 1 && tx[0] == '.') {
-		std::string search = tx + 1;                                              // Dont include the '.'
-		std::transform(search.begin(), search.end(), search.begin(), ::tolower);  // make the search text lowercase
+		std::string search = tx + 1;
+		std::transform(search.begin(), search.end(), search.begin(), ::tolower);
 
 		struct LilPlump {
 			std::string cmdAlias;
-			IMCCommand* command = 0;
-			bool shouldReplace = true;  // Should replace the current text in the box (autocomplete)
+			IMCCommand* command = nullptr;
+			bool shouldReplace = true;
 
 			bool operator<(const LilPlump& o) const {
 				return cmdAlias < o.cmdAlias;
 			}
-		};  // This is needed so the std::set sorts it alphabetically
+		};
 
 		std::set<LilPlump> searchResults;
 
 		std::vector<IMCCommand*>* commandList = cmdMgr->getCommandList();
-		for (auto it = commandList->begin(); it != commandList->end(); ++it) {  // Loop through commands
+		for (auto it = commandList->begin(); it != commandList->end(); ++it) {
 			IMCCommand* c = *it;
 			auto* aliasList = c->getAliasList();
-			for (auto it = aliasList->begin(); it != aliasList->end(); ++it) {  // Loop through aliases
+			for (auto it = aliasList->begin(); it != aliasList->end(); ++it) {
 				std::string cmd = *it;
 				LilPlump plump;
 
-				for (size_t i = 0; i < search.size(); i++) {  // Loop through search string
+				for (size_t i = 0; i < search.size(); i++) {
 					char car = search.at(i);
 					if (car == ' ' && i == cmd.size()) {
 						plump.shouldReplace = false;
 						break;
-					} else if (i >= cmd.size())
+					} else if (i >= cmd.size()) {
 						goto outerContinue;
+					}
 
-					if (car != cmd.at(i))  // and compare
+					if (car != cmd.at(i)) {
 						goto outerContinue;
+					}
 				}
-				// Not at outerContinue? Then we got a good result!
-				{
-					cmd.insert(0, 1, '.');  // Prepend the '.'
 
-					plump.cmdAlias = cmd;
-					plump.command = c;
-					searchResults.emplace(plump);
-				}
+				cmd.insert(0, 1, '.');
+				plump.cmdAlias = cmd;
+				plump.command = c;
+				searchResults.emplace(plump);
 
 			outerContinue:
 				continue;
@@ -698,7 +697,7 @@ void Hooks::PleaseAutoComplete(__int64 a1, __int64 a2, TextHolder* text, int a4)
 
 			size_t maxReplaceLength = firstResult.cmdAlias.size();
 			if (searchResults.size() > 1) {
-				for (auto it = searchResults.begin()++; it != searchResults.end(); it++) {
+				for (auto it = std::next(searchResults.begin()); it != searchResults.end(); it++) {
 					auto alias = it->cmdAlias;
 					maxReplaceLength = std::min(maxReplaceLength, alias.size());
 
@@ -709,8 +708,9 @@ void Hooks::PleaseAutoComplete(__int64 a1, __int64 a2, TextHolder* text, int a4)
 						}
 					}
 				}
-			} else
+			} else {
 				maxReplaceLength = firstResult.cmdAlias.size();
+			}
 
 			Game.getGuiData()->displayClientMessageF("==========");
 			if (searchResults.size() > 1) {
@@ -719,24 +719,27 @@ void Hooks::PleaseAutoComplete(__int64 a1, __int64 a2, TextHolder* text, int a4)
 					Game.getGuiData()->displayClientMessageF("%s%s - %s%s", plump.cmdAlias.c_str(), GRAY, ITALIC, plump.command->getDescription());
 				}
 			}
-			if (firstResult.command->getUsage(firstResult.cmdAlias.c_str() + 1)[0] == 0)
+
+			if (firstResult.command->getUsage(firstResult.cmdAlias.c_str() + 1)[0] == 0) {
 				Game.getGuiData()->displayClientMessageF("%s%s %s- %s", WHITE, firstResult.cmdAlias.c_str(), GRAY, firstResult.command->getDescription());
-			else
-				Game.getGuiData()->displayClientMessageF("%s%s %s %s- %s", WHITE, firstResult.cmdAlias.c_str(), firstResult.command->getUsage(firstResult.cmdAlias.c_str() + 1 /*exclude prefix*/), GRAY, firstResult.command->getDescription());
+			} else {
+				Game.getGuiData()->displayClientMessageF("%s%s %s %s- %s", WHITE, firstResult.cmdAlias.c_str(), firstResult.command->getUsage(firstResult.cmdAlias.c_str() + 1), GRAY, firstResult.command->getDescription());
+			}
 
 			if (firstResult.shouldReplace) {
 				if (search.size() == firstResult.cmdAlias.size() - 1 && searchResults.size() == 1) {
 					maxReplaceLength++;
 					firstResult.cmdAlias.append(" ");
 				}
-				text->setText(firstResult.cmdAlias.substr(0, maxReplaceLength));  // Set text
+				text->setText(firstResult.cmdAlias.substr(0, maxReplaceLength));
 				using syncShit = void(__fastcall*)(TextHolder*, TextHolder*);
 				static syncShit sync = reinterpret_cast<syncShit>(Utils::FindSignature("40 53 48 83 ec ? 48 8b da 48 8d 4c 24 ? e8 ? ? ? ? 90 48 8b 40 ? 48 8b 08 48 8b 01 48 8b d3 ff 90 ? ? ? ? 90 48 8d 4c 24 ? e8 ? ? ? ? 80 7c 24 ? ? 74 ? 48 8b 4c 24 ? e8 ? ? ? ? 48 83 c4"));
 				sync(text, text);
 			}
+			return;
 		}
-		return;
 	}
+
 	oAutoComplete(a1, a2, text, a4);
 }
 
@@ -876,22 +879,24 @@ int Hooks::BlockLegacy_getRenderLayer(BlockLegacy* a1) {
 	static auto xrayMod = moduleMgr->getModule<Xray>();
 	if (xrayMod->isEnabled()) {
 		char* text = a1->name.getText();
-		if (strstr(text, "ore") == NULL)
-			if (strcmp(text, "lava") != NULL)
-				if (strcmp(text, "water") != NULL)
-					if (strcmp(text, "portal") != NULL)
-						if (strcmp(text, "amethyst_block") != NULL)
-							if (strcmp(text, "ancient_debris") != NULL)
-								if (strcmp(text, "command_block") != NULL)
-									if (strcmp(text, "repeating_command_block") != NULL)
-										if (strcmp(text, "chain_command_block") != NULL)
-											if (strcmp(text, "structure_block") != NULL)
-												if (strcmp(text, "deny") != NULL)
-													if (strcmp(text, "allow") != NULL)
-														if (strcmp(text, "bedrock") != NULL)
-															if (strcmp(text, "border_block") != NULL)
-																return 10;
+		if (strstr(text, "ore") == NULL &&
+			strcmp(text, "lava") != NULL &&
+			strcmp(text, "water") != NULL &&
+			strcmp(text, "portal") != NULL &&
+			strcmp(text, "amethyst_block") != NULL &&
+			strcmp(text, "ancient_debris") != NULL &&
+			strcmp(text, "command_block") != NULL &&
+			strcmp(text, "repeating_command_block") != NULL &&
+			strcmp(text, "chain_command_block") != NULL &&
+			strcmp(text, "structure_block") != NULL &&
+			strcmp(text, "deny") != NULL &&
+			strcmp(text, "allow") != NULL &&
+			strcmp(text, "bedrock") != NULL &&
+			strcmp(text, "border_block") != NULL) {
+			return 10;
+		}
 	}
+
 	return oFunc(a1);
 }
 
@@ -951,7 +956,7 @@ void Hooks::ClickFunc(__int64 a1, char mouseButton, char isDown, __int16 mouseX,
 	// 3 = middle click
 	// 4 = scroll   (isDown: 120 (SCROLL UP) and -120 (SCROLL DOWN))
 
-	DrawUtils::onMouseClickUpdate((int)mouseButton, isDown);
+	DrawUtils::onMouseClickUpdate(static_cast<int>(mouseButton), isDown);
 
 	if (isDown)
 		if (mouseButton == 1)
@@ -994,30 +999,30 @@ float Hooks::GetGamma(uintptr_t* a1) {
 	static auto zoomMod = moduleMgr->getModule<Zoom>();
 	static auto viewMod = moduleMgr->getModule<ViewModel>();
 
-	uintptr_t** list = (uintptr_t**)a1;
+	uintptr_t** list = reinterpret_cast<uintptr_t**>(a1);
 
 	char obtainedSettings = 0;
 	bool hadIt = false;
 	for (uint16_t i = 3; i < 450; i++) {
 		if (list[i] == nullptr) continue;
-		uintptr_t* info = *(uintptr_t**)((uintptr_t)list[i] + 8);
+		uintptr_t* info = *reinterpret_cast<uintptr_t**>(reinterpret_cast<uintptr_t>(list[i]) + 8);
 		if (info == nullptr) continue;
 
-		TextHolder* translateName = (TextHolder*)((uintptr_t)info + 0x1D8);
-		TextHolder* settingname = (TextHolder*)((uintptr_t)info + 0x188);
+		TextHolder* translateName = reinterpret_cast<TextHolder*>(reinterpret_cast<uintptr_t>(info) + 0x1D8);
+		TextHolder* settingname = reinterpret_cast<TextHolder*>(reinterpret_cast<uintptr_t>(info) + 0x188);
 
 		if (!strcmp(translateName->getText(), "options.smoothlighting")) {
 			if (hadIt) continue;
-			bool* smoothlightning = (bool*)((uintptr_t)list[i] + 16);
+			bool* smoothlightning = reinterpret_cast<bool*>(reinterpret_cast<uintptr_t>(list[i]) + 16);
 			xrayMod->smoothLightningSetting = smoothlightning;
 			obtainedSettings++;
 			hadIt = true;
 		} else if (!strcmp(settingname->getText(), "gfx_ingame_player_names")) {
-			bool* ingamePlayerName = (bool*)((uintptr_t)list[i] + 16);
+			bool* ingamePlayerName = reinterpret_cast<bool*>(reinterpret_cast<uintptr_t>(list[i]) + 16);
 			nametagmod->ingameNametagSetting = ingamePlayerName;
 			obtainedSettings++;
 		} else if (!strcmp(settingname->getText(), "gfx_viewbobbing")) {
-			bool* viewbobbing = (bool*)((uintptr_t)list[i] + 16);
+			bool* viewbobbing = reinterpret_cast<bool*>(reinterpret_cast<uintptr_t>(list[i]) + 16);
 			if (viewMod->isEnabled())
 				*viewbobbing = true;
 			obtainedSettings++;
@@ -1039,12 +1044,13 @@ bool Hooks::Actor_isInWater(Entity* _this) {
 	static auto oFunc = g_Hooks.Actor_isInWaterHook->GetFastcall<bool, Entity*>();
 	static auto airSwimModule = moduleMgr->getModule<AirSwim>();
 
-	if (Game.getLocalPlayer() != _this)
+	if (Game.getLocalPlayer() != _this) {
 		return oFunc(_this);
-	else if (airSwimModule && airSwimModule->isEnabled())
+	} else if (airSwimModule && airSwimModule->isEnabled()) {
 		return true;
-	else
+	} else {
 		return oFunc(_this);
+	}
 }
 
 void Hooks::JumpPower(Entity* a1, float a2) {

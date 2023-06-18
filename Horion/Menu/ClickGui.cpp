@@ -188,16 +188,15 @@ void ClickGui::renderCategory(Category category) {
 
 	if (ourWindow->isInAnimation) {
 		if (ourWindow->isExtended) {
-			ourWindow->animation *= 0.895f;
-			if (ourWindow->animation < 0.01f) {
+			ourWindow->animation *= 0.85f;
+			if (ourWindow->animation < 0.001f) {
 				ourWindow->yOffset = 0; // reset scroll
 				ourWindow->isInAnimation = false;
 			}
 				
 		} else {
 			ourWindow->animation = 1 - ((1 - ourWindow->animation) * 0.85f);
-			if (1 - ourWindow->animation < 0.001f)
-				ourWindow->isInAnimation = false;
+			if (1 - ourWindow->animation < 0.001f) ourWindow->isInAnimation = false;
 		}
 	}
 
@@ -424,7 +423,7 @@ void ClickGui::renderCategory(Category category) {
 										// Background of individual enum
 										DrawUtils::fillRectangle(rectPos, ClientColors::clickGuiModuleColor, backgroundAlpha);
 										DrawUtils::fillRectangle(selectableSurface, col, backgroundAlpha);
-										DrawUtils::drawText(textPos, &elTexto, whiteColor);
+										DrawUtils::drawText(textPos, &elTexto, whiteColor, textSize);
 										// logic
 										if (selectableSurface.contains(&mousePos) &&
 											DrawUtils::shouldToggleLeftClick && !ourWindow->isInAnimation) {

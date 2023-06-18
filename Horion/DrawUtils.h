@@ -30,49 +30,47 @@ struct MC_Color {
 	};
 	bool shouldDelete = true;
 
-	MC_Color() {
-		this->r = 1;
-		this->g = 1;
-		this->b = 1;
-		this->a = 1;
-	};
-
-	MC_Color(const MC_Color& other) {
-		this->r = other.r;
-		this->g = other.g;
-		this->b = other.b;
-		this->a = other.a;
-		this->shouldDelete = other.shouldDelete;
+	MC_Color() : r(1), g(1), b(1), a(1) {
+		arr[0] = r;
+		arr[1] = g;
+		arr[2] = b;
+		arr[3] = a;
 	}
 
-	MC_Color(const float* arr) {
-		this->arr[0] = arr[0];
-		this->arr[1] = arr[1];
-		this->arr[2] = arr[2];
-		this->arr[3] = arr[3];
-	};
+	MC_Color(const MC_Color& other) : r(other.r), g(other.g), b(other.b), a(other.a), shouldDelete(other.shouldDelete) {
+		arr[0] = r;
+		arr[1] = g;
+		arr[2] = b;
+		arr[3] = a;
+	}
 
-	MC_Color(const float r, const float g, const float b, const float a = 1) {
-		this->r = r;
-		this->g = g;
-		this->b = b;
-		this->a = a;
-	};
+	MC_Color(const float* arr) : r(arr[0]), g(arr[1]), b(arr[2]), a(arr[3]) {
+		this->arr[0] = r;
+		this->arr[1] = g;
+		this->arr[2] = b;
+		this->arr[3] = a;
+	}
 
-	MC_Color(const int r, const int g, const int b, const int a = 255) {
-		this->r = r / 255.0f;
-		this->g = g / 255.0f;
-		this->b = b / 255.0f;
-		this->a = a / 255.0f;
-	};
+	MC_Color(float r, float g, float b, float a = 1) : r(r), g(g), b(b), a(a) {
+		arr[0] = r;
+		arr[1] = g;
+		arr[2] = b;
+		arr[3] = a;
+	}
 
-	MC_Color(const float r, const float g, const float b, const float a, const bool shouldDelete) {
-		this->r = r;
-		this->g = g;
-		this->b = b;
-		this->a = a;
-		this->shouldDelete = shouldDelete;
-	};
+	MC_Color(int r, int g, int b, int a = 255) : r(r / 255.0f), g(g / 255.0f), b(b / 255.0f), a(a / 255.0f) {
+		arr[0] = this->r;
+		arr[1] = this->g;
+		arr[2] = this->b;
+		arr[3] = this->a;
+	}
+
+	MC_Color(float r, float g, float b, float a, bool shouldDelete) : r(r), g(g), b(b), a(a), shouldDelete(shouldDelete) {
+		arr[0] = r;
+		arr[1] = g;
+		arr[2] = b;
+		arr[3] = a;
+	}
 
 	MC_Color lerp(const MC_Color& o, float t) const;
 };
