@@ -78,19 +78,19 @@ void Logger::WriteLogFileF(volatile char* fmt, ...) {
 
 	pFile = _fsopen(logPath, "a", _SH_DENYWR);  // Open File with DENY_WRITE so other programs can only read stuff from log
 	if (pFile != nullptr) {
-		std::stringstream ssTime;
-		Utils::ApplySystemTime(&ssTime);
+		std::tm timeInfo;
+		Utils::GetCurrentSystemTime(timeInfo);
+
+		char timeStamp[20];
+		strftime(timeStamp, sizeof(timeStamp), "%m-%d-%Y %H:%M:%S", &timeInfo);
 
 		char logMessage[500];
-		char timeStamp[20];
-		sprintf_s(timeStamp, 20, "%s", ssTime.str().c_str());
 
 		va_list arg;
 		va_start(arg, fmt);
 		int numCharacters = vsprintf_s(logMessage, 300, const_cast<const char*>(fmt), arg);
 		va_end(arg);
-		fprintf(pFile, "%s%s", timeStamp, logMessage);
-		fprintf(pFile, "\n");
+		fprintf(pFile, "[%s] %s\n", timeStamp, logMessage);
 
 		fclose(pFile);
 
