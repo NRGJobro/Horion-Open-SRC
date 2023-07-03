@@ -149,10 +149,6 @@ void GameData::setHIDController(HIDController* Hid) {
 	Game.hidController = Hid;
 }
 
-void GameData::setRakNetInstance(RakNetInstance* raknet) {
-	Game.raknetInstance = raknet;
-}
-
 void GameData::forEachEntity(std::function<void(Entity*, bool)> callback) {
 	if (this->localPlayer && this->localPlayer->level) {
 		for (const auto& ent : g_Hooks.entityList) if (ent.ent != nullptr && ent.ent->isPlayer()) callback(ent.ent, false); //Only get players from this list

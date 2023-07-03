@@ -47,7 +47,6 @@ private:
 	LocalPlayer* localPlayer = nullptr;
 	GameMode* gameMode = nullptr;
 	EntityList* entityList = nullptr;
-	RakNetInstance* raknetInstance = nullptr;
 	void* hDllInst = 0;
 	std::unordered_set<AABB, AABBHasher> chestList;
 	std::vector<std::string> textPrintList;
@@ -90,7 +89,6 @@ public:
 	static void addChestToList(ChestBlockActor* ChestBlock2);
 	static void EntityList_tick(EntityList* list);
 	static void setHIDController(HIDController* Hid);
-	static void setRakNetInstance(RakNetInstance* raknet);
 	static void displayMessages(GuiData* guiData);
 	static void log(const char* fmt, ...);
 	float fov = 0.f;
@@ -178,7 +176,7 @@ public:
 	GameMode* getGameMode() { return gameMode; };
 	EntityList* getEntityList() { return entityList; };
 	HIDController** getHIDController() { return &hidController; };
-	RakNetInstance* getRakNetInstance() { return raknetInstance; };
+	RakNetInstance* getRakNetInstance() { return this->getClientInstance()->loopbackPacketSender->networkHandler->rakNetInstance; };
 	std::unordered_set<AABB, AABBHasher>& getChestList() { return chestList; };
 	auto lockChestList() { return std::lock_guard<std::mutex>(chestListMutex); }
 	void setFakeName(TextHolder* name) { fakeName = name; };

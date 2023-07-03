@@ -1,7 +1,7 @@
 #pragma once
 
 class RakNetInstance {
-	char pad_0000[0x3C8];  // 0x0000
+	char pad_0000[0x428];  // 0x0000
 public:
 	TextHolder numericalIp;  // 0x03D0
 	TextHolder serverIp;
